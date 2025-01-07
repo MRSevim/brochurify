@@ -8,9 +8,15 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        sm: "400px",
+      },
+      height: {
+        "screen-header-excluded": "calc(100vh - 40px);",
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        dark: "var(--dark)",
+        light: "var(--light)",
       },
     },
   },
