@@ -13,7 +13,7 @@ const PanelWrapper = ({ toggle, from, children }: Props) => {
   return (
     <div
       className={
-        "bg-dark w-screen h-screen-header-excluded transition-transform sm:w-96 absolute text-light " +
+        "bg-dark w-screen h-screen-header-excluded transition-transform sm:w-96 absolute top-0 text-light " +
         (from === "right" ? "right-0 " : "") +
         (!toggle ? translateString : "")
       }

@@ -1,5 +1,10 @@
-const Icon = ({ type, size }: { type: String; size: String }) => {
-  return <i className={`bi bi-${type} cursor-pointer text-${size}`}></i>;
+const Icon = ({ type, size }: { type: string; size: string }) => {
+  return (
+    <i
+      className={`bi bi-${type} cursor-pointer`}
+      style={{ fontSize: size }}
+    ></i>
+  );
 };
 
 export default Icon;

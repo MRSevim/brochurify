@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import "./globals.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import { Roboto_Mono } from "next/font/google";
 import Header from "@/components/Header";

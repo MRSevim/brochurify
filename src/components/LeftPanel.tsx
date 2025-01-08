@@ -2,9 +2,9 @@ import { LayoutToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
 
 const LeftPanel = () => {
-  const [layoutToggle] = LayoutToggleContext.Use();
+  const [toggle] = LayoutToggleContext.Use();
   return (
-    <PanelWrapper toggle={layoutToggle} from="left">
+    <PanelWrapper toggle={toggle} from="left">
       Layout
     </PanelWrapper>
   );

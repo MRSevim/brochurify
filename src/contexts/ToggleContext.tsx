@@ -22,6 +22,7 @@ export const createToggleContext = () => {
 
   const Provider = ({ children }: { children: React.ReactNode }) => {
     const [toggle, setToggle] = useState(false);
+
     return (
       <toggleContext.Provider value={[toggle, setToggle]}>
         {children}
