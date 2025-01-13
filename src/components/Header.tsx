@@ -9,7 +9,7 @@ const Header = () => {
   const [, setLayoutToggle] = LayoutToggleContext.Use();
   const [, setSettingsToggle] = SettingsToggleContext.Use();
   return (
-    <div className="w-full h-10 bg-dark text-light px-2 flex items-center justify-between">
+    <header className="w-full h-10 bg-dark text-light px-2 flex items-center justify-between">
       <span onClick={() => setLayoutToggle((prev) => !prev)}>
         <Icon type="list-nested" size="28px" />
       </span>
@@ -21,7 +21,7 @@ const Header = () => {
       >
         <Icon type="gear-fill" size="25px" />
       </span>
-    </div>
+    </header>
   );
 };
 

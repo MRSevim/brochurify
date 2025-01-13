@@ -3,6 +3,8 @@ import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
+import { store } from "@/redux/store";
+import { Provider } from "react-redux";
 
 export default function ClientWrapper({
   children,
@@ -12,7 +14,7 @@ export default function ClientWrapper({
   return (
     <LayoutToggleContext.Provider>
       <SettingsToggleContext.Provider>
-        {children}
+        <Provider store={store}>{children}</Provider>
       </SettingsToggleContext.Provider>
     </LayoutToggleContext.Provider>
   );

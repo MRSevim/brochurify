@@ -14,6 +14,9 @@ export default {
       height: {
         "screen-header-excluded": "calc(100vh - 40px);",
       },
+      width: {
+        "screen-layout-excluded": "calc(100vw - 384px);",
+      },
       colors: {
         dark: "var(--dark)",
         light: "var(--light)",
