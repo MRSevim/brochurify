@@ -4,7 +4,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 
-let initialLayout = localStorage.getItem("layout")
+let localStorageLayout =
+  typeof window !== "undefined" ? localStorage.getItem("layout") : null;
+
+let initialLayout = localStorageLayout
   ? JSON.parse(localStorage.getItem("layout") as string)
   : [
       {
