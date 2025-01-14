@@ -14,7 +14,8 @@ const FocusWrapper = ({
       className="cursor-pointer"
       key={itemId}
       tabIndex={0}
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
         dispatch(setActive(itemId));
       }}
       onBlur={() => dispatch(setActive(undefined))}

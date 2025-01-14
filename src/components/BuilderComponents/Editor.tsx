@@ -17,18 +17,7 @@ const Editor = () => {
       }
     >
       {data?.map((item) => {
-        const id = item.id;
-        return (
-          <FocusWrapper key={id} itemId={id}>
-            <section
-              className={
-                active === id ? "inline-block p-1 border border-dark" : ""
-              }
-            >
-              {renderComponent(item)}
-            </section>
-          </FocusWrapper>
-        );
+        return <section key={item.id}>{renderComponent(item, active)}</section>;
       })}
     </section>
   );
@@ -36,17 +25,24 @@ const Editor = () => {
 
 export default Editor;
 
-const renderComponent = (item: Layout): React.ReactNode => {
+const renderComponent = (
+  item: Layout,
+  active: string | undefined
+): React.ReactNode => {
   const Component = componentList[item.type as keyof typeof componentList];
 
-  // Recursively render the single child if it exists
-  const childNode = item.props.children
-    ? renderComponent(item.props.children)
-    : null;
-
+  const id = item.id;
   return (
-    <Component key={item.id} {...item.props}>
-      {childNode}
-    </Component>
+    <FocusWrapper key={id} itemId={id}>
+      <section
+        className={active === id ? "p-px border border-dark border-dashed" : ""}
+      >
+        <Component key={item.id} {...item.props}>
+          {item.props.child?.map((childItem) =>
+            renderComponent(childItem, active)
+          )}
+        </Component>
+      </section>
+    </FocusWrapper>
   );
 };

@@ -22,8 +22,8 @@ let initialLayout = localStorageLayout
       },
       {
         id: uuidv4(),
-        type: "column",
-        props: getDefaultElementProps("column"),
+        type: "row",
+        props: getDefaultElementProps("row"),
       },
     ];
 

@@ -3,44 +3,109 @@ import PanelWrapper from "./PanelWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import FocusWrapper from "./FocusWrapper";
 import { componentList } from "@/utils/Helpers";
-import { useState } from "react";
+import { SetStateAction, Dispatch, useState, useRef, useEffect } from "react";
 import { addElement, deleteElement } from "@/redux/slices/editorSlice";
 import Icon from "./Icon";
+import { Layout } from "@/utils/Types";
+
+type VisibilityMap = Map<string, boolean>;
 
 const LeftPanel = () => {
   const data = useAppSelector((state) => state.editor.layout);
   const [toggle] = LayoutToggleContext.Use();
+  // Centralized visibility map state
+  const [visibilityMap, setVisibilityMap] = useState<VisibilityMap>(new Map());
+  const depth = 0;
+
   return (
     <PanelWrapper toggle={toggle} from="left">
       <AddSection />
-      <ul>
-        {data?.map((item, i) => {
-          return <LayoutItem key={item.id} id={item.id} type={item.type} />;
+      <ul className="overflow-y-auto max-h-scrollable-container	">
+        {data?.map((item) => {
+          return (
+            <section key={item.id}>
+              <LayoutItem
+                item={item}
+                depth={depth}
+                visibilityMap={visibilityMap}
+                setVisibilityMap={setVisibilityMap}
+              />
+            </section>
+          );
         })}
       </ul>
     </PanelWrapper>
   );
 };
 
-interface LayoutItemProps {
-  type: string;
-  id: string;
-}
-
-const LayoutItem = ({ type, id }: LayoutItemProps) => {
+const LayoutItem = ({
+  item,
+  depth,
+  visibilityMap,
+  setVisibilityMap,
+}: {
+  item: Layout;
+  depth: number;
+  visibilityMap: VisibilityMap;
+  setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
+}) => {
   const active = useAppSelector((state) => state.editor.active);
+  const id = item.id;
+  const isExpanded = visibilityMap.get(id) ?? false;
+
+  // Calculate the margin based on depth, capping it at ml-4
+  const marginLeftClass = depth === 0 ? "ml-3" : depth === 1 ? "ml-5" : "ml-7";
+
+  const toggleVisibility = () => {
+    setVisibilityMap((prev) => {
+      const newMap = new Map(prev);
+
+      if (isExpanded) {
+        // Remove item ID if it is currently expanded
+        newMap.delete(id);
+      } else {
+        // Add item ID if it is currently collapsed
+        newMap.set(id, true);
+      }
+
+      return newMap;
+    });
+  };
+
   return (
-    <FocusWrapper itemId={id}>
-      <li
-        className={
-          "m-3 p-3 mx-5 border flex items-center justify-between	" +
-          (active === id ? "border-light" : "border-slate-500")
-        }
-      >
-        {type}
-        <DeleteButton itemId={id} />
-      </li>
-    </FocusWrapper>
+    <>
+      <FocusWrapper itemId={id}>
+        <li
+          className={
+            "m-3 p-3 border flex items-center justify-between	" +
+            (active === id ? "border-light" : "border-slate-500") +
+            (" " + marginLeftClass)
+          }
+        >
+          <section>
+            {item.props.child && (
+              <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
+            )}
+            {item.type}
+          </section>
+          <DeleteButton itemId={id} />
+        </li>
+      </FocusWrapper>
+      {isExpanded && (
+        <ul>
+          {/* Render child elements recursively */}
+          {item.props.child?.map((childItem) => (
+            <LayoutItem
+              key={childItem.id}
+              item={childItem}
+              depth={Math.min(depth + 1, 2)} // Cap depth at 2
+              visibilityMap={visibilityMap}
+              setVisibilityMap={setVisibilityMap}
+            />
+          ))}
+        </ul>
+      )}
+    </>
   );
 };
 
@@ -48,33 +113,71 @@ const AddSection = () => {
   const availableElements = Object.keys(componentList);
   const [toggle, setToggle] = useState(false);
   const dispatch = useAppDispatch();
+  const ref = useRef<HTMLElement | null>(null);
+
+  const handleClick = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as HTMLElement)) {
+      setToggle(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick);
+
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  });
 
   return (
     <section className="flex justify-center relative">
       <button
-        onBlur={() => setToggle(false)}
         className="border rounded border-cyan-100	p-3"
         onClick={() => setToggle((prev) => !prev)}
       >
         Add +
       </button>
       {toggle && (
-        <section className="absolute top-full border rounded border-cyan-100 mt-2	p-3 bg-dark">
+        <section
+          ref={ref}
+          className="absolute top-full border rounded border-cyan-100 mt-2	p-3 bg-dark flex flex-wrap"
+        >
           {availableElements.map((item, i) => (
-            <li
+            <button
               key={i}
-              className="list-none cursor-pointer rounded hover:bg-gray-800 p-3"
+              className="rounded hover:bg-gray-800 p-3 w-1/3 flex justify-center"
               onClick={() => {
                 dispatch(addElement(item));
                 setToggle(false);
               }}
             >
               {item}
-            </li>
+            </button>
           ))}
         </section>
       )}
     </section>
+  );
+};
+
+const ToggleButton = ({
+  onClick,
+  toggled,
+}: {
+  onClick: () => void;
+  toggled: boolean;
+}) => {
+  const type = toggled ? "chevron-up" : "chevron-down";
+  return (
+    <button
+      className="p-1 mr-2"
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick();
+      }}
+    >
+      <Icon type={type} size="20px" />
+    </button>
   );
 };
 

@@ -1,9 +1,7 @@
 export interface Props {
   text?: string;
-  children?: Layout;
-}
-export interface PropsWithNodeChildren {
-  children: React.ReactNode;
+  child?: Layout[];
+  children?: React.ReactNode;
 }
 export interface Layout {
   id: string;

@@ -1,13 +1,15 @@
 import Button from "@/components/BuilderComponents/Button";
-import { Props, PropsWithNodeChildren } from "./Types";
+import { Props } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
+import Row from "@/components/BuilderComponents/Row";
 
 export const componentList = {
   button: (props: Props) => <Button {...props} />,
-  column: (props: PropsWithNodeChildren) => <Column {...props} />,
+  column: (props: Props) => <Column {...props} />,
   text: (props: Props) => <Text {...props} />,
+  row: (props: Props) => <Row {...props} />,
 };
 
 export const getDefaultElementProps = (type: string): Props => {
@@ -24,11 +26,28 @@ export const getDefaultElementProps = (type: string): Props => {
     };
   } else if (type === "column") {
     return {
-      children: {
-        id: uuidv4(),
-        type: "text",
-        props: getDefaultElementProps("text"),
-      },
+      child: [
+        {
+          id: uuidv4(),
+          type: "text",
+          props: getDefaultElementProps("text"),
+        },
+      ],
+    };
+  } else if (type === "row") {
+    return {
+      child: [
+        {
+          id: uuidv4(),
+          type: "column",
+          props: getDefaultElementProps("column"),
+        },
+        {
+          id: uuidv4(),
+          type: "column",
+          props: getDefaultElementProps("column"),
+        },
+      ],
     };
   }
   return {};
