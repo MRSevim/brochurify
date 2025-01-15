@@ -1,4 +1,3 @@
-"use client";
 import Editor from "@/components/BuilderComponents/Editor";
 import LeftPanel from "@/components/LeftPanel";
 import RightPanel from "@/components/RightPanel";

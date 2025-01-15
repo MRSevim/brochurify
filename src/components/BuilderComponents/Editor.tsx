@@ -1,6 +1,7 @@
+"use client";
 import { componentList } from "@/utils/Helpers";
 import { LayoutToggleContext } from "@/contexts/ToggleContext";
-import { useAppSelector } from "@/redux/store";
+import { useAppSelector } from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
 import { Layout } from "@/utils/Types";
 

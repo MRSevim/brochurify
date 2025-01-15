@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-
 import { Roboto_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import ClientWrapper from "@/utils/ClientWrapper";
+import { cookies } from "next/headers";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -15,14 +15,17 @@ export const metadata: Metadata = {
   description: "Design single page websites with ui and get the code",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const layout = cookieStore.get("layout");
+
   return (
     <html lang="en" className={roboto_mono.className}>
-      <ClientWrapper>
+      <ClientWrapper layout={layout?.value}>
         <body>
           <Header />
           {children}

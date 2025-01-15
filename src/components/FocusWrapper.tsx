@@ -1,5 +1,5 @@
 import { setActive } from "@/redux/slices/editorSlice";
-import { useAppDispatch } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const FocusWrapper = ({
   itemId,
@@ -9,6 +9,7 @@ const FocusWrapper = ({
   children: React.ReactNode;
 }) => {
   const dispatch = useAppDispatch();
+  const active = useAppSelector((state) => state.editor.active);
   return (
     <section
       className="cursor-pointer"
@@ -16,9 +17,10 @@ const FocusWrapper = ({
       tabIndex={0}
       onClick={(e) => {
         e.stopPropagation();
-        dispatch(setActive(itemId));
+        if (active === itemId) {
+          dispatch(setActive(undefined));
+        } else dispatch(setActive(itemId));
       }}
-      onBlur={() => dispatch(setActive(undefined))}
     >
       {children}
     </section>

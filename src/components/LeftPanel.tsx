@@ -1,12 +1,13 @@
+"use client";
 import { LayoutToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
-import { useAppDispatch, useAppSelector } from "@/redux/store";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FocusWrapper from "./FocusWrapper";
 import { componentList } from "@/utils/Helpers";
 import { SetStateAction, Dispatch, useState, useRef, useEffect } from "react";
 import { addElement, deleteElement } from "@/redux/slices/editorSlice";
 import Icon from "./Icon";
-import { Layout } from "@/utils/Types";
+import { AddLocation, Layout } from "@/utils/Types";
 
 type VisibilityMap = Map<string, boolean>;
 
@@ -16,10 +17,11 @@ const LeftPanel = () => {
   // Centralized visibility map state
   const [visibilityMap, setVisibilityMap] = useState<VisibilityMap>(new Map());
   const depth = 0;
+  const [addLocation, setAddLocation] = useState<AddLocation>(null);
 
   return (
     <PanelWrapper toggle={toggle} from="left">
-      <AddSection />
+      <AddSection addLocation={addLocation} />
       <ul className="overflow-y-auto max-h-scrollable-container	">
         {data?.map((item) => {
           return (
@@ -29,6 +31,8 @@ const LeftPanel = () => {
                 depth={depth}
                 visibilityMap={visibilityMap}
                 setVisibilityMap={setVisibilityMap}
+                addLocation={addLocation}
+                setAddLocation={setAddLocation}
               />
             </section>
           );
@@ -43,18 +47,26 @@ const LayoutItem = ({
   depth,
   visibilityMap,
   setVisibilityMap,
+  addLocation,
+  setAddLocation,
 }: {
   item: Layout;
   depth: number;
   visibilityMap: VisibilityMap;
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
+  addLocation: AddLocation;
+  setAddLocation: Dispatch<SetStateAction<AddLocation>>;
 }) => {
   const active = useAppSelector((state) => state.editor.active);
   const id = item.id;
   const isExpanded = visibilityMap.get(id) ?? false;
+  const beforeSelected =
+    addLocation?.id === id && addLocation?.where === "before";
+  const afterSelected =
+    addLocation?.id === id && addLocation?.where === "after";
 
   // Calculate the margin based on depth, capping it at ml-4
-  const marginLeftClass = depth === 0 ? "ml-3" : depth === 1 ? "ml-5" : "ml-7";
+  const marginLeftClass = depth === 0 ? "ml-2" : depth === 1 ? "ml-5" : "ml-7";
 
   const toggleVisibility = () => {
     setVisibilityMap((prev) => {
@@ -74,23 +86,49 @@ const LayoutItem = ({
 
   return (
     <>
-      <FocusWrapper itemId={id}>
-        <li
+      <section className="relative">
+        <section
+          onClick={() => {
+            if (addLocation) {
+              setAddLocation(null);
+            } else setAddLocation({ id, where: "before" });
+          }}
           className={
-            "m-3 p-3 border flex items-center justify-between	" +
-            (active === id ? "border-light" : "border-slate-500") +
-            (" " + marginLeftClass)
+            "absolute -top-3 left-0 right-0 m-2 h-1 hover:bg-gray-800 " +
+            marginLeftClass +
+            (beforeSelected ? " bg-light hover:bg-light" : "")
           }
-        >
-          <section>
-            {item.props.child && (
-              <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
-            )}
-            {item.type}
-          </section>
-          <DeleteButton itemId={id} />
-        </li>
-      </FocusWrapper>
+        ></section>
+        <FocusWrapper itemId={id}>
+          <li
+            className={
+              "m-2 p-2 border flex items-center justify-between	" +
+              (active === id ? "border-light" : "border-slate-500") +
+              (" " + marginLeftClass)
+            }
+          >
+            <section>
+              {item.props.child && (
+                <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
+              )}
+              {item.type}
+            </section>
+            <DeleteButton itemId={id} />
+          </li>
+        </FocusWrapper>
+        <section
+          onClick={() => {
+            if (addLocation) {
+              setAddLocation(null);
+            } else setAddLocation({ id, where: "after" });
+          }}
+          className={
+            "absolute -bottom-3 left-0 right-0 m-2 h-1 hover:bg-gray-800 " +
+            marginLeftClass +
+            (afterSelected ? " bg-light hover:bg-light" : "")
+          }
+        ></section>
+      </section>
       {isExpanded && (
         <ul>
           {/* Render child elements recursively */}
@@ -101,6 +139,8 @@ const LayoutItem = ({
               depth={Math.min(depth + 1, 2)} // Cap depth at 2
               visibilityMap={visibilityMap}
               setVisibilityMap={setVisibilityMap}
+              addLocation={addLocation}
+              setAddLocation={setAddLocation}
             />
           ))}
         </ul>
@@ -109,28 +149,28 @@ const LayoutItem = ({
   );
 };
 
-const AddSection = () => {
+const AddSection = ({ addLocation }: { addLocation: AddLocation }) => {
   const availableElements = Object.keys(componentList);
   const [toggle, setToggle] = useState(false);
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLElement | null>(null);
 
-  const handleClick = (event: MouseEvent) => {
+  const handleGeneralClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as HTMLElement)) {
       setToggle(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleClick);
+    document.addEventListener("click", handleGeneralClick);
 
     return () => {
-      document.removeEventListener("click", handleClick);
+      document.removeEventListener("click", handleGeneralClick);
     };
   });
 
   return (
-    <section className="flex justify-center relative">
+    <section className="flex justify-center relative z-10">
       <button
         className="border rounded border-cyan-100	p-3"
         onClick={() => setToggle((prev) => !prev)}
@@ -140,14 +180,14 @@ const AddSection = () => {
       {toggle && (
         <section
           ref={ref}
-          className="absolute top-full border rounded border-cyan-100 mt-2	p-3 bg-dark flex flex-wrap"
+          className="absolute top-full border rounded border-cyan-100 mt-2 p-3 bg-dark flex flex-wrap"
         >
           {availableElements.map((item, i) => (
             <button
               key={i}
               className="rounded hover:bg-gray-800 p-3 w-1/3 flex justify-center"
               onClick={() => {
-                dispatch(addElement(item));
+                dispatch(addElement({ type: item, addLocation }));
                 setToggle(false);
               }}
             >

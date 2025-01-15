@@ -1,3 +1,4 @@
+"use client";
 import { SettingsToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
 

@@ -1,5 +1,5 @@
 import Button from "@/components/BuilderComponents/Button";
-import { Props } from "./Types";
+import { Layout, Props } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
@@ -51,4 +51,19 @@ export const getDefaultElementProps = (type: string): Props => {
     };
   }
   return {};
+};
+
+export const saveCookie = (param: Layout[]) => {
+  // Convert the state.layout to a JSON string
+  const layout = JSON.stringify(param);
+
+  // Set the expiration date for 1 year from now
+  const date = new Date();
+  date.setFullYear(date.getFullYear() + 1);
+  const expires = date.toUTCString();
+
+  // Create the cookie string
+  document.cookie = `layout=${encodeURIComponent(
+    layout
+  )}; expires=${expires}; path=/;`;
 };

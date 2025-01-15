@@ -8,3 +8,11 @@ export interface Layout {
   type: string;
   props: Props;
 }
+export interface EditorState {
+  active?: string;
+  layout?: Layout[];
+}
+export type AddLocation = {
+  id: string;
+  where: "before" | "after";
+} | null;
