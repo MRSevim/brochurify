@@ -5,6 +5,7 @@ import { Roboto_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import ClientWrapper from "@/utils/ClientWrapper";
 import { cookies } from "next/headers";
+import { ToastContainer } from "react-toastify";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default async function RootLayout({
       <ClientWrapper layout={layout?.value}>
         <body>
           <Header />
+          <ToastContainer />
           {children}
         </body>
       </ClientWrapper>

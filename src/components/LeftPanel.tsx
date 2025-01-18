@@ -4,10 +4,22 @@ import PanelWrapper from "./PanelWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FocusWrapper from "./FocusWrapper";
 import { componentList } from "@/utils/Helpers";
-import { SetStateAction, Dispatch, useState, useRef, useEffect } from "react";
-import { addElement, deleteElement } from "@/redux/slices/editorSlice";
+import {
+  SetStateAction,
+  Dispatch,
+  useState,
+  useRef,
+  useEffect,
+  DragEvent,
+} from "react";
+import {
+  addElement,
+  deleteElement,
+  moveElement,
+  setActive,
+} from "@/redux/slices/editorSlice";
 import Icon from "./Icon";
-import { AddLocation, Layout } from "@/utils/Types";
+import { AddLocation, Layout, Where } from "@/utils/Types";
 
 type VisibilityMap = Map<string, boolean>;
 
@@ -18,6 +30,7 @@ const LeftPanel = () => {
   const [visibilityMap, setVisibilityMap] = useState<VisibilityMap>(new Map());
   const depth = 0;
   const [addLocation, setAddLocation] = useState<AddLocation>(null);
+  const [dropHandled, setDropHandled] = useState(false);
 
   return (
     <PanelWrapper toggle={toggle} from="left">
@@ -33,6 +46,8 @@ const LeftPanel = () => {
                 setVisibilityMap={setVisibilityMap}
                 addLocation={addLocation}
                 setAddLocation={setAddLocation}
+                dropHandled={dropHandled}
+                setDropHandled={setDropHandled}
               />
             </section>
           );
@@ -49,6 +64,8 @@ const LayoutItem = ({
   setVisibilityMap,
   addLocation,
   setAddLocation,
+  dropHandled,
+  setDropHandled,
 }: {
   item: Layout;
   depth: number;
@@ -56,9 +73,12 @@ const LayoutItem = ({
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
   addLocation: AddLocation;
   setAddLocation: Dispatch<SetStateAction<AddLocation>>;
+  dropHandled: boolean;
+  setDropHandled: Dispatch<SetStateAction<boolean>>;
 }) => {
   const active = useAppSelector((state) => state.editor.active);
   const id = item.id;
+  const dispatch = useAppDispatch();
   const isExpanded = visibilityMap.get(id) ?? false;
   const beforeSelected =
     addLocation?.id === id && addLocation?.where === "before";
@@ -83,47 +103,89 @@ const LayoutItem = ({
       return newMap;
     });
   };
+  const handleAddLocationClick = (where: Where) => {
+    if (addLocation && addLocation.id === id && addLocation.where === where) {
+      setAddLocation(null);
+    } else setAddLocation({ id, where });
+  };
+
+  const handleDrop = (e: DragEvent<HTMLElement>) => {
+    const id = e.dataTransfer.getData("id");
+    dispatch(moveElement({ id, addLocation }));
+    setDropHandled(true);
+    handleDragLeave();
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
+    e.preventDefault();
+    setAddLocation({ id, where });
+  };
+
+  const handleDragLeave = () => {
+    dispatch(setActive(undefined));
+    setAddLocation(null);
+  };
 
   return (
     <>
       <section className="relative">
         <section
-          onClick={() => {
-            if (addLocation) {
-              setAddLocation(null);
-            } else setAddLocation({ id, where: "before" });
-          }}
+          onClick={() => handleAddLocationClick("before")}
+          onDrop={handleDrop}
+          onDragOver={(e) => handleDragOver(e, "before")}
+          onDragLeave={handleDragLeave}
           className={
-            "absolute -top-3 left-0 right-0 m-2 h-1 hover:bg-gray-800 " +
+            "absolute -top-3 left-0 right-0 m-2 h-2 hover:bg-gray-800 " +
             marginLeftClass +
             (beforeSelected ? " bg-light hover:bg-light" : "")
           }
         ></section>
-        <FocusWrapper itemId={id}>
-          <li
-            className={
-              "m-2 p-2 border flex items-center justify-between	" +
-              (active === id ? "border-light" : "border-slate-500") +
-              (" " + marginLeftClass)
-            }
+        <section className={"m-2 " + marginLeftClass}>
+          <FocusWrapper
+            itemId={id}
+            dropHandled={dropHandled}
+            setDropHandled={setDropHandled}
           >
-            <section>
-              {item.props.child && (
-                <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
-              )}
-              {item.type}
-            </section>
-            <DeleteButton itemId={id} />
-          </li>
-        </FocusWrapper>
+            <li
+              onDrop={(e) => {
+                const id = e.dataTransfer.getData("id");
+                setDropHandled(true);
+                if (id === item.id) return;
+                dispatch(moveElement({ id, addLocation: null }));
+                handleDragLeave();
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                dispatch(setActive(id));
+              }}
+              onDragLeave={handleDragLeave}
+              className={
+                "p-2 border flex items-center justify-between	" +
+                (active === id ? "border-light" : "border-slate-500")
+              }
+            >
+              <section>
+                {item.props.child && item.props.child.length > 0 && (
+                  <ToggleButton
+                    toggled={isExpanded}
+                    onClick={toggleVisibility}
+                  />
+                )}
+                {item.type}
+              </section>
+              <DeleteButton itemId={id} />
+            </li>
+          </FocusWrapper>
+        </section>
         <section
           onClick={() => {
-            if (addLocation) {
-              setAddLocation(null);
-            } else setAddLocation({ id, where: "after" });
+            handleAddLocationClick("after");
           }}
+          onDrop={handleDrop}
+          onDragOver={(e) => handleDragOver(e, "after")}
+          onDragLeave={handleDragLeave}
           className={
-            "absolute -bottom-3 left-0 right-0 m-2 h-1 hover:bg-gray-800 " +
+            "absolute -bottom-3 left-0 right-0 m-2 h-2 hover:bg-gray-800 " +
             marginLeftClass +
             (afterSelected ? " bg-light hover:bg-light" : "")
           }
@@ -141,6 +203,8 @@ const LayoutItem = ({
               setVisibilityMap={setVisibilityMap}
               addLocation={addLocation}
               setAddLocation={setAddLocation}
+              dropHandled={dropHandled}
+              setDropHandled={setDropHandled}
             />
           ))}
         </ul>

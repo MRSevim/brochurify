@@ -14,5 +14,7 @@ export interface EditorState {
 }
 export type AddLocation = {
   id: string;
-  where: "before" | "after";
+  where: Where;
 } | null;
+
+export type Where = "before" | "after";
