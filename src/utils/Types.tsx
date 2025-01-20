@@ -1,3 +1,5 @@
+import { DragEvent } from "react";
+
 export interface Props {
   text?: string;
   child?: Layout[];
@@ -11,6 +13,9 @@ export interface Layout {
 export interface EditorState {
   active?: string;
   layout?: Layout[];
+  addLocation: AddLocation;
+  dropHandled: boolean;
+  draggedItem?: string;
 }
 export type AddLocation = {
   id: string;

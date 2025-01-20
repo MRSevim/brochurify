@@ -1,9 +1,18 @@
 import Button from "@/components/BuilderComponents/Button";
-import { Layout, Props } from "./Types";
+import { Layout, Props, Where } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
 import Row from "@/components/BuilderComponents/Row";
+import { DragEvent } from "react";
+import { useAppDispatch } from "@/redux/hooks";
+import {
+  handleCenterDragOver,
+  handleCenterDrop,
+  handleDragLeave,
+  handleSideDragOver,
+  handleSideDrop,
+} from "@/redux/slices/editorSlice";
 
 export const componentList = {
   button: (props: Props) => <Button {...props} />,
@@ -66,4 +75,48 @@ export const saveCookie = (param: Layout[]) => {
   document.cookie = `layout=${encodeURIComponent(
     layout
   )}; expires=${expires}; path=/;`;
+};
+
+export const handleSideDropCaller = (
+  e: DragEvent<HTMLElement>,
+  dispatch: ReturnType<typeof useAppDispatch>,
+  id: string
+) => {
+  e.preventDefault();
+  dispatch(handleSideDrop(id));
+};
+export const handleCenterDropCaller = (
+  e: DragEvent<HTMLElement>,
+  dispatch: ReturnType<typeof useAppDispatch>,
+  id: string
+) => {
+  e.preventDefault();
+  dispatch(handleCenterDrop(id));
+};
+export const handleSideDragOverCaller = ({
+  e,
+  id,
+  where,
+  dispatch,
+}: {
+  id: string;
+  e: DragEvent<HTMLElement>;
+  where: Where;
+  dispatch: ReturnType<typeof useAppDispatch>;
+}) => {
+  e.preventDefault();
+  dispatch(handleSideDragOver({ addLocation: { id, where } }));
+};
+export const handleCenterDragOverCaller = (
+  e: DragEvent<HTMLElement>,
+  id: string,
+  dispatch: ReturnType<typeof useAppDispatch>
+) => {
+  e.preventDefault();
+  dispatch(handleCenterDragOver(id));
+};
+export const handleDragLeaveCaller = (
+  dispatch: ReturnType<typeof useAppDispatch>
+) => {
+  dispatch(handleDragLeave());
 };

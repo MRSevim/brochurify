@@ -1,21 +1,21 @@
-import { setActive } from "@/redux/slices/editorSlice";
+import {
+  setActive,
+  setDraggedItem,
+  setDropHandled,
+} from "@/redux/slices/editorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toast } from "react-toastify";
-import { SetStateAction, Dispatch } from "react";
 
 const FocusWrapper = ({
   itemId,
   children,
-  dropHandled,
-  setDropHandled,
 }: {
   itemId: string;
   children: React.ReactNode;
-  dropHandled: boolean;
-  setDropHandled: Dispatch<SetStateAction<boolean>>;
 }) => {
   const dispatch = useAppDispatch();
   const active = useAppSelector((state) => state.editor.active);
+  const dropHandled = useAppSelector((state) => state.editor.dropHandled);
   return (
     <section
       className="cursor-pointer"
@@ -23,8 +23,8 @@ const FocusWrapper = ({
       draggable
       onDragStart={(e) => {
         e.stopPropagation();
-        e.dataTransfer.setData("id", itemId);
-        setDropHandled(false);
+        dispatch(setDropHandled(false));
+        dispatch(setDraggedItem(itemId));
       }}
       onDragEnd={(e) => {
         e.stopPropagation();

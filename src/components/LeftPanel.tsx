@@ -3,7 +3,14 @@ import { LayoutToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FocusWrapper from "./FocusWrapper";
-import { componentList } from "@/utils/Helpers";
+import {
+  componentList,
+  handleCenterDragOverCaller,
+  handleCenterDropCaller,
+  handleDragLeaveCaller,
+  handleSideDragOverCaller,
+  handleSideDropCaller,
+} from "@/utils/Helpers";
 import {
   SetStateAction,
   Dispatch,
@@ -15,11 +22,10 @@ import {
 import {
   addElement,
   deleteElement,
-  moveElement,
-  setActive,
+  setAddLocation,
 } from "@/redux/slices/editorSlice";
 import Icon from "./Icon";
-import { AddLocation, Layout, Where } from "@/utils/Types";
+import { Layout, Where } from "@/utils/Types";
 
 type VisibilityMap = Map<string, boolean>;
 
@@ -29,12 +35,10 @@ const LeftPanel = () => {
   // Centralized visibility map state
   const [visibilityMap, setVisibilityMap] = useState<VisibilityMap>(new Map());
   const depth = 0;
-  const [addLocation, setAddLocation] = useState<AddLocation>(null);
-  const [dropHandled, setDropHandled] = useState(false);
 
   return (
     <PanelWrapper toggle={toggle} from="left">
-      <AddSection addLocation={addLocation} />
+      <AddSection />
       <ul className="overflow-y-auto max-h-scrollable-container	">
         {data?.map((item) => {
           return (
@@ -44,10 +48,6 @@ const LeftPanel = () => {
                 depth={depth}
                 visibilityMap={visibilityMap}
                 setVisibilityMap={setVisibilityMap}
-                addLocation={addLocation}
-                setAddLocation={setAddLocation}
-                dropHandled={dropHandled}
-                setDropHandled={setDropHandled}
               />
             </section>
           );
@@ -62,21 +62,14 @@ const LayoutItem = ({
   depth,
   visibilityMap,
   setVisibilityMap,
-  addLocation,
-  setAddLocation,
-  dropHandled,
-  setDropHandled,
 }: {
   item: Layout;
   depth: number;
   visibilityMap: VisibilityMap;
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
-  addLocation: AddLocation;
-  setAddLocation: Dispatch<SetStateAction<AddLocation>>;
-  dropHandled: boolean;
-  setDropHandled: Dispatch<SetStateAction<boolean>>;
 }) => {
   const active = useAppSelector((state) => state.editor.active);
+  const addLocation = useAppSelector((state) => state.editor.addLocation);
   const id = item.id;
   const dispatch = useAppDispatch();
   const isExpanded = visibilityMap.get(id) ?? false;
@@ -103,27 +96,23 @@ const LayoutItem = ({
       return newMap;
     });
   };
+
   const handleAddLocationClick = (where: Where) => {
     if (addLocation && addLocation.id === id && addLocation.where === where) {
-      setAddLocation(null);
-    } else setAddLocation({ id, where });
+      dispatch(setAddLocation(null));
+    } else dispatch(setAddLocation({ id, where }));
   };
 
-  const handleDrop = (e: DragEvent<HTMLElement>) => {
-    const id = e.dataTransfer.getData("id");
-    dispatch(moveElement({ id, addLocation }));
-    setDropHandled(true);
-    handleDragLeave();
+  const handleSideDrop = (e: DragEvent<HTMLElement>) => {
+    handleSideDropCaller(e, dispatch, id);
   };
 
-  const handleDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
-    e.preventDefault();
-    setAddLocation({ id, where });
+  const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
+    handleSideDragOverCaller({ e, id, where, dispatch });
   };
 
   const handleDragLeave = () => {
-    dispatch(setActive(undefined));
-    setAddLocation(null);
+    handleDragLeaveCaller(dispatch);
   };
 
   return (
@@ -131,8 +120,8 @@ const LayoutItem = ({
       <section className="relative">
         <section
           onClick={() => handleAddLocationClick("before")}
-          onDrop={handleDrop}
-          onDragOver={(e) => handleDragOver(e, "before")}
+          onDrop={handleSideDrop}
+          onDragOver={(e) => handleSideDragOver(e, "before")}
           onDragLeave={handleDragLeave}
           className={
             "absolute -top-3 left-0 right-0 m-2 h-2 hover:bg-gray-800 " +
@@ -141,22 +130,13 @@ const LayoutItem = ({
           }
         ></section>
         <section className={"m-2 " + marginLeftClass}>
-          <FocusWrapper
-            itemId={id}
-            dropHandled={dropHandled}
-            setDropHandled={setDropHandled}
-          >
+          <FocusWrapper itemId={id}>
             <li
               onDrop={(e) => {
-                const id = e.dataTransfer.getData("id");
-                setDropHandled(true);
-                if (id === item.id) return;
-                dispatch(moveElement({ id, addLocation: null }));
-                handleDragLeave();
+                handleCenterDropCaller(e, dispatch, id);
               }}
               onDragOver={(e) => {
-                e.preventDefault();
-                dispatch(setActive(id));
+                handleCenterDragOverCaller(e, id, dispatch);
               }}
               onDragLeave={handleDragLeave}
               className={
@@ -181,8 +161,8 @@ const LayoutItem = ({
           onClick={() => {
             handleAddLocationClick("after");
           }}
-          onDrop={handleDrop}
-          onDragOver={(e) => handleDragOver(e, "after")}
+          onDrop={handleSideDrop}
+          onDragOver={(e) => handleSideDragOver(e, "after")}
           onDragLeave={handleDragLeave}
           className={
             "absolute -bottom-3 left-0 right-0 m-2 h-2 hover:bg-gray-800 " +
@@ -201,10 +181,6 @@ const LayoutItem = ({
               depth={Math.min(depth + 1, 2)} // Cap depth at 2
               visibilityMap={visibilityMap}
               setVisibilityMap={setVisibilityMap}
-              addLocation={addLocation}
-              setAddLocation={setAddLocation}
-              dropHandled={dropHandled}
-              setDropHandled={setDropHandled}
             />
           ))}
         </ul>
@@ -213,11 +189,12 @@ const LayoutItem = ({
   );
 };
 
-const AddSection = ({ addLocation }: { addLocation: AddLocation }) => {
+const AddSection = () => {
   const availableElements = Object.keys(componentList);
   const [toggle, setToggle] = useState(false);
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLElement | null>(null);
+  const addLocation = useAppSelector((state) => state.editor.addLocation);
 
   const handleGeneralClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as HTMLElement)) {

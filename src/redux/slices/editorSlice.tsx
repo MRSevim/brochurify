@@ -25,6 +25,8 @@ let initialLayout = [
 
 const initialState: EditorState = {
   layout: initialLayout,
+  addLocation: null,
+  dropHandled: false,
 };
 
 export const editorSlice = createSlice({
@@ -32,10 +34,39 @@ export const editorSlice = createSlice({
   initialState,
   reducers: {
     setActive: (state, action: PayloadAction<string | undefined>) => {
-      state.active = action.payload;
+      setActiveInner(state, action.payload);
     },
     hydrate: (state, action) => {
       return action.payload;
+    },
+    setDraggedItem: (state, action: PayloadAction<string | undefined>) => {
+      state.draggedItem = action.payload;
+    },
+    setAddLocation: (state, action: PayloadAction<AddLocation>) => {
+      setAddLocationInner(state, action.payload);
+    },
+    setDropHandled: (state, action: PayloadAction<boolean>) => {
+      setDropHandledInner(state, action.payload);
+    },
+    handleSideDrop: (state, action: PayloadAction<string>) => {
+      handleDropInner(state, action.payload, state.addLocation);
+    },
+    handleCenterDrop: (state, action: PayloadAction<string>) => {
+      handleDropInner(state, action.payload, null);
+    },
+    handleDragLeave: (state) => {
+      handleDragLeaveInner(state);
+    },
+    handleSideDragOver: (
+      state,
+      action: PayloadAction<{
+        addLocation: AddLocation;
+      }>
+    ) => {
+      setAddLocationInner(state, action.payload.addLocation);
+    },
+    handleCenterDragOver: (state, action: PayloadAction<string>) => {
+      setActiveInner(state, action.payload);
     },
     addElement: (
       state,
@@ -71,46 +102,90 @@ export const editorSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; addLocation: AddLocation }>
     ) => {
-      if (state.layout) {
-        if (action.payload.addLocation?.id === action.payload.id) return;
-        const currentElement = findElementById(state.layout, action.payload.id);
-
-        if (!currentElement) return; // If the element wasn't found, do nothing
-        const passed = canElementHaveChild(state, action.payload.addLocation);
-        if (passed) {
-          if (
-            (state.active &&
-              isInChildren(currentElement.props.child, state.active)) ||
-            (action.payload.addLocation?.id &&
-              isInChildren(
-                currentElement.props.child,
-                action.payload.addLocation.id
-              ))
-          ) {
-            toast.error("You cannot insert an element into its own children");
-            return;
-          }
-          state.layout = deleteFromLayout(state.layout, currentElement.id);
-          // Add the element to its new location
-          state.layout = insertElement(
-            state,
-            state.layout,
-            currentElement,
-            action.payload.addLocation,
-            false
-          );
-
-          saveCookie(state.layout);
-        }
-      }
+      moveElementInner(state, action.payload);
     },
   },
 });
 
-export const { setActive, addElement, deleteElement, hydrate, moveElement } =
-  editorSlice.actions;
+export const {
+  setActive,
+  addElement,
+  deleteElement,
+  hydrate,
+  moveElement,
+  setAddLocation,
+  setDropHandled,
+  handleDragLeave,
+  handleSideDragOver,
+  handleSideDrop,
+  handleCenterDrop,
+  handleCenterDragOver,
+  setDraggedItem,
+} = editorSlice.actions;
 export default editorSlice.reducer;
 
+const setActiveInner = (state: EditorState, payload: string | undefined) => {
+  state.active = payload;
+};
+const handleDropInner = (
+  state: EditorState,
+  targetId: string,
+  addLocation: AddLocation
+) => {
+  const id = state.draggedItem;
+  setDropHandledInner(state, true);
+  if (id === targetId) return;
+  moveElementInner(state, { id: id || "", addLocation });
+  handleDragLeaveInner(state);
+};
+const setDropHandledInner = (state: EditorState, bool: boolean) => {
+  state.dropHandled = bool;
+};
+const setAddLocationInner = (state: EditorState, addLocation: AddLocation) => {
+  state.addLocation = addLocation;
+};
+const handleDragLeaveInner = (state: EditorState) => {
+  state.active = undefined;
+  state.addLocation = null;
+};
+const moveElementInner = (
+  state: EditorState,
+  payload: { id: string; addLocation: AddLocation }
+) => {
+  if (state.layout) {
+    if (payload.addLocation?.id === payload.id) return;
+    const currentElement = findElementById(state.layout, payload.id);
+
+    if (!currentElement) {
+      toast.error("Something went wrong");
+      return;
+    }
+    if (!state.active && !payload.addLocation) return;
+    const passed = canElementHaveChild(state, payload.addLocation);
+    if (passed) {
+      if (
+        (state.active &&
+          isInChildren(currentElement.props.child, state.active)) ||
+        (payload.addLocation?.id &&
+          isInChildren(currentElement.props.child, payload.addLocation.id))
+      ) {
+        toast.error("You cannot insert an element into its own children");
+        return;
+      }
+      state.layout = deleteFromLayout(state.layout, currentElement.id);
+      // Add the element to its new location
+      state.layout = insertElement(
+        state,
+        state.layout,
+        currentElement,
+        payload.addLocation,
+        false
+      );
+
+      saveCookie(state.layout);
+    }
+  }
+};
 const canElementHaveChild = (state: EditorState, addLocation: AddLocation) => {
   if (addLocation) {
     return true;
@@ -197,6 +272,7 @@ const insertElement = (
           }
 
           layout[i].props.child!.push(newElement); // Add to the active item's children
+
           return layout;
         }
 
