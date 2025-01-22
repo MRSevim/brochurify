@@ -1,7 +1,6 @@
-import { DragEvent } from "react";
-
 export interface Props {
   text?: string;
+  style?: Style;
   child?: Layout[];
   children?: React.ReactNode;
 }
@@ -11,8 +10,8 @@ export interface Layout {
   props: Props;
 }
 export interface EditorState {
-  active?: string;
-  layout?: Layout[];
+  active?: LayoutOrUnd;
+  layout: Layout[];
   addLocation: AddLocation;
   dropHandled: boolean;
   draggedItem?: string;
@@ -22,4 +21,11 @@ export type AddLocation = {
   where: Where;
 } | null;
 
+export type Style = {
+  padding?: string;
+  backgroundColor?: string;
+  [key: string]: string | undefined;
+};
+export type LayoutOrUnd = Layout | undefined;
 export type Where = "before" | "after";
+export type ItemAndLocation = { item: LayoutOrUnd; addLocation: AddLocation };

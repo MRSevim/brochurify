@@ -68,7 +68,7 @@ const LayoutItem = ({
   visibilityMap: VisibilityMap;
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
 }) => {
-  const active = useAppSelector((state) => state.editor.active);
+  const activeId = useAppSelector((state) => state.editor.active?.id);
   const addLocation = useAppSelector((state) => state.editor.addLocation);
   const id = item.id;
   const dispatch = useAppDispatch();
@@ -130,18 +130,18 @@ const LayoutItem = ({
           }
         ></section>
         <section className={"m-2 " + marginLeftClass}>
-          <FocusWrapper itemId={id}>
+          <FocusWrapper item={item}>
             <li
               onDrop={(e) => {
                 handleCenterDropCaller(e, dispatch, id);
               }}
               onDragOver={(e) => {
-                handleCenterDragOverCaller(e, id, dispatch);
+                handleCenterDragOverCaller(e, item, dispatch);
               }}
               onDragLeave={handleDragLeave}
               className={
                 "p-2 border flex items-center justify-between	" +
-                (active === id ? "border-light" : "border-slate-500")
+                (activeId === id ? "border-light" : "border-slate-500")
               }
             >
               <section>

@@ -1,7 +1,7 @@
 import { Props } from "@/utils/Types";
 
-const Button = ({ text }: Props) => {
-  return <button>{text}</button>;
+const Button = ({ children, style }: Props) => {
+  return <button style={style}>{children}</button>;
 };
 
 export default Button;

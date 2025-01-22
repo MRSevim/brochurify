@@ -1,5 +1,5 @@
 import Button from "@/components/BuilderComponents/Button";
-import { Layout, Props, Where } from "./Types";
+import { LayoutOrUnd, Layout, Props, Where, Style } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
@@ -21,20 +21,39 @@ export const componentList = {
   row: (props: Props) => <Row {...props} />,
 };
 
+const getDefaultStyle = (type: string): Style => {
+  if (type === "button") {
+    return {
+      backgroundColor: "#d8cdcb",
+      ...getDefaultStyle(""),
+    };
+  }
+  return { padding: "10px" };
+};
+
 export const getDefaultElementProps = (type: string): Props => {
   if (!type) {
     throw Error("Please pass a type to getDefaultElementProps func");
   }
   if (type === "button") {
     return {
-      text: "Click me",
+      style: getDefaultStyle("button"),
+      child: [
+        {
+          id: uuidv4(),
+          type: "text",
+          props: getDefaultElementProps("text"),
+        },
+      ],
     };
   } else if (type === "text") {
     return {
+      style: getDefaultStyle(""),
       text: "I am a text",
     };
   } else if (type === "column") {
     return {
+      style: getDefaultStyle(""),
       child: [
         {
           id: uuidv4(),
@@ -45,6 +64,7 @@ export const getDefaultElementProps = (type: string): Props => {
     };
   } else if (type === "row") {
     return {
+      style: getDefaultStyle(""),
       child: [
         {
           id: uuidv4(),
@@ -75,6 +95,10 @@ export const saveCookie = (param: Layout[]) => {
   document.cookie = `layout=${encodeURIComponent(
     layout
   )}; expires=${expires}; path=/;`;
+};
+
+export const capitalizeFirstLetter = (string: string): string => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 export const handleSideDropCaller = (
@@ -109,11 +133,11 @@ export const handleSideDragOverCaller = ({
 };
 export const handleCenterDragOverCaller = (
   e: DragEvent<HTMLElement>,
-  id: string,
+  item: LayoutOrUnd,
   dispatch: ReturnType<typeof useAppDispatch>
 ) => {
   e.preventDefault();
-  dispatch(handleCenterDragOver(id));
+  dispatch(handleCenterDragOver(item));
 };
 export const handleDragLeaveCaller = (
   dispatch: ReturnType<typeof useAppDispatch>

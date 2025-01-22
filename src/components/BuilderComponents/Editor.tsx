@@ -17,8 +17,9 @@ const Editor = () => {
   const data = useAppSelector((state) => state.editor.layout);
   const [layoutToggle] = LayoutToggleContext.Use();
   const dispatch = useAppDispatch();
-  const active = useAppSelector((state) => state.editor.active);
+  const activeId = useAppSelector((state) => state.editor.active?.id);
   const addLocation = useAppSelector((state) => state.editor.addLocation);
+  const draggedItem = useAppSelector((state) => state.editor.draggedItem);
 
   return (
     <section
@@ -30,7 +31,14 @@ const Editor = () => {
       {data?.map((item) => {
         return (
           <section key={item.id}>
-            {renderComponent(item, active, dispatch, false, addLocation)}
+            {renderComponent(
+              item,
+              activeId,
+              dispatch,
+              false,
+              addLocation,
+              draggedItem
+            )}
           </section>
         );
       })}
@@ -42,10 +50,11 @@ export default Editor;
 
 const renderComponent = (
   item: Layout,
-  active: string | undefined,
+  activeId: string | undefined,
   dispatch: ReturnType<typeof useAppDispatch>,
   parentIsRow: boolean,
-  addLocation: AddLocation
+  addLocation: AddLocation,
+  draggedItem: string | undefined
 ): React.ReactNode => {
   const Component = componentList[item.type as keyof typeof componentList];
 
@@ -63,6 +72,8 @@ const renderComponent = (
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
 
+  const shouldBeInlineBlock = item.type === "button";
+
   return (
     <section key={id} className="relative">
       <section
@@ -71,45 +82,51 @@ const renderComponent = (
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
         className={
           "absolute " +
-          (parentIsRow ? "h-full w-1	" : " ") +
+          (parentIsRow ? "h-full w-1	" : " w-full h-1 bottom-full") +
           (beforeSelected ? " bg-lime-700	" : " ")
         }
       ></section>
-      <section className="mx-1">
-        <FocusWrapper itemId={id}>
-          <section
-            onDrop={(e) => {
-              e.stopPropagation();
-              handleCenterDropCaller(e, dispatch, item.id);
-            }}
-            onDragOver={(e) => {
-              e.stopPropagation();
-              handleCenterDragOverCaller(e, id, dispatch);
-            }}
-            onDragLeave={() => handleDragLeaveCaller(dispatch)}
-            className={active === id ? " border border-dark border-dashed" : ""}
-          >
-            <Component {...item.props}>
-              {item.props.child?.map((childItem) =>
-                renderComponent(
-                  childItem,
-                  active,
-                  dispatch,
-                  item.type === "row",
-                  addLocation
-                )
-              )}
-            </Component>
-          </section>
-        </FocusWrapper>
-      </section>
+
+      <FocusWrapper item={item}>
+        <section
+          onDrop={(e) => {
+            e.stopPropagation();
+            handleCenterDropCaller(e, dispatch, item.id);
+          }}
+          onDragOver={(e) => {
+            e.stopPropagation();
+            handleCenterDragOverCaller(e, item, dispatch);
+          }}
+          onDragLeave={() => handleDragLeaveCaller(dispatch)}
+          className={
+            " " +
+            (activeId === id &&
+              " border border-dark border-dashed" +
+                (shouldBeInlineBlock && " inline-block"))
+          }
+        >
+          <Component {...item.props}>
+            {item.props.child?.map((childItem) =>
+              renderComponent(
+                childItem,
+                activeId,
+                dispatch,
+                item.type === "row",
+                addLocation,
+                draggedItem
+              )
+            )}
+          </Component>
+        </section>
+      </FocusWrapper>
+
       <section
         onDrop={handleSideDrop}
         onDragOver={(e) => handleSideDragOver(e, "after")}
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
         className={
           "absolute right-0 top-0 " +
-          (parentIsRow ? "h-full w-1	" : " ") +
+          (parentIsRow ? "h-full w-1	" : " w-full h-1 top-full ") +
           (afterSelected ? " bg-lime-700	" : " ")
         }
       ></section>

@@ -5,16 +5,18 @@ import {
 } from "@/redux/slices/editorSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toast } from "react-toastify";
+import { Layout } from "@/utils/Types";
 
 const FocusWrapper = ({
-  itemId,
+  item,
   children,
 }: {
-  itemId: string;
+  item: Layout;
   children: React.ReactNode;
 }) => {
   const dispatch = useAppDispatch();
-  const active = useAppSelector((state) => state.editor.active);
+  const itemId = item?.id;
+  const activeId = useAppSelector((state) => state.editor.active?.id);
   const dropHandled = useAppSelector((state) => state.editor.dropHandled);
   return (
     <section
@@ -35,9 +37,9 @@ const FocusWrapper = ({
       tabIndex={0}
       onClick={(e) => {
         e.stopPropagation();
-        if (active === itemId) {
+        if (activeId === itemId) {
           dispatch(setActive(undefined));
-        } else dispatch(setActive(itemId));
+        } else dispatch(setActive(item));
       }}
     >
       {children}
