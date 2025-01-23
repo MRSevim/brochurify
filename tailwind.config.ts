@@ -18,7 +18,8 @@ export default {
         "scrollable-container": "calc(100vh - 90px);",
       },
       width: {
-        "screen-layout-excluded": "calc(100vw - 384px);",
+        "screen-one-excluded": "calc(100vw - 384px);",
+        "screen-both-excluded": "calc(100vw - 768px);",
       },
       colors: {
         dark: "var(--dark)",

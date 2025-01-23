@@ -9,7 +9,7 @@ import {
   setAddLocationInner,
   setDropHandledInner,
 } from "@/utils/EditorHelpers";
-import { getDefaultElementProps, saveCookie } from "@/utils/Helpers";
+import { getDefaultElementProps, saveToLocalStorage } from "@/utils/Helpers";
 import {
   AddLocation,
   EditorState,
@@ -107,12 +107,12 @@ export const editorSlice = createSlice({
           action.payload.addLocation,
           true
         );
-        saveCookie(state.layout);
+        saveToLocalStorage(state.layout);
       }
     },
     deleteElement: (state, action: PayloadAction<string>) => {
       state.layout = deleteFromLayout(state.layout, action.payload);
-      saveCookie(state.layout);
+      saveToLocalStorage(state.layout);
     },
     moveElement: (state, action: PayloadAction<ItemAndLocation>) => {
       moveElementInner(state, action.payload);
@@ -153,7 +153,7 @@ export const editorSlice = createSlice({
       };
 
       state.layout = updateStyle(state.layout);
-      saveCookie(state.layout);
+      saveToLocalStorage(state.layout);
     },
   },
 });

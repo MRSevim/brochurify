@@ -1,13 +1,15 @@
-"use client";
 import {
-  componentList,
   handleCenterDragOverCaller,
   handleCenterDropCaller,
   handleDragLeaveCaller,
   handleSideDragOverCaller,
   handleSideDropCaller,
-} from "@/utils/Helpers";
-import { LayoutToggleContext } from "@/contexts/ToggleContext";
+} from "@/utils/DragAndDropHelpers";
+import { componentList } from "@/utils/Helpers";
+import {
+  LayoutToggleContext,
+  SettingsToggleContext,
+} from "@/contexts/ToggleContext";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
 import { AddLocation, Layout, Where } from "@/utils/Types";
@@ -16,18 +18,22 @@ import { DragEvent } from "react";
 const Editor = () => {
   const data = useAppSelector((state) => state.editor.layout);
   const [layoutToggle] = LayoutToggleContext.Use();
+  const [settingsToggle] = SettingsToggleContext.Use();
   const dispatch = useAppDispatch();
   const activeId = useAppSelector((state) => state.editor.active?.id);
   const addLocation = useAppSelector((state) => state.editor.addLocation);
   const draggedItem = useAppSelector((state) => state.editor.draggedItem);
 
+  let addedString;
+  if (layoutToggle && settingsToggle) {
+    addedString = "left-full sm:left-96 sm:right-96 w-screen-both-excluded";
+  } else if (layoutToggle) {
+    addedString = "left-full sm:left-96 w-screen-one-excluded";
+  } else if (settingsToggle) {
+    addedString = "right-full sm:left-0 sm:right-96 w-screen-one-excluded";
+  }
   return (
-    <section
-      className={
-        "relative p-3 " +
-        (layoutToggle ? "left-full sm:left-96 w-screen-layout-excluded" : "")
-      }
-    >
+    <section className={"relative p-3 " + addedString}>
       {data?.map((item) => {
         return (
           <section key={item.id}>

@@ -1,9 +1,8 @@
-"use client";
 import { SettingsToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
 import { useAppSelector } from "@/redux/hooks";
 import PageSettings from "./PageSettings";
-import ElementSettings from "./ElementSettings";
+import ElementSettings from "./Settings/ElementSettings";
 
 const RightPanel = () => {
   const [toggle] = SettingsToggleContext.Use();

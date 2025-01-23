@@ -1,16 +1,15 @@
-"use client";
 import { LayoutToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FocusWrapper from "./FocusWrapper";
 import {
-  componentList,
   handleCenterDragOverCaller,
   handleCenterDropCaller,
   handleDragLeaveCaller,
   handleSideDragOverCaller,
   handleSideDropCaller,
-} from "@/utils/Helpers";
+} from "@/utils/DragAndDropHelpers";
+import { componentList } from "@/utils/Helpers";
 import {
   SetStateAction,
   Dispatch,

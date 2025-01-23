@@ -4,7 +4,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { Roboto_Mono } from "next/font/google";
 import Header from "@/components/Header";
 import ClientWrapper from "@/utils/ClientWrapper";
-import { cookies } from "next/headers";
 import { ToastContainer } from "react-toastify";
 
 const roboto_mono = Roboto_Mono({
@@ -21,12 +20,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const layout = cookieStore.get("layout");
-
   return (
     <html lang="en" className={roboto_mono.className}>
-      <ClientWrapper layout={layout?.value}>
+      <ClientWrapper>
         <body>
           <Header />
           <ToastContainer />

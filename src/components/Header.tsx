@@ -13,7 +13,7 @@ const Header = () => {
       <span onClick={() => setLayoutToggle((prev) => !prev)}>
         <Icon type="list-nested" size="28px" />
       </span>
-      <div className="text-3xl">123</div>
+
       <span
         onClick={() => {
           setSettingsToggle((prev) => !prev);

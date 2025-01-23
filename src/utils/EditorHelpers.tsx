@@ -6,7 +6,7 @@ import {
   Layout,
   LayoutOrUnd,
 } from "./Types";
-import { saveCookie } from "./Helpers";
+import { saveToLocalStorage } from "./Helpers";
 
 export const setActiveInner = (state: EditorState, payload: LayoutOrUnd) => {
   state.active = payload;
@@ -73,7 +73,7 @@ export const moveElementInner = (
       false
     );
 
-    saveCookie(state.layout);
+    saveToLocalStorage(state.layout);
   }
 };
 export const canElementHaveChild = (
