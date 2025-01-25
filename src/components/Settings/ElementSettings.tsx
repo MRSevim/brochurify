@@ -1,6 +1,6 @@
 import Image from "next/image";
 import marginBorderPadding from "../../../public/margin-border-padding.webp";
-import Sizing from "./Sizing";
+import SizingAndBorder from "./SizingAndBorder";
 
 const ElementSettings = () => {
   return (
@@ -10,7 +10,7 @@ const ElementSettings = () => {
         alt="Margin, border, padding schema"
         className="mb-2"
       />
-      <Sizing />
+      <SizingAndBorder />
     </section>
   );
 };

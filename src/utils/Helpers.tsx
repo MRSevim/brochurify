@@ -1,9 +1,11 @@
 import Button from "@/components/BuilderComponents/Button";
-import { LayoutOrUnd, Layout, Props, Where, Style } from "./Types";
+import { Layout, Props, Style, EditorState } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
 import Row from "@/components/BuilderComponents/Row";
+import { findElementById } from "./EditorHelpers";
+import { UseSelector } from "react-redux";
 
 export const componentList = {
   button: (props: Props) => <Button {...props} />,
@@ -20,14 +22,8 @@ const getDefaultStyle = (type: string): Style => {
     };
   }
   return {
-    paddingLeft: "10px",
-    paddingRight: "10px",
-    paddingBottom: "10px",
-    paddingTop: "10px",
-    marginLeft: "10px",
-    marginRight: "10px",
-    marginBottom: "10px",
-    marginTop: "10px",
+    margin: "10px 10px 10px 10px",
+    padding: "10px 10px 10px 10px",
   };
 };
 
@@ -91,4 +87,57 @@ export const saveToLocalStorage = (param: Layout[]) => {
 
 export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const getSetting = (
+  useAppSelector: UseSelector<{
+    editor: EditorState;
+  }>,
+  type: string
+) => {
+  return useAppSelector((state) => {
+    const layout = state.editor.layout;
+    const activeId = state.editor.active?.id;
+
+    const element = findElementById(layout, activeId || "");
+    const style = element?.props?.style as Style; // Dynamically typed style object
+
+    return style?.[type]; // Accessing the dynamic property safely
+  });
+};
+
+export const getValueFromShorthandStr = (
+  str: string | undefined,
+  i: number | undefined
+) => {
+  if (!str || i === undefined || i < 0) {
+    throw Error("Please pass in str and i");
+    // Handle edge cases like undefined or invalid index
+  }
+
+  const values = str.split(" "); // Split the shorthand string into individual values
+  if (i >= values.length) {
+    throw Error("Index higher than string values' length"); // Index out of range
+  }
+
+  return values[i];
+};
+
+export const setValueFromShorthandStr = (
+  str: string | undefined,
+  i: number | undefined,
+  newValue: string
+) => {
+  if (!str || i === undefined || i < 0) {
+    throw Error("Please pass in str and i"); // Handle edge cases like undefined or invalid index
+  }
+
+  const values = str.split(" "); // Split the shorthand string into individual values
+  if (i >= values.length) {
+    throw Error("Index higher than string values' length"); // Index out of range
+  }
+
+  values[i] = newValue; // Replace the value at the specified index
+
+  return values.join(" "); // Recombine the values into a shorthand string
 };

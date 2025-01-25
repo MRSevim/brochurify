@@ -23,22 +23,13 @@ export type AddLocation = {
 
 export type Style = {
   padding?: string;
-  paddingRight?: string;
-  paddingLeft?: string;
-  paddingTop?: string;
-  paddingBottom?: string;
   margin?: string;
-  marginRight?: string;
-  marginLeft?: string;
-  marginTop?: string;
-  marginBottom?: string;
-  backgroundColor?: string;
+  border?: string;
   [key: string]: string | undefined;
 };
 export type LayoutOrUnd = Layout | undefined;
 export type Where = "before" | "after";
 export type ItemAndLocation = { item: LayoutOrUnd; addLocation: AddLocation };
 export type SizingType = {
-  type: string;
   title: string;
 };

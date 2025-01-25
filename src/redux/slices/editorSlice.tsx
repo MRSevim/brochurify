@@ -155,6 +155,42 @@ export const editorSlice = createSlice({
       state.layout = updateStyle(state.layout);
       saveToLocalStorage(state.layout);
     },
+    removeElementStyle: (state, action: PayloadAction<{ type: string }>) => {
+      const { type } = action.payload;
+
+      const removeStyle = (layout: Layout[]): Layout[] => {
+        return layout.map((item) => {
+          // Check if the current item has the active ID
+          if (item.id === state.active?.id) {
+            // Remove the style property if it exists
+            const { [type]: _, ...updatedStyle } = item.props.style || {};
+            return {
+              ...item,
+              props: {
+                ...item.props,
+                style: updatedStyle,
+              },
+            };
+          }
+
+          // If the item has child elements, apply recursion
+          if (item.props.child && Array.isArray(item.props.child)) {
+            return {
+              ...item,
+              props: {
+                ...item.props,
+                child: removeStyle(item.props.child),
+              },
+            };
+          }
+
+          return item; // Return the item unchanged if no updates are needed
+        });
+      };
+
+      state.layout = removeStyle(state.layout); // Update the state layout with the modified structure
+      saveToLocalStorage(state.layout); // Persist the updated layout
+    },
   },
 });
 
@@ -173,5 +209,6 @@ export const {
   handleCenterDragOver,
   setDraggedItem,
   changeElementStyle,
+  removeElementStyle,
 } = editorSlice.actions;
 export default editorSlice.reducer;

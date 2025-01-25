@@ -1,17 +1,18 @@
-import { capitalizeFirstLetter } from "@/utils/Helpers";
-import { useSetting } from "./Setting";
+import { ChangeEvent } from "react";
+import { useSetting } from "./ShorthandSettingWrapper";
 
 type Props = {
   min: number;
   max: number;
   step: number;
   title: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
-const Slider = ({ min, max, step, title }: Props) => {
-  const { value, onChange } = useSetting();
+const Slider = ({ min, max, step, title, onChange }: Props) => {
+  const { value } = useSetting();
   const parsed = parseInt(value, 10);
   return (
-    <section className="relative mb-6">
+    <section className="relative mb-8">
       <label
         htmlFor="steps-range"
         className=" mb-1 text-sm font-medium text-light "
