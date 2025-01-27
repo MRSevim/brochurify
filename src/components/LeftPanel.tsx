@@ -41,14 +41,13 @@ const LeftPanel = () => {
       <ul className="overflow-y-auto max-h-scrollable-container	">
         {data?.map((item) => {
           return (
-            <section key={item.id}>
-              <LayoutItem
-                item={item}
-                depth={depth}
-                visibilityMap={visibilityMap}
-                setVisibilityMap={setVisibilityMap}
-              />
-            </section>
+            <LayoutItem
+              key={item.id}
+              item={item}
+              depth={depth}
+              visibilityMap={visibilityMap}
+              setVisibilityMap={setVisibilityMap}
+            />
           );
         })}
       </ul>
@@ -76,6 +75,42 @@ const LayoutItem = ({
     addLocation?.id === id && addLocation?.where === "before";
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
+  const layout = useAppSelector((state) => state.editor.layout);
+
+  useEffect(() => {
+    const reveal = (activeId: string | undefined, layout: Layout[]) => {
+      if (!activeId) return;
+
+      const getParentIds = (
+        id: string,
+        layout: Layout[],
+        parents: string[] = []
+      ): string[] => {
+        for (const item of layout) {
+          if (item.id === id) return parents;
+
+          if (item.props.child) {
+            const found = getParentIds(id, item.props.child, [
+              ...parents,
+              item.id,
+            ]);
+            if (found.length) return found;
+          }
+        }
+        return [];
+      };
+
+      const parentIds = getParentIds(activeId, layout);
+
+      setVisibilityMap((prevMap) => {
+        const newMap = new Map(prevMap);
+        parentIds.forEach((parentId) => newMap.set(parentId, true));
+        return newMap;
+      });
+    };
+
+    reveal(activeId, layout);
+  }, [activeId]);
 
   // Calculate the margin based on depth, capping it at ml-4
   const marginLeftClass = depth === 0 ? "ml-2" : depth === 1 ? "ml-5" : "ml-7";

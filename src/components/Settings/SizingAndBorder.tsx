@@ -5,12 +5,20 @@ import Slider from "../Slider";
 import { SizingType } from "@/utils/Types";
 import {
   capitalizeFirstLetter,
+  getProp,
   getSetting,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import Border from "./Border";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { changeElementStyle } from "@/redux/slices/editorSlice";
+import {
+  changeElementProp,
+  changeElementStyle,
+} from "@/redux/slices/editorSlice";
+import Image from "next/image";
+import marginBorderPadding from "../../../public/margin-border-padding.webp";
+import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
+import NumberInput from "../NumberInput";
 
 const sizingTypeArray: SizingType[] = [
   {
@@ -30,10 +38,62 @@ const sizingTypeArray: SizingType[] = [
 const SizingAndBorder = () => {
   return (
     <>
-      <h1 className="font-medium text-lg text-light ">Sizing and Border</h1>
+      <ToggleVisibilityWrapper title="Sizing and Border">
+        <SizingAndBorderInner />
+      </ToggleVisibilityWrapper>
+    </>
+  );
+};
+
+const SizingAndBorderInner = () => {
+  const active = useAppSelector((state) => state.editor.active);
+  return (
+    <>
+      {" "}
+      <Image
+        src={marginBorderPadding}
+        alt="Margin, border, padding schema"
+        className="mb-2"
+      />
       <MarginOrPadding sizingTypeArray={sizingTypeArray} type="margin" />
       <Border />
       <MarginOrPadding sizingTypeArray={sizingTypeArray} type="padding" />
+      {active && active.type === "image" && <WidthAndHeight />}
+    </>
+  );
+};
+
+const WidthAndHeight = () => {
+  return (
+    <section className="relative pb-2 mb-2">
+      <section className="flex justify-between items-center mb-1">
+        <h2 className="font-medium text-light ">Width and Height</h2>
+      </section>
+      <section className="flex gap-2">
+        <NumberController type="width" />
+        <NumberController type="height" />
+      </section>
+      <div className="absolute left-0 bottom-0 w-full h-[2px] bg-light rounded"></div>
+    </section>
+  );
+};
+
+const NumberController = ({ type }: { type: string }) => {
+  const dispatch = useAppDispatch();
+  const value = getProp(useAppSelector, type);
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(changeElementProp({ type, newValue: +e.target.value }));
+  };
+  return (
+    <>
+      <section className="mb-2 flex items-center">
+        <NumberInput
+          title={type + ":"}
+          value={+value}
+          onChange={handleInputChange}
+        />
+      </section>
     </>
   );
 };
@@ -83,9 +143,9 @@ const MarginOrPadding = ({
   return (
     <section className="relative pb-2 mb-2">
       <section className="flex justify-between items-center mb-1">
-        <h1 className="font-medium text-light ">
+        <h2 className="font-medium text-light ">
           {capitalizeFirstLetter(type)}
-        </h1>
+        </h2>
         <span onClick={() => setToggle((prev) => !prev)}>
           <Icon
             type={toggle ? "arrows-angle-contract" : "arrows-angle-expand "}

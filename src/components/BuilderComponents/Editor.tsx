@@ -23,6 +23,7 @@ const Editor = () => {
   const activeId = useAppSelector((state) => state.editor.active?.id);
   const addLocation = useAppSelector((state) => state.editor.addLocation);
   const draggedItem = useAppSelector((state) => state.editor.draggedItem);
+  const pageWise = useAppSelector((state) => state.editor.pageWise);
 
   let addedString;
   if (layoutToggle && settingsToggle) {
@@ -33,21 +34,27 @@ const Editor = () => {
     addedString = "right-full sm:left-0 sm:right-96 w-screen-one-excluded";
   }
   return (
-    <section className={"relative p-3 " + addedString}>
-      {data?.map((item) => {
-        return (
-          <section key={item.id}>
-            {renderComponent(
-              item,
-              activeId,
-              dispatch,
-              false,
-              addLocation,
-              draggedItem
-            )}
-          </section>
-        );
-      })}
+    <section
+      className={
+        "relative overflow-y-auto h-screen-header-excluded " + addedString
+      }
+    >
+      <section style={pageWise}>
+        {data?.map((item) => {
+          return (
+            <section key={item.id}>
+              {renderComponent(
+                item,
+                activeId,
+                dispatch,
+                false,
+                addLocation,
+                draggedItem
+              )}
+            </section>
+          );
+        })}
+      </section>
     </section>
   );
 };
@@ -78,7 +85,7 @@ const renderComponent = (
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
 
-  const shouldBeInlineBlock = item.type === "button";
+  const shouldBeInlineBlock = item.type === "button" || item.type === "image";
 
   return (
     <section key={id} className="relative">
@@ -107,7 +114,7 @@ const renderComponent = (
           className={
             " " +
             (activeId === id &&
-              " border border-dark border-dashed" +
+              "border border-dark border-dashed " +
                 (shouldBeInlineBlock && " inline-block"))
           }
         >

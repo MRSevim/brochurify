@@ -1,24 +1,32 @@
 import Button from "@/components/BuilderComponents/Button";
-import { Layout, Props, Style, EditorState } from "./Types";
+import { Layout, Props, Style, EditorState, PageWise } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
 import Row from "@/components/BuilderComponents/Row";
 import { findElementById } from "./EditorHelpers";
 import { UseSelector } from "react-redux";
+import Image from "@/components/BuilderComponents/Image";
 
 export const componentList = {
   button: (props: Props) => <Button {...props} />,
   column: (props: Props) => <Column {...props} />,
   text: (props: Props) => <Text {...props} />,
   row: (props: Props) => <Row {...props} />,
+  image: (props: Props) => <Image {...props} />,
 };
 
-const getDefaultStyle = (type: string): Style => {
+export const getDefaultStyle = (type: string): Style => {
   if (type === "button") {
     return {
       backgroundColor: "#d8cdcb",
       ...getDefaultStyle(""),
+    };
+  }
+  if (type === "pageWise") {
+    return {
+      margin: "12px 12px 12px 12px",
+      padding: "0px 0px 0px 0px",
     };
   }
   return {
@@ -74,15 +82,22 @@ export const getDefaultElementProps = (type: string): Props => {
         },
       ],
     };
+  } else if (type === "image") {
+    return {
+      style: getDefaultStyle(""),
+      width: 400,
+      height: 400,
+      src: "https://archive.org/download/placeholder-image/placeholder-image.jpg",
+    };
   }
   return {};
 };
 
-export const saveToLocalStorage = (param: Layout[]) => {
+export const saveToLocalStorage = (key: string, param: Layout[] | PageWise) => {
   // Convert the state.layout to a JSON string
-  const layout = JSON.stringify(param);
+  const val = JSON.stringify(param);
 
-  localStorage.setItem("layout", layout);
+  localStorage.setItem(key, val);
 };
 
 export const capitalizeFirstLetter = (str: string) => {
@@ -98,11 +113,30 @@ export const getSetting = (
   return useAppSelector((state) => {
     const layout = state.editor.layout;
     const activeId = state.editor.active?.id;
+    if (!activeId) {
+      return state.editor.pageWise?.[type];
+    }
 
-    const element = findElementById(layout, activeId || "");
+    const element = findElementById(layout, activeId);
     const style = element?.props?.style as Style; // Dynamically typed style object
 
     return style?.[type]; // Accessing the dynamic property safely
+  });
+};
+export const getProp = (
+  useAppSelector: UseSelector<{
+    editor: EditorState;
+  }>,
+  type: string
+) => {
+  return useAppSelector((state) => {
+    const layout = state.editor.layout;
+    const activeId = state.editor.active?.id;
+    if (!activeId) throw Error("no activeId in getProp");
+
+    const element = findElementById(layout, activeId);
+
+    return element?.props?.[type] as string | number; // Accessing the dynamic property safely
   });
 };
 

@@ -1,7 +1,7 @@
 import { SettingsToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
 import { useAppSelector } from "@/redux/hooks";
-import PageSettings from "./PageSettings";
+import PageSettings from "./Settings/PageSettings/PageSettings";
 import ElementSettings from "./Settings/ElementSettings";
 
 const RightPanel = () => {

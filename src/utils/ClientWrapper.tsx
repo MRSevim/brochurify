@@ -20,9 +20,19 @@ export default function ClientWrapper({
     storeRef.current = makeStore();
     if (typeof window !== "undefined") {
       const layout = localStorage.getItem("layout");
+      const pageWise = localStorage.getItem("pageWise");
       if (layout) {
         const layoutParsed = JSON.parse(layout);
-        storeRef.current.dispatch(hydrate({ layout: layoutParsed }));
+        if (pageWise) {
+          const pageWiseParsed = JSON.parse(pageWise);
+          storeRef.current.dispatch(
+            hydrate({ layout: layoutParsed, pageWise: pageWiseParsed })
+          );
+        } else {
+          storeRef.current.dispatch(
+            hydrate({ layout: layoutParsed, pageWise: undefined })
+          );
+        }
       }
     }
   }
