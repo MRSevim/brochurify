@@ -10,7 +10,7 @@ const NumberInput = ({
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
-    <form className="">
+    <form>
       <label
         htmlFor="number-input"
         className="block mb-2 text-sm font-medium text-light"
@@ -22,7 +22,6 @@ const NumberInput = ({
         id="number-input"
         value={value}
         onChange={onChange}
-        aria-describedby="number-selector"
         className="bg-gray-700 border border-gray-600 text-light text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
       />
     </form>

@@ -28,6 +28,11 @@ import { v4 as uuidv4 } from "uuid";
 let initialLayout = [
   {
     id: uuidv4(),
+    type: "row",
+    props: getDefaultElementProps("row"),
+  },
+  {
+    id: uuidv4(),
     type: "button",
     props: getDefaultElementProps("button"),
   },
@@ -43,8 +48,13 @@ let initialLayout = [
   },
   {
     id: uuidv4(),
-    type: "row",
-    props: getDefaultElementProps("row"),
+    type: "audio",
+    props: getDefaultElementProps("audio"),
+  },
+  {
+    id: uuidv4(),
+    type: "video",
+    props: getDefaultElementProps("video"),
   },
 ];
 

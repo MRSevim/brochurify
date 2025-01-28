@@ -39,10 +39,10 @@ const Editor = () => {
         "relative overflow-y-auto h-screen-header-excluded " + addedString
       }
     >
-      <section style={pageWise}>
+      <div style={pageWise}>
         {data?.map((item) => {
           return (
-            <section key={item.id}>
+            <div key={item.id}>
               {renderComponent(
                 item,
                 activeId,
@@ -51,10 +51,10 @@ const Editor = () => {
                 addLocation,
                 draggedItem
               )}
-            </section>
+            </div>
           );
         })}
-      </section>
+      </div>
     </section>
   );
 };
@@ -85,11 +85,15 @@ const renderComponent = (
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
 
-  const shouldBeInlineBlock = item.type === "button" || item.type === "image";
+  const shouldBeInlineBlock =
+    item.type === "button" ||
+    item.type === "image" ||
+    item.type === "audio" ||
+    item.type === "video";
 
   return (
-    <section key={id} className="relative">
-      <section
+    <div key={id} className="relative">
+      <div
         onDrop={handleSideDrop}
         onDragOver={(e) => handleSideDragOver(e, "before")}
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
@@ -98,10 +102,10 @@ const renderComponent = (
           (parentIsRow ? "h-full w-1	" : " w-full h-1 bottom-full") +
           (beforeSelected ? " bg-lime-700	" : " ")
         }
-      ></section>
+      ></div>
 
       <FocusWrapper item={item}>
-        <section
+        <div
           onDrop={(e) => {
             e.stopPropagation();
             handleCenterDropCaller(e, dispatch, item.id);
@@ -130,10 +134,10 @@ const renderComponent = (
               )
             )}
           </Component>
-        </section>
+        </div>
       </FocusWrapper>
 
-      <section
+      <div
         onDrop={handleSideDrop}
         onDragOver={(e) => handleSideDragOver(e, "after")}
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
@@ -142,7 +146,7 @@ const renderComponent = (
           (parentIsRow ? "h-full w-1	" : " w-full h-1 top-full ") +
           (afterSelected ? " bg-lime-700	" : " ")
         }
-      ></section>
-    </section>
+      ></div>
+    </div>
   );
 };

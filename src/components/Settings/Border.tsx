@@ -12,6 +12,7 @@ import {
 } from "@/redux/slices/editorSlice";
 import Select from "../Select";
 import ColorPicker from "../ColorPicker";
+import BottomLine from "../BottomLine";
 
 export type HandleChangeType = (
   e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -48,11 +49,11 @@ const Border = () => {
   };
 
   return (
-    <section className="relative pb-2 mb-2">
-      <section className="flex justify-between items-center mb-1">
+    <div className="relative pb-2 mb-2">
+      <div className="flex justify-between items-center mb-1">
         <h1 className="font-medium text-light ">Border</h1>
         <ToggleBtn checked={toggled} onChange={handleToggle} />
-      </section>
+      </div>
       {toggled && (
         <>
           <ShorthandSettingWrapper type={type} i={0}>
@@ -72,9 +73,9 @@ const Border = () => {
           </ShorthandSettingWrapper>
         </>
       )}
-      {!toggled && <></>}
-      <div className="absolute left-0 bottom-0 w-full h-[2px] bg-light rounded"></div>
-    </section>
+
+      <BottomLine />
+    </div>
   );
 };
 

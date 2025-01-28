@@ -8,7 +8,7 @@ type Props = {
 };
 const ColorPicker = ({ title, selected, onChange }: Props) => {
   return (
-    <section className="mb-2 flex items-center">
+    <div className="mb-2 flex items-center">
       <label htmlFor="colorpicker" className="text-sm font-medium text-light">
         {title}
       </label>
@@ -19,7 +19,7 @@ const ColorPicker = ({ title, selected, onChange }: Props) => {
         value={selected}
         onChange={onChange}
       />
-    </section>
+    </div>
   );
 };
 

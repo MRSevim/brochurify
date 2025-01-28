@@ -12,7 +12,7 @@ const Slider = ({ min, max, step, title, onChange }: Props) => {
   const { value } = useSetting();
   const parsed = parseInt(value, 10);
   return (
-    <section className="relative mb-8">
+    <div className="relative mb-8">
       <label
         htmlFor="steps-range"
         className=" mb-1 text-sm font-medium text-light "
@@ -38,7 +38,7 @@ const Slider = ({ min, max, step, title, onChange }: Props) => {
       <span className="text-sm text-gray-400 absolute end-0 -bottom-6">
         {max}px
       </span>
-    </section>
+    </div>
   );
 };
 

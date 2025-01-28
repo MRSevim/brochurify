@@ -14,10 +14,10 @@ export default function Builder() {
   if (!mounted) return <Loading />;
 
   return (
-    <div className="overflow-x-hidden h-screen-header-excluded relative">
+    <main className="overflow-x-hidden h-screen-header-excluded relative">
       <Editor />
       <LeftPanel />
       <RightPanel />
-    </div>
+    </main>
   );
 }

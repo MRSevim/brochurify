@@ -19,6 +19,8 @@ import Image from "next/image";
 import marginBorderPadding from "../../../public/margin-border-padding.webp";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import NumberInput from "../NumberInput";
+import SecondaryTitle from "../SecondaryTitle";
+import BottomLine from "../BottomLine";
 
 const sizingTypeArray: SizingType[] = [
   {
@@ -37,16 +39,16 @@ const sizingTypeArray: SizingType[] = [
 
 const SizingAndBorder = () => {
   return (
-    <>
-      <ToggleVisibilityWrapper title="Sizing and Border">
-        <SizingAndBorderInner />
-      </ToggleVisibilityWrapper>
-    </>
+    <ToggleVisibilityWrapper title="Sizing and Border">
+      <SizingAndBorderInner />
+    </ToggleVisibilityWrapper>
   );
 };
 
 const SizingAndBorderInner = () => {
   const active = useAppSelector((state) => state.editor.active);
+  const shouldHaveWidthAndHeight =
+    active && (active.type === "image" || active.type === "video");
   return (
     <>
       {" "}
@@ -58,43 +60,40 @@ const SizingAndBorderInner = () => {
       <MarginOrPadding sizingTypeArray={sizingTypeArray} type="margin" />
       <Border />
       <MarginOrPadding sizingTypeArray={sizingTypeArray} type="padding" />
-      {active && active.type === "image" && <WidthAndHeight />}
+      {shouldHaveWidthAndHeight && <WidthAndHeight />}
     </>
   );
 };
 
 const WidthAndHeight = () => {
   return (
-    <section className="relative pb-2 mb-2">
-      <section className="flex justify-between items-center mb-1">
-        <h2 className="font-medium text-light ">Width and Height</h2>
-      </section>
-      <section className="flex gap-2">
+    <div className="relative pb-2 mb-2">
+      <SecondaryTitle title="Width and Height" />
+
+      <div className="flex gap-2">
         <NumberController type="width" />
         <NumberController type="height" />
-      </section>
-      <div className="absolute left-0 bottom-0 w-full h-[2px] bg-light rounded"></div>
-    </section>
+      </div>
+      <BottomLine />
+    </div>
   );
 };
 
 const NumberController = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
-  const value = getProp(useAppSelector, type);
+  const value = getProp<number>(useAppSelector, type);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch(changeElementProp({ type, newValue: +e.target.value }));
   };
   return (
-    <>
-      <section className="mb-2 flex items-center">
-        <NumberInput
-          title={type + ":"}
-          value={+value}
-          onChange={handleInputChange}
-        />
-      </section>
-    </>
+    <div className="mb-2 flex items-center">
+      <NumberInput
+        title={type + ":"}
+        value={+value}
+        onChange={handleInputChange}
+      />
+    </div>
   );
 };
 
@@ -141,18 +140,16 @@ const MarginOrPadding = ({
   };
 
   return (
-    <section className="relative pb-2 mb-2">
-      <section className="flex justify-between items-center mb-1">
-        <h2 className="font-medium text-light ">
-          {capitalizeFirstLetter(type)}
-        </h2>
+    <div className="relative pb-2 mb-2">
+      <SecondaryTitle title={capitalizeFirstLetter(type)}>
         <span onClick={() => setToggle((prev) => !prev)}>
           <Icon
             type={toggle ? "arrows-angle-contract" : "arrows-angle-expand "}
             size="20px"
           />
         </span>
-      </section>
+      </SecondaryTitle>
+
       {toggle && (
         <>
           {sizingTypeArray.map((item, i) => (
@@ -179,8 +176,8 @@ const MarginOrPadding = ({
           />
         </ShorthandSettingWrapper>
       )}
-      <div className="absolute left-0 bottom-0 w-full h-[2px] bg-light rounded"></div>
-    </section>
+      <BottomLine />
+    </div>
   );
 };
 export default SizingAndBorder;

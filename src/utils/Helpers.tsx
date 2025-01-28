@@ -7,6 +7,8 @@ import Row from "@/components/BuilderComponents/Row";
 import { findElementById } from "./EditorHelpers";
 import { UseSelector } from "react-redux";
 import Image from "@/components/BuilderComponents/Image";
+import Audio from "@/components/BuilderComponents/Audio";
+import Video from "@/components/BuilderComponents/Video";
 
 export const componentList = {
   button: (props: Props) => <Button {...props} />,
@@ -14,6 +16,8 @@ export const componentList = {
   text: (props: Props) => <Text {...props} />,
   row: (props: Props) => <Row {...props} />,
   image: (props: Props) => <Image {...props} />,
+  audio: (props: Props) => <Audio {...props} />,
+  video: (props: Props) => <Video {...props} />,
 };
 
 export const getDefaultStyle = (type: string): Style => {
@@ -26,6 +30,12 @@ export const getDefaultStyle = (type: string): Style => {
   if (type === "pageWise") {
     return {
       margin: "12px 12px 12px 12px",
+      padding: "0px 0px 0px 0px",
+    };
+  }
+  if (type === "no-space") {
+    return {
+      margin: "0px 0px 0px 0px",
       padding: "0px 0px 0px 0px",
     };
   }
@@ -84,10 +94,22 @@ export const getDefaultElementProps = (type: string): Props => {
     };
   } else if (type === "image") {
     return {
-      style: getDefaultStyle(""),
-      width: 400,
+      style: getDefaultStyle("no-space"),
+      width: 200,
+      height: 200,
+      src: "/placeholder-image.jpg",
+    };
+  } else if (type === "audio") {
+    return {
+      style: getDefaultStyle("no-space"),
+      src: "/pirates-soundtrack.mp3",
+    };
+  } else if (type === "video") {
+    return {
+      style: getDefaultStyle("no-space"),
+      width: 600,
       height: 400,
-      src: "https://archive.org/download/placeholder-image/placeholder-image.jpg",
+      src: "/shire.mp4",
     };
   }
   return {};
@@ -123,7 +145,7 @@ export const getSetting = (
     return style?.[type]; // Accessing the dynamic property safely
   });
 };
-export const getProp = (
+export const getProp = <T extends unknown>(
   useAppSelector: UseSelector<{
     editor: EditorState;
   }>,
@@ -136,7 +158,7 @@ export const getProp = (
 
     const element = findElementById(layout, activeId);
 
-    return element?.props?.[type] as string | number; // Accessing the dynamic property safely
+    return element?.props?.[type] as T; // Accessing the dynamic property safely
   });
 };
 

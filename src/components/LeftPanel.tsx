@@ -38,7 +38,7 @@ const LeftPanel = () => {
   return (
     <PanelWrapper toggle={toggle} from="left">
       <AddSection />
-      <ul className="overflow-y-auto max-h-scrollable-container	">
+      <div className="overflow-y-auto max-h-scrollable-container	">
         {data?.map((item) => {
           return (
             <LayoutItem
@@ -50,7 +50,7 @@ const LeftPanel = () => {
             />
           );
         })}
-      </ul>
+      </div>
     </PanelWrapper>
   );
 };
@@ -151,8 +151,8 @@ const LayoutItem = ({
 
   return (
     <>
-      <section className="relative">
-        <section
+      <div className="relative">
+        <div
           onClick={() => handleAddLocationClick("before")}
           onDrop={handleSideDrop}
           onDragOver={(e) => handleSideDragOver(e, "before")}
@@ -162,10 +162,10 @@ const LayoutItem = ({
             marginLeftClass +
             (beforeSelected ? " bg-light hover:bg-light" : "")
           }
-        ></section>
-        <section className={"m-2 " + marginLeftClass}>
+        ></div>
+        <div className={"m-2 " + marginLeftClass}>
           <FocusWrapper item={item}>
-            <li
+            <div
               onDrop={(e) => {
                 handleCenterDropCaller(e, dispatch, id);
               }}
@@ -178,20 +178,16 @@ const LayoutItem = ({
                 (activeId === id ? "border-light" : "border-slate-500")
               }
             >
-              <section>
-                {item.props.child && item.props.child.length > 0 && (
-                  <ToggleButton
-                    toggled={isExpanded}
-                    onClick={toggleVisibility}
-                  />
-                )}
-                {item.type}
-              </section>
+              {item.props.child && item.props.child.length > 0 && (
+                <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
+              )}
+              {item.type}
+
               <DeleteButton itemId={id} />
-            </li>
+            </div>
           </FocusWrapper>
-        </section>
-        <section
+        </div>
+        <div
           onClick={() => {
             handleAddLocationClick("after");
           }}
@@ -203,10 +199,10 @@ const LayoutItem = ({
             marginLeftClass +
             (afterSelected ? " bg-light hover:bg-light" : "")
           }
-        ></section>
-      </section>
+        ></div>
+      </div>
       {isExpanded && (
-        <ul>
+        <>
           {/* Render child elements recursively */}
           {item.props.child?.map((childItem) => (
             <LayoutItem
@@ -217,7 +213,7 @@ const LayoutItem = ({
               setVisibilityMap={setVisibilityMap}
             />
           ))}
-        </ul>
+        </>
       )}
     </>
   );
@@ -227,7 +223,7 @@ const AddSection = () => {
   const availableElements = Object.keys(componentList);
   const [toggle, setToggle] = useState(false);
   const dispatch = useAppDispatch();
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const addLocation = useAppSelector((state) => state.editor.addLocation);
 
   const handleGeneralClick = (event: MouseEvent) => {
@@ -245,7 +241,7 @@ const AddSection = () => {
   });
 
   return (
-    <section className="flex justify-center relative z-10">
+    <div className="flex justify-center relative z-10">
       <button
         className="border rounded border-cyan-100	p-3"
         onClick={() => setToggle((prev) => !prev)}
@@ -253,7 +249,7 @@ const AddSection = () => {
         Add +
       </button>
       {toggle && (
-        <section
+        <div
           ref={ref}
           className="absolute top-full border rounded border-cyan-100 mt-2 p-3 bg-dark flex flex-wrap"
         >
@@ -269,9 +265,9 @@ const AddSection = () => {
               {item}
             </button>
           ))}
-        </section>
+        </div>
       )}
-    </section>
+    </div>
   );
 };
 

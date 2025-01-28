@@ -11,7 +11,7 @@ const PanelWrapper = ({ toggle, from, children }: Props) => {
     from === "left" ? "-translate-x-full" : "translate-x-full";
 
   return (
-    <div
+    <section
       className={
         "bg-dark w-screen h-screen-header-excluded transition-transform sm:w-96 absolute top-0 text-light " +
         (from === "right" ? "right-0 " : "") +
@@ -19,7 +19,7 @@ const PanelWrapper = ({ toggle, from, children }: Props) => {
       }
     >
       {children}
-    </div>
+    </section>
   );
 };
 

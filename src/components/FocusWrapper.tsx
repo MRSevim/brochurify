@@ -19,7 +19,7 @@ const FocusWrapper = ({
   const activeId = useAppSelector((state) => state.editor.active?.id);
   const dropHandled = useAppSelector((state) => state.editor.dropHandled);
   return (
-    <section
+    <div
       className="cursor-pointer"
       key={itemId}
       draggable
@@ -43,7 +43,7 @@ const FocusWrapper = ({
       }}
     >
       {children}
-    </section>
+    </div>
   );
 };
 

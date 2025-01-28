@@ -10,10 +10,10 @@ const RightPanel = () => {
 
   return (
     <PanelWrapper toggle={toggle} from="right">
-      <section className="overflow-y-auto max-h-scrollable-container	m-2">
+      <div className="overflow-y-auto max-h-scrollable-container m-2">
         {active && <ElementSettings />}
         {!active && <PageSettings />}
-      </section>
+      </div>
     </PanelWrapper>
   );
 };
