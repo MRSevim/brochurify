@@ -142,12 +142,11 @@ const MarginOrPadding = ({
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title={capitalizeFirstLetter(type)}>
-        <span onClick={() => setToggle((prev) => !prev)}>
-          <Icon
-            type={toggle ? "arrows-angle-contract" : "arrows-angle-expand "}
-            size="20px"
-          />
-        </span>
+        <Icon
+          type={toggle ? "arrows-angle-contract" : "arrows-angle-expand "}
+          size="20px"
+          onClick={() => setToggle((prev) => !prev)}
+        />
       </SecondaryTitle>
 
       {toggle && (

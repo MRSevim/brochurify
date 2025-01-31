@@ -51,3 +51,4 @@ export type ItemAndLocation = { item: LayoutOrUnd; addLocation: AddLocation };
 export type SizingType = {
   title: string;
 };
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;

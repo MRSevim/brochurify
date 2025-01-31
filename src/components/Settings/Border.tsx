@@ -13,6 +13,7 @@ import {
 import Select from "../Select";
 import ColorPicker from "../ColorPicker";
 import BottomLine from "../BottomLine";
+import SecondaryTitle from "../SecondaryTitle";
 
 export type HandleChangeType = (
   e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -50,10 +51,10 @@ const Border = () => {
 
   return (
     <div className="relative pb-2 mb-2">
-      <div className="flex justify-between items-center mb-1">
-        <h1 className="font-medium text-light ">Border</h1>
+      <SecondaryTitle title="Border">
         <ToggleBtn checked={toggled} onChange={handleToggle} />
-      </div>
+      </SecondaryTitle>
+
       {toggled && (
         <>
           <ShorthandSettingWrapper type={type} i={0}>

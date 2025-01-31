@@ -10,17 +10,19 @@ const Header = () => {
   const [, setSettingsToggle] = SettingsToggleContext.Use();
   return (
     <header className="w-full h-10 bg-dark text-light px-2 flex items-center justify-between">
-      <span onClick={() => setLayoutToggle((prev) => !prev)}>
-        <Icon type="list-nested" size="28px" />
-      </span>
+      <Icon
+        type="list-nested"
+        size="28px"
+        onClick={() => setLayoutToggle((prev) => !prev)}
+      />
 
-      <span
+      <Icon
+        type="gear-fill"
+        size="25px"
         onClick={() => {
           setSettingsToggle((prev) => !prev);
         }}
-      >
-        <Icon type="gear-fill" size="25px" />
-      </span>
+      />
     </header>
   );
 };

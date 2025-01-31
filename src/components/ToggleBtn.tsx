@@ -3,7 +3,7 @@ import React from "react";
 type Props = { text?: string; checked: boolean; onChange: () => void };
 const ToggleBtn = ({ text, checked, onChange }: Props) => {
   return (
-    <label className="inline-flex items-center cursor-pointer mb-2">
+    <label className="inline-flex items-center cursor-pointer">
       <input
         type="checkbox"
         checked={checked}
