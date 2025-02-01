@@ -197,3 +197,15 @@ export const setValueFromShorthandStr = (
 
   return values.join(" "); // Recombine the values into a shorthand string
 };
+
+export const fontOptions = [
+  "Arial ,sans-serif",
+  "Verdana ,sans-serif",
+  "Tahoma ,sans-serif",
+  "Trebuchet MS ,sans-serif",
+  "Times New Roman ,serif",
+  "Georgia ,serif",
+  "Garamond ,serif",
+  "Courier New ,monospace",
+  "Brush Script MT ,cursive",
+];

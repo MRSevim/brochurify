@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/redux/hooks";
 import SizingAndBorder from "./SizingAndBorder";
 import Source from "./Source";
-import Text from "./Text";
+import Text from "./Text/Text";
 
 const ElementSettings = () => {
   const activeType = useAppSelector((state) => state.editor.active?.type);

@@ -1,16 +1,15 @@
 import { ChangeEvent } from "react";
-import { useSetting } from "./ShorthandSettingWrapper";
 
 type Props = {
   min: number;
   max: number;
   step: number;
+  value: string;
   title: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
-const Slider = ({ min, max, step, title, onChange }: Props) => {
-  const { value } = useSetting();
-  const parsed = parseInt(value, 10);
+const Slider = ({ min, max, step, title, onChange, value }: Props) => {
+  const parsed = parseInt(value, 10); //gets the first full number inside value
   return (
     <div className="relative mb-8">
       <label

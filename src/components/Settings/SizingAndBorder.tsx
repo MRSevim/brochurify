@@ -1,12 +1,12 @@
 import { ChangeEvent, useState } from "react";
 import Icon from "../Icon";
-import ShorthandSettingWrapper from "../ShorthandSettingWrapper";
 import Slider from "../Slider";
 import { SizingType } from "@/utils/Types";
 import {
   capitalizeFirstLetter,
   getProp,
   getSetting,
+  getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import Border from "./Border";
@@ -146,34 +146,36 @@ const MarginOrPadding = ({
           type={toggle ? "arrows-angle-contract" : "arrows-angle-expand "}
           size="20px"
           onClick={() => setToggle((prev) => !prev)}
+          title="Expand/Contract"
         />
       </SecondaryTitle>
 
       {toggle && (
         <>
           {sizingTypeArray.map((item, i) => (
-            <ShorthandSettingWrapper type={type} key={i} i={i}>
-              <Slider
-                min={0}
-                max={50}
-                step={2}
-                title={item.title}
-                onChange={(e) => handleInputChange(e, i)}
-              />
-            </ShorthandSettingWrapper>
+            <Slider
+              value={getValueFromShorthandStr(
+                getSetting(useAppSelector, type),
+                i
+              )}
+              min={0}
+              max={50}
+              step={2}
+              title={item.title}
+              onChange={(e) => handleInputChange(e, i)}
+            />
           ))}
         </>
       )}
       {!toggle && (
-        <ShorthandSettingWrapper type={type}>
-          <Slider
-            min={0}
-            max={50}
-            step={2}
-            title={"All sides"}
-            onChange={(e) => handleInputChange(e, undefined)}
-          />
-        </ShorthandSettingWrapper>
+        <Slider
+          value={getValueFromShorthandStr(getSetting(useAppSelector, type), 0)}
+          min={0}
+          max={50}
+          step={2}
+          title={"All sides"}
+          onChange={(e) => handleInputChange(e, undefined)}
+        />
       )}
       <BottomLine />
     </div>

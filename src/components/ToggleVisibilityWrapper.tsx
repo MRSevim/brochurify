@@ -28,7 +28,7 @@ const ToggleButton = ({
   const type = toggled ? "chevron-up" : "chevron-down";
   return (
     <button className="p-1" onClick={onClick}>
-      <Icon type={type} size="20px" />
+      <Icon type={type} size="20px" title="Toggle" />
     </button>
   );
 };

@@ -1,6 +1,7 @@
 import {
   canElementHaveChild,
   deleteFromLayout,
+  findElementById,
   handleDragLeaveInner,
   handleDropInner,
   insertElement,
@@ -23,6 +24,7 @@ import {
 } from "@/utils/Types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
 let initialLayout = [
@@ -256,6 +258,20 @@ export const editorSlice = createSlice({
       state.layout = changeProp(state.layout); // Update the state layout with the modified structure
       saveToLocalStorage("layout", state.layout); // Persist the updated layout
     },
+    updateText: (state, action: PayloadAction<string>) => {
+      const activeId = state.active?.id;
+      if (!activeId) {
+        toast.error("Active id not found");
+        return;
+      }
+      const element = findElementById(state.layout, activeId);
+      if (!element) {
+        toast.error("Element not found");
+        return;
+      }
+      element.props.text = action.payload;
+      saveToLocalStorage("layout", state.layout);
+    },
   },
 });
 
@@ -276,5 +292,6 @@ export const {
   changeElementStyle,
   removeElementStyle,
   changeElementProp,
+  updateText,
 } = editorSlice.actions;
 export default editorSlice.reducer;

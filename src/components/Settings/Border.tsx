@@ -1,10 +1,11 @@
 import { ChangeEvent, useState } from "react";
 import ToggleBtn from "../ToggleBtn";
-import ShorthandSettingWrapper, {
-  useSetting,
-} from "../ShorthandSettingWrapper";
 import Slider from "../Slider";
-import { getSetting, setValueFromShorthandStr } from "@/utils/Helpers";
+import {
+  getSetting,
+  getValueFromShorthandStr,
+  setValueFromShorthandStr,
+} from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   changeElementStyle,
@@ -54,24 +55,24 @@ const Border = () => {
       <SecondaryTitle title="Border">
         <ToggleBtn checked={toggled} onChange={handleToggle} />
       </SecondaryTitle>
-
       {toggled && (
         <>
-          <ShorthandSettingWrapper type={type} i={0}>
-            <Slider
-              min={0}
-              max={50}
-              step={2}
-              title={"Thickness"}
-              onChange={(e) => handleChange(e, 0)}
-            />
-          </ShorthandSettingWrapper>
-          <ShorthandSettingWrapper type={type} i={1}>
-            <BorderType onChange={(e) => handleChange(e, 1)} />
-          </ShorthandSettingWrapper>
-          <ShorthandSettingWrapper type={type} i={2}>
-            <BorderColor onChange={(e) => handleChange(e, 2)} />
-          </ShorthandSettingWrapper>
+          <Slider
+            value={getValueFromShorthandStr(borderStr, 0)}
+            min={0}
+            max={50}
+            step={2}
+            title={"Thickness"}
+            onChange={(e) => handleChange(e, 0)}
+          />
+          <BorderType
+            onChange={(e) => handleChange(e, 1)}
+            value={getValueFromShorthandStr(borderStr, 1)}
+          />
+          <BorderColor
+            onChange={(e) => handleChange(e, 2)}
+            value={getValueFromShorthandStr(borderStr, 2)}
+          />
         </>
       )}
 
@@ -80,9 +81,13 @@ const Border = () => {
   );
 };
 
-const BorderColor = ({ onChange }: { onChange: HandleChangeType }) => {
-  const { value } = useSetting();
-
+const BorderColor = ({
+  onChange,
+  value,
+}: {
+  onChange: HandleChangeType;
+  value: string;
+}) => {
   return (
     <ColorPicker
       title={"Select a border color:"}
@@ -92,7 +97,13 @@ const BorderColor = ({ onChange }: { onChange: HandleChangeType }) => {
   );
 };
 
-const BorderType = ({ onChange }: { onChange: HandleChangeType }) => {
+const BorderType = ({
+  onChange,
+  value,
+}: {
+  onChange: HandleChangeType;
+  value: string;
+}) => {
   const types = [
     "dotted",
     "dashed",
@@ -103,7 +114,7 @@ const BorderType = ({ onChange }: { onChange: HandleChangeType }) => {
     "inset",
     "outset",
   ];
-  const { value } = useSetting();
+
   return (
     <Select
       title={"Select a border type:"}

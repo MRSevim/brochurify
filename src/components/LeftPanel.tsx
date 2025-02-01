@@ -287,7 +287,7 @@ const ToggleButton = ({
         onClick();
       }}
     >
-      <Icon type={type} size="20px" />
+      <Icon type={type} size="20px" title="Toggle" />
     </button>
   );
 };
@@ -302,7 +302,7 @@ const DeleteButton = ({ itemId }: { itemId: string }) => {
         dispatch(deleteElement(itemId));
       }}
     >
-      <Icon type="trash-fill" size="20px" />
+      <Icon type="trash-fill" size="20px" title="Delete" />
     </button>
   );
 };
