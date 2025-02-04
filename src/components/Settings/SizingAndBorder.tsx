@@ -154,10 +154,8 @@ const MarginOrPadding = ({
         <>
           {sizingTypeArray.map((item, i) => (
             <Slider
-              value={getValueFromShorthandStr(
-                getSetting(useAppSelector, type),
-                i
-              )}
+              key={i}
+              value={getValueFromShorthandStr(variable, i)}
               min={0}
               max={50}
               step={2}
@@ -169,7 +167,7 @@ const MarginOrPadding = ({
       )}
       {!toggle && (
         <Slider
-          value={getValueFromShorthandStr(getSetting(useAppSelector, type), 0)}
+          value={getValueFromShorthandStr(variable, 0)}
           min={0}
           max={50}
           step={2}

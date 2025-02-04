@@ -61,7 +61,6 @@ const Text = () => {
 
     // Listen for editor content updates
     const updateHandler = () => {
-      editor.commands.removeEmptyTextStyle();
       const rawHtml = editor.getHTML(); // Get current HTML
       // ✅ Sanitize the HTML (remove unwanted tags)
       const cleanHtml = sanitizeHtml(rawHtml, {

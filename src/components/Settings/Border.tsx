@@ -32,7 +32,7 @@ const Border = () => {
       dispatch(
         changeElementStyle({
           type,
-          newValue: "2px solid black",
+          newValue: "2px solid #000",
         })
       );
     } else {

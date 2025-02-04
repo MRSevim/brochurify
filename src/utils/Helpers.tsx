@@ -199,6 +199,7 @@ export const setValueFromShorthandStr = (
 };
 
 export const fontOptions = [
+  "Roboto Mono,sans-serif",
   "Arial ,sans-serif",
   "Verdana ,sans-serif",
   "Tahoma ,sans-serif",

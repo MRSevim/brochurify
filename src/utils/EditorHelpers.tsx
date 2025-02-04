@@ -9,6 +9,7 @@ import {
 import { saveToLocalStorage } from "./Helpers";
 
 export const setActiveInner = (state: EditorState, payload: LayoutOrUnd) => {
+  state.addLocation = null;
   state.active = payload;
 };
 export const handleDropInner = (
@@ -30,6 +31,7 @@ export const setAddLocationInner = (
   state: EditorState,
   addLocation: AddLocation
 ) => {
+  state.active = undefined;
   state.addLocation = addLocation;
 };
 export const handleDragLeaveInner = (state: EditorState) => {

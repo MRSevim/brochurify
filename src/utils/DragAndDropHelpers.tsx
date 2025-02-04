@@ -37,6 +37,7 @@ export const handleSideDragOverCaller = ({
   dispatch: ReturnType<typeof useAppDispatch>;
 }) => {
   e.preventDefault();
+  e.stopPropagation();
   dispatch(handleSideDragOver({ addLocation: { id, where } }));
 };
 export const handleCenterDragOverCaller = (
