@@ -119,7 +119,6 @@ export default Text;
 const EditBar = ({ editor }: { editor: Editor | null }) => {
   if (!editor) return null;
   const [popup, setPopup] = useState("");
-
   const className = "p-1 border rounded";
   const size = "1.2rem";
   const Icons: {
@@ -249,20 +248,20 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
     {
       type: "link-45deg",
       onClick: () => {
-        const url = prompt("Enter URL:");
-        if (url) editor.chain().focus().setLink({ href: url }).run();
+        setPopup("link");
       },
       title: "Link",
+      active: editor.isActive("link"),
     },
     {
       type: "arrows-vertical",
       onClick: () => {
-        const lineHeight = prompt("Enter line height (e.g., 1.5, 2):");
-        if (lineHeight) {
-          editor.chain().focus().setLineHeight(lineHeight).run();
-        }
+        setPopup("line-height");
       },
       title: "Line height",
+      active:
+        editor.getAttributes("paragraph").lineHeight ||
+        editor.getAttributes("heading").lineHeight,
     },
     {
       type: "arrow-return-left",
@@ -311,6 +310,10 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
                   editor.chain().focus().unsetFontFamily().run();
                 } else if (popup === "font-size") {
                   editor.chain().focus().unsetFontSize().run();
+                } else if (popup === "link") {
+                  editor.chain().focus().unsetLink().run();
+                } else if (popup === "line-height") {
+                  editor.chain().focus().unsetLineHeight().run();
                 }
               }}
             >

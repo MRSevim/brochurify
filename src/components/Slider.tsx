@@ -6,10 +6,12 @@ type Props = {
   step: number;
   value: string;
   title: string;
+  parse: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
-const Slider = ({ min, max, step, title, onChange, value }: Props) => {
-  const parsed = parseInt(value, 10); //gets the first full number inside value
+const Slider = ({ min, max, step, title, onChange, value, parse }: Props) => {
+  const parsed = parse ? parseInt(value, 10) : value; //gets the first full number inside value if necessary
+
   return (
     <div className="relative mb-8">
       <label
@@ -29,13 +31,13 @@ const Slider = ({ min, max, step, title, onChange, value }: Props) => {
         className="w-full h-2 bg-light rounded-lg appearance-none cursor-pointer"
       />
       <span className="text-sm text-gray-400 absolute start-0 -bottom-6">
-        {min}px
+        {min}
       </span>
       <span className="text-sm text-gray-400 absolute start-0 end-0 mx-auto text-center -bottom-6">
-        Current: {parsed}px
+        Current: {value}
       </span>
       <span className="text-sm text-gray-400 absolute end-0 -bottom-6">
-        {max}px
+        {max}
       </span>
     </div>
   );

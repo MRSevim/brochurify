@@ -154,6 +154,7 @@ const MarginOrPadding = ({
         <>
           {sizingTypeArray.map((item, i) => (
             <Slider
+              parse={true}
               key={i}
               value={getValueFromShorthandStr(variable, i)}
               min={0}
@@ -167,6 +168,7 @@ const MarginOrPadding = ({
       )}
       {!toggle && (
         <Slider
+          parse={true}
           value={getValueFromShorthandStr(variable, 0)}
           min={0}
           max={50}

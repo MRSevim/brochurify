@@ -32,3 +32,28 @@ body {
 *::-webkit-scrollbar-thumb:hover {
   background-color: #5d767c;
 }
+/*Blockquote*/
+blockquote {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 30px;
+  padding-left: 15px;
+  border-left: 3px solid #ccc;
+}
+/*ul-ol*/
+ul {
+  list-style-type: disc;
+  list-style-position: inside;
+}
+ol {
+  list-style-type: decimal;
+  list-style-position: inside;
+}
+ul li p,
+ol li p {
+  display: inline;
+}
+/*hr*/
+hr {
+  border-top: 1px solid #c2bbbb;
+}

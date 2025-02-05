@@ -32,7 +32,7 @@ const Border = () => {
       dispatch(
         changeElementStyle({
           type,
-          newValue: "2px solid #000",
+          newValue: "2px solid #000000",
         })
       );
     } else {
@@ -58,6 +58,7 @@ const Border = () => {
       {toggled && (
         <>
           <Slider
+            parse={true}
             value={getValueFromShorthandStr(borderStr, 0)}
             min={0}
             max={50}
