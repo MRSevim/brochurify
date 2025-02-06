@@ -6,7 +6,7 @@ const LinkInput = ({
   onChange,
 }: {
   title: string;
-  value: number;
+  value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (

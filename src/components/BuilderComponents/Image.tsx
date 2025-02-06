@@ -1,9 +1,11 @@
-import { Props } from "@/utils/Types";
+import useActive from "@/utils/hooks/useActive";
+import { PropsWithId } from "@/utils/Types";
 
-const Image = ({ style, src, width, height }: Props) => {
+const Image = ({ id, style, src, alt, width, height }: PropsWithId) => {
+  const active = useActive(id);
   return (
-    <div className="max-w-full" style={style}>
-      <img src={src} style={{ width, height }}></img>
+    <div className={active} style={style}>
+      <img src={src || undefined} alt={alt} style={{ width, height }}></img>
     </div>
   );
 };

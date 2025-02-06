@@ -115,14 +115,9 @@ const renderComponent = (
             handleCenterDragOverCaller(e, item, dispatch);
           }}
           onDragLeave={() => handleDragLeaveCaller(dispatch)}
-          className={
-            " " +
-            (activeId === id &&
-              "border border-dark border-dashed " +
-                (shouldBeInlineBlock && " inline-block"))
-          }
+          className={shouldBeInlineBlock ? " inline-block" : ""}
         >
-          <Component {...item.props}>
+          <Component id={id} {...item.props}>
             {item.props.child?.map((childItem) =>
               renderComponent(
                 childItem,

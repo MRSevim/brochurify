@@ -88,11 +88,7 @@ const NumberController = ({ type }: { type: string }) => {
   };
   return (
     <div className="mb-2 flex items-center">
-      <NumberInput
-        title={type + ":"}
-        value={+value}
-        onChange={handleInputChange}
-      />
+      <NumberInput title={type} value={+value} onChange={handleInputChange} />
     </div>
   );
 };

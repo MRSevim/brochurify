@@ -1,7 +1,15 @@
-import { Props } from "@/utils/Types";
+import useActive from "@/utils/hooks/useActive";
+import { PropsWithId } from "@/utils/Types";
 
-const Text = ({ text, style }: Props) => {
-  return <p style={style} dangerouslySetInnerHTML={{ __html: text || "" }}></p>;
+const Text = ({ id, text, style }: PropsWithId) => {
+  const active = useActive(id);
+  return (
+    <p
+      className={active}
+      style={style}
+      dangerouslySetInnerHTML={{ __html: text || "" }}
+    ></p>
+  );
 };
 
 export default Text;

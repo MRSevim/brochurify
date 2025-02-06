@@ -1,9 +1,11 @@
+import Checkbox from "@/components/Checkbox";
 import ColorPicker from "@/components/ColorPicker";
 import LinkInput from "@/components/LinkInput";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import { fontOptions } from "@/utils/Helpers";
 import { Editor } from "@tiptap/react";
+import { useEffect, useState } from "react";
 
 const Popup = ({
   type,
@@ -30,9 +32,13 @@ const Popup = ({
           title="Pick a font"
           options={fontOptions}
           selected={editor.getAttributes("textStyle").fontFamily || ""}
-          onChange={(e) =>
-            editor.chain().focus().setFontFamily(e.target.value).run()
-          }
+          onChange={(e) => {
+            if (e.target.value === "default") {
+              editor.chain().focus().unsetFontFamily().run();
+            } else {
+              editor.chain().focus().setFontFamily(e.target.value).run();
+            }
+          }}
         />
       )}
       {type === "font-size" && (
@@ -52,20 +58,7 @@ const Popup = ({
           }
         />
       )}
-      {type === "link" && (
-        <LinkInput
-          title="Enter the link"
-          value={editor.getAttributes("link").href || ""}
-          onChange={(e) =>
-            editor
-              .chain()
-              .focus()
-              .extendMarkRange("link")
-              .setLink({ href: e.target.value })
-              .run()
-          }
-        />
-      )}
+      {type === "link" && <Link editor={editor} />}
       {type === "line-height" && (
         <Slider
           parse={false}
@@ -85,6 +78,51 @@ const Popup = ({
       )}
       {children}
     </div>
+  );
+};
+
+const Link = ({ editor }: { editor: Editor }) => {
+  const [newtab, setNewTab] = useState(
+    editor.getAttributes("link").target === "_blank"
+  );
+  const [link, setLink] = useState(editor.getAttributes("link").href || "");
+
+  useEffect(() => {
+    handleInputChange(link, newtab);
+  }, [link, newtab]);
+
+  useEffect(() => {
+    const href = editor.getAttributes("link").href || "";
+    setLink(href);
+  }, [editor.getAttributes("link").href]);
+
+  const handleInputChange = (link: string, newtab: boolean) => {
+    if (!link) {
+      return editor.chain().focus().unsetLink().run();
+    }
+    editor.commands.setLink({
+      href: link,
+      target: newtab ? "_blank" : "_self",
+    });
+  };
+  return (
+    <>
+      {" "}
+      <LinkInput
+        title="Enter the link"
+        value={link}
+        onChange={(e) => {
+          setLink(e.target.value);
+        }}
+      />
+      <Checkbox
+        title="Open in new tab"
+        checked={newtab}
+        onChange={() => {
+          setNewTab((prev) => !prev);
+        }}
+      />
+    </>
   );
 };
 

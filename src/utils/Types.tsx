@@ -3,16 +3,23 @@ export interface Props {
   style?: Style;
   child?: Layout[];
   src?: string;
+  href?: string;
+  newTab?: boolean;
+  alt?: string;
   width?: number;
   height?: number;
   children?: React.ReactNode;
   [key: string]:
     | string
     | number
+    | boolean
     | Style
     | Layout[]
     | React.ReactNode
     | undefined;
+}
+export interface PropsWithId extends Props {
+  id: string;
 }
 export interface Layout {
   id: string;
@@ -36,6 +43,11 @@ export type PageWise = {
   padding?: string;
   margin?: string;
   border?: string;
+  title?: string;
+  description?: string;
+  keywords?: string;
+  canonical?: string;
+  image?: string;
   [key: string]: string | undefined;
 };
 

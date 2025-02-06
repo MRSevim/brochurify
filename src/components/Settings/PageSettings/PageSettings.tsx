@@ -1,3 +1,4 @@
+import Seo from "../Seo";
 import SizingAndBorder from "../SizingAndBorder";
 
 const PageSettings = () => {
@@ -8,6 +9,7 @@ const PageSettings = () => {
       </h1>
 
       <SizingAndBorder />
+      <Seo />
     </div>
   );
 };

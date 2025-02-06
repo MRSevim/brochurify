@@ -1,5 +1,12 @@
 import Button from "@/components/BuilderComponents/Button";
-import { Layout, Props, Style, EditorState, PageWise } from "./Types";
+import {
+  Layout,
+  Props,
+  Style,
+  EditorState,
+  PageWise,
+  PropsWithId,
+} from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
@@ -11,13 +18,13 @@ import Audio from "@/components/BuilderComponents/Audio";
 import Video from "@/components/BuilderComponents/Video";
 
 export const componentList = {
-  button: (props: Props) => <Button {...props} />,
-  column: (props: Props) => <Column {...props} />,
-  text: (props: Props) => <Text {...props} />,
-  row: (props: Props) => <Row {...props} />,
-  image: (props: Props) => <Image {...props} />,
-  audio: (props: Props) => <Audio {...props} />,
-  video: (props: Props) => <Video {...props} />,
+  button: (props: PropsWithId) => <Button {...props} />,
+  column: (props: PropsWithId) => <Column {...props} />,
+  text: (props: PropsWithId) => <Text {...props} />,
+  row: (props: PropsWithId) => <Row {...props} />,
+  image: (props: PropsWithId) => <Image {...props} />,
+  audio: (props: PropsWithId) => <Audio {...props} />,
+  video: (props: PropsWithId) => <Video {...props} />,
 };
 
 export const getDefaultStyle = (type: string): Style => {
@@ -26,14 +33,27 @@ export const getDefaultStyle = (type: string): Style => {
       backgroundColor: "#d8cdcb",
       ...getDefaultStyle(""),
     };
-  }
-  if (type === "pageWise") {
+  } else if (type === "row") {
+    return {
+      display: "flex",
+      ...getDefaultStyle(""),
+    };
+  } else if (type === "image") {
+    return {
+      maxWidth: "100%",
+      ...getDefaultStyle("no-space"),
+    };
+  } else if (type === "video") {
+    return {
+      maxWidth: "100%",
+      ...getDefaultStyle("no-space"),
+    };
+  } else if (type === "pageWise") {
     return {
       margin: "12px 12px 12px 12px",
       padding: "0px 0px 0px 0px",
     };
-  }
-  if (type === "no-space") {
+  } else if (type === "no-space") {
     return {
       margin: "0px 0px 0px 0px",
       padding: "0px 0px 0px 0px",
@@ -78,7 +98,7 @@ export const getDefaultElementProps = (type: string): Props => {
     };
   } else if (type === "row") {
     return {
-      style: getDefaultStyle(""),
+      style: getDefaultStyle("row"),
       child: [
         {
           id: uuidv4(),
@@ -94,7 +114,7 @@ export const getDefaultElementProps = (type: string): Props => {
     };
   } else if (type === "image") {
     return {
-      style: getDefaultStyle("no-space"),
+      style: getDefaultStyle("image"),
       width: 200,
       height: 200,
       src: "/placeholder-image.jpg",
@@ -102,14 +122,14 @@ export const getDefaultElementProps = (type: string): Props => {
   } else if (type === "audio") {
     return {
       style: getDefaultStyle("no-space"),
-      src: "/pirates-soundtrack.mp3",
+      src: "",
     };
   } else if (type === "video") {
     return {
-      style: getDefaultStyle("no-space"),
-      width: 600,
-      height: 400,
-      src: "/shire.mp4",
+      style: getDefaultStyle("video"),
+      width: 300,
+      height: 200,
+      src: "",
     };
   }
   return {};
@@ -199,7 +219,7 @@ export const setValueFromShorthandStr = (
 };
 
 export const fontOptions = [
-  "Roboto Mono,sans-serif",
+  "default",
   "Arial ,sans-serif",
   "Verdana ,sans-serif",
   "Tahoma ,sans-serif",

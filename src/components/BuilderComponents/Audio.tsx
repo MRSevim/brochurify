@@ -1,10 +1,12 @@
-import { Props } from "@/utils/Types";
+import useActive from "@/utils/hooks/useActive";
+import { PropsWithId } from "@/utils/Types";
 
-const Audio = ({ style, src }: Props) => {
+const Audio = ({ id, style, src }: PropsWithId) => {
+  const active = useActive(id);
   return (
-    <div style={style}>
-      <audio controls>
-        <source src={src}></source>
+    <div className={active} style={style}>
+      <audio key={src} controls>
+        <source src={src || undefined}></source>
         Your browser does not support the audio tag.
       </audio>
     </div>

@@ -223,7 +223,10 @@ export const editorSlice = createSlice({
     },
     changeElementProp: (
       state,
-      action: PayloadAction<{ type: string; newValue: number }>
+      action: PayloadAction<{
+        type: string;
+        newValue: number | string | boolean;
+      }>
     ) => {
       const { type, newValue } = action.payload;
 

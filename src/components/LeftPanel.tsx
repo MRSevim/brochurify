@@ -241,7 +241,7 @@ const AddSection = () => {
   });
 
   return (
-    <div className="flex justify-center relative z-10">
+    <div className="flex justify-center relative z-10 p-1">
       <button
         className="border rounded border-cyan-100	p-3"
         onClick={() => setToggle((prev) => !prev)}
@@ -251,7 +251,7 @@ const AddSection = () => {
       {toggle && (
         <div
           ref={ref}
-          className="absolute top-full border rounded border-cyan-100 mt-2 p-3 bg-dark flex flex-wrap"
+          className="absolute top-full border rounded border-cyan-100 p-3 bg-dark flex flex-wrap"
         >
           {availableElements.map((item, i) => (
             <button

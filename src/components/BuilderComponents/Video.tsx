@@ -1,10 +1,12 @@
-import { Props } from "@/utils/Types";
+import useActive from "@/utils/hooks/useActive";
+import { PropsWithId } from "@/utils/Types";
 
-const Video = ({ style, src, width, height }: Props) => {
+const Video = ({ id, style, src, width, height }: PropsWithId) => {
+  const active = useActive(id);
   return (
-    <div className="max-w-full" style={style}>
-      <video controls style={{ width, height }}>
-        <source src={src}></source>
+    <div className={active} style={style}>
+      <video key={src} controls style={{ width, height }}>
+        <source src={src || undefined}></source>
         Your browser does not support the video tag.
       </video>
     </div>

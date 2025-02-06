@@ -36,6 +36,7 @@ const FocusWrapper = ({
       }}
       tabIndex={0}
       onClick={(e) => {
+        e.preventDefault();
         e.stopPropagation();
         if (activeId === itemId) {
           dispatch(setActive(undefined));
