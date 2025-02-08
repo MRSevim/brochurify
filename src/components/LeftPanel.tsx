@@ -38,7 +38,10 @@ const LeftPanel = () => {
   return (
     <PanelWrapper toggle={toggle} from="left">
       <AddSection />
-      <div className="overflow-y-auto max-h-scrollable-container	">
+      <div
+        className="overflow-y-auto max-h-scrollable-container"
+        style={{ scrollbarGutter: "stable" }}
+      >
         {data?.map((item) => {
           return (
             <LayoutItem
@@ -158,9 +161,9 @@ const LayoutItem = ({
           onDragOver={(e) => handleSideDragOver(e, "before")}
           onDragLeave={handleDragLeave}
           className={
-            "absolute -top-3 left-0 right-0 m-2 h-2 hover:bg-gray-800 " +
+            "absolute -top-3 left-0 right-0 m-2 h-2 hover:bg-gray " +
             marginLeftClass +
-            (beforeSelected ? " bg-light hover:bg-light" : "")
+            (beforeSelected ? " bg-text hover:bg-text" : "")
           }
         ></div>
         <div className={"m-2 " + marginLeftClass}>
@@ -175,7 +178,7 @@ const LayoutItem = ({
               onDragLeave={handleDragLeave}
               className={
                 "p-2 border flex items-center justify-between	" +
-                (activeId === id ? "border-light" : "border-slate-500")
+                (activeId === id ? "border-white" : "border-gray")
               }
             >
               {item.props.child && item.props.child.length > 0 && (
@@ -195,9 +198,9 @@ const LayoutItem = ({
           onDragOver={(e) => handleSideDragOver(e, "after")}
           onDragLeave={handleDragLeave}
           className={
-            "absolute -bottom-3 left-0 right-0 m-2 h-2 hover:bg-gray-800 " +
+            "absolute -bottom-3 left-0 right-0 m-2 h-2 hover:bg-gray " +
             marginLeftClass +
-            (afterSelected ? " bg-light hover:bg-light" : "")
+            (afterSelected ? " bg-text hover:bg-text" : "")
           }
         ></div>
       </div>
@@ -243,7 +246,7 @@ const AddSection = () => {
   return (
     <div className="flex justify-center relative z-10 p-1">
       <button
-        className="border rounded border-cyan-100	p-3"
+        className="border rounded border-text	p-3"
         onClick={() => setToggle((prev) => !prev)}
       >
         Add +
@@ -251,12 +254,12 @@ const AddSection = () => {
       {toggle && (
         <div
           ref={ref}
-          className="absolute top-full border rounded border-cyan-100 p-3 bg-dark flex flex-wrap"
+          className="absolute top-full border rounded border-text p-3 bg-background flex flex-wrap"
         >
           {availableElements.map((item, i) => (
             <button
               key={i}
-              className="rounded hover:bg-gray-800 p-3 w-1/3 flex justify-center"
+              className="rounded hover:shadow-sm hover:shadow-text hover:z-50 p-3 w-1/3 relative"
               onClick={() => {
                 dispatch(addElement({ type: item, addLocation }));
                 setToggle(false);

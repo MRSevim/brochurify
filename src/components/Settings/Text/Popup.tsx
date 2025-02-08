@@ -17,7 +17,7 @@ const Popup = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="absolute z-10 bg-dark border border-light rounded p-3 top-5">
+    <div className="absolute z-10 bg-background border border-text rounded p-3 top-5">
       {type === "color" && (
         <ColorPicker
           title="Pick a color"

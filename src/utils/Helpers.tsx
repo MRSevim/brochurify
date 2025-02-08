@@ -40,16 +40,15 @@ export const getDefaultStyle = (type: string): Style => {
     };
   } else if (type === "image") {
     return {
-      maxWidth: "100%",
       ...getDefaultStyle("no-space"),
     };
   } else if (type === "video") {
     return {
-      maxWidth: "100%",
       ...getDefaultStyle("no-space"),
     };
   } else if (type === "pageWise") {
     return {
+      color: "#000000",
       margin: "12px 12px 12px 12px",
       padding: "0px 0px 0px 0px",
     };
@@ -218,6 +217,12 @@ export const setValueFromShorthandStr = (
   return values.join(" "); // Recombine the values into a shorthand string
 };
 
+export function setCookie(cname: String, cvalue: string, exdays: number) {
+  const d = new Date();
+  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
 export const fontOptions = [
   "default",
   "Arial ,sans-serif",

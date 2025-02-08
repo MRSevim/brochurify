@@ -1,6 +1,6 @@
 const BottomLine = () => {
   return (
-    <div className="absolute left-0 bottom-0 w-full h-[2px] bg-light rounded"></div>
+    <div className="absolute left-0 bottom-0 w-full h-[2px] bg-text rounded"></div>
   );
 };
 

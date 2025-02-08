@@ -6,6 +6,7 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: ["class"],
   theme: {
     extend: {
       screens: {
@@ -15,17 +16,21 @@ export default {
         "screen-header-excluded": "calc(100vh - 40px);",
       },
       maxHeight: {
-        "scrollable-container": "calc(100vh - 90px);",
+        "scrollable-container": "calc(100vh - 98px);",
       },
       width: {
         "screen-one-excluded": "calc(100vw - 384px);",
         "screen-both-excluded": "calc(100vw - 768px);",
       },
       colors: {
-        dark: "var(--dark)",
-        light: "var(--light)",
+        background: "var(--background)",
+        text: "var(--text)",
+        gray: "var(--gray)",
       },
     },
   },
   plugins: [],
+  corePlugins: {
+    preflight: false,
+  },
 } satisfies Config;

@@ -11,10 +11,7 @@ const TextInput = ({
 }) => {
   return (
     <form className="mb-2">
-      <label
-        htmlFor="text-input"
-        className="block mb-2 text-sm font-medium text-light"
-      >
+      <label htmlFor="text-input" className="block mb-2 text-sm font-medium">
         {title}
       </label>
       <input
@@ -22,7 +19,7 @@ const TextInput = ({
         id="text-input"
         value={value}
         onChange={onChange}
-        className="bg-gray-700 border border-gray-600 text-light text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
+        className="bg-gray-700 border border-gray-600 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
       />
     </form>
   );

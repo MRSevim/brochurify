@@ -10,7 +10,10 @@ const RightPanel = () => {
 
   return (
     <PanelWrapper toggle={toggle} from="right">
-      <div className="overflow-y-auto max-h-scrollable-container m-2">
+      <div
+        className="overflow-y-auto max-h-scrollable-container m-2"
+        style={{ scrollbarGutter: "stable" }}
+      >
         {active && <ElementSettings />}
         {!active && <PageSettings />}
       </div>

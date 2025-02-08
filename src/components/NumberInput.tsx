@@ -13,7 +13,7 @@ const NumberInput = ({
     <form>
       <label
         htmlFor="number-input"
-        className="block mb-2 text-sm font-medium text-light"
+        className="block mb-2 text-sm font-medium text-text"
       >
         {title}
       </label>
@@ -22,7 +22,7 @@ const NumberInput = ({
         id="number-input"
         value={value}
         onChange={onChange}
-        className="bg-gray-700 border border-gray-600 text-light text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
+        className="bg-gray-700 border border-gray-600 text-dark text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
       />
     </form>
   );

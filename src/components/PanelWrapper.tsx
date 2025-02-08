@@ -13,8 +13,8 @@ const PanelWrapper = ({ toggle, from, children }: Props) => {
   return (
     <section
       className={
-        "bg-dark border-light w-screen h-screen-header-excluded transition-transform sm:w-96 absolute top-0 text-light " +
-        (from === "right" ? " right-0 border-l-4 " : " border-r-4 ") +
+        "bg-background w-screen h-screen-header-excluded transition-transform sm:w-96 absolute top-0 " +
+        (from === "right" ? " right-0 " : "") +
         (!toggle ? translateString : "")
       }
     >

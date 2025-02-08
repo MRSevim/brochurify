@@ -1,6 +1,10 @@
 import React from "react";
 
-type Props = { text?: string; checked: boolean; onChange: () => void };
+type Props = {
+  text?: string | React.ReactNode;
+  checked: boolean;
+  onChange: () => void;
+};
 const ToggleBtn = ({ text, checked, onChange }: Props) => {
   return (
     <label className="inline-flex items-center cursor-pointer">
@@ -10,10 +14,8 @@ const ToggleBtn = ({ text, checked, onChange }: Props) => {
         className="sr-only peer"
         onChange={onChange}
       />
-      <div className="relative w-11 h-6 bg-gray-500 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-800"></div>
-      <span className="ms-3 text-sm font-medium text-light ">
-        {text && text}
-      </span>
+      <div className="relative w-11 h-6 bg-gray peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-gray-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-text after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-background after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-800"></div>
+      <span className="ms-2 text-sm font-medium">{text && text}</span>
     </label>
   );
 };

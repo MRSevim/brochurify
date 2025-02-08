@@ -42,7 +42,7 @@ const Text = () => {
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "bg-light text-dark p-2 rounded",
+        class: "bg-white text-black p-2 rounded",
       },
     },
   });
@@ -294,15 +294,14 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
         <Popup type={popup} editor={editor}>
           <div className="flex justify-center gap-2">
             <button
-              className="p-1 text-dark bg-light rounded
-            "
+              className="p-1 text-background bg-gray rounded cursor-pointer"
               onClick={() => setPopup("")}
             >
               {" "}
               Close
             </button>
             <button
-              className="p-1 text-dark bg-light rounded"
+              className="p-1 text-background bg-gray rounded cursor-pointer"
               onClick={() => {
                 if (popup === "color") {
                   editor.chain().focus().unsetColor().run();
@@ -328,7 +327,9 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
           key={item.type}
           type={item.type}
           size={size}
-          className={className + (item.active ? " bg-light text-dark" : "")}
+          className={
+            className + (item.active ? " bg-text text-background" : "")
+          }
           onClick={item.onClick}
         />
       ))}

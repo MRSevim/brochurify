@@ -28,7 +28,7 @@ const Slider = ({ min, max, step, title, onChange, value, parse }: Props) => {
         value={parsed}
         step={step}
         onChange={onChange}
-        className="w-full h-2 bg-light rounded-lg appearance-none cursor-pointer"
+        className="w-full h-2 rounded-lg appearance-none cursor-pointer"
       />
       <span className="text-sm text-gray-400 absolute start-0 -bottom-6">
         {min}
