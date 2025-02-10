@@ -7,7 +7,7 @@ const ToggleVisibilityWrapper = ({ children, title }: Props) => {
   const [visible, setVisible] = useState(false);
   return (
     <>
-      <div className="flex justify-between font-medium text-lg text-light mb-2 items-center border border-light rounded p-2">
+      <div className="flex justify-between font-medium text-lg text-light mb-2 items-center border border-text rounded p-2">
         <h2>{title}</h2>
         <ToggleButton
           onClick={() => setVisible((prev) => !prev)}

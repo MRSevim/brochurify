@@ -25,6 +25,8 @@ import {
 } from "@/redux/slices/editorSlice";
 import Icon from "./Icon";
 import { Layout, Where } from "@/utils/Types";
+import AddButton from "./AddButton";
+import DeleteButton from "./DeleteButton";
 
 type VisibilityMap = Map<string, boolean>;
 
@@ -186,7 +188,12 @@ const LayoutItem = ({
               )}
               {item.type}
 
-              <DeleteButton itemId={id} />
+              <DeleteButton
+                onClick={(event) => {
+                  event.stopPropagation();
+                  dispatch(deleteElement(id));
+                }}
+              />
             </div>
           </FocusWrapper>
         </div>
@@ -245,12 +252,7 @@ const AddSection = () => {
 
   return (
     <div className="flex justify-center relative z-10 p-1">
-      <button
-        className="border rounded border-text	p-3"
-        onClick={() => setToggle((prev) => !prev)}
-      >
-        Add +
-      </button>
+      <AddButton onClick={() => setToggle((prev) => !prev)} />
       {toggle && (
         <div
           ref={ref}
@@ -295,18 +297,4 @@ const ToggleButton = ({
   );
 };
 
-const DeleteButton = ({ itemId }: { itemId: string }) => {
-  const dispatch = useAppDispatch();
-  return (
-    <button
-      className="bg-red-800 p-1 rounded"
-      onClick={(event) => {
-        event.stopPropagation();
-        dispatch(deleteElement(itemId));
-      }}
-    >
-      <Icon type="trash-fill" size="20px" title="Delete" />
-    </button>
-  );
-};
 export default LeftPanel;

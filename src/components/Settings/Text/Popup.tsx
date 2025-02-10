@@ -30,6 +30,7 @@ const Popup = ({
       {type === "font-family" && (
         <Select
           title="Pick a font"
+          showStyled={true}
           options={fontOptions}
           selected={editor.getAttributes("textStyle").fontFamily || ""}
           onChange={(e) => {

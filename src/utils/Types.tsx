@@ -33,6 +33,15 @@ export interface EditorState {
   addLocation: AddLocation;
   dropHandled: boolean;
   draggedItem?: string;
+  variables: VariableWithId[];
+}
+export type Variable = {
+  type: "color" | "font-family";
+  name: string;
+  value: string;
+};
+export interface VariableWithId extends Variable {
+  id: string;
 }
 export type AddLocation = {
   id: string;
@@ -55,6 +64,7 @@ export type Style = {
   padding?: string;
   margin?: string;
   border?: string;
+  borderRadius?: string;
   [key: string]: string | undefined;
 };
 export type LayoutOrUnd = Layout | undefined;

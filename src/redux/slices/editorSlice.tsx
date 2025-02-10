@@ -21,6 +21,8 @@ import {
   ItemAndLocation,
   Layout,
   LayoutOrUnd,
+  Variable,
+  VariableWithId,
 } from "@/utils/Types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -65,6 +67,7 @@ const initialState: EditorState = {
   addLocation: null,
   dropHandled: false,
   pageWise: getDefaultStyle("pageWise"),
+  variables: [],
 };
 
 export const editorSlice = createSlice({
@@ -275,6 +278,36 @@ export const editorSlice = createSlice({
       element.props.text = action.payload;
       saveToLocalStorage("layout", state.layout);
     },
+    addVariable: (state, action: PayloadAction<Variable>) => {
+      const newVariable = { id: uuidv4(), ...action.payload };
+      state.variables.push(newVariable);
+    },
+    editVariable: (state, action: PayloadAction<VariableWithId>) => {
+      const newVariable = action.payload;
+      const found = state.variables.find((item) => item.id === newVariable.id);
+      if (!found) {
+        toast.error("Something went wrong");
+        return;
+      }
+      state.variables = state.variables.map((item) => {
+        if (item.id === newVariable.id) {
+          return newVariable;
+        } else return item;
+      });
+    },
+    deleteVariable: (state, action: PayloadAction<VariableWithId>) => {
+      const variableToDel = action.payload;
+      const found = state.variables.find(
+        (item) => item.id === variableToDel.id
+      );
+      if (!found) {
+        toast.error("Something went wrong");
+        return;
+      }
+      state.variables = state.variables.filter(
+        (item) => item.id !== variableToDel.id
+      );
+    },
   },
 });
 
@@ -296,5 +329,8 @@ export const {
   removeElementStyle,
   changeElementProp,
   updateText,
+  addVariable,
+  editVariable,
+  deleteVariable,
 } = editorSlice.actions;
 export default editorSlice.reducer;

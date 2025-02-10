@@ -1,5 +1,6 @@
-import Seo from "../Seo";
+import Seo from "./Seo";
 import SizingAndBorder from "../SizingAndBorder";
+import Variables from "./Variables";
 
 const PageSettings = () => {
   return (
@@ -10,6 +11,7 @@ const PageSettings = () => {
 
       <SizingAndBorder />
       <Seo />
+      <Variables />
     </div>
   );
 };

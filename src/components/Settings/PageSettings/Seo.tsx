@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
-import BottomLine from "../BottomLine";
-import TextInput from "../TextInput";
+import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
+import BottomLine from "@/components/BottomLine";
+import TextInput from "@/components/TextInput";
 import { getSetting } from "@/utils/Helpers";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
-import TextareaInput from "../TextareaInput";
-import LinkInput from "../LinkInput";
+import TextareaInput from "@/components/TextareaInput";
+import LinkInput from "@/components/LinkInput";
 
 const Seo = () => {
   return (
@@ -117,6 +117,7 @@ const CanonicalUrl = () => {
           )
         }
       />
+      <BottomLine />
     </div>
   );
 };
@@ -139,6 +140,7 @@ const WebsiteImage = () => {
           )
         }
       />
+      <BottomLine />
     </div>
   );
 };

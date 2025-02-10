@@ -23,7 +23,9 @@ export type HandleChangeType = (
 
 const Border = () => {
   const type = "border";
+  const borderRadiusType = "borderRadius";
   const borderStr = getSetting(useAppSelector, type);
+  const borderRadiusValue = getSetting(useAppSelector, borderRadiusType);
   const toggled = !!borderStr;
   const dispatch = useAppDispatch();
 
@@ -35,8 +37,15 @@ const Border = () => {
           newValue: "2px solid #000000",
         })
       );
+      dispatch(
+        changeElementStyle({
+          type: borderRadiusType,
+          newValue: "0%",
+        })
+      );
     } else {
       dispatch(removeElementStyle({ type }));
+      dispatch(removeElementStyle({ type: borderRadiusType }));
     }
   };
 
@@ -73,6 +82,22 @@ const Border = () => {
           <BorderColor
             onChange={(e) => handleChange(e, 2)}
             value={getValueFromShorthandStr(borderStr, 2)}
+          />
+          <Slider
+            parse={true}
+            value={borderRadiusValue || "0"}
+            min={0}
+            max={50}
+            step={1}
+            title={"Border Radius (%)"}
+            onChange={(e) =>
+              dispatch(
+                changeElementStyle({
+                  type: borderRadiusType,
+                  newValue: e.target.value + "%",
+                })
+              )
+            }
           />
         </>
       )}

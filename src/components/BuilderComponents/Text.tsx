@@ -4,11 +4,11 @@ import { PropsWithId } from "@/utils/Types";
 const Text = ({ id, text, style }: PropsWithId) => {
   const active = useActive(id);
   return (
-    <p
+    <div
       className={active}
       style={style}
       dangerouslySetInnerHTML={{ __html: text || "" }}
-    ></p>
+    ></div>
   );
 };
 

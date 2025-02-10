@@ -39,7 +39,7 @@ const Editor = () => {
         "relative overflow-y-auto h-screen-header-excluded " + addedString
       }
     >
-      <div style={pageWise}>
+      <div style={pageWise} className="editor">
         {data?.map((item) => {
           return (
             <div key={item.id}>
@@ -85,12 +85,6 @@ const renderComponent = (
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
 
-  const shouldBeInlineBlock =
-    item.type === "button" ||
-    item.type === "image" ||
-    item.type === "audio" ||
-    item.type === "video";
-
   return (
     <div key={id} className="relative">
       <div
@@ -115,7 +109,6 @@ const renderComponent = (
             handleCenterDragOverCaller(e, item, dispatch);
           }}
           onDragLeave={() => handleDragLeaveCaller(dispatch)}
-          className={shouldBeInlineBlock ? " inline-block" : ""}
         >
           <Component id={id} {...item.props}>
             {item.props.child?.map((childItem) =>

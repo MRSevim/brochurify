@@ -49,6 +49,7 @@ export const getDefaultStyle = (type: string): Style => {
   } else if (type === "pageWise") {
     return {
       color: "#000000",
+      lineHeight: "1.5",
       margin: "12px 12px 12px 12px",
       padding: "0px 0px 0px 0px",
     };

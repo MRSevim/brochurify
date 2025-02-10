@@ -16,6 +16,7 @@ export default {
         "screen-header-excluded": "calc(100vh - 40px);",
       },
       maxHeight: {
+        "screen-header-excluded": "calc(100vh - 40px);",
         "scrollable-container": "calc(100vh - 98px);",
       },
       width: {
