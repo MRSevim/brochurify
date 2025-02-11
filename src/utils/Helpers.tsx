@@ -1,12 +1,5 @@
 import Button from "@/components/BuilderComponents/Button";
-import {
-  Layout,
-  Props,
-  Style,
-  EditorState,
-  PageWise,
-  PropsWithId,
-} from "./Types";
+import { Props, Style, EditorState, PropsWithId } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
@@ -40,18 +33,20 @@ export const getDefaultStyle = (type: string): Style => {
     };
   } else if (type === "image") {
     return {
+      width: "200px",
+      height: "200px",
       ...getDefaultStyle("no-space"),
     };
   } else if (type === "video") {
     return {
+      width: "300px",
+      height: "200px",
       ...getDefaultStyle("no-space"),
     };
   } else if (type === "pageWise") {
     return {
       color: "#000000",
       lineHeight: "1.5",
-      margin: "12px 12px 12px 12px",
-      padding: "0px 0px 0px 0px",
     };
   } else if (type === "no-space") {
     return {
@@ -115,8 +110,6 @@ export const getDefaultElementProps = (type: string): Props => {
   } else if (type === "image") {
     return {
       style: getDefaultStyle("image"),
-      width: 200,
-      height: 200,
       src: "/placeholder-image.jpg",
     };
   } else if (type === "audio") {
@@ -127,19 +120,17 @@ export const getDefaultElementProps = (type: string): Props => {
   } else if (type === "video") {
     return {
       style: getDefaultStyle("video"),
-      width: 300,
-      height: 200,
       src: "",
     };
   }
   return {};
 };
 
-export const saveToLocalStorage = (key: string, param: Layout[] | PageWise) => {
+export const saveToLocalStorage = (param: EditorState) => {
   // Convert the state.layout to a JSON string
   const val = JSON.stringify(param);
 
-  localStorage.setItem(key, val);
+  localStorage.setItem("editor", val);
 };
 
 export const capitalizeFirstLetter = (str: string) => {

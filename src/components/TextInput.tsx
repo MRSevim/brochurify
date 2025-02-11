@@ -11,12 +11,15 @@ const TextInput = ({
 }) => {
   return (
     <form className="mb-2">
-      <label htmlFor="text-input" className="block mb-2 text-sm font-medium">
+      <label
+        htmlFor={"text-input-" + title}
+        className="block mb-2 text-sm font-medium"
+      >
         {title}
       </label>
       <input
         type="text"
-        id="text-input"
+        id={"text-input-" + title}
         value={value}
         onChange={onChange}
         className="bg-gray-700 border border-gray-600 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"

@@ -40,10 +40,7 @@ const LeftPanel = () => {
   return (
     <PanelWrapper toggle={toggle} from="left">
       <AddSection />
-      <div
-        className="overflow-y-auto max-h-scrollable-container"
-        style={{ scrollbarGutter: "stable" }}
-      >
+      <div className="overflow-y-auto max-h-scrollable-container gutter-stable">
         {data?.map((item) => {
           return (
             <LayoutItem

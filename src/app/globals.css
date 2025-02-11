@@ -22,21 +22,6 @@ h6 {
   font-size: inherit;
   font-weight: inherit;
 }
-img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
-  display: block;
-}
-img,
-video {
-  max-width: 100%;
-  height: auto;
-}
 button {
   cursor: pointer;
   color: inherit;
@@ -68,6 +53,9 @@ textarea {
 body {
   color: var(--text);
   background-color: #ededed;
+}
+.gutter-stable {
+  scrollbar-gutter: stable;
 }
 /*Scrollbar*/
 *::-webkit-scrollbar {

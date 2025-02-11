@@ -1,5 +1,4 @@
 import Seo from "./Seo";
-import SizingAndBorder from "../SizingAndBorder";
 import Variables from "./Variables";
 
 const PageSettings = () => {
@@ -9,7 +8,6 @@ const PageSettings = () => {
         Settings For The Whole Page
       </h1>
 
-      <SizingAndBorder />
       <Seo />
       <Variables />
     </div>

@@ -39,7 +39,7 @@ const Editor = () => {
         "relative overflow-y-auto h-screen-header-excluded " + addedString
       }
     >
-      <div style={pageWise} className="editor">
+      <div style={pageWise} className="editor p-px">
         {data?.map((item) => {
           return (
             <div key={item.id}>

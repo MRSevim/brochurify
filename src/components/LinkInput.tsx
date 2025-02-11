@@ -11,12 +11,15 @@ const LinkInput = ({
 }) => {
   return (
     <form className="mb-2">
-      <label htmlFor="link-input" className="block mb-2 text-sm font-medium">
+      <label
+        htmlFor={"link-input-" + title}
+        className="block mb-2 text-sm font-medium"
+      >
         {title}
       </label>
       <input
         type="url"
-        id="link-input"
+        id={"link-input-" + title}
         value={value}
         onChange={onChange}
         className="bg-gray-700 border border-gray-600 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"

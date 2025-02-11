@@ -22,20 +22,10 @@ export default function ClientWrapper({
     // Create the store instance the first time this renders
     storeRef.current = makeStore();
     if (typeof window !== "undefined") {
-      const layout = localStorage.getItem("layout");
-      const pageWise = localStorage.getItem("pageWise");
-      if (layout) {
-        const layoutParsed = JSON.parse(layout);
-        if (pageWise) {
-          const pageWiseParsed = JSON.parse(pageWise);
-          storeRef.current.dispatch(
-            hydrate({ layout: layoutParsed, pageWise: pageWiseParsed })
-          );
-        } else {
-          storeRef.current.dispatch(
-            hydrate({ layout: layoutParsed, pageWise: undefined })
-          );
-        }
+      const editorState = localStorage.getItem("editor");
+      if (editorState) {
+        const editorStateParsed = JSON.parse(editorState);
+        storeRef.current.dispatch(hydrate(editorStateParsed));
       }
     }
   }

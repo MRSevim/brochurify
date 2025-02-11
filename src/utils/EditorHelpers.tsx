@@ -75,7 +75,7 @@ export const moveElementInner = (
       false
     );
 
-    saveToLocalStorage("layout", state.layout);
+    saveToLocalStorage(state);
   }
 };
 export const canElementHaveChild = (

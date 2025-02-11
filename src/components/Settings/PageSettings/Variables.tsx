@@ -4,6 +4,7 @@ import ColorPicker from "@/components/ColorPicker";
 import DeleteButton from "@/components/DeleteButton";
 import EditButton from "@/components/EditButton";
 import Select from "@/components/Select";
+import SmallText from "@/components/SmallText";
 import TextInput from "@/components/TextInput";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -29,6 +30,7 @@ const VariablesInner = () => {
   const [editedVar, setEditedVar] = useState<VariableWithId | null>(null);
   return (
     <div className="flex flex-col items-center relative pb-2 mb-2">
+      <SmallText>Add variables that you can use throughout your page</SmallText>
       <AddButton
         onClick={() => {
           setEditedVar(null);

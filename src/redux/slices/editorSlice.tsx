@@ -77,9 +77,10 @@ export const editorSlice = createSlice({
     setActive: (state, action: PayloadAction<LayoutOrUnd>) => {
       setActiveInner(state, action.payload);
     },
-    hydrate: (state, action) => {
+    hydrate: (state, action: PayloadAction<EditorState>) => {
       state.layout = action.payload.layout;
-      state.pageWise = action.payload.pageWise || getDefaultStyle("pageWise");
+      state.pageWise = action.payload.pageWise;
+      state.variables = action.payload.variables;
     },
     setDraggedItem: (state, action: PayloadAction<string | undefined>) => {
       state.draggedItem = action.payload;
@@ -133,12 +134,15 @@ export const editorSlice = createSlice({
           action.payload.addLocation,
           true
         );
-        saveToLocalStorage("layout", state.layout);
+        saveToLocalStorage(state);
       }
     },
     deleteElement: (state, action: PayloadAction<string>) => {
+      if (action.payload === state.active?.id) {
+        state.active = undefined;
+      }
       state.layout = deleteFromLayout(state.layout, action.payload);
-      saveToLocalStorage("layout", state.layout);
+      saveToLocalStorage(state);
     },
     moveElement: (state, action: PayloadAction<ItemAndLocation>) => {
       moveElementInner(state, action.payload);
@@ -178,11 +182,10 @@ export const editorSlice = createSlice({
       };
       if (!state.active) {
         state.pageWise[type] = newValue;
-        saveToLocalStorage("pageWise", state.pageWise);
       } else {
         state.layout = updateStyle(state.layout);
-        saveToLocalStorage("layout", state.layout);
       }
+      saveToLocalStorage(state);
     },
     removeElementStyle: (state, action: PayloadAction<{ type: string }>) => {
       const { type } = action.payload;
@@ -218,11 +221,10 @@ export const editorSlice = createSlice({
       };
       if (!state.active) {
         state.pageWise[type] = undefined;
-        saveToLocalStorage("pageWise", state.pageWise);
       } else {
-        state.layout = removeStyle(state.layout); // Update the state layout with the modified structure
-        saveToLocalStorage("layout", state.layout); // Persist the updated layout
+        state.layout = removeStyle(state.layout);
       }
+      saveToLocalStorage(state);
     },
     changeElementProp: (
       state,
@@ -232,7 +234,6 @@ export const editorSlice = createSlice({
       }>
     ) => {
       const { type, newValue } = action.payload;
-
       const changeProp = (layout: Layout[]): Layout[] => {
         return layout.map((item) => {
           // Check if the current item has the active ID
@@ -262,7 +263,7 @@ export const editorSlice = createSlice({
       };
 
       state.layout = changeProp(state.layout); // Update the state layout with the modified structure
-      saveToLocalStorage("layout", state.layout); // Persist the updated layout
+      saveToLocalStorage(state); // Persist the updated layout
     },
     updateText: (state, action: PayloadAction<string>) => {
       const activeId = state.active?.id;
@@ -276,11 +277,12 @@ export const editorSlice = createSlice({
         return;
       }
       element.props.text = action.payload;
-      saveToLocalStorage("layout", state.layout);
+      saveToLocalStorage(state);
     },
     addVariable: (state, action: PayloadAction<Variable>) => {
       const newVariable = { id: uuidv4(), ...action.payload };
       state.variables.push(newVariable);
+      saveToLocalStorage(state);
     },
     editVariable: (state, action: PayloadAction<VariableWithId>) => {
       const newVariable = action.payload;
@@ -294,6 +296,7 @@ export const editorSlice = createSlice({
           return newVariable;
         } else return item;
       });
+      saveToLocalStorage(state);
     },
     deleteVariable: (state, action: PayloadAction<VariableWithId>) => {
       const variableToDel = action.payload;
@@ -307,6 +310,7 @@ export const editorSlice = createSlice({
       state.variables = state.variables.filter(
         (item) => item.id !== variableToDel.id
       );
+      saveToLocalStorage(state);
     },
   },
 });

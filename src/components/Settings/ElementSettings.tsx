@@ -5,7 +5,9 @@ import Text from "./Text/Text";
 import Url from "./Url";
 
 const ElementSettings = () => {
-  const activeType = useAppSelector((state) => state.editor.active?.type);
+  const active = useAppSelector((state) => state.editor.active);
+  const activeType = active?.type;
+  const activeId = active?.id;
   const shouldHaveSource =
     activeType === "audio" || activeType === "image" || activeType === "video";
   const shouldHaveText = activeType === "text";
@@ -18,7 +20,7 @@ const ElementSettings = () => {
 
       <SizingAndBorder />
       {shouldHaveSource && <Source />}
-      {shouldHaveText && <Text />}
+      {shouldHaveText && <Text key={activeId} />}
       {shouldHaveUrl && <Url />}
     </div>
   );

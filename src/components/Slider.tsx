@@ -15,13 +15,13 @@ const Slider = ({ min, max, step, title, onChange, value, parse }: Props) => {
   return (
     <div className="relative mb-8">
       <label
-        htmlFor="steps-range"
+        htmlFor={"steps-range-" + title}
         className=" mb-1 text-sm font-medium text-light "
       >
         {title}
       </label>
       <input
-        id="steps-range"
+        id={"steps-range-" + title}
         type="range"
         min={min}
         max={max}

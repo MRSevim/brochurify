@@ -14,13 +14,13 @@ const TextareaInput = ({
   return (
     <form className="mb-2">
       <label
-        htmlFor="textarea-input"
+        htmlFor={"textarea-input-" + title}
         className="block mb-2 text-sm font-medium"
       >
         {title}
       </label>
       <textarea
-        id="textarea"
+        id={"textarea-input-" + title}
         rows={rows}
         value={value}
         onChange={onChange}

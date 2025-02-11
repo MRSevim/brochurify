@@ -1,10 +1,9 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Icon from "../Icon";
 import Slider from "../Slider";
 import { SizingType } from "@/utils/Types";
 import {
   capitalizeFirstLetter,
-  getProp,
   getSetting,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
@@ -12,8 +11,8 @@ import {
 import Border from "./Border";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
-  changeElementProp,
   changeElementStyle,
+  removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import Image from "next/image";
 import marginBorderPadding from "../../../public/margin-border-padding.webp";
@@ -21,6 +20,7 @@ import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import NumberInput from "../NumberInput";
 import SecondaryTitle from "../SecondaryTitle";
 import BottomLine from "../BottomLine";
+import GroupedRadioButtons from "../GroupedRadioButtons";
 
 const sizingTypeArray: SizingType[] = [
   {
@@ -46,31 +46,29 @@ const SizingAndBorder = () => {
 };
 
 const SizingAndBorderInner = () => {
-  const active = useAppSelector((state) => state.editor.active);
-  const shouldHaveWidthAndHeight =
-    active && (active.type === "image" || active.type === "video");
   return (
     <>
       {" "}
       <Image
         src={marginBorderPadding}
         alt="Margin, border, padding schema"
-        className="mb-2"
+        className="mb-2 w-full h-auto"
       />
       <MarginOrPadding sizingTypeArray={sizingTypeArray} type="margin" />
       <Border />
       <MarginOrPadding sizingTypeArray={sizingTypeArray} type="padding" />
-      {shouldHaveWidthAndHeight && <WidthAndHeight />}
+      <WidthAndHeight />
     </>
   );
 };
 
 const WidthAndHeight = () => {
+  const activeId = useAppSelector((state) => state.editor.active?.id);
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Width and Height" />
 
-      <div className="flex gap-2">
+      <div className="flex gap-2" key={activeId}>
         <NumberController type="width" />
         <NumberController type="height" />
       </div>
@@ -79,16 +77,61 @@ const WidthAndHeight = () => {
   );
 };
 
+const possibleRadioValues = ["px", "%", "auto"];
+const getUnit = (value: string | undefined) => {
+  if (!value) return;
+  const match = value.match(/\d+(px|%)|auto/);
+  return match ? match[0].replace(/\d+/, "") : null;
+};
+
 const NumberController = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
-  const value = getProp<number>(useAppSelector, type);
+  const variable = getSetting(useAppSelector, type);
+  const initialType = getUnit(variable);
+  const [radioType, setRadioType] = useState(initialType || "px");
+
+  useEffect(() => {
+    if (variable && variable !== "auto" && radioType !== "auto") {
+      dispatch(
+        changeElementStyle({
+          type,
+          newValue: parseInt(variable, 10) + radioType,
+        })
+      );
+    } else if (variable === "auto" && radioType !== "auto") {
+      dispatch(removeElementStyle({ type }));
+    }
+  }, [radioType]);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(changeElementProp({ type, newValue: +e.target.value }));
+    if (e.target.value === "") {
+      dispatch(removeElementStyle({ type }));
+    } else {
+      dispatch(
+        changeElementStyle({ type, newValue: +e.target.value + radioType })
+      );
+    }
   };
+
   return (
-    <div className="mb-2 flex items-center">
-      <NumberInput title={type} value={+value} onChange={handleInputChange} />
+    <div className="mb-2 flex flex-col items-center">
+      <GroupedRadioButtons
+        valuesArr={possibleRadioValues}
+        checked={radioType}
+        name={type}
+        onChange={(e) => {
+          if (e.target.value === "auto") {
+            dispatch(changeElementStyle({ type, newValue: "auto" }));
+          }
+          setRadioType(e.target.value);
+        }}
+      />
+
+      <NumberInput
+        title={type}
+        value={variable || ""}
+        onChange={handleInputChange}
+      ></NumberInput>
     </div>
   );
 };

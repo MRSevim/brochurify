@@ -6,12 +6,9 @@ export interface Props {
   href?: string;
   newTab?: boolean;
   alt?: string;
-  width?: number;
-  height?: number;
   children?: React.ReactNode;
   [key: string]:
     | string
-    | number
     | boolean
     | Style
     | Layout[]
@@ -64,6 +61,8 @@ export type Style = {
   padding?: string;
   margin?: string;
   border?: string;
+  width?: string;
+  height?: string;
   borderRadius?: string;
   [key: string]: string | undefined;
 };

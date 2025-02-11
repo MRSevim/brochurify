@@ -21,13 +21,16 @@ const ColorPicker = ({ title, selected, onChange }: Props) => {
   const converted = rgbToHex(selected);
   return (
     <div className="mb-2 flex items-center">
-      <label htmlFor="colorpicker" className="text-sm font-medium text-light">
+      <label
+        htmlFor={"colorpicker-" + title}
+        className="text-sm font-medium text-light"
+      >
         {title}
       </label>
       <input
         className="ms-2"
         type="color"
-        id="colorpicker"
+        id={"colorpicker-" + title}
         value={converted}
         onChange={onChange}
       />
