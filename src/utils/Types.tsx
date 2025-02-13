@@ -46,14 +46,16 @@ export type AddLocation = {
 } | null;
 
 export type PageWise = {
-  padding?: string;
-  margin?: string;
-  border?: string;
   title?: string;
   description?: string;
   keywords?: string;
   canonical?: string;
   image?: string;
+  color: string;
+  backgroundColor: string;
+  fontSize: string;
+  fontFamily: string;
+  lineHeight: string;
   [key: string]: string | undefined;
 };
 
@@ -73,3 +75,4 @@ export type SizingType = {
   title: string;
 };
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+export type OptionsObject = { title: string; value: string };

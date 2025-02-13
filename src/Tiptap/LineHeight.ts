@@ -14,7 +14,7 @@ declare module "@tiptap/core" {
        */
       setLineHeight: (height: string) => ReturnType;
       /**
-       * Unset the text align attribute
+       * Unset the line height attribute
        */
       unsetLineHeight: () => ReturnType;
     };

@@ -101,6 +101,8 @@ hr {
 .editor * {
   color: inherit;
   line-height: inherit;
+  font-size: inherit;
+  font-family: inherit;
 }
 .active {
   position: relative;

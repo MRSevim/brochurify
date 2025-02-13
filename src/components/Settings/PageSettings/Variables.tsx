@@ -92,6 +92,7 @@ const Popup = ({
       />
       {type === "color" && (
         <ColorPicker
+          variableSelect={false}
           title="Pick a color"
           selected={color}
           onChange={(e) => setColor(e.target.value)}

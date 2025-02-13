@@ -1,4 +1,5 @@
 import Seo from "./Seo";
+import Styles from "./Styles";
 import Variables from "./Variables";
 
 const PageSettings = () => {
@@ -10,6 +11,7 @@ const PageSettings = () => {
 
       <Seo />
       <Variables />
+      <Styles />
     </div>
   );
 };

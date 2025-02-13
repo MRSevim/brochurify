@@ -80,6 +80,14 @@ const Border = () => {
             value={getValueFromShorthandStr(borderStr, 1)}
           />
           <BorderColor
+            handleVarSelect={(param) => {
+              dispatch(
+                changeElementStyle({
+                  type,
+                  newValue: setValueFromShorthandStr(borderStr, 2, param),
+                })
+              );
+            }}
             onChange={(e) => handleChange(e, 2)}
             value={getValueFromShorthandStr(borderStr, 2)}
           />
@@ -109,14 +117,17 @@ const Border = () => {
 
 const BorderColor = ({
   onChange,
+  handleVarSelect,
   value,
 }: {
   onChange: HandleChangeType;
+  handleVarSelect: (param: string) => void;
   value: string;
 }) => {
   return (
     <ColorPicker
-      title={"Select a border color:"}
+      onVarSelect={handleVarSelect}
+      title={"Select a border color"}
       selected={value}
       onChange={onChange}
     />
@@ -143,7 +154,7 @@ const BorderType = ({
 
   return (
     <Select
-      title={"Select a border type:"}
+      title={"Select a border type"}
       options={types}
       selected={value}
       onChange={onChange}

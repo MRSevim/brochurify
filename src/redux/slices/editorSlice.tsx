@@ -5,6 +5,7 @@ import {
   handleDragLeaveInner,
   handleDropInner,
   insertElement,
+  isInChildren,
   moveElementInner,
   setActiveInner,
   setAddLocationInner,
@@ -12,7 +13,7 @@ import {
 } from "@/utils/EditorHelpers";
 import {
   getDefaultElementProps,
-  getDefaultStyle,
+  getPageWise,
   saveToLocalStorage,
 } from "@/utils/Helpers";
 import {
@@ -66,7 +67,7 @@ const initialState: EditorState = {
   layout: initialLayout,
   addLocation: null,
   dropHandled: false,
-  pageWise: getDefaultStyle("pageWise"),
+  pageWise: getPageWise(),
   variables: [],
 };
 
@@ -138,8 +139,17 @@ export const editorSlice = createSlice({
       }
     },
     deleteElement: (state, action: PayloadAction<string>) => {
-      if (action.payload === state.active?.id) {
-        state.active = undefined;
+      if (state.active) {
+        const found = findElementById(state.layout, state.active.id)?.props
+          .child;
+        if (
+          found &&
+          (action.payload === state.active.id ||
+            isInChildren(found, action.payload))
+        ) {
+          //if deleted element is active or deleted elements descendant is active
+          state.active = undefined;
+        }
       }
       state.layout = deleteFromLayout(state.layout, action.payload);
       saveToLocalStorage(state);

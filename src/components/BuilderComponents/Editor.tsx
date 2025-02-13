@@ -33,6 +33,7 @@ const Editor = () => {
   } else if (settingsToggle) {
     addedString = "right-full sm:left-0 sm:right-96 w-screen-one-excluded";
   }
+
   return (
     <section
       className={

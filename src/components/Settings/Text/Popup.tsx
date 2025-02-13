@@ -3,7 +3,8 @@ import ColorPicker from "@/components/ColorPicker";
 import LinkInput from "@/components/LinkInput";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
-import { fontOptions } from "@/utils/Helpers";
+import { useAppSelector } from "@/redux/hooks";
+import { fontOptions, getFontVariables } from "@/utils/Helpers";
 import { Editor } from "@tiptap/react";
 import { useEffect, useState } from "react";
 
@@ -16,12 +17,19 @@ const Popup = ({
   editor: Editor;
   children: React.ReactNode;
 }) => {
+  const fontVariables = getFontVariables(useAppSelector);
+  const pageWise = useAppSelector((state) => state.editor.pageWise);
   return (
     <div className="absolute z-10 bg-background border border-text rounded p-3 top-5">
       {type === "color" && (
         <ColorPicker
+          onVarSelect={(param) => editor.chain().focus().setColor(param).run()}
           title="Pick a color"
-          selected={editor.getAttributes("textStyle").color || "#000000"}
+          selected={
+            editor.getAttributes("textStyle").color ||
+            pageWise.color ||
+            "#000000"
+          }
           onChange={(e) =>
             editor.chain().focus().setColor(e.target.value).run()
           }
@@ -31,10 +39,14 @@ const Popup = ({
         <Select
           title="Pick a font"
           showStyled={true}
-          options={fontOptions}
-          selected={editor.getAttributes("textStyle").fontFamily || ""}
+          options={[...fontOptions, ...fontVariables]}
+          selected={
+            editor.getAttributes("textStyle").fontFamily ||
+            pageWise.fontFamily ||
+            ""
+          }
           onChange={(e) => {
-            if (e.target.value === "default") {
+            if (e.target.value === "inherit") {
               editor.chain().focus().unsetFontFamily().run();
             } else {
               editor.chain().focus().setFontFamily(e.target.value).run();
@@ -49,7 +61,11 @@ const Popup = ({
           min={1}
           max={70}
           step={1}
-          value={editor.getAttributes("textStyle").fontSize || "16px"}
+          value={
+            editor.getAttributes("textStyle").fontSize ||
+            pageWise.fontSize ||
+            "16px"
+          }
           onChange={(e) =>
             editor
               .chain()
@@ -70,10 +86,32 @@ const Popup = ({
           value={
             editor.getAttributes("paragraph").lineHeight ||
             editor.getAttributes("heading").lineHeight ||
+            pageWise.lineHeight ||
             "1.5"
           }
           onChange={(e) =>
             editor.chain().focus().setLineHeight(e.target.value).run()
+          }
+        />
+      )}
+      {type === "letter-spacing" && (
+        <Slider
+          parse={true}
+          title="Pick a letter spacing"
+          min={-5}
+          max={40}
+          step={1}
+          value={
+            editor.getAttributes("paragraph").letterSpacing ||
+            editor.getAttributes("heading").letterSpacing ||
+            "0px"
+          }
+          onChange={(e) =>
+            editor
+              .chain()
+              .focus()
+              .setLetterSpacing(e.target.value + "px")
+              .run()
           }
         />
       )}

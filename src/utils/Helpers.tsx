@@ -1,5 +1,5 @@
 import Button from "@/components/BuilderComponents/Button";
-import { Props, Style, EditorState, PropsWithId } from "./Types";
+import { Props, Style, EditorState, PropsWithId, PageWise } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
@@ -18,6 +18,16 @@ export const componentList = {
   image: (props: PropsWithId) => <Image {...props} />,
   audio: (props: PropsWithId) => <Audio {...props} />,
   video: (props: PropsWithId) => <Video {...props} />,
+};
+
+export const getPageWise = (): PageWise => {
+  return {
+    color: "#000000",
+    backgroundColor: "#ffffff",
+    fontSize: "16px",
+    fontFamily: "inherit",
+    lineHeight: "1.5",
+  };
 };
 
 export const getDefaultStyle = (type: string): Style => {
@@ -43,15 +53,15 @@ export const getDefaultStyle = (type: string): Style => {
       height: "200px",
       ...getDefaultStyle("no-space"),
     };
-  } else if (type === "pageWise") {
-    return {
-      color: "#000000",
-      lineHeight: "1.5",
-    };
   } else if (type === "no-space") {
     return {
       margin: "0px 0px 0px 0px",
       padding: "0px 0px 0px 0px",
+    };
+  } else if (type === "column") {
+    return {
+      margin: "0px 10px 0px 10px",
+      padding: "10px 10px 10px 10px",
     };
   }
   return {
@@ -82,7 +92,7 @@ export const getDefaultElementProps = (type: string): Props => {
     };
   } else if (type === "column") {
     return {
-      style: getDefaultStyle(""),
+      style: getDefaultStyle("column"),
       child: [
         {
           id: uuidv4(),
@@ -173,6 +183,16 @@ export const getProp = <T extends unknown>(
   });
 };
 
+export const getFontVariables = (
+  useAppSelector: UseSelector<{
+    editor: EditorState;
+  }>
+) => {
+  return useAppSelector((state) => state.editor.variables)
+    .filter((item) => item.type === "font-family")
+    .map((item) => ({ title: item.name, value: item.value }));
+};
+
 export const getValueFromShorthandStr = (
   str: string | undefined,
   i: number | undefined
@@ -216,7 +236,7 @@ export function setCookie(cname: String, cvalue: string, exdays: number) {
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 export const fontOptions = [
-  "default",
+  "inherit",
   "Arial ,sans-serif",
   "Verdana ,sans-serif",
   "Tahoma ,sans-serif",

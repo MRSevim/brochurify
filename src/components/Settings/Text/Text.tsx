@@ -20,6 +20,7 @@ import SecondaryTitle from "../../SecondaryTitle";
 import Popup from "./Popup";
 import { updateText } from "@/redux/slices/editorSlice";
 import sanitizeHtml from "sanitize-html";
+import LetterSpacing from "@/Tiptap/LetterSpacing";
 
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
@@ -30,6 +31,7 @@ const Text = () => {
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Color,
       TextStyle,
+      LetterSpacing,
       Link,
       Superscript,
       Subscript,
@@ -264,6 +266,16 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
         editor.getAttributes("heading").lineHeight,
     },
     {
+      type: "arrows",
+      onClick: () => {
+        setPopup("letter-spacing");
+      },
+      title: "Letter spacing",
+      active:
+        editor.getAttributes("paragraph").letterSpacing ||
+        editor.getAttributes("heading").letterSpacing,
+    },
+    {
       type: "arrow-return-left",
       onClick: () => editor.chain().focus().setHardBreak().run(),
       title: "Hard break",
@@ -313,6 +325,8 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
                   editor.chain().focus().unsetLink().run();
                 } else if (popup === "line-height") {
                   editor.chain().focus().unsetLineHeight().run();
+                } else if (popup === "letter-spacing") {
+                  editor.chain().focus().unsetLetterSpacing().run();
                 }
               }}
             >

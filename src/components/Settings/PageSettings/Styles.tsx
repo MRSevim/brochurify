@@ -1,0 +1,198 @@
+import BottomLine from "@/components/BottomLine";
+import ColorPicker from "@/components/ColorPicker";
+import Select from "@/components/Select";
+import Slider from "@/components/Slider";
+import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
+import {
+  fontOptions,
+  getFontVariables,
+  getPageWise,
+  getSetting,
+} from "@/utils/Helpers";
+
+const Styles = () => {
+  return (
+    <ToggleVisibilityWrapper title="Styles">
+      <Color />
+      <BackgroundColor />
+      <FontSize />
+      <FontFamily />
+      <LineHeight />
+    </ToggleVisibilityWrapper>
+  );
+};
+
+const Color = () => {
+  const type = "color";
+  const variable = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+
+  return (
+    <div className="relative pb-2 mb-2">
+      <ColorPicker
+        onVarSelect={(param) =>
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue: param,
+            })
+          )
+        }
+        title={"Select pagewise text color"}
+        selected={variable || "#000000"}
+        onChange={(e) =>
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue: e.target.value,
+            })
+          )
+        }
+      />
+      <ResetButton type={type} />
+      <BottomLine />
+    </div>
+  );
+};
+const BackgroundColor = () => {
+  const type = "backgroundColor";
+  const variable = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+
+  return (
+    <div className="relative pb-2 mb-2">
+      <ColorPicker
+        onVarSelect={(param) =>
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue: param,
+            })
+          )
+        }
+        title="Select pagewise background color"
+        selected={variable || "#000000"}
+        onChange={(e) =>
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue: e.target.value,
+            })
+          )
+        }
+      />
+      <ResetButton type={type} />
+      <BottomLine />
+    </div>
+  );
+};
+const FontSize = () => {
+  const type = "fontSize";
+  const variable = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+
+  return (
+    <div className="relative pb-2 mb-2">
+      <Slider
+        parse={true}
+        title="Pick pagewise font size"
+        min={1}
+        max={70}
+        step={1}
+        value={variable || "16px"}
+        onChange={(e) =>
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue: e.target.value + "px",
+            })
+          )
+        }
+      />
+      <ResetButton type={type} />
+      <BottomLine />
+    </div>
+  );
+};
+
+const FontFamily = () => {
+  const type = "fontFamily";
+  const variable = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+  const fontVariables = getFontVariables(useAppSelector);
+
+  return (
+    <div className="relative pb-2 mb-2">
+      <Select
+        title="Pick pagewise font family"
+        showStyled={true}
+        options={[...fontOptions, ...fontVariables]}
+        selected={variable || ""}
+        onChange={(e) => {
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue: e.target.value,
+            })
+          );
+        }}
+      />
+      <ResetButton type={type} />
+      <BottomLine />
+    </div>
+  );
+};
+
+const LineHeight = () => {
+  const type = "lineHeight";
+  const variable = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+
+  return (
+    <div className="relative pb-2 mb-2">
+      <Slider
+        parse={false}
+        title="Pick pagewise line-height"
+        min={1}
+        max={5}
+        step={0.5}
+        value={variable || "1.5"}
+        onChange={(e) =>
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue: e.target.value,
+            })
+          )
+        }
+      />
+      <ResetButton type={type} />
+      <BottomLine />
+    </div>
+  );
+};
+
+const ResetButton = ({ type }: { type: string }) => {
+  const dispatch = useAppDispatch();
+  return (
+    <div className="flex justify-center">
+      <button
+        className="p-1 text-background bg-gray rounded cursor-pointer"
+        onClick={() => {
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue: getPageWise()[type] || "",
+            })
+          );
+        }}
+      >
+        {" "}
+        Reset
+      </button>
+    </div>
+  );
+};
+export default Styles;
