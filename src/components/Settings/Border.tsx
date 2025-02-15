@@ -1,4 +1,3 @@
-import { ChangeEvent, useState } from "react";
 import ToggleBtn from "../ToggleBtn";
 import Slider from "../Slider";
 import {
@@ -15,11 +14,7 @@ import Select from "../Select";
 import ColorPicker from "../ColorPicker";
 import BottomLine from "../BottomLine";
 import SecondaryTitle from "../SecondaryTitle";
-
-export type HandleChangeType = (
-  e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  i?: number
-) => void;
+import { HandleChangeType } from "@/utils/Types";
 
 const Border = () => {
   const type = "border";

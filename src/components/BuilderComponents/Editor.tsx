@@ -35,15 +35,11 @@ const Editor = () => {
   }
 
   return (
-    <section
-      className={
-        "relative overflow-y-auto h-screen-header-excluded " + addedString
-      }
-    >
-      <div style={pageWise} className="editor p-px">
+    <section className={"relative h-screen-header-excluded " + addedString}>
+      <div style={pageWise} className="editor">
         {data?.map((item) => {
           return (
-            <div key={item.id}>
+            <div key={item.id} style={{ height: item.props.style.height }}>
               {renderComponent(
                 item,
                 activeId,
@@ -72,6 +68,15 @@ const renderComponent = (
 ): React.ReactNode => {
   const Component = componentList[item.type as keyof typeof componentList];
 
+  const width =
+    item.type === "column" && item.props.style?.width
+      ? item.props.style?.width
+      : "default";
+
+  const height = item.props.style?.height
+    ? item.props.style?.height
+    : "default";
+
   const id = item.id;
   const beforeSelected =
     addLocation?.id === id && addLocation?.where === "before";
@@ -87,7 +92,7 @@ const renderComponent = (
   };
 
   return (
-    <div key={id} className="relative">
+    <div key={id} className="relative" style={{ width, height }}>
       <div
         onDrop={handleSideDrop}
         onDragOver={(e) => handleSideDragOver(e, "before")}
@@ -101,6 +106,7 @@ const renderComponent = (
 
       <FocusWrapper item={item}>
         <div
+          className="w-full h-full"
           onDrop={(e) => {
             e.stopPropagation();
             handleCenterDropCaller(e, dispatch, item.id);

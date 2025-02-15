@@ -1,5 +1,6 @@
 import BottomLine from "@/components/BottomLine";
 import ColorPicker from "@/components/ColorPicker";
+import ResetButton from "@/components/ResetButton";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
@@ -51,7 +52,7 @@ const Color = () => {
           )
         }
       />
-      <ResetButton type={type} />
+      <ResetButtonWithOnClick type={type} />
       <BottomLine />
     </div>
   );
@@ -83,7 +84,7 @@ const BackgroundColor = () => {
           )
         }
       />
-      <ResetButton type={type} />
+      <ResetButtonWithOnClick type={type} />
       <BottomLine />
     </div>
   );
@@ -111,7 +112,7 @@ const FontSize = () => {
           )
         }
       />
-      <ResetButton type={type} />
+      <ResetButtonWithOnClick type={type} />
       <BottomLine />
     </div>
   );
@@ -139,7 +140,7 @@ const FontFamily = () => {
           );
         }}
       />
-      <ResetButton type={type} />
+      <ResetButtonWithOnClick type={type} />
       <BottomLine />
     </div>
   );
@@ -168,31 +169,25 @@ const LineHeight = () => {
           )
         }
       />
-      <ResetButton type={type} />
+      <ResetButtonWithOnClick type={type} />
       <BottomLine />
     </div>
   );
 };
 
-const ResetButton = ({ type }: { type: string }) => {
+export const ResetButtonWithOnClick = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
   return (
-    <div className="flex justify-center">
-      <button
-        className="p-1 text-background bg-gray rounded cursor-pointer"
-        onClick={() => {
-          dispatch(
-            changeElementStyle({
-              type,
-              newValue: getPageWise()[type] || "",
-            })
-          );
-        }}
-      >
-        {" "}
-        Reset
-      </button>
-    </div>
+    <ResetButton
+      onClick={() => {
+        dispatch(
+          changeElementStyle({
+            type,
+            newValue: getPageWise()[type] || "",
+          })
+        );
+      }}
+    />
   );
 };
 export default Styles;

@@ -1,6 +1,8 @@
+import { ChangeEvent } from "react";
+
 export interface Props {
   text?: string;
-  style?: Style;
+  style: Style;
   child?: Layout[];
   src?: string;
   href?: string;
@@ -54,6 +56,8 @@ export type PageWise = {
   color: string;
   backgroundColor: string;
   fontSize: string;
+  height: string;
+  overflowY: "auto";
   fontFamily: string;
   lineHeight: string;
   [key: string]: string | undefined;
@@ -66,6 +70,11 @@ export type Style = {
   width?: string;
   height?: string;
   borderRadius?: string;
+  backgroundColor?: string;
+  backgroundImage?: string;
+  backgroundPosition?: string;
+  display?: string;
+  flexWrap?: "wrap" | "nowrap";
   [key: string]: string | undefined;
 };
 export type LayoutOrUnd = Layout | undefined;
@@ -76,3 +85,7 @@ export type SizingType = {
 };
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 export type OptionsObject = { title: string; value: string };
+export type HandleChangeType = (
+  e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  i?: number
+) => void;

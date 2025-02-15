@@ -27,18 +27,16 @@ export const getPageWise = (): PageWise => {
     fontSize: "16px",
     fontFamily: "inherit",
     lineHeight: "1.5",
+    height: "100%",
+    overflowY: "auto",
   };
 };
 
 export const getDefaultStyle = (type: string): Style => {
-  if (type === "button") {
-    return {
-      backgroundColor: "#d8cdcb",
-      ...getDefaultStyle(""),
-    };
-  } else if (type === "row") {
+  if (type === "row") {
     return {
       display: "flex",
+      flexWrap: "wrap",
       ...getDefaultStyle(""),
     };
   } else if (type === "image") {
@@ -53,6 +51,12 @@ export const getDefaultStyle = (type: string): Style => {
       height: "200px",
       ...getDefaultStyle("no-space"),
     };
+  } else if (type === "audio") {
+    return {
+      width: "300px",
+      height: "56px",
+      ...getDefaultStyle("no-space"),
+    };
   } else if (type === "no-space") {
     return {
       margin: "0px 0px 0px 0px",
@@ -60,7 +64,7 @@ export const getDefaultStyle = (type: string): Style => {
     };
   } else if (type === "column") {
     return {
-      margin: "0px 10px 0px 10px",
+      margin: "0px",
       padding: "10px 10px 10px 10px",
     };
   }
@@ -120,11 +124,11 @@ export const getDefaultElementProps = (type: string): Props => {
   } else if (type === "image") {
     return {
       style: getDefaultStyle("image"),
-      src: "/placeholder-image.jpg",
+      src: CONFIG.placeholderImgUrl,
     };
   } else if (type === "audio") {
     return {
-      style: getDefaultStyle("no-space"),
+      style: getDefaultStyle("audio"),
       src: "",
     };
   } else if (type === "video") {
@@ -133,7 +137,7 @@ export const getDefaultElementProps = (type: string): Props => {
       src: "",
     };
   }
-  return {};
+  return { style: {} };
 };
 
 export const saveToLocalStorage = (param: EditorState) => {
@@ -228,13 +232,22 @@ export const setValueFromShorthandStr = (
 
   return values.join(" "); // Recombine the values into a shorthand string
 };
-
+export const extractUrlValue = (cssUrl: string): string => {
+  const match = cssUrl.match(/url\(["']?(.*?)["']?\)/);
+  return match ? match[1] : "";
+};
+export const add100PerHeightToStyle = (style: Style) => {
+  return { ...style, height: "100%" };
+};
 export function setCookie(cname: String, cvalue: string, exdays: number) {
   const d = new Date();
   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
   let expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
+export const CONFIG = {
+  placeholderImgUrl: "/placeholder-image.jpg",
+};
 export const fontOptions = [
   "inherit",
   "Arial ,sans-serif",
