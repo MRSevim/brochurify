@@ -83,7 +83,7 @@ export const canElementHaveChild = (
   addLocation: AddLocation,
   newElement: Layout
 ) => {
-  const parentElements = ["column", "row", "button"];
+  const parentElements = ["column", "row", "button", "container"];
 
   // Helper function to check if targetId is inside a button and track parent types
   const isInsideButton = (layout: Layout[], targetId: string): boolean => {

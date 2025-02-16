@@ -3,6 +3,7 @@ import ColorPicker from "@/components/ColorPicker";
 import ResetButton from "@/components/ResetButton";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
+import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
@@ -16,6 +17,7 @@ import {
 const Styles = () => {
   return (
     <ToggleVisibilityWrapper title="Styles">
+      <SmallText>Settings to edit the look of the overall page</SmallText>
       <Color />
       <BackgroundColor />
       <FontSize />

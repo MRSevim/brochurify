@@ -5,6 +5,7 @@ import Text from "./Text/Text";
 import Url from "./Url";
 import Background from "./Background";
 import Alignment from "./PageSettings/Alignment";
+import ContainerSettings from "./ContainerSettings";
 
 const ElementSettings = () => {
   const active = useAppSelector((state) => state.editor.active);
@@ -15,13 +16,15 @@ const ElementSettings = () => {
   const shouldHaveText = activeType === "text";
   const shouldHaveUrl = activeType === "button" || activeType === "icon";
   const shouldHaveAlignment = activeType === "row";
+  const isContainer = activeType === "container";
   return (
     <div className="m-2">
       <h1 className="font-bold text-xl text-light text-center mb-2">
         Settings For The Selected Element
       </h1>
 
-      <SizingAndBorder />
+      {!isContainer && <SizingAndBorder />}
+      {isContainer && <ContainerSettings />}
       <Background />
       {shouldHaveSource && <Source />}
       {shouldHaveText && <Text key={activeId} />}

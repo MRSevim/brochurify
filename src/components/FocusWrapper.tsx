@@ -20,7 +20,7 @@ const FocusWrapper = ({
   const dropHandled = useAppSelector((state) => state.editor.dropHandled);
   return (
     <div
-      className="cursor-pointer w-full h-full"
+      className="cursor-pointer"
       key={itemId}
       draggable
       onDragStart={(e) => {

@@ -6,6 +6,7 @@ import { getSetting } from "@/utils/Helpers";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import TextareaInput from "@/components/TextareaInput";
 import LinkInput from "@/components/LinkInput";
+import SmallText from "@/components/SmallText";
 
 const Seo = () => {
   return (
@@ -34,6 +35,7 @@ const WebsiteTitle = () => {
 
   return (
     <div className="relative pb-2 mb-2">
+      <SmallText>Settings for Search Engine Optimization</SmallText>
       <TextInput
         title="Website title"
         value={variable || ""}

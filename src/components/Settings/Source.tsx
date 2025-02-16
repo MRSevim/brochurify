@@ -5,11 +5,13 @@ import { getProp, getSetting } from "@/utils/Helpers";
 import LinkInput from "../LinkInput";
 import { changeElementProp } from "@/redux/slices/editorSlice";
 import TextInput from "../TextInput";
+import SmallText from "../SmallText";
 
 const Source = () => {
   const activeType = useAppSelector((state) => state.editor.active?.type);
   return (
     <ToggleVisibilityWrapper title="Source">
+      <SmallText>Add source for your media</SmallText>
       <SourceUrl />
       {activeType === "image" && <AltText />}
     </ToggleVisibilityWrapper>

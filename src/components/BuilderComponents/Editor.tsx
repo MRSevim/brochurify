@@ -39,7 +39,7 @@ const Editor = () => {
       <div style={pageWise} className="editor">
         {data?.map((item) => {
           return (
-            <div key={item.id} style={{ height: item.props.style.height }}>
+            <div key={item.id}>
               {renderComponent(
                 item,
                 activeId,
@@ -68,15 +68,6 @@ const renderComponent = (
 ): React.ReactNode => {
   const Component = componentList[item.type as keyof typeof componentList];
 
-  const width =
-    item.type === "column" && item.props.style?.width
-      ? item.props.style?.width
-      : "default";
-
-  const height = item.props.style?.height
-    ? item.props.style?.height
-    : "default";
-
   const id = item.id;
   const beforeSelected =
     addLocation?.id === id && addLocation?.where === "before";
@@ -92,7 +83,7 @@ const renderComponent = (
   };
 
   return (
-    <div key={id} className="relative" style={{ width, height }}>
+    <div key={id} className="relative">
       <div
         onDrop={handleSideDrop}
         onDragOver={(e) => handleSideDragOver(e, "before")}
@@ -106,7 +97,6 @@ const renderComponent = (
 
       <FocusWrapper item={item}>
         <div
-          className="w-full h-full"
           onDrop={(e) => {
             e.stopPropagation();
             handleCenterDropCaller(e, dispatch, item.id);

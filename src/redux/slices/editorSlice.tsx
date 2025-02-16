@@ -13,6 +13,7 @@ import {
 } from "@/utils/EditorHelpers";
 import {
   getDefaultElementProps,
+  getDefaultStyle,
   getPageWise,
   saveToLocalStorage,
 } from "@/utils/Helpers";
@@ -33,33 +34,42 @@ import { v4 as uuidv4 } from "uuid";
 let initialLayout = [
   {
     id: uuidv4(),
-    type: "row",
-    props: getDefaultElementProps("row"),
-  },
-  {
-    id: uuidv4(),
-    type: "button",
-    props: getDefaultElementProps("button"),
-  },
-  {
-    id: uuidv4(),
-    type: "text",
-    props: getDefaultElementProps("text"),
-  },
-  {
-    id: uuidv4(),
-    type: "image",
-    props: getDefaultElementProps("image"),
-  },
-  {
-    id: uuidv4(),
-    type: "audio",
-    props: getDefaultElementProps("audio"),
-  },
-  {
-    id: uuidv4(),
-    type: "video",
-    props: getDefaultElementProps("video"),
+    type: "container",
+    props: {
+      style: getDefaultStyle("container"),
+      child: [
+        {
+          id: uuidv4(),
+          type: "row",
+          props: getDefaultElementProps("row"),
+        },
+        {
+          id: uuidv4(),
+          type: "button",
+          props: getDefaultElementProps("button"),
+        },
+        {
+          id: uuidv4(),
+          type: "text",
+          props: getDefaultElementProps("text"),
+        },
+        {
+          id: uuidv4(),
+          type: "image",
+          props: getDefaultElementProps("image"),
+        },
+        {
+          id: uuidv4(),
+          type: "audio",
+          props: getDefaultElementProps("audio"),
+        },
+        {
+          id: uuidv4(),
+          type: "video",
+          props: getDefaultElementProps("video"),
+        },
+      ],
+    },
   },
 ];
 
@@ -121,7 +131,6 @@ export const editorSlice = createSlice({
         type: action.payload.type,
         props: getDefaultElementProps(action.payload.type),
       };
-
       const passed = canElementHaveChild(
         state,
         action.payload.addLocation,

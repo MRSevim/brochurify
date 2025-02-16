@@ -9,6 +9,8 @@ import { UseSelector } from "react-redux";
 import Image from "@/components/BuilderComponents/Image";
 import Audio from "@/components/BuilderComponents/Audio";
 import Video from "@/components/BuilderComponents/Video";
+import Container from "@/components/BuilderComponents/Container";
+import Divider from "@/components/BuilderComponents/Divider";
 
 export const componentList = {
   button: (props: PropsWithId) => <Button {...props} />,
@@ -18,6 +20,8 @@ export const componentList = {
   image: (props: PropsWithId) => <Image {...props} />,
   audio: (props: PropsWithId) => <Audio {...props} />,
   video: (props: PropsWithId) => <Video {...props} />,
+  container: (props: PropsWithId) => <Container {...props} />,
+  divider: (props: PropsWithId) => <Divider {...props} />,
 };
 
 export const getPageWise = (): PageWise => {
@@ -28,7 +32,8 @@ export const getPageWise = (): PageWise => {
     fontFamily: "inherit",
     lineHeight: "1.5",
     height: "100%",
-    overflowY: "auto",
+    width: "100%",
+    overflow: "auto",
   };
 };
 
@@ -66,6 +71,12 @@ export const getDefaultStyle = (type: string): Style => {
     return {
       margin: "0px",
       padding: "10px 10px 10px 10px",
+    };
+  } else if (type === "container") {
+    return {
+      maxWidth: "1300px",
+      margin: "0 auto",
+      padding: "0 12px",
     };
   }
   return {
@@ -135,6 +146,21 @@ export const getDefaultElementProps = (type: string): Props => {
     return {
       style: getDefaultStyle("video"),
       src: "",
+    };
+  } else if (type === "container") {
+    return {
+      style: getDefaultStyle("container"),
+      child: [
+        {
+          id: uuidv4(),
+          type: "text",
+          props: getDefaultElementProps("text"),
+        },
+      ],
+    };
+  } else if (type === "divider") {
+    return {
+      style: getDefaultStyle(""),
     };
   }
   return { style: {} };
@@ -237,7 +263,7 @@ export const extractUrlValue = (cssUrl: string): string => {
   return match ? match[1] : "";
 };
 export const add100PerHeightToStyle = (style: Style) => {
-  return { ...style, height: "100%" };
+  return { ...style /* height: "100%" */ };
 };
 export function setCookie(cname: String, cvalue: string, exdays: number) {
   const d = new Date();

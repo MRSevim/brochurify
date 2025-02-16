@@ -1,6 +1,7 @@
 import BottomLine from "@/components/BottomLine";
 import ResetButton from "@/components/ResetButton";
 import Select from "@/components/Select";
+import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
@@ -31,6 +32,7 @@ const verticalAlignmentOptions = ["start", "center", "end", "stretch"];
 const Alignment = () => {
   return (
     <ToggleVisibilityWrapper title="Alignment">
+      <SmallText>Alignment for row elements</SmallText>
       <HorizontalOrVertical
         type="justifyContent"
         title="Select horizontal alignment type"

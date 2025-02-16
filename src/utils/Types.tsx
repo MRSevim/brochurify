@@ -57,7 +57,7 @@ export type PageWise = {
   backgroundColor: string;
   fontSize: string;
   height: string;
-  overflowY: "auto";
+  overflow: "auto" | "hidden";
   fontFamily: string;
   lineHeight: string;
   [key: string]: string | undefined;

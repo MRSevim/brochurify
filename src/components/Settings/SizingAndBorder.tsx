@@ -21,6 +21,7 @@ import NumberInput from "../NumberInput";
 import SecondaryTitle from "../SecondaryTitle";
 import BottomLine from "../BottomLine";
 import GroupedRadioButtons from "../GroupedRadioButtons";
+import SmallText from "../SmallText";
 
 const sizingTypeArray: SizingType[] = [
   {
@@ -67,7 +68,10 @@ const WidthAndHeight = () => {
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Width and Height" />
-
+      <SmallText>
+        Pixel, percentage based size settings for the element, also automatic
+        option
+      </SmallText>
       <div className="flex gap-2" key={activeId}>
         <NumberController type="width" />
         <NumberController type="height" />
@@ -84,7 +88,7 @@ const getUnit = (value: string | undefined) => {
   return match ? match[0].replace(/\d+/, "") : null;
 };
 
-const NumberController = ({ type }: { type: string }) => {
+export const NumberController = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
   const variable = getSetting(useAppSelector, type);
   const initialType = getUnit(variable);
