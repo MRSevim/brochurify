@@ -63,14 +63,13 @@ const SizingAndBorderInner = () => {
   );
 };
 
-const WidthAndHeight = () => {
+export const WidthAndHeight = () => {
   const activeId = useAppSelector((state) => state.editor.active?.id);
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Width and Height" />
       <SmallText>
-        Pixel, percentage based size settings for the element, also automatic
-        option
+        Pixel, percentage based or automatic size settings for the element
       </SmallText>
       <div className="flex gap-2" key={activeId}>
         <NumberController type="width" />
@@ -88,7 +87,7 @@ const getUnit = (value: string | undefined) => {
   return match ? match[0].replace(/\d+/, "") : null;
 };
 
-export const NumberController = ({ type }: { type: string }) => {
+const NumberController = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
   const variable = getSetting(useAppSelector, type);
   const initialType = getUnit(variable);

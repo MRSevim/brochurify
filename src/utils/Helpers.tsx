@@ -69,7 +69,7 @@ export const getDefaultStyle = (type: string): Style => {
     };
   } else if (type === "column") {
     return {
-      margin: "0px",
+      margin: "0px 0px 0px 0px",
       padding: "10px 10px 10px 10px",
     };
   } else if (type === "container") {
@@ -77,6 +77,8 @@ export const getDefaultStyle = (type: string): Style => {
       maxWidth: "1300px",
       margin: "0 auto",
       padding: "0 12px",
+      height: "100%",
+      width: "100%",
     };
   }
   return {
@@ -262,8 +264,8 @@ export const extractUrlValue = (cssUrl: string): string => {
   const match = cssUrl.match(/url\(["']?(.*?)["']?\)/);
   return match ? match[1] : "";
 };
-export const add100PerHeightToStyle = (style: Style) => {
-  return { ...style /* height: "100%" */ };
+export const add100PerToStyle = (style: Style): Style => {
+  return { ...style, height: "100%", width: "100%" };
 };
 export function setCookie(cname: String, cvalue: string, exdays: number) {
   const d = new Date();

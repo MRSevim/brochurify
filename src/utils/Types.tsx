@@ -27,6 +27,7 @@ export interface Layout {
 }
 export interface EditorState {
   active?: LayoutOrUnd;
+  history: History;
   layout: Layout[];
   pageWise: PageWise;
   addLocation: AddLocation;
@@ -39,6 +40,13 @@ export type Variable = {
   name: string;
   value: string;
 };
+export type History = {
+  current: boolean;
+  structure: {
+    layout: Layout[];
+    pageWise: PageWise;
+  };
+}[];
 export interface VariableWithId extends Variable {
   id: string;
 }

@@ -1,11 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import editorSlice from "./slices/editorSlice";
+import { saveToHistoryMiddleware } from "./middlewares/saveToHistoryMiddleware";
+import { saveToLocalStorageMiddleware } from "./middlewares/saveToLocalStorageMiddleware";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       editor: editorSlice,
     },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(
+        saveToHistoryMiddleware,
+        saveToLocalStorageMiddleware
+      ),
   });
 };
 

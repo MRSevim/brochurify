@@ -1,10 +1,10 @@
-import { add100PerHeightToStyle } from "@/utils/Helpers";
+import { add100PerToStyle } from "@/utils/Helpers";
 import useActive from "@/utils/hooks/useActive";
 import { PropsWithId } from "@/utils/Types";
 
 const Audio = ({ id, style, src }: PropsWithId) => {
   const active = useActive(id);
-  const added = add100PerHeightToStyle(style);
+  const added = add100PerToStyle(style);
   return (
     <audio className={active} style={added} key={src} controls>
       <source src={src || undefined}></source>

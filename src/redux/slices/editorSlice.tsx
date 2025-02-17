@@ -7,6 +7,7 @@ import {
   insertElement,
   isInChildren,
   moveElementInner,
+  removeHistoryCurrents,
   setActiveInner,
   setAddLocationInner,
   setDropHandledInner,
@@ -15,7 +16,6 @@ import {
   getDefaultElementProps,
   getDefaultStyle,
   getPageWise,
-  saveToLocalStorage,
 } from "@/utils/Helpers";
 import {
   AddLocation,
@@ -23,6 +23,7 @@ import {
   ItemAndLocation,
   Layout,
   LayoutOrUnd,
+  PageWise,
   Variable,
   VariableWithId,
 } from "@/utils/Types";
@@ -79,6 +80,7 @@ const initialState: EditorState = {
   dropHandled: false,
   pageWise: getPageWise(),
   variables: [],
+  history: [],
 };
 
 export const editorSlice = createSlice({
@@ -92,6 +94,7 @@ export const editorSlice = createSlice({
       state.layout = action.payload.layout;
       state.pageWise = action.payload.pageWise;
       state.variables = action.payload.variables;
+      state.history = action.payload.history;
     },
     setDraggedItem: (state, action: PayloadAction<string | undefined>) => {
       state.draggedItem = action.payload;
@@ -144,7 +147,6 @@ export const editorSlice = createSlice({
           action.payload.addLocation,
           true
         );
-        saveToLocalStorage(state);
       }
     },
     deleteElement: (state, action: PayloadAction<string>) => {
@@ -161,7 +163,6 @@ export const editorSlice = createSlice({
         }
       }
       state.layout = deleteFromLayout(state.layout, action.payload);
-      saveToLocalStorage(state);
     },
     moveElement: (state, action: PayloadAction<ItemAndLocation>) => {
       moveElementInner(state, action.payload);
@@ -204,7 +205,6 @@ export const editorSlice = createSlice({
       } else {
         state.layout = updateStyle(state.layout);
       }
-      saveToLocalStorage(state);
     },
     removeElementStyle: (state, action: PayloadAction<{ type: string }>) => {
       const { type } = action.payload;
@@ -243,7 +243,6 @@ export const editorSlice = createSlice({
       } else {
         state.layout = removeStyle(state.layout);
       }
-      saveToLocalStorage(state);
     },
     changeElementProp: (
       state,
@@ -282,7 +281,6 @@ export const editorSlice = createSlice({
       };
 
       state.layout = changeProp(state.layout); // Update the state layout with the modified structure
-      saveToLocalStorage(state); // Persist the updated layout
     },
     updateText: (state, action: PayloadAction<string>) => {
       const activeId = state.active?.id;
@@ -296,12 +294,10 @@ export const editorSlice = createSlice({
         return;
       }
       element.props.text = action.payload;
-      saveToLocalStorage(state);
     },
     addVariable: (state, action: PayloadAction<Variable>) => {
       const newVariable = { id: uuidv4(), ...action.payload };
       state.variables.push(newVariable);
-      saveToLocalStorage(state);
     },
     editVariable: (state, action: PayloadAction<VariableWithId>) => {
       const newVariable = action.payload;
@@ -315,7 +311,6 @@ export const editorSlice = createSlice({
           return newVariable;
         } else return item;
       });
-      saveToLocalStorage(state);
     },
     deleteVariable: (state, action: PayloadAction<VariableWithId>) => {
       const variableToDel = action.payload;
@@ -329,7 +324,61 @@ export const editorSlice = createSlice({
       state.variables = state.variables.filter(
         (item) => item.id !== variableToDel.id
       );
-      saveToLocalStorage(state);
+    },
+    undo: (state) => {
+      const history = state.history;
+
+      if (history.length === 0) {
+        toast.error("No history recorded");
+        return;
+      }
+      if (history[0].current) {
+        toast.error("You are on the first history item");
+      } else {
+        const foundIndex = history.findIndex((item) => item.current);
+        if (foundIndex === -1) {
+          toast.error("Something went wrong");
+        } else {
+          removeHistoryCurrents(state);
+          history[foundIndex - 1].current = true;
+          state.layout = history[foundIndex - 1].structure.layout;
+          state.pageWise = history[foundIndex - 1].structure.pageWise;
+        }
+      }
+    },
+    redo: (state) => {
+      const history = state.history;
+      const historyLength = state.history.length;
+      if (historyLength === 0) {
+        toast.error("No history recorded");
+        return;
+      }
+      if (history[historyLength - 1].current) {
+        toast.error("You are on the last history item");
+      } else {
+        const foundIndex = history.findIndex((item) => item.current);
+        if (foundIndex === -1) {
+          toast.error("Something went wrong");
+        } else {
+          removeHistoryCurrents(state);
+          history[foundIndex + 1].current = true;
+          state.layout = history[foundIndex + 1].structure.layout;
+          state.pageWise = history[foundIndex + 1].structure.pageWise;
+        }
+      }
+    },
+    addToHistory: (
+      state,
+      action: PayloadAction<{ layout: Layout[]; pageWise: PageWise }>
+    ) => {
+      removeHistoryCurrents(state);
+      state.history.push({
+        current: true,
+        structure: {
+          layout: action.payload.layout,
+          pageWise: action.payload.pageWise,
+        },
+      });
     },
   },
 });
@@ -355,5 +404,9 @@ export const {
   addVariable,
   editVariable,
   deleteVariable,
+  undo,
+  redo,
+  addToHistory,
 } = editorSlice.actions;
+
 export default editorSlice.reducer;

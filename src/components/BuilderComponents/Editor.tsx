@@ -39,14 +39,21 @@ const Editor = () => {
       <div style={pageWise} className="editor">
         {data?.map((item) => {
           return (
-            <div key={item.id}>
+            <div
+              key={item.id}
+              style={{
+                width: item.props.style.width,
+                height: item.props.style.height,
+              }}
+            >
               {renderComponent(
                 item,
                 activeId,
                 dispatch,
                 false,
                 addLocation,
-                draggedItem
+                draggedItem,
+                true
               )}
             </div>
           );
@@ -64,7 +71,8 @@ const renderComponent = (
   dispatch: ReturnType<typeof useAppDispatch>,
   parentIsRow: boolean,
   addLocation: AddLocation,
-  draggedItem: string | undefined
+  draggedItem: string | undefined,
+  inMainLayout: boolean
 ): React.ReactNode => {
   const Component = componentList[item.type as keyof typeof componentList];
 
@@ -81,9 +89,21 @@ const renderComponent = (
   const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
+  const shouldBeInlineBlock =
+    item.type === "button" ||
+    item.type === "image" ||
+    item.type === "video" ||
+    item.type === "icon";
 
   return (
-    <div key={id} className="relative">
+    <div
+      key={id}
+      className={"relative " + (shouldBeInlineBlock && " inline-block")}
+      style={{
+        width: inMainLayout ? "100%" : item.props.style.width,
+        height: inMainLayout ? "100%" : item.props.style.height,
+      }}
+    >
       <div
         onDrop={handleSideDrop}
         onDragOver={(e) => handleSideDragOver(e, "before")}
@@ -97,6 +117,7 @@ const renderComponent = (
 
       <FocusWrapper item={item}>
         <div
+          className="w-full h-full flex"
           onDrop={(e) => {
             e.stopPropagation();
             handleCenterDropCaller(e, dispatch, item.id);
@@ -115,7 +136,8 @@ const renderComponent = (
                 dispatch,
                 item.type === "row",
                 addLocation,
-                draggedItem
+                draggedItem,
+                false
               )
             )}
           </Component>

@@ -6,7 +6,6 @@ import {
   Layout,
   LayoutOrUnd,
 } from "./Types";
-import { saveToLocalStorage } from "./Helpers";
 
 export const setActiveInner = (state: EditorState, payload: LayoutOrUnd) => {
   state.addLocation = null;
@@ -74,9 +73,13 @@ export const moveElementInner = (
       payload.addLocation,
       false
     );
-
-    saveToLocalStorage(state);
   }
+};
+export const removeHistoryCurrents = (state: EditorState) => {
+  state.history = state.history.map((item) => {
+    item.current = false;
+    return item;
+  });
 };
 export const canElementHaveChild = (
   state: EditorState,
