@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
 import { AddLocation, Layout, Where } from "@/utils/Types";
 import { DragEvent } from "react";
+import { useViewMode } from "@/contexts/ViewModeContext";
 
 const Editor = () => {
   const data = useAppSelector((state) => state.editor.layout);
@@ -24,6 +25,14 @@ const Editor = () => {
   const addLocation = useAppSelector((state) => state.editor.addLocation);
   const draggedItem = useAppSelector((state) => state.editor.draggedItem);
   const pageWise = useAppSelector((state) => state.editor.pageWise);
+  const [viewMode] = useViewMode();
+
+  const maxWidth =
+    viewMode === "desktop"
+      ? undefined
+      : viewMode === "tablet"
+      ? "max-w-[768]"
+      : "max-w-[360]";
 
   let addedString;
   if (layoutToggle && settingsToggle) {
@@ -36,7 +45,7 @@ const Editor = () => {
 
   return (
     <section className={"relative h-screen-header-excluded " + addedString}>
-      <div style={pageWise} className="editor">
+      <div style={pageWise} className={"editor mx-auto " + maxWidth}>
         {data?.map((item) => {
           return (
             <div
@@ -89,16 +98,11 @@ const renderComponent = (
   const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
-  const shouldBeInlineBlock =
-    item.type === "button" ||
-    item.type === "image" ||
-    item.type === "video" ||
-    item.type === "icon";
 
   return (
     <div
       key={id}
-      className={"relative " + (shouldBeInlineBlock && " inline-block")}
+      className="relative"
       style={{
         width: inMainLayout ? "100%" : item.props.style.width,
         height: inMainLayout ? "100%" : item.props.style.height,
@@ -109,8 +113,8 @@ const renderComponent = (
         onDragOver={(e) => handleSideDragOver(e, "before")}
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
         className={
-          "absolute " +
-          (parentIsRow ? "h-full w-1	" : " w-full h-1 bottom-full") +
+          "absolute z-50 " +
+          (parentIsRow ? "h-full w-1	" : " w-full h-1 top-0") +
           (beforeSelected ? " bg-lime-700	" : " ")
         }
       ></div>
@@ -149,8 +153,10 @@ const renderComponent = (
         onDragOver={(e) => handleSideDragOver(e, "after")}
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
         className={
-          "absolute right-0 top-0 " +
-          (parentIsRow ? "h-full w-1	" : " w-full h-1 top-full ") +
+          "absolute z-50 " +
+          (parentIsRow
+            ? "h-full w-1 right-0 top-0 "
+            : " w-full h-1 bottom-0 ") +
           (afterSelected ? " bg-lime-700	" : " ")
         }
       ></div>

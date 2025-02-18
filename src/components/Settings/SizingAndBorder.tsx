@@ -47,6 +47,8 @@ const SizingAndBorder = () => {
 };
 
 const SizingAndBorderInner = () => {
+  const active = useAppSelector((state) => state.editor.active);
+  const isIcon = active?.type === "icon";
   return (
     <>
       {" "}
@@ -59,6 +61,7 @@ const SizingAndBorderInner = () => {
       <Border />
       <MarginOrPadding sizingTypeArray={sizingTypeArray} type="padding" />
       <WidthAndHeight />
+      {isIcon && <Size />}
     </>
   );
 };
@@ -221,6 +224,30 @@ const MarginOrPadding = ({
       )}
       <BottomLine />
     </div>
+  );
+};
+
+const Size = () => {
+  const type = "fontSize";
+  const dispatch = useAppDispatch();
+  const variable = getSetting(useAppSelector, type);
+  return (
+    <Slider
+      parse={true}
+      value={variable || "25px"}
+      min={5}
+      max={80}
+      step={2}
+      title="Size"
+      onChange={(e) =>
+        dispatch(
+          changeElementStyle({
+            type,
+            newValue: e.target.value + "px",
+          })
+        )
+      }
+    />
   );
 };
 export default SizingAndBorder;

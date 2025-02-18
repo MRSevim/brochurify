@@ -8,6 +8,7 @@ import { makeStore, AppStore } from "@/redux/store";
 import { useRef } from "react";
 import { Provider } from "react-redux";
 import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
+import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
 
 export default function ClientWrapper({
   children,
@@ -33,7 +34,9 @@ export default function ClientWrapper({
     <LayoutToggleContext.Provider>
       <SettingsToggleContext.Provider>
         <LightModeProvider lightModeFromCookie={lightMode}>
-          <Provider store={storeRef.current}>{children}</Provider>
+          <ViewModeProvider>
+            <Provider store={storeRef.current}>{children}</Provider>
+          </ViewModeProvider>
         </LightModeProvider>
       </SettingsToggleContext.Provider>
     </LayoutToggleContext.Provider>

@@ -6,6 +6,7 @@ import Url from "./Url";
 import Background from "./Background";
 import Alignment from "./PageSettings/Alignment";
 import ContainerSettings from "./ContainerSettings";
+import IconType from "./IconType";
 
 const ElementSettings = () => {
   const active = useAppSelector((state) => state.editor.active);
@@ -17,6 +18,7 @@ const ElementSettings = () => {
   const shouldHaveUrl = activeType === "button" || activeType === "icon";
   const shouldHaveAlignment = activeType === "row";
   const isContainer = activeType === "container";
+  const isIcon = activeType === "icon";
   return (
     <div className="m-2">
       <h1 className="font-bold text-xl text-light text-center mb-2">
@@ -30,6 +32,7 @@ const ElementSettings = () => {
       {shouldHaveText && <Text key={activeId} />}
       {shouldHaveUrl && <Url />}
       {shouldHaveAlignment && <Alignment />}
+      {isIcon && <IconType />}
     </div>
   );
 };

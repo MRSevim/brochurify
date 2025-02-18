@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Roboto_Mono } from "next/font/google";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import ClientWrapper from "@/utils/ClientWrapper";
 import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";

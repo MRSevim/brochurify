@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import editorSlice from "./slices/editorSlice";
 import { saveToHistoryMiddleware } from "./middlewares/saveToHistoryMiddleware";
 import { saveToLocalStorageMiddleware } from "./middlewares/saveToLocalStorageMiddleware";
+import popupSlice from "./slices/popupSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       editor: editorSlice,
+      popup: popupSlice,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(

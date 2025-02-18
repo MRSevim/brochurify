@@ -13,7 +13,7 @@ const Url = () => {
   const dispatch = useAppDispatch();
   return (
     <div className="relative pb-2 mb-2">
-      <SmallText>Point out where you want your button to go</SmallText>
+      <SmallText>Point out where you want your element to go</SmallText>
       <LinkInput
         title="Target url"
         value={variable || ""}

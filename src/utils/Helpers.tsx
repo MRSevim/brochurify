@@ -11,6 +11,7 @@ import Audio from "@/components/BuilderComponents/Audio";
 import Video from "@/components/BuilderComponents/Video";
 import Container from "@/components/BuilderComponents/Container";
 import Divider from "@/components/BuilderComponents/Divider";
+import Icon from "@/components/BuilderComponents/Icon";
 
 export const componentList = {
   button: (props: PropsWithId) => <Button {...props} />,
@@ -22,6 +23,7 @@ export const componentList = {
   video: (props: PropsWithId) => <Video {...props} />,
   container: (props: PropsWithId) => <Container {...props} />,
   divider: (props: PropsWithId) => <Divider {...props} />,
+  icon: (props: PropsWithId) => <Icon {...props} />,
 };
 
 export const getPageWise = (): PageWise => {
@@ -79,6 +81,12 @@ export const getDefaultStyle = (type: string): Style => {
       padding: "0 12px",
       height: "100%",
       width: "100%",
+    };
+  } else if (type === "icon") {
+    return {
+      fontSize: "25px",
+      textAlign: "center",
+      ...getDefaultStyle("no-space"),
     };
   }
   return {
@@ -164,13 +172,24 @@ export const getDefaultElementProps = (type: string): Props => {
     return {
       style: getDefaultStyle(""),
     };
+  } else if (type === "icon") {
+    return {
+      iconType: "1-circle-fill",
+      style: getDefaultStyle("icon"),
+    };
   }
   return { style: {} };
 };
 
 export const saveToLocalStorage = (param: EditorState) => {
   // Convert the state.layout to a JSON string
-  const val = JSON.stringify(param);
+  const stripped = {
+    layout: param.layout,
+    pageWise: param.pageWise,
+    variables: param.variables,
+    history: param.history,
+  };
+  const val = JSON.stringify(stripped);
 
   localStorage.setItem("editor", val);
 };

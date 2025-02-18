@@ -8,6 +8,7 @@ export interface Props {
   href?: string;
   newTab?: boolean;
   alt?: string;
+  iconType?: String;
   children?: React.ReactNode;
   [key: string]:
     | string
@@ -64,7 +65,6 @@ export type PageWise = {
   color: string;
   backgroundColor: string;
   fontSize: string;
-  height: string;
   overflow: "auto" | "hidden";
   fontFamily: string;
   lineHeight: string;
@@ -82,6 +82,7 @@ export type Style = {
   backgroundImage?: string;
   backgroundPosition?: string;
   display?: string;
+  textAlign?: "center";
   flexWrap?: "wrap" | "nowrap";
   [key: string]: string | undefined;
 };
@@ -97,3 +98,4 @@ export type HandleChangeType = (
   e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   i?: number
 ) => void;
+export type SavePopup = "saving" | "saved" | null;

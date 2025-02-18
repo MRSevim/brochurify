@@ -9,7 +9,7 @@ import {
   addToHistory,
 } from "../slices/editorSlice";
 
-let lastSave = 0; // Timestamp for throttling
+let debounceTimer: NodeJS.Timeout | null = null; // Timer for debounce
 
 export const saveToHistoryMiddleware: Middleware =
   (store) => (next) => (action) => {
@@ -24,7 +24,6 @@ export const saveToHistoryMiddleware: Middleware =
     const result = next(action);
 
     const nextState = store.getState() as RootState;
-    const now = Date.now();
 
     const propOrStyleChange =
       changeElementProp.match(action) || changeElementStyle.match(action);
@@ -41,11 +40,15 @@ export const saveToHistoryMiddleware: Middleware =
           })
         );
       if (propOrStyleChange) {
-        // Apply throttle only for style/prop changes
-        if (now - lastSave > 200) {
-          lastSave = now;
-          save();
+        // Clear previous debounce timer if exists
+        if (debounceTimer) {
+          clearTimeout(debounceTimer);
         }
+        // Set a new debounce timer
+        debounceTimer = setTimeout(() => {
+          save();
+          debounceTimer = null; // Reset timer
+        }, 1000);
       } else {
         // Always save to history otherwise
         save();

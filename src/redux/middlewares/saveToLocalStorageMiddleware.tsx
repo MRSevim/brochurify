@@ -1,13 +1,10 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { saveToLocalStorage } from "@/utils/Helpers";
-import {
-  changeElementProp,
-  changeElementStyle,
-  hydrate,
-} from "../slices/editorSlice";
+import { hydrate } from "../slices/editorSlice";
+import { saved, saving } from "../slices/popupSlice";
 
-let lastSave = 0; // Timestamp for throttling
+let debounceTimer: NodeJS.Timeout | null = null; // Timer for debounce
 
 export const saveToLocalStorageMiddleware: Middleware =
   (store) => (next) => (action) => {
@@ -24,10 +21,6 @@ export const saveToLocalStorageMiddleware: Middleware =
     const result = next(action); // Apply the action
 
     const nextState = store.getState() as RootState;
-    const now = Date.now();
-
-    const propOrStyleChange =
-      changeElementProp.match(action) || changeElementStyle.match(action);
 
     if (
       JSON.stringify(nextState.editor.layout) !== prevLayout ||
@@ -35,16 +28,17 @@ export const saveToLocalStorageMiddleware: Middleware =
       JSON.stringify(nextState.editor.variables) !== prevVariables ||
       JSON.stringify(nextState.editor.history) !== prevHistory
     ) {
-      if (propOrStyleChange) {
-        // Apply throttle only for style/prop changes
-        if (now - lastSave > 200) {
-          lastSave = now;
-          saveToLocalStorage(nextState.editor);
-        }
-      } else {
-        // Always save to storage otherwise
-        saveToLocalStorage(nextState.editor);
+      // Clear previous debounce timer if exists
+      store.dispatch(saving());
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
       }
+      // Set a new debounce timer
+      debounceTimer = setTimeout(() => {
+        saveToLocalStorage(nextState.editor);
+        store.dispatch(saved());
+        debounceTimer = null; // Reset timer
+      }, 1000);
     }
 
     return result;
