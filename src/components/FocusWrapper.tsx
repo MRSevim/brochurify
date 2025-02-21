@@ -1,5 +1,6 @@
 import {
   setActive,
+  setCopied,
   setDraggedItem,
   setDropHandled,
 } from "@/redux/slices/editorSlice";
@@ -18,6 +19,7 @@ const FocusWrapper = ({
   const itemId = item?.id;
   const activeId = useAppSelector((state) => state.editor.active?.id);
   const dropHandled = useAppSelector((state) => state.editor.dropHandled);
+
   return (
     <div
       className="cursor-pointer w-full h-full"
@@ -41,6 +43,10 @@ const FocusWrapper = ({
         if (activeId === itemId) {
           dispatch(setActive(undefined));
         } else dispatch(setActive(item));
+      }}
+      onCopy={(e) => {
+        e.stopPropagation();
+        dispatch(setCopied(item));
       }}
     >
       {children}

@@ -7,6 +7,7 @@ import Background from "./Background";
 import Alignment from "./PageSettings/Alignment";
 import ContainerSettings from "./ContainerSettings";
 import IconType from "./IconType";
+import Animations from "./Animations";
 
 const ElementSettings = () => {
   const active = useAppSelector((state) => state.editor.active);
@@ -33,6 +34,7 @@ const ElementSettings = () => {
       {shouldHaveUrl && <Url />}
       {shouldHaveAlignment && <Alignment />}
       {isIcon && <IconType />}
+      <Animations />
     </div>
   );
 };

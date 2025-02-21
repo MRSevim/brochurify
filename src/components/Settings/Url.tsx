@@ -13,7 +13,10 @@ const Url = () => {
   const dispatch = useAppDispatch();
   return (
     <div className="relative pb-2 mb-2">
-      <SmallText>Point out where you want your element to go</SmallText>
+      <SmallText>
+        Point out where you want your element to go. Make sure it starts with
+        https://.
+      </SmallText>
       <LinkInput
         title="Target url"
         value={variable || ""}

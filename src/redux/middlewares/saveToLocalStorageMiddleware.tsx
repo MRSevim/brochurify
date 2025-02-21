@@ -38,7 +38,7 @@ export const saveToLocalStorageMiddleware: Middleware =
         saveToLocalStorage(nextState.editor);
         store.dispatch(saved());
         debounceTimer = null; // Reset timer
-      }, 1000);
+      }, 1100);
     }
 
     return result;

@@ -20,12 +20,14 @@ import ToggleBtn from "../ToggleBtn";
 import LinkInput from "../LinkInput";
 import Select from "../Select";
 import ResetButton from "../ResetButton";
+import Slider from "../Slider";
 
 const Background = () => {
   return (
     <ToggleVisibilityWrapper title="Background">
       <BackgroundColor />
       <BackgroundImage />
+      <BackgroundShadow />
     </ToggleVisibilityWrapper>
   );
 };
@@ -60,6 +62,94 @@ const BackgroundColor = () => {
       <ResetButton onClick={() => dispatch(removeElementStyle({ type }))} />
       <BottomLine />
     </div>
+  );
+};
+const BackgroundShadow = () => {
+  const type = "boxShadow";
+  const variable = getSetting(useAppSelector, type);
+  const pageWise = useAppSelector((state) => state.editor.pageWise);
+  const toggled = !!variable;
+  const dispatch = useAppDispatch();
+  const handleToggle = () => {
+    if (!toggled) {
+      dispatch(
+        changeElementStyle({
+          type,
+          newValue: "5px 5px 5px 2px " + pageWise.color || "#000000",
+        })
+      );
+    } else {
+      dispatch(removeElementStyle({ type }));
+    }
+  };
+  const handleChange: HandleChangeType = (e, i) => {
+    const px = i !== 4 ? "px" : "";
+    dispatch(
+      changeElementStyle({
+        type,
+        newValue: setValueFromShorthandStr(variable, i, e.target.value + px),
+      })
+    );
+  };
+  return (
+    <div className="relative pb-2 mb-2">
+      <SecondaryTitle title="Background Shadow">
+        <ToggleBtn checked={toggled} onChange={handleToggle} />
+      </SecondaryTitle>
+      {toggled && (
+        <>
+          <BackgroundShadowSlider
+            value={getValueFromShorthandStr(variable, 0)}
+            title="Horizontal offset"
+            onChange={(e) => handleChange(e, 0)}
+          />
+          <BackgroundShadowSlider
+            value={getValueFromShorthandStr(variable, 1)}
+            title="Vertical offset"
+            onChange={(e) => handleChange(e, 1)}
+          />
+          <BackgroundShadowSlider
+            value={getValueFromShorthandStr(variable, 2)}
+            title="Blur"
+            onChange={(e) => handleChange(e, 2)}
+          />
+          <BackgroundShadowSlider
+            value={getValueFromShorthandStr(variable, 3)}
+            title="Spread radius"
+            onChange={(e) => handleChange(e, 3)}
+          />
+          <ColorPicker
+            title="Shadow color"
+            selected={getValueFromShorthandStr(variable, 4)}
+            onChange={(e) => handleChange(e, 4)}
+          />
+        </>
+      )}
+
+      <BottomLine />
+    </div>
+  );
+};
+
+const BackgroundShadowSlider = ({
+  value,
+  title,
+  onChange,
+}: {
+  value: string;
+  title: string;
+  onChange: HandleChangeType;
+}) => {
+  return (
+    <Slider
+      min={title === "Blur" ? 0 : -50}
+      max={50}
+      step={1}
+      value={value}
+      title={title}
+      onChange={onChange}
+      parse={true}
+    />
   );
 };
 const BackgroundImage = () => {

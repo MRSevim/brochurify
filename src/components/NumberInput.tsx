@@ -11,7 +11,7 @@ const NumberInput = ({
 }) => {
   const parsed = parseInt(value, 10) || "";
   return (
-    <form>
+    <form className="mb-2">
       <label
         htmlFor={"number-input-" + title}
         className="block mb-2 text-sm font-medium text-text"

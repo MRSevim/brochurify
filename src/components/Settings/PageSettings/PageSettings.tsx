@@ -1,6 +1,7 @@
 import Seo from "./Seo";
 import Styles from "./Styles";
 import Variables from "./Variables";
+import WebsiteIcon from "./WebsiteIcon";
 
 const PageSettings = () => {
   return (
@@ -12,6 +13,7 @@ const PageSettings = () => {
       <Seo />
       <Variables />
       <Styles />
+      <WebsiteIcon />
     </div>
   );
 };

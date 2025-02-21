@@ -35,6 +35,7 @@ export interface EditorState {
   dropHandled: boolean;
   draggedItem?: string;
   variables: VariableWithId[];
+  copied?: Layout;
 }
 export type Variable = {
   type: "color" | "font-family";
@@ -68,6 +69,7 @@ export type PageWise = {
   overflow: "auto" | "hidden";
   fontFamily: string;
   lineHeight: string;
+  iconUrl: string;
   [key: string]: string | undefined;
 };
 
@@ -84,6 +86,8 @@ export type Style = {
   display?: string;
   textAlign?: "center";
   flexWrap?: "wrap" | "nowrap";
+  boxShadow?: string;
+  animation?: string;
   [key: string]: string | undefined;
 };
 export type LayoutOrUnd = Layout | undefined;

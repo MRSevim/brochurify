@@ -112,3 +112,14 @@ hr {
   outline: 2px dashed var(--background); /* Works like border but doesn't affect layout */
   z-index: 50;
 }
+/*Animations*/
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

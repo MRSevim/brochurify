@@ -49,6 +49,7 @@ const Editor = () => {
         {data?.map((item) => {
           return (
             <div
+              className="inline-block"
               key={item.id}
               style={{
                 width: item.props.style.width,
@@ -102,7 +103,7 @@ const renderComponent = (
   return (
     <div
       key={id}
-      className="relative"
+      className="relative inline-block"
       style={{
         width: inMainLayout ? "100%" : item.props.style.width,
         height: inMainLayout ? "100%" : item.props.style.height,
@@ -121,7 +122,7 @@ const renderComponent = (
 
       <FocusWrapper item={item}>
         <div
-          className="w-full h-full flex"
+          className="w-full h-full flex items-center"
           onDrop={(e) => {
             e.stopPropagation();
             handleCenterDropCaller(e, dispatch, item.id);
@@ -132,7 +133,11 @@ const renderComponent = (
           }}
           onDragLeave={() => handleDragLeaveCaller(dispatch)}
         >
-          <Component id={id} {...item.props}>
+          <Component
+            key={`${id}-${item.props.style.animation}`}
+            id={id}
+            {...item.props}
+          >
             {item.props.child?.map((childItem) =>
               renderComponent(
                 childItem,

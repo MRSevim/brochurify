@@ -380,6 +380,29 @@ export const editorSlice = createSlice({
         },
       });
     },
+    setCopied: (state, action: PayloadAction<Layout>) => {
+      state.copied = action.payload;
+      toast.success("Copied hovered element");
+    },
+    paste: (state) => {
+      if (!state.copied) {
+        toast.error("You have not copied anything");
+        return;
+      }
+      const newElement = { ...state.copied, id: uuidv4() };
+      const addLocation = state.addLocation;
+      const passed = canElementHaveChild(state, addLocation, newElement);
+
+      if (passed) {
+        state.layout = insertElement(
+          state,
+          state.layout,
+          newElement,
+          addLocation,
+          true
+        );
+      }
+    },
   },
 });
 
@@ -407,6 +430,8 @@ export const {
   undo,
   redo,
   addToHistory,
+  setCopied,
+  paste,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

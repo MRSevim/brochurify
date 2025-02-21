@@ -1,4 +1,6 @@
+import { hasType } from "./EditorHelpers";
 import { Layout, PageWise, Style } from "./Types";
+import { minify } from "htmlfy";
 export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
   const {
     title,
@@ -11,65 +13,74 @@ export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
     fontSize,
     fontFamily,
     lineHeight,
+    iconUrl,
   } = pageWise;
+  return minify(
+    "<!DOCTYPE html>" +
+      `<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title || "Generated Page"}</title>
+  ${
+    title
+      ? `<meta property="og:title" content="${title}">
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:title" content="${title}">`
+      : ""
+  }
+${
+  description
+    ? `<meta name="description" content="${description}">
+      <meta property="og:description" content="${description}">
+      <meta property="twitter:description" content="${description}">`
+    : ""
+}
+${keywords ? `<meta name="keywords" content="${keywords}">` : ""}
+${
+  canonical
+    ? `<link rel="canonical" href="${canonical}">
+        <meta property="og:url" content="${canonical}" />`
+    : ""
+}
+  ${
+    image
+      ? `
+        <meta property="og:image" content="${image}" />
+        <meta name="twitter:image" content="${image}">
+        `
+      : ""
+  }
+  ${iconUrl ? `<link rel="icon" href="${iconUrl}">` : ""}
+<style>
+${getCssReset()}
+  body {
+    color: ${color || "#ffffff"};
+    background-color: ${backgroundColor || "#000000"};
+    font-size: ${fontSize || "16px"};
+    font-family: ${fontFamily || "inherit"};
+    line-height: ${lineHeight || "1.5"};
+    height: 100%;
+    width:100%;
+    overflow:auto;
+  }
+  html {
+    height:100%;
+    width:100%
+  }  
+</style>
+${
+  hasType(layout, "icon")
+    ? '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">'
+    : ""
+}
 
-  return `<!DOCTYPE html>
-            <html lang="en">
-            <head>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <meta name="twitter:card" content="summary_large_image" />
-              <title>${title || "Generated Page"}</title>
-               ${
-                 title
-                   ? `<meta property="og:title" content="${description}">
-                      <meta property="twitter:title" content="${description}">`
-                   : ""
-               }
-              ${
-                description
-                  ? `<meta name="description" content="${description}">
-                    <meta property="og:description" content="${description}">
-                    <meta property="twitter:description" content="${description}">`
-                  : ""
-              }
-              ${keywords ? `<meta name="keywords" content="${keywords}">` : ""}
-              ${
-                canonical
-                  ? `<link rel="canonical" href="${canonical}">
-                      <meta property="og:url" content="${canonical}" />`
-                  : ""
-              }
-               ${
-                 image
-                   ? `
-                      <meta property="og:image" content="${image}" />
-                      <meta name="twitter:image" content="${image}">
-                      `
-                   : ""
-               }
-              <style>
-              ${getCssReset()}
-                body {
-                  color: ${color || "#ffffff"}
-                  background-color: ${backgroundColor || "#000000"};
-                  font-size: ${fontSize || "16px"};
-                  font-family: ${fontFamily || "inherit"};
-                  line-height: ${lineHeight || "1.5"};
-                  height: 100%;
-                  width:100%;
-                  overflow:auto;
-                }
-                html {
-                  height:100%;
-                  width:100%
-                }  
-              </style>
-            </head>
-            <body>
-              ${renderLayout(layout)}
-            </body>
-            </html>`;
+</head>
+<body>
+${renderLayout(layout)}
+</body>
+</html>`
+  );
 };
 
 const getCssReset = () => {
@@ -101,17 +112,24 @@ const getCssReset = () => {
     background-color: inherit;
   }
   a {
+    display:inline-block;
     color: inherit;
     text-decoration: inherit;
+    width:100%;
+    height:100%;
   }
   i {
     cursor:pointer
   }
   .flex {
     display:flex;
+    align-items:center;
     width:100%;
     height:100%;
   }  
+  .inlineblock {
+    display:inline-block
+  }
   `;
 };
 
@@ -131,6 +149,8 @@ const renderLayout = (items: Layout[]): string => {
           ? "div"
           : type === "divider"
           ? "hr"
+          : type === "icon"
+          ? "i"
           : type;
 
       const camelToKebab = (str: string) =>
@@ -152,13 +172,16 @@ const renderLayout = (items: Layout[]): string => {
       const isAudioOrVideo = type === "audio" || type === "video";
       const isImage = type === "image";
       const isText = type === "text";
+      const isVoidElement = type === "image" || type === "divider";
 
       const addButtonWrapper = (html: string) => {
-        if (type === "button") {
+        if (type === "button" || type === "icon") {
           return `
-          <a href=${props.href || ""} target=${
+          <a href="${props.href || ""}" target=${
             props.newTab ? "_blank" : "_self"
-          }>
+          }
+          rel="noopener noreferrer"
+          >
           ${html}
           </a>`;
         } else {
@@ -167,28 +190,32 @@ const renderLayout = (items: Layout[]): string => {
       };
 
       const addFlexWrapper = (html: string) => {
-        return `<div style="${widthAndHeightGenerated}"><div class="flex">${html}</div></div>`;
+        return `<div class="inlineblock" style="${widthAndHeightGenerated}"><div class="flex">${html}</div></div>`;
       };
 
-      const rendered = `<${renderedType} style="${restGenerated}; width:100%; height:100%"  ${
+      const rendered = `<${renderedType} style="${restGenerated}; width:100%; height:100%" ${
         isAudioOrVideo ? "controls" : ""
       }  ${
         isImage
-          ? `src=${props.src || ""}
-            alt=${props.alt || ""}`
+          ? `src="${props.src || ""}"
+            alt="${props.alt || ""}"`
           : ""
-      }>
+      } 
+      ${props.iconType ? `class="bi bi-${props.iconType}"` : ""}
+      ${isVoidElement ? "/" : ""}>
         ${
           isAudioOrVideo
             ? `
-          <source src=${props.src || ""}></source>
+          <source src="${props.src || ""}"/>
           Your browser does not support this tag.
           `
             : ""
         }
           ${isText ? props.text || "" : ""}
           ${child ? renderLayout(child) : ""}
-        </${renderedType}>`;
+
+        ${!isVoidElement ? `</${renderedType}>` : ""}
+        `;
 
       const buttonWrapperApplied = addButtonWrapper(rendered);
       const FlexWrapperApplied = addFlexWrapper(buttonWrapperApplied);

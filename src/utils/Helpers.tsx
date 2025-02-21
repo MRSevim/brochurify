@@ -36,6 +36,7 @@ export const getPageWise = (): PageWise => {
     height: "100%",
     width: "100%",
     overflow: "auto",
+    iconUrl: "",
   };
 };
 
@@ -44,6 +45,7 @@ export const getDefaultStyle = (type: string): Style => {
     return {
       display: "flex",
       flexWrap: "wrap",
+      width: "100%",
       ...getDefaultStyle(""),
     };
   } else if (type === "image") {
@@ -242,6 +244,45 @@ export const getFontVariables = (
   return useAppSelector((state) => state.editor.variables)
     .filter((item) => item.type === "font-family")
     .map((item) => ({ title: item.name, value: item.value }));
+};
+export const makeArraySplitFromCommas = (str: string | undefined): string[] => {
+  if (str) {
+    return str.split(",").map((item) => item.trim());
+  } else return [];
+};
+
+export const addAnimationToString = (
+  str: string,
+  animation: string
+): string => {
+  if (!str) {
+    return animation;
+  } else
+    return [...str.split(",").map((str) => str.trim()), animation].join(", ");
+};
+
+export const updateOrDeleteAnimationAtIndex = (
+  str: string,
+  animation: string | undefined,
+  i: number,
+  deletion: boolean
+) => {
+  const animations = str.split(",").map((str) => str.trim());
+
+  if (!str || i === undefined || i < 0) {
+    throw Error("Please pass in str and i");
+    // Handle edge cases like undefined or invalid index
+  }
+  if (i >= animations.length) {
+    throw Error("Index higher than split array's length"); // Index out of range
+  }
+
+  if (deletion) {
+    animations.splice(i, 1); // Remove the animation at the specified index
+  } else if (animation) {
+    animations[i] = animation; // Replace the animation at the given index
+  }
+  return animations.join(", "); // Return updated string
 };
 
 export const getValueFromShorthandStr = (

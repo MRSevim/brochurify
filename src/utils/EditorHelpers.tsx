@@ -194,6 +194,21 @@ export const findElementById = (
   return undefined; // Return undefined if not found
 };
 
+export const hasType = (layout: Layout[], type: string): boolean => {
+  for (const item of layout) {
+    if (item.type === type) {
+      return true; // Found the target element
+    }
+
+    // If the item has children, search recursively
+    if (item.props?.child) {
+      const found = hasType(item.props.child, type);
+      if (found) return true;
+    }
+  }
+  return false; // Return undefined if not found
+};
+
 export const insertElement = (
   state: EditorState,
   layout: Layout[],

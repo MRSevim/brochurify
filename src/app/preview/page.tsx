@@ -10,9 +10,19 @@ const page = () => {
 
   useEffect(() => {
     function ReplaceContent(param: string) {
-      document.open();
-      document.write(param);
-      document.close();
+      const getHTMLContent = (htmlString: string): string => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, "text/html");
+
+        // You can access the body, head, or any other part here
+        return doc.documentElement.innerHTML; // This gets everything inside the <html> tag
+      };
+
+      const htmlDom = document?.querySelector("html");
+      if (htmlDom) {
+        htmlDom.removeAttribute("class");
+        htmlDom.innerHTML = getHTMLContent(param);
+      }
     }
     const generatedHTML = generateHTML(layout, pageWise);
     ReplaceContent(generatedHTML);

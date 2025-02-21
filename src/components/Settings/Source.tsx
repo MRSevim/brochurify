@@ -12,6 +12,18 @@ const Source = () => {
   return (
     <ToggleVisibilityWrapper title="Source">
       <SmallText>Add source for your media</SmallText>
+      {activeType === "image" && (
+        <SmallText>
+          Should be apng, avif, gif, jpeg, png (recommended), svg or webp
+          (recommended)
+        </SmallText>
+      )}
+      {activeType === "video" && (
+        <SmallText> Should be mp4, webm or ogg</SmallText>
+      )}
+      {activeType === "audio" && (
+        <SmallText> Should be mp3, wav or ogg</SmallText>
+      )}
       <SourceUrl />
       {activeType === "image" && <AltText />}
     </ToggleVisibilityWrapper>

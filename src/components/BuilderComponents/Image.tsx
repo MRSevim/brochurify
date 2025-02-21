@@ -6,12 +6,7 @@ const Image = ({ id, style, src, alt }: PropsWithId) => {
   const active = useActive(id);
   const added = add100PerToStyle(style);
   return (
-    <img
-      className={active}
-      src={src || undefined}
-      alt={alt}
-      style={added}
-    ></img>
+    <img className={active} src={src || undefined} alt={alt} style={added} />
   );
 };
 
