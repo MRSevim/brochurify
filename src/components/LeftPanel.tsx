@@ -1,6 +1,12 @@
 import { LayoutToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectActive,
+  selectAddLocation,
+  selectLayout,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import FocusWrapper from "./FocusWrapper";
 import {
   handleCenterDragOverCaller,
@@ -31,7 +37,7 @@ import DeleteButton from "./DeleteButton";
 type VisibilityMap = Map<string, boolean>;
 
 const LeftPanel = () => {
-  const data = useAppSelector((state) => state.editor.layout);
+  const data = useAppSelector(selectLayout);
   const [toggle] = LayoutToggleContext.Use();
   // Centralized visibility map state
   const [visibilityMap, setVisibilityMap] = useState<VisibilityMap>(new Map());
@@ -68,8 +74,8 @@ const LayoutItem = ({
   visibilityMap: VisibilityMap;
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
 }) => {
-  const activeId = useAppSelector((state) => state.editor.active?.id);
-  const addLocation = useAppSelector((state) => state.editor.addLocation);
+  const activeId = useAppSelector(selectActive)?.id;
+  const addLocation = useAppSelector(selectAddLocation);
   const id = item.id;
   const dispatch = useAppDispatch();
   const isExpanded = visibilityMap.get(id) ?? false;
@@ -77,7 +83,7 @@ const LayoutItem = ({
     addLocation?.id === id && addLocation?.where === "before";
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
-  const layout = useAppSelector((state) => state.editor.layout);
+  const layout = useAppSelector(selectLayout);
 
   useEffect(() => {
     const reveal = (activeId: string | undefined, layout: Layout[]) => {
@@ -231,7 +237,7 @@ const AddSection = () => {
   const [toggle, setToggle] = useState(false);
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement | null>(null);
-  const addLocation = useAppSelector((state) => state.editor.addLocation);
+  const addLocation = useAppSelector(selectAddLocation);
 
   const handleGeneralClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as HTMLElement)) {

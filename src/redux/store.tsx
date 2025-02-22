@@ -3,12 +3,14 @@ import editorSlice from "./slices/editorSlice";
 import { saveToHistoryMiddleware } from "./middlewares/saveToHistoryMiddleware";
 import { saveToLocalStorageMiddleware } from "./middlewares/saveToLocalStorageMiddleware";
 import popupSlice from "./slices/popupSlice";
+import replaySlice from "./slices/replaySlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       editor: editorSlice,
       popup: popupSlice,
+      replay: replaySlice,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(

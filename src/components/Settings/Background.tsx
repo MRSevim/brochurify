@@ -7,7 +7,7 @@ import {
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ColorPicker from "../ColorPicker";
 import {
   changeElementStyle,
@@ -67,7 +67,7 @@ const BackgroundColor = () => {
 const BackgroundShadow = () => {
   const type = "boxShadow";
   const variable = getSetting(useAppSelector, type);
-  const pageWise = useAppSelector((state) => state.editor.pageWise);
+  const pageWise = useAppSelector(selectPageWise);
   const toggled = !!variable;
   const dispatch = useAppDispatch();
   const handleToggle = () => {

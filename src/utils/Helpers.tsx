@@ -1,5 +1,12 @@
 import Button from "@/components/BuilderComponents/Button";
-import { Props, Style, EditorState, PropsWithId, PageWise } from "./Types";
+import {
+  Props,
+  Style,
+  EditorState,
+  PropsWithId,
+  PageWise,
+  Layout,
+} from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
@@ -12,6 +19,7 @@ import Video from "@/components/BuilderComponents/Video";
 import Container from "@/components/BuilderComponents/Container";
 import Divider from "@/components/BuilderComponents/Divider";
 import Icon from "@/components/BuilderComponents/Icon";
+import { selectVariables } from "@/redux/hooks";
 
 export const componentList = {
   button: (props: PropsWithId) => <Button {...props} />,
@@ -97,6 +105,14 @@ export const getDefaultStyle = (type: string): Style => {
   };
 };
 
+export const generateLayoutItem = (type: string): Layout => {
+  return {
+    id: uuidv4(),
+    type,
+    props: getDefaultElementProps(type),
+  };
+};
+
 export const getDefaultElementProps = (type: string): Props => {
   if (!type) {
     throw Error("Please pass a type to getDefaultElementProps func");
@@ -104,13 +120,7 @@ export const getDefaultElementProps = (type: string): Props => {
   if (type === "button") {
     return {
       style: getDefaultStyle("button"),
-      child: [
-        {
-          id: uuidv4(),
-          type: "text",
-          props: getDefaultElementProps("text"),
-        },
-      ],
+      child: [generateLayoutItem("text")],
     };
   } else if (type === "text") {
     return {
@@ -120,29 +130,12 @@ export const getDefaultElementProps = (type: string): Props => {
   } else if (type === "column") {
     return {
       style: getDefaultStyle("column"),
-      child: [
-        {
-          id: uuidv4(),
-          type: "text",
-          props: getDefaultElementProps("text"),
-        },
-      ],
+      child: [generateLayoutItem("text")],
     };
   } else if (type === "row") {
     return {
       style: getDefaultStyle("row"),
-      child: [
-        {
-          id: uuidv4(),
-          type: "column",
-          props: getDefaultElementProps("column"),
-        },
-        {
-          id: uuidv4(),
-          type: "column",
-          props: getDefaultElementProps("column"),
-        },
-      ],
+      child: [generateLayoutItem("column"), generateLayoutItem("column")],
     };
   } else if (type === "image") {
     return {
@@ -162,13 +155,7 @@ export const getDefaultElementProps = (type: string): Props => {
   } else if (type === "container") {
     return {
       style: getDefaultStyle("container"),
-      child: [
-        {
-          id: uuidv4(),
-          type: "text",
-          props: getDefaultElementProps("text"),
-        },
-      ],
+      child: [generateLayoutItem("text")],
     };
   } else if (type === "divider") {
     return {
@@ -241,7 +228,7 @@ export const getFontVariables = (
     editor: EditorState;
   }>
 ) => {
-  return useAppSelector((state) => state.editor.variables)
+  return useAppSelector(selectVariables)
     .filter((item) => item.type === "font-family")
     .map((item) => ({ title: item.name, value: item.value }));
 };

@@ -11,6 +11,7 @@ import SavePopupWrapper from "./SavePopupWrapper";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { useState } from "react";
 import Link from "next/link";
+import { triggerReplay } from "@/redux/slices/replaySlice";
 
 const Header = () => {
   const [, setLayoutToggle] = LayoutToggleContext.Use();
@@ -41,6 +42,12 @@ const Header = () => {
             type="arrow-clockwise"
             size="24px"
             onClick={() => dispatch(redo())}
+          />
+          <Icon
+            title="Replay"
+            type="play-circle"
+            size="24px"
+            onClick={() => dispatch(triggerReplay())}
           />
           <ViewMode />
           <Link href="/preview" target="_blank">
@@ -87,7 +94,10 @@ const ViewMode = () => {
   ];
 
   return (
-    <div className="relative z-50" onClick={() => setChanging((prev) => !prev)}>
+    <div
+      className="relative z-[60]"
+      onClick={() => setChanging((prev) => !prev)}
+    >
       <Icon title="View mode" type={type} size="24px" onClick={() => {}} />
       {changing && (
         <div className="absolute border border-text p-2 rounded bg-background top-full left-1/2 -translate-x-1/2 items-center flex flex-col">

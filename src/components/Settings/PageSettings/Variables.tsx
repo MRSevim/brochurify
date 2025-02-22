@@ -7,7 +7,7 @@ import Select from "@/components/Select";
 import SmallText from "@/components/SmallText";
 import TextInput from "@/components/TextInput";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectVariables, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   addVariable,
   deleteVariable,
@@ -149,7 +149,7 @@ const VariablesList = ({
 }: {
   onEditClick: (variable: VariableWithId) => void;
 }) => {
-  const variables = useAppSelector((state) => state.editor.variables);
+  const variables = useAppSelector(selectVariables);
   const dispatch = useAppDispatch();
 
   return (

@@ -13,6 +13,7 @@ import {
   setDropHandledInner,
 } from "@/utils/EditorHelpers";
 import {
+  generateLayoutItem,
   getDefaultElementProps,
   getDefaultStyle,
   getPageWise,
@@ -32,44 +33,24 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
+const generateInitialContainerChild = (): Layout[] => {
+  const arr = [] as Layout[];
+
+  ["row", "button", "text", "image", "audio", "video", "icon"].forEach(
+    (type) => {
+      arr.push(generateLayoutItem(type));
+    }
+  );
+  return arr;
+};
+
 let initialLayout = [
   {
     id: uuidv4(),
     type: "container",
     props: {
       style: getDefaultStyle("container"),
-      child: [
-        {
-          id: uuidv4(),
-          type: "row",
-          props: getDefaultElementProps("row"),
-        },
-        {
-          id: uuidv4(),
-          type: "button",
-          props: getDefaultElementProps("button"),
-        },
-        {
-          id: uuidv4(),
-          type: "text",
-          props: getDefaultElementProps("text"),
-        },
-        {
-          id: uuidv4(),
-          type: "image",
-          props: getDefaultElementProps("image"),
-        },
-        {
-          id: uuidv4(),
-          type: "audio",
-          props: getDefaultElementProps("audio"),
-        },
-        {
-          id: uuidv4(),
-          type: "video",
-          props: getDefaultElementProps("video"),
-        },
-      ],
+      child: [...generateInitialContainerChild()],
     },
   },
 ];
@@ -129,11 +110,7 @@ export const editorSlice = createSlice({
       state,
       action: PayloadAction<{ type: string; addLocation: AddLocation }>
     ) => {
-      const newElement = {
-        id: uuidv4(),
-        type: action.payload.type,
-        props: getDefaultElementProps(action.payload.type),
-      };
+      const newElement = generateLayoutItem(action.payload.type);
       const passed = canElementHaveChild(
         state,
         action.payload.addLocation,

@@ -1,12 +1,12 @@
 "use client";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useAppSelector } from "@/redux/hooks";
+import { selectLayout, selectPageWise, useAppSelector } from "@/redux/hooks";
 import { generateHTML } from "@/utils/HTMLGenerator";
 import { useEffect } from "react";
 
 const page = () => {
-  const layout = useAppSelector((state) => state.editor.layout);
-  const pageWise = useAppSelector((state) => state.editor.pageWise);
+  const layout = useAppSelector(selectLayout);
+  const pageWise = useAppSelector(selectPageWise);
 
   useEffect(() => {
     function ReplaceContent(param: string) {

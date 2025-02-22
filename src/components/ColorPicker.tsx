@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/redux/hooks";
+import { selectVariables, useAppSelector } from "@/redux/hooks";
 import { ChangeEvent, useState } from "react";
 import SmallText from "./SmallText";
 
@@ -30,9 +30,9 @@ const ColorPicker = ({
 }: Props) => {
   const type = "color";
   const [varOpen, setVarOpen] = useState(false);
-  const colorVariables = useAppSelector(
-    (state) => state.editor.variables
-  ).filter((item) => item.type === type);
+  const colorVariables = useAppSelector(selectVariables).filter(
+    (item) => item.type === type
+  );
   const converted = rgbToHex(selected);
 
   return (

@@ -14,7 +14,7 @@ const viewModeContext = createContext<ViewMode | null>(null);
 export const useViewMode = (): ViewMode => {
   const context = useContext(viewModeContext);
   if (!context) {
-    throw new Error("useViewtMode must be used within a viewModeProvider");
+    throw new Error("useViewMode must be used within a viewModeProvider");
   }
   return context;
 };

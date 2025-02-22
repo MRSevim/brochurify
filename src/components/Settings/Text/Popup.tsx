@@ -3,7 +3,7 @@ import ColorPicker from "@/components/ColorPicker";
 import LinkInput from "@/components/LinkInput";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
-import { useAppSelector } from "@/redux/hooks";
+import { selectPageWise, useAppSelector } from "@/redux/hooks";
 import { fontOptions, getFontVariables } from "@/utils/Helpers";
 import { Editor } from "@tiptap/react";
 import { useEffect, useState } from "react";
@@ -18,7 +18,7 @@ const Popup = ({
   children: React.ReactNode;
 }) => {
   const fontVariables = getFontVariables(useAppSelector);
-  const pageWise = useAppSelector((state) => state.editor.pageWise);
+  const pageWise = useAppSelector(selectPageWise);
   return (
     <div className="absolute z-10 bg-background border border-text rounded p-3 top-5">
       {type === "color" && (

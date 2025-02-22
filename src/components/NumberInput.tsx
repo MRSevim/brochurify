@@ -10,6 +10,7 @@ const NumberInput = ({
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const parsed = parseInt(value, 10) || "";
+
   return (
     <form className="mb-2">
       <label

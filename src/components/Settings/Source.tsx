@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import BottomLine from "../BottomLine";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { getProp, getSetting } from "@/utils/Helpers";
@@ -8,7 +8,7 @@ import TextInput from "../TextInput";
 import SmallText from "../SmallText";
 
 const Source = () => {
-  const activeType = useAppSelector((state) => state.editor.active?.type);
+  const activeType = useAppSelector(selectActive)?.type;
   return (
     <ToggleVisibilityWrapper title="Source">
       <SmallText>Add source for your media</SmallText>

@@ -9,7 +9,7 @@ import {
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import Border from "./Border";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   changeElementStyle,
   removeElementStyle,
@@ -47,7 +47,7 @@ const SizingAndBorder = () => {
 };
 
 const SizingAndBorderInner = () => {
-  const active = useAppSelector((state) => state.editor.active);
+  const active = useAppSelector(selectActive);
   const isIcon = active?.type === "icon";
   return (
     <>
@@ -67,7 +67,7 @@ const SizingAndBorderInner = () => {
 };
 
 export const WidthAndHeight = () => {
-  const activeId = useAppSelector((state) => state.editor.active?.id);
+  const activeId = useAppSelector(selectActive)?.id;
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Width and Height" />

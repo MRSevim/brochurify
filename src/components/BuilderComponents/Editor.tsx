@@ -10,23 +10,28 @@ import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectAddLocation,
+  selectLayout,
+  selectPageWise,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
 import { AddLocation, Layout, Where } from "@/utils/Types";
 import { DragEvent } from "react";
 import { useViewMode } from "@/contexts/ViewModeContext";
 
 const Editor = () => {
-  const data = useAppSelector((state) => state.editor.layout);
+  const data = useAppSelector(selectLayout);
   const [layoutToggle] = LayoutToggleContext.Use();
   const [settingsToggle] = SettingsToggleContext.Use();
   const dispatch = useAppDispatch();
-  const activeId = useAppSelector((state) => state.editor.active?.id);
-  const addLocation = useAppSelector((state) => state.editor.addLocation);
+  const addLocation = useAppSelector(selectAddLocation);
   const draggedItem = useAppSelector((state) => state.editor.draggedItem);
-  const pageWise = useAppSelector((state) => state.editor.pageWise);
+  const pageWise = useAppSelector(selectPageWise);
   const [viewMode] = useViewMode();
-
+  const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   const maxWidth =
     viewMode === "desktop"
       ? undefined
@@ -45,7 +50,11 @@ const Editor = () => {
 
   return (
     <section className={"relative h-screen-header-excluded " + addedString}>
-      <div style={pageWise} className={"editor mx-auto " + maxWidth}>
+      <div
+        style={pageWise}
+        className={"editor mx-auto " + maxWidth}
+        key={globalTrigger}
+      >
         {data?.map((item) => {
           return (
             <div
@@ -58,7 +67,6 @@ const Editor = () => {
             >
               {renderComponent(
                 item,
-                activeId,
                 dispatch,
                 false,
                 addLocation,
@@ -77,7 +85,6 @@ export default Editor;
 
 const renderComponent = (
   item: Layout,
-  activeId: string | undefined,
   dispatch: ReturnType<typeof useAppDispatch>,
   parentIsRow: boolean,
   addLocation: AddLocation,
@@ -99,6 +106,10 @@ const renderComponent = (
   const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
+
+  const replayTrigger = useAppSelector((state) => {
+    return state.replay.replayArr.find((item) => item.id === id)?.trigger;
+  });
 
   return (
     <div
@@ -133,15 +144,10 @@ const renderComponent = (
           }}
           onDragLeave={() => handleDragLeaveCaller(dispatch)}
         >
-          <Component
-            key={`${id}-${item.props.style.animation}`}
-            id={id}
-            {...item.props}
-          >
+          <Component key={replayTrigger} id={id} {...item.props}>
             {item.props.child?.map((childItem) =>
               renderComponent(
                 childItem,
-                activeId,
                 dispatch,
                 item.type === "row",
                 addLocation,

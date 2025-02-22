@@ -4,7 +4,7 @@ import {
   setDraggedItem,
   setDropHandled,
 } from "@/redux/slices/editorSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toast } from "react-toastify";
 import { Layout } from "@/utils/Types";
 
@@ -17,7 +17,7 @@ const FocusWrapper = ({
 }) => {
   const dispatch = useAppDispatch();
   const itemId = item?.id;
-  const activeId = useAppSelector((state) => state.editor.active?.id);
+  const activeId = useAppSelector(selectActive)?.id;
   const dropHandled = useAppSelector((state) => state.editor.dropHandled);
 
   return (

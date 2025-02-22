@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppSelector } from "@/redux/hooks";
 import SizingAndBorder from "./SizingAndBorder";
 import Source from "./Source";
 import Text from "./Text/Text";
@@ -10,7 +10,7 @@ import IconType from "./IconType";
 import Animations from "./Animations";
 
 const ElementSettings = () => {
-  const active = useAppSelector((state) => state.editor.active);
+  const active = useAppSelector(selectActive);
   const activeType = active?.type;
   const activeId = active?.id;
   const shouldHaveSource =
