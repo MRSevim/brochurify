@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import AddButton from "../AddButton";
 import SmallText from "../SmallText";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
@@ -23,9 +23,10 @@ import ReplayButton from "../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
 
 const Animations = () => {
-  const type = "animation";
+  const [type, setType] = useState("animation");
   const [showPopup, setShowPopup] = useState(false);
-  const animationsString = getSetting(useAppSelector, type);
+  const innerType = "animation";
+  const animationsString = getSetting(useAppSelector, type, innerType);
   const animations = makeArraySplitFromCommas(animationsString);
   const [editedIndex, setEditedIndex] = useState<number>(0);
   const dispatch = useAppDispatch();
@@ -33,7 +34,11 @@ const Animations = () => {
 
   const handleAddition = (editedStr: string) => {
     const newValue = addAnimationToString(animationsString || "", editedStr);
-    dispatch(changeElementStyle({ type, newValue }));
+    if (type !== "animation") {
+      dispatch(changeElementStyle({ type, newValue: { animation: newValue } }));
+    } else {
+      dispatch(changeElementStyle({ type, newValue }));
+    }
   };
 
   const handleEditOrDeletion = (
@@ -48,7 +53,11 @@ const Animations = () => {
       i,
       deletion
     );
-    dispatch(changeElementStyle({ type, newValue }));
+    if (type !== "animation") {
+      dispatch(changeElementStyle({ type, newValue: { animation: newValue } }));
+    } else {
+      dispatch(changeElementStyle({ type, newValue }));
+    }
   };
   return (
     <ToggleVisibilityWrapper title="Animations">
@@ -59,10 +68,13 @@ const Animations = () => {
             dispatch(triggerReplay(activeId));
           }}
         />
+        <TypeSelect type={type} setType={setType} />
         <AddButton
           onClick={() => {
             if (!showPopup) {
-              handleAddition("slideIn 100ms ease 0ms 1 normal none running");
+              handleAddition(
+                "slideInFromLeft 100ms ease 0ms 1 normal none running"
+              );
             }
             setShowPopup((prev) => !prev);
           }}
@@ -95,6 +107,58 @@ const Animations = () => {
         <BottomLine />
       </div>
     </ToggleVisibilityWrapper>
+  );
+};
+const TypeSelect = ({
+  setType,
+  type,
+}: {
+  setType: Dispatch<SetStateAction<string>>;
+  type: string;
+}) => {
+  const typeArr = [
+    { text: "onLoad", type: "animation" },
+    { text: "onHover", type: "&:hover" },
+    { text: "onClick", type: "&:active" },
+  ];
+
+  return (
+    <div className="flex items-center justify-between gap-2 mb-2">
+      {typeArr.map((item) => (
+        <TypeItem
+          key={item.text}
+          globalType={type}
+          type={item.type}
+          text={item.text}
+          onClick={() => {
+            setType(item.type);
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+const TypeItem = ({
+  text,
+  onClick,
+  type,
+  globalType,
+}: {
+  text: string;
+  onClick: () => void;
+  type: string;
+  globalType: string;
+}) => {
+  return (
+    <div
+      className={
+        "text-background  p-2 cursor-pointer " +
+        (type === globalType ? " bg-gray" : "bg-text")
+      }
+      onClick={onClick}
+    >
+      {text}
+    </div>
   );
 };
 const Popup = ({
@@ -230,7 +294,12 @@ const SelectAnimation = ({
   onChange: (str: string) => void;
 }) => {
   const availableAnimations: OptionsObject[] = [
-    { title: "Slide in", value: "slideIn" },
+    { title: "Slide in from left", value: "slideInFromLeft" },
+    { title: "Slide in from right", value: "slideInFromRight" },
+    { title: "Slide in from Top", value: "slideInFromTop" },
+    { title: "Slide in from Bottom", value: "slideInFromBottom" },
+    { title: "Scale up", value: "scaleUp" },
+    { title: "Scale down", value: "scaleDown" },
   ];
   return (
     <Select

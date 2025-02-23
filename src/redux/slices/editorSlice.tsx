@@ -14,7 +14,6 @@ import {
 } from "@/utils/EditorHelpers";
 import {
   generateLayoutItem,
-  getDefaultElementProps,
   getDefaultStyle,
   getPageWise,
 } from "@/utils/Helpers";
@@ -25,6 +24,7 @@ import {
   Layout,
   LayoutOrUnd,
   PageWise,
+  Style,
   Variable,
   VariableWithId,
 } from "@/utils/Types";
@@ -146,7 +146,7 @@ export const editorSlice = createSlice({
     },
     changeElementStyle: (
       state,
-      action: PayloadAction<{ type: string; newValue: string }>
+      action: PayloadAction<{ type: string; newValue: string | Style }>
     ) => {
       const { type, newValue } = action.payload;
       const updateStyle = (layout: Layout[]): Layout[] => {
@@ -177,7 +177,7 @@ export const editorSlice = createSlice({
           return item;
         });
       };
-      if (!state.active) {
+      if (!state.active && typeof newValue === "string") {
         state.pageWise[type] = newValue;
       } else {
         state.layout = updateStyle(state.layout);

@@ -5,14 +5,9 @@ import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
-import {
-  fontOptions,
-  getFontVariables,
-  getPageWise,
-  getSetting,
-} from "@/utils/Helpers";
+import { fontOptions, getFontVariables, getSetting } from "@/utils/Helpers";
 
 const Styles = () => {
   return (
@@ -60,7 +55,7 @@ const Color = () => {
   );
 };
 const BackgroundColor = () => {
-  const type = "backgroundColor";
+  const type = "background-color";
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
 
@@ -92,7 +87,7 @@ const BackgroundColor = () => {
   );
 };
 const FontSize = () => {
-  const type = "fontSize";
+  const type = "font-size";
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
 
@@ -121,7 +116,7 @@ const FontSize = () => {
 };
 
 const FontFamily = () => {
-  const type = "fontFamily";
+  const type = "font-family";
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
   const fontVariables = getFontVariables(useAppSelector);
@@ -149,7 +144,7 @@ const FontFamily = () => {
 };
 
 const LineHeight = () => {
-  const type = "lineHeight";
+  const type = "line-height";
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
 
@@ -179,13 +174,14 @@ const LineHeight = () => {
 
 export const ResetButtonWithOnClick = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
+  const pageWise = useAppSelector(selectPageWise);
   return (
     <ResetButton
       onClick={() => {
         dispatch(
           changeElementStyle({
             type,
-            newValue: getPageWise()[type] || "",
+            newValue: pageWise[type] || "",
           })
         );
       }}

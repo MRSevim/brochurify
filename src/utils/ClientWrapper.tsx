@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { Provider } from "react-redux";
 import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
+import { StyleSheetManager } from "styled-components";
 
 export default function ClientWrapper({
   children,
@@ -31,14 +32,16 @@ export default function ClientWrapper({
     }
   }
   return (
-    <LayoutToggleContext.Provider>
-      <SettingsToggleContext.Provider>
-        <LightModeProvider lightModeFromCookie={lightMode}>
-          <ViewModeProvider>
-            <Provider store={storeRef.current}>{children}</Provider>
-          </ViewModeProvider>
-        </LightModeProvider>
-      </SettingsToggleContext.Provider>
-    </LayoutToggleContext.Provider>
+    <StyleSheetManager shouldForwardProp={(prop) => prop !== "styles"}>
+      <LayoutToggleContext.Provider>
+        <SettingsToggleContext.Provider>
+          <LightModeProvider lightModeFromCookie={lightMode}>
+            <ViewModeProvider>
+              <Provider store={storeRef.current}>{children}</Provider>
+            </ViewModeProvider>
+          </LightModeProvider>
+        </SettingsToggleContext.Provider>
+      </LayoutToggleContext.Provider>
+    </StyleSheetManager>
   );
 }

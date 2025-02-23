@@ -14,7 +14,7 @@ export default function Builder() {
   useEffect(() => {
     setMounted(true);
   }, []);
-  if (!mounted) return <Loading />;
+  if (!mounted) return <Loading size={16} />;
 
   return (
     <main

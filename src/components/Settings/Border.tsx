@@ -18,7 +18,7 @@ import { HandleChangeType } from "@/utils/Types";
 
 const Border = () => {
   const type = "border";
-  const borderRadiusType = "borderRadius";
+  const borderRadiusType = "border-radius";
   const borderStr = getSetting(useAppSelector, type);
   const borderRadiusValue = getSetting(useAppSelector, borderRadiusType);
   const toggled = !!borderStr;

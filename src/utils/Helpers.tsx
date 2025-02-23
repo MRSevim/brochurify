@@ -6,6 +6,7 @@ import {
   PropsWithId,
   PageWise,
   Layout,
+  StringOrUnd,
 } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
@@ -20,6 +21,47 @@ import Container from "@/components/BuilderComponents/Container";
 import Divider from "@/components/BuilderComponents/Divider";
 import Icon from "@/components/BuilderComponents/Icon";
 import { selectVariables } from "@/redux/hooks";
+import styled from "styled-components";
+
+// Recursive style generator function
+export const styleGenerator = (style: Style): string => {
+  return Object.entries(style || {})
+    .map(([key, value]) => {
+      if (typeof value === "object") {
+        // Handle nested style objects
+        const nestedStyles = styleGenerator(value);
+        return `${key} { ${nestedStyles} }`;
+      } else {
+        // Handle regular CSS properties
+        return `${key}: ${value};`;
+      }
+    })
+    .join(" ");
+};
+
+export const styledElements = {
+  styledDiv: styled.div<{ styles: Style }>`
+    ${({ styles }) => styleGenerator(styles)};
+  `,
+  styledAudio: styled.audio<{ styles: Style }>`
+    ${({ styles }) => styleGenerator(styles)}
+  `,
+  styledButton: styled.button<{ styles: Style }>`
+    ${({ styles }) => styleGenerator(styles)}
+  `,
+  styledHr: styled.hr<{ styles: Style }>`
+    ${({ styles }) => styleGenerator(styles)}
+  `,
+  styledI: styled.i<{ styles: Style }>`
+    ${({ styles }) => styleGenerator(styles)}
+  `,
+  styledImg: styled.img<{ styles: Style }>`
+    ${({ styles }) => styleGenerator(styles)}
+  `,
+  styledVideo: styled.video<{ styles: Style }>`
+    ${({ styles }) => styleGenerator(styles)}
+  `,
+};
 
 export const componentList = {
   button: (props: PropsWithId) => <Button {...props} />,
@@ -36,11 +78,16 @@ export const componentList = {
 
 export const getPageWise = (): PageWise => {
   return {
+    title: "",
+    description: "",
+    keywords: "",
+    canonical: "",
+    image: "",
     color: "#000000",
-    backgroundColor: "#ffffff",
-    fontSize: "16px",
-    fontFamily: "inherit",
-    lineHeight: "1.5",
+    "background-color": "#ffffff",
+    "font-size": "16px",
+    "font-family": "inherit",
+    "line-height": "1.5",
     height: "100%",
     width: "100%",
     overflow: "auto",
@@ -52,7 +99,7 @@ export const getDefaultStyle = (type: string): Style => {
   if (type === "row") {
     return {
       display: "flex",
-      flexWrap: "wrap",
+      "flex-wrap": "wrap",
       width: "100%",
       ...getDefaultStyle(""),
     };
@@ -86,7 +133,7 @@ export const getDefaultStyle = (type: string): Style => {
     };
   } else if (type === "container") {
     return {
-      maxWidth: "1300px",
+      "max-width": "1300px",
       margin: "0 auto",
       padding: "0 12px",
       height: "100%",
@@ -94,8 +141,8 @@ export const getDefaultStyle = (type: string): Style => {
     };
   } else if (type === "icon") {
     return {
-      fontSize: "25px",
-      textAlign: "center",
+      "font-size": "25px",
+      "text-align": "center",
       ...getDefaultStyle("no-space"),
     };
   }
@@ -187,25 +234,47 @@ export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const getSetting = (
-  useAppSelector: UseSelector<{
-    editor: EditorState;
-  }>,
-  type: string
-) => {
+/*getSetting overloads*/
+export function getSetting(
+  useAppSelector: UseSelector<{ editor: EditorState }>,
+  type: "&:hover" | "&:active",
+  innerType: string
+): Style | undefined;
+
+export function getSetting(
+  useAppSelector: UseSelector<{ editor: EditorState }>,
+  type: string,
+  innerType?: string
+): StringOrUnd;
+
+export function getSetting(
+  useAppSelector: UseSelector<{ editor: EditorState }>,
+  type: string,
+  innerType?: string
+) {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
     const activeId = state.editor.active?.id;
+
     if (!activeId) {
       return state.editor.pageWise?.[type];
     }
 
     const element = findElementById(layout, activeId);
-    const style = element?.props?.style as Style; // Dynamically typed style object
 
-    return style?.[type]; // Accessing the dynamic property safely
+    const style = element?.props.style as Style;
+
+    if (type === "&:hover" || type === "&:active") {
+      if (innerType) {
+        return style?.[type]?.[innerType];
+      }
+      return undefined;
+    }
+
+    return style?.[type];
   });
-};
+}
+
 export const getProp = <T extends unknown>(
   useAppSelector: UseSelector<{
     editor: EditorState;
@@ -232,6 +301,7 @@ export const getFontVariables = (
     .filter((item) => item.type === "font-family")
     .map((item) => ({ title: item.name, value: item.value }));
 };
+
 export const makeArraySplitFromCommas = (str: string | undefined): string[] => {
   if (str) {
     return str.split(",").map((item) => item.trim());
@@ -311,18 +381,18 @@ export const extractUrlValue = (cssUrl: string): string => {
   const match = cssUrl.match(/url\(["']?(.*?)["']?\)/);
   return match ? match[1] : "";
 };
-export const add100PerToStyle = (style: Style): Style => {
-  return { ...style, height: "100%", width: "100%" };
-};
+
 export function setCookie(cname: String, cvalue: string, exdays: number) {
   const d = new Date();
   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
   let expires = "expires=" + d.toUTCString();
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
+
 export const CONFIG = {
   placeholderImgUrl: "/placeholder-image.jpg",
 };
+
 export const fontOptions = [
   "inherit",
   "Arial ,sans-serif",

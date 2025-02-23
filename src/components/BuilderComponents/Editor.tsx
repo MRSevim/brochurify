@@ -18,15 +18,15 @@ import {
   useAppSelector,
 } from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
-import { AddLocation, Layout, Where } from "@/utils/Types";
+import { AddLocation, Layout, Style, Where } from "@/utils/Types";
 import { DragEvent } from "react";
 import { useViewMode } from "@/contexts/ViewModeContext";
+import { styledElements } from "@/utils/Helpers";
 
 const Editor = () => {
   const data = useAppSelector(selectLayout);
   const [layoutToggle] = LayoutToggleContext.Use();
   const [settingsToggle] = SettingsToggleContext.Use();
-  const dispatch = useAppDispatch();
   const addLocation = useAppSelector(selectAddLocation);
   const draggedItem = useAppSelector((state) => state.editor.draggedItem);
   const pageWise = useAppSelector(selectPageWise);
@@ -50,49 +50,42 @@ const Editor = () => {
 
   return (
     <section className={"relative h-screen-header-excluded " + addedString}>
-      <div
-        style={pageWise}
+      <styledElements.styledDiv
+        styles={pageWise}
         className={"editor mx-auto " + maxWidth}
         key={globalTrigger}
       >
-        {data?.map((item) => {
+        {data.map((item) => {
           return (
-            <div
-              className="inline-block"
+            <RenderedComponent
               key={item.id}
-              style={{
-                width: item.props.style.width,
-                height: item.props.style.height,
-              }}
-            >
-              {renderComponent(
-                item,
-                dispatch,
-                false,
-                addLocation,
-                draggedItem,
-                true
-              )}
-            </div>
+              item={item}
+              parentIsRow={false}
+              addLocation={addLocation}
+              draggedItem={draggedItem}
+            />
           );
         })}
-      </div>
+      </styledElements.styledDiv>
     </section>
   );
 };
 
 export default Editor;
 
-const renderComponent = (
-  item: Layout,
-  dispatch: ReturnType<typeof useAppDispatch>,
-  parentIsRow: boolean,
-  addLocation: AddLocation,
-  draggedItem: string | undefined,
-  inMainLayout: boolean
-): React.ReactNode => {
+const RenderedComponent = ({
+  item,
+  parentIsRow,
+  addLocation,
+  draggedItem,
+}: {
+  item: Layout;
+  parentIsRow: boolean;
+  addLocation: AddLocation;
+  draggedItem: string | undefined;
+}) => {
   const Component = componentList[item.type as keyof typeof componentList];
-
+  const dispatch = useAppDispatch();
   const id = item.id;
   const beforeSelected =
     addLocation?.id === id && addLocation?.where === "before";
@@ -113,11 +106,10 @@ const renderComponent = (
 
   return (
     <div
-      key={id}
-      className="relative inline-block"
+      className="inline-block relative"
       style={{
-        width: inMainLayout ? "100%" : item.props.style.width,
-        height: inMainLayout ? "100%" : item.props.style.height,
+        width: item.props.style.width,
+        height: item.props.style.height,
       }}
     >
       <div
@@ -145,16 +137,15 @@ const renderComponent = (
           onDragLeave={() => handleDragLeaveCaller(dispatch)}
         >
           <Component key={replayTrigger} id={id} {...item.props}>
-            {item.props.child?.map((childItem) =>
-              renderComponent(
-                childItem,
-                dispatch,
-                item.type === "row",
-                addLocation,
-                draggedItem,
-                false
-              )
-            )}
+            {item.props.child?.map((childItem) => (
+              <RenderedComponent
+                key={childItem.id}
+                item={childItem}
+                parentIsRow={item.type === "row"}
+                addLocation={addLocation}
+                draggedItem={draggedItem}
+              />
+            ))}
           </Component>
         </div>
       </FocusWrapper>

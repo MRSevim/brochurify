@@ -34,12 +34,12 @@ const Alignment = () => {
     <ToggleVisibilityWrapper title="Alignment">
       <SmallText>Alignment for row elements</SmallText>
       <HorizontalOrVertical
-        type="justifyContent"
+        type="justify-content"
         title="Select horizontal alignment type"
         options={horizontalAlignmentOptions}
       />
       <HorizontalOrVertical
-        type="alignItems"
+        type="align-items"
         title="Select vertical alignment type"
         options={verticalAlignmentOptions}
       />

@@ -228,7 +228,7 @@ const MarginOrPadding = ({
 };
 
 const Size = () => {
-  const type = "fontSize";
+  const type = "font-size";
   const dispatch = useAppDispatch();
   const variable = getSetting(useAppSelector, type);
   return (

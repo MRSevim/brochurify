@@ -22,7 +22,7 @@ const ContainerSettings = () => {
 };
 
 const MaxWidth = () => {
-  const type = "maxWidth";
+  const type = "max-width";
   const dispatch = useAppDispatch();
   const variable = getSetting(useAppSelector, type);
   return (

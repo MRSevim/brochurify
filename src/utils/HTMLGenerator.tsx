@@ -1,4 +1,5 @@
 import { hasType } from "./EditorHelpers";
+import { styleGenerator } from "./Helpers";
 import { Layout, PageWise, Style } from "./Types";
 import { minify } from "htmlfy";
 export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
@@ -9,10 +10,10 @@ export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
     canonical,
     image,
     color,
-    backgroundColor,
-    fontSize,
-    fontFamily,
-    lineHeight,
+    "background-color": backgroundColor,
+    "font-size": fontSize,
+    "font-family": fontFamily,
+    "line-height": lineHeight,
     iconUrl,
   } = pageWise;
   return minify(
@@ -153,18 +154,11 @@ const renderLayout = (items: Layout[]): string => {
           ? "i"
           : type;
 
-      const camelToKebab = (str: string) =>
-        str.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-
       const styleDivider = (style: Style) => {
         const { width, height, ...rest } = style;
         return [{ width, height }, rest];
       };
-      const styleGenerator = (style: Style) => {
-        return Object.entries(style || {})
-          .map(([key, value]) => `${camelToKebab(key)}: ${value};`)
-          .join(" ");
-      };
+
       const [widthAndHeight, rest] = styleDivider(props.style);
       const widthAndHeightGenerated = styleGenerator(widthAndHeight);
       const restGenerated = styleGenerator(rest);

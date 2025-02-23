@@ -1,16 +1,15 @@
-import { add100PerToStyle } from "@/utils/Helpers";
 import useActive from "@/utils/hooks/useActive";
 import { PropsWithId } from "@/utils/Types";
+import { styledElements } from "@/utils/Helpers";
 
 const Text = ({ id, text, style }: PropsWithId) => {
   const active = useActive(id);
-  const added = add100PerToStyle(style);
   return (
-    <div
+    <styledElements.styledDiv
       className={active}
-      style={added}
+      styles={style}
       dangerouslySetInnerHTML={{ __html: text || "" }}
-    ></div>
+    ></styledElements.styledDiv>
   );
 };
 

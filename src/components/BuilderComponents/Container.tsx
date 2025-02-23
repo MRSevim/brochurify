@@ -1,14 +1,14 @@
-import { add100PerToStyle } from "@/utils/Helpers";
 import useActive from "@/utils/hooks/useActive";
 import { PropsWithId } from "@/utils/Types";
+import { styledElements } from "@/utils/Helpers";
 
 const Container = ({ id, children, style }: PropsWithId) => {
   const active = useActive(id);
-  const added = add100PerToStyle(style);
+
   return (
-    <div className={active} style={added}>
+    <styledElements.styledDiv className={active} styles={style}>
       {children}
-    </div>
+    </styledElements.styledDiv>
   );
 };
 

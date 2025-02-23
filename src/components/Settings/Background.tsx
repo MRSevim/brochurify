@@ -1,7 +1,6 @@
 import {
   CONFIG,
   extractUrlValue,
-  getPageWise,
   getSetting,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
@@ -33,9 +32,10 @@ const Background = () => {
 };
 
 const BackgroundColor = () => {
-  const type = "backgroundColor";
+  const type = "background-color";
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
+  const pageWise = useAppSelector(selectPageWise);
 
   return (
     <div className="relative pb-2 mb-2">
@@ -49,7 +49,7 @@ const BackgroundColor = () => {
           )
         }
         title="Select background color"
-        selected={variable || getPageWise()[type] || "#ffffff"}
+        selected={variable || pageWise[type] || "#ffffff"}
         onChange={(e) =>
           dispatch(
             changeElementStyle({
@@ -65,7 +65,7 @@ const BackgroundColor = () => {
   );
 };
 const BackgroundShadow = () => {
-  const type = "boxShadow";
+  const type = "box-shadow";
   const variable = getSetting(useAppSelector, type);
   const pageWise = useAppSelector(selectPageWise);
   const toggled = !!variable;
@@ -153,7 +153,7 @@ const BackgroundShadowSlider = ({
   );
 };
 const BackgroundImage = () => {
-  const type = "backgroundImage";
+  const type = "background-image";
   const variable = getSetting(useAppSelector, type);
   const toggled = !!variable;
   const dispatch = useAppDispatch();
@@ -167,20 +167,20 @@ const BackgroundImage = () => {
       );
       dispatch(
         changeElementStyle({
-          type: "backgroundRepeat",
+          type: "background-repeat",
           newValue: "no-repeat",
         })
       );
       dispatch(
         changeElementStyle({
-          type: "backgroundPosition",
+          type: "background-position",
           newValue: "center center",
         })
       );
     } else {
       dispatch(removeElementStyle({ type }));
-      dispatch(removeElementStyle({ type: "backgroundPosition" }));
-      dispatch(removeElementStyle({ type: "backgroundRepeat" }));
+      dispatch(removeElementStyle({ type: "background-position" }));
+      dispatch(removeElementStyle({ type: "background-repeat" }));
     }
   };
 
@@ -202,7 +202,7 @@ const BackgroundImage = () => {
 };
 
 const Link = () => {
-  const type = "backgroundImage";
+  const type = "background-image";
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
   return (
@@ -222,7 +222,7 @@ const Link = () => {
 };
 
 const Alignment = () => {
-  const type = "backgroundPosition";
+  const type = "background-position";
   const positionStr = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
 
