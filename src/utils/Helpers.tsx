@@ -22,24 +22,31 @@ import Divider from "@/components/BuilderComponents/Divider";
 import Icon from "@/components/BuilderComponents/Icon";
 import { selectVariables } from "@/redux/hooks";
 import styled from "styled-components";
+import { getAllKeyFrames, styleGenerator } from "./StyleGenerators";
 
-// Recursive style generator function
-export const styleGenerator = (style: Style): string => {
-  return Object.entries(style || {})
-    .map(([key, value]) => {
-      if (typeof value === "object") {
-        // Handle nested style objects
-        const nestedStyles = styleGenerator(value);
-        return `${key} { ${nestedStyles} }`;
-      } else {
-        // Handle regular CSS properties
-        return `${key}: ${value};`;
-      }
-    })
-    .join(" ");
+export const runIntersectionObserver = () => {
+  const observer = new IntersectionObserver((entries, observer) => {
+    entries
+      .filter((entry) => entry.isIntersecting)
+      .forEach((entry) => {
+        entry.target.classList.add("scrolled");
+        observer.unobserve(entry.target); // Stops observing after adding class
+      });
+  });
+
+  document.querySelectorAll(".element").forEach((elem) => {
+    observer.observe(elem);
+  });
+  return observer;
 };
-
 export const styledElements = {
+  styledEditor: styled.div<{ styles: Style }>`
+    ${({ styles }) => {
+      const style = styleGenerator(styles);
+      const allKeyframes = getAllKeyFrames();
+      return style + allKeyframes;
+    }};
+  `,
   styledDiv: styled.div<{ styles: Style }>`
     ${({ styles }) => styleGenerator(styles)};
   `,

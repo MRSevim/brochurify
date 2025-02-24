@@ -7,15 +7,7 @@ import Icon from "../Icon";
 import { useState } from "react";
 
 const IconType = () => {
-  const type = "iconType";
-  const variable = getProp<string>(useAppSelector, type);
-  const dispatch = useAppDispatch();
   const [searchString, setSearchString] = useState("");
-
-  // Filter icons based on search input
-  const filteredIcons = Object.keys(iconList).filter((icon) =>
-    icon.toLowerCase().includes(searchString.toLowerCase())
-  );
 
   return (
     <div className="relative pb-2 mb-2">
@@ -30,27 +22,41 @@ const IconType = () => {
         />
         <div className="w-full h-full">
           <div className="grid grid-cols-3 gap-2 max-h-80 overflow-hidden overflow-y-auto">
-            {filteredIcons.map((icon) => (
-              <div
-                key={icon}
-                onClick={() =>
-                  dispatch(changeElementProp({ type, newValue: icon }))
-                }
-                className={
-                  "flex flex-col items-center text-center cursor-pointer " +
-                  (variable === icon ? " border p-1 border-text rounded" : "")
-                }
-              >
-                <Icon title={icon} type={icon} size="24px" onClick={() => {}} />
-                <span className="text-xs">{icon}</span>
-              </div>
-            ))}
+            <Filtered searchString={searchString} />
           </div>
         </div>
       </form>
 
       <BottomLine />
     </div>
+  );
+};
+
+const Filtered = ({ searchString }: { searchString: string }) => {
+  const type = "iconType";
+  const variable = getProp<string>(useAppSelector, type);
+  const dispatch = useAppDispatch();
+
+  // Filter icons based on search input
+  const filteredIcons = Object.keys(iconList).filter((icon) =>
+    icon.toLowerCase().includes(searchString.toLowerCase())
+  );
+  return (
+    <>
+      {filteredIcons.map((icon) => (
+        <div
+          key={icon}
+          onClick={() => dispatch(changeElementProp({ type, newValue: icon }))}
+          className={
+            "flex flex-col items-center text-center cursor-pointer " +
+            (variable === icon ? " border p-1 border-text rounded" : "")
+          }
+        >
+          <Icon title={icon} type={icon} size="24px" onClick={() => {}} />
+          <span className="text-xs">{icon}</span>
+        </div>
+      ))}
+    </>
   );
 };
 

@@ -37,14 +37,23 @@ import DeleteButton from "./DeleteButton";
 type VisibilityMap = Map<string, boolean>;
 
 const LeftPanel = () => {
-  const data = useAppSelector(selectLayout);
   const [toggle] = LayoutToggleContext.Use();
+
+  return (
+    <PanelWrapper toggle={toggle} from="left">
+      <LayoutInner />
+    </PanelWrapper>
+  );
+};
+
+const LayoutInner = () => {
+  const data = useAppSelector(selectLayout);
   // Centralized visibility map state
   const [visibilityMap, setVisibilityMap] = useState<VisibilityMap>(new Map());
   const depth = 0;
 
   return (
-    <PanelWrapper toggle={toggle} from="left">
+    <>
       <AddSection />
       <div className="overflow-y-auto max-h-scrollable-container gutter-stable">
         {data?.map((item) => {
@@ -59,7 +68,7 @@ const LeftPanel = () => {
           );
         })}
       </div>
-    </PanelWrapper>
+    </>
   );
 };
 
@@ -74,15 +83,93 @@ const LayoutItem = ({
   visibilityMap: VisibilityMap;
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
 }) => {
-  const activeId = useAppSelector(selectActive)?.id;
-  const addLocation = useAppSelector(selectAddLocation);
   const id = item.id;
   const dispatch = useAppDispatch();
   const isExpanded = visibilityMap.get(id) ?? false;
-  const beforeSelected =
-    addLocation?.id === id && addLocation?.where === "before";
-  const afterSelected =
-    addLocation?.id === id && addLocation?.where === "after";
+
+  const toggleVisibility = () => {
+    setVisibilityMap((prev) => {
+      const newMap = new Map(prev);
+
+      if (isExpanded) {
+        // Remove item ID if it is currently expanded
+        newMap.delete(id);
+      } else {
+        // Add item ID if it is currently collapsed
+        newMap.set(id, true);
+      }
+
+      return newMap;
+    });
+  };
+
+  const handleDragLeave = () => {
+    handleDragLeaveCaller(dispatch);
+  };
+
+  return (
+    <>
+      <SideDropWrapper
+        depth={depth}
+        handleDragLeave={handleDragLeave}
+        item={item}
+      >
+        <FocusWrapper item={item}>
+          <CenterDropWrapper
+            item={item}
+            visibilityMap={visibilityMap}
+            setVisibilityMap={setVisibilityMap}
+            handleDragLeave={handleDragLeave}
+          >
+            {item.props.child && item.props.child.length > 0 && (
+              <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
+            )}
+            {item.type}
+
+            <DeleteButton
+              onClick={(event) => {
+                event.stopPropagation();
+                dispatch(deleteElement(id));
+              }}
+            />
+          </CenterDropWrapper>
+        </FocusWrapper>
+      </SideDropWrapper>
+      {isExpanded && (
+        <>
+          {/* Render child elements recursively */}
+          {item.props.child?.map((childItem) => (
+            <LayoutItem
+              key={childItem.id}
+              item={childItem}
+              depth={Math.min(depth + 1, 2)} // Cap depth at 2
+              visibilityMap={visibilityMap}
+              setVisibilityMap={setVisibilityMap}
+            />
+          ))}
+        </>
+      )}
+    </>
+  );
+};
+
+const CenterDropWrapper = ({
+  item,
+  visibilityMap,
+  setVisibilityMap,
+  children,
+  handleDragLeave,
+}: {
+  item: Layout;
+
+  handleDragLeave: () => void;
+  children: React.ReactNode;
+  visibilityMap: VisibilityMap;
+  setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
+}) => {
+  const activeId = useAppSelector(selectActive)?.id;
+  const id = item.id;
+  const dispatch = useAppDispatch();
   const layout = useAppSelector(selectLayout);
 
   useEffect(() => {
@@ -119,25 +206,45 @@ const LayoutItem = ({
 
     reveal(activeId, layout);
   }, [activeId]);
+  return (
+    <div
+      onDrop={(e) => {
+        handleCenterDropCaller(e, dispatch, id);
+      }}
+      onDragOver={(e) => {
+        handleCenterDragOverCaller(e, item, dispatch);
+      }}
+      onDragLeave={handleDragLeave}
+      className={
+        "p-2 border flex items-center justify-between	" +
+        (activeId === id ? "border-white" : "border-gray")
+      }
+    >
+      {children}
+    </div>
+  );
+};
 
+const SideDropWrapper = ({
+  item,
+  depth,
+  children,
+  handleDragLeave,
+}: {
+  item: Layout;
+  depth: number;
+  handleDragLeave: () => void;
+  children: React.ReactNode;
+}) => {
+  const addLocation = useAppSelector(selectAddLocation);
+  const id = item.id;
+  const dispatch = useAppDispatch();
+  const beforeSelected =
+    addLocation?.id === id && addLocation?.where === "before";
+  const afterSelected =
+    addLocation?.id === id && addLocation?.where === "after";
   // Calculate the margin based on depth, capping it at ml-4
   const marginLeftClass = depth === 0 ? "ml-2" : depth === 1 ? "ml-5" : "ml-7";
-
-  const toggleVisibility = () => {
-    setVisibilityMap((prev) => {
-      const newMap = new Map(prev);
-
-      if (isExpanded) {
-        // Remove item ID if it is currently expanded
-        newMap.delete(id);
-      } else {
-        // Add item ID if it is currently collapsed
-        newMap.set(id, true);
-      }
-
-      return newMap;
-    });
-  };
 
   const handleAddLocationClick = (where: Where) => {
     if (addLocation && addLocation.id === id && addLocation.where === where) {
@@ -153,82 +260,34 @@ const LayoutItem = ({
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
 
-  const handleDragLeave = () => {
-    handleDragLeaveCaller(dispatch);
-  };
-
   return (
-    <>
-      <div className="relative">
-        <div
-          onClick={() => handleAddLocationClick("before")}
-          onDrop={handleSideDrop}
-          onDragOver={(e) => handleSideDragOver(e, "before")}
-          onDragLeave={handleDragLeave}
-          className={
-            "absolute -top-3 left-0 right-0 m-2 h-2 hover:bg-gray " +
-            marginLeftClass +
-            (beforeSelected ? " bg-text hover:bg-text" : "")
-          }
-        ></div>
-        <div className={"m-2 " + marginLeftClass}>
-          <FocusWrapper item={item}>
-            <div
-              onDrop={(e) => {
-                handleCenterDropCaller(e, dispatch, id);
-              }}
-              onDragOver={(e) => {
-                handleCenterDragOverCaller(e, item, dispatch);
-              }}
-              onDragLeave={handleDragLeave}
-              className={
-                "p-2 border flex items-center justify-between	" +
-                (activeId === id ? "border-white" : "border-gray")
-              }
-            >
-              {item.props.child && item.props.child.length > 0 && (
-                <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
-              )}
-              {item.type}
-
-              <DeleteButton
-                onClick={(event) => {
-                  event.stopPropagation();
-                  dispatch(deleteElement(id));
-                }}
-              />
-            </div>
-          </FocusWrapper>
-        </div>
-        <div
-          onClick={() => {
-            handleAddLocationClick("after");
-          }}
-          onDrop={handleSideDrop}
-          onDragOver={(e) => handleSideDragOver(e, "after")}
-          onDragLeave={handleDragLeave}
-          className={
-            "absolute -bottom-3 left-0 right-0 m-2 h-2 hover:bg-gray " +
-            marginLeftClass +
-            (afterSelected ? " bg-text hover:bg-text" : "")
-          }
-        ></div>
-      </div>
-      {isExpanded && (
-        <>
-          {/* Render child elements recursively */}
-          {item.props.child?.map((childItem) => (
-            <LayoutItem
-              key={childItem.id}
-              item={childItem}
-              depth={Math.min(depth + 1, 2)} // Cap depth at 2
-              visibilityMap={visibilityMap}
-              setVisibilityMap={setVisibilityMap}
-            />
-          ))}
-        </>
-      )}
-    </>
+    <div className="relative">
+      <div
+        onClick={() => handleAddLocationClick("before")}
+        onDrop={handleSideDrop}
+        onDragOver={(e) => handleSideDragOver(e, "before")}
+        onDragLeave={handleDragLeave}
+        className={
+          "absolute -top-3 left-0 right-0 m-2 h-2 hover:bg-gray " +
+          marginLeftClass +
+          (beforeSelected ? " bg-text hover:bg-text" : "")
+        }
+      ></div>
+      <div className={"m-2 " + marginLeftClass}>{children} </div>
+      <div
+        onClick={() => {
+          handleAddLocationClick("after");
+        }}
+        onDrop={handleSideDrop}
+        onDragOver={(e) => handleSideDragOver(e, "after")}
+        onDragLeave={handleDragLeave}
+        className={
+          "absolute -bottom-3 left-0 right-0 m-2 h-2 hover:bg-gray " +
+          marginLeftClass +
+          (afterSelected ? " bg-text hover:bg-text" : "")
+        }
+      ></div>
+    </div>
   );
 };
 

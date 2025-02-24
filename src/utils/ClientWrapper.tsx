@@ -31,6 +31,7 @@ export default function ClientWrapper({
       }
     }
   }
+
   return (
     <StyleSheetManager shouldForwardProp={(prop) => prop !== "styles"}>
       <LayoutToggleContext.Provider>

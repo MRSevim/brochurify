@@ -12,14 +12,14 @@ import Animations from "./Animations";
 const ElementSettings = () => {
   const active = useAppSelector(selectActive);
   const activeType = active?.type;
-  const activeId = active?.id;
   const shouldHaveSource =
     activeType === "audio" || activeType === "image" || activeType === "video";
-  const shouldHaveText = activeType === "text";
+  const isText = activeType === "text";
   const shouldHaveUrl = activeType === "button" || activeType === "icon";
   const shouldHaveAlignment = activeType === "row";
   const isContainer = activeType === "container";
   const isIcon = activeType === "icon";
+
   return (
     <div className="m-2">
       <h1 className="font-bold text-xl text-light text-center mb-2">
@@ -30,7 +30,7 @@ const ElementSettings = () => {
       {isContainer && <ContainerSettings />}
       <Background />
       {shouldHaveSource && <Source />}
-      {shouldHaveText && <Text key={activeId} />}
+      {isText && <Text />}
       {shouldHaveUrl && <Url />}
       {shouldHaveAlignment && <Alignment />}
       {isIcon && <IconType />}

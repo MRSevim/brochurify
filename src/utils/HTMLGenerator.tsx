@@ -1,7 +1,12 @@
 import { hasType } from "./EditorHelpers";
-import { styleGenerator } from "./Helpers";
+import {
+  fullStylesWithIdsGenerator,
+  keyframeGenerator,
+  styleGenerator,
+} from "./StyleGenerators";
 import { Layout, PageWise, Style } from "./Types";
-import { minify } from "htmlfy";
+import { prettify } from "htmlfy";
+
 export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
   const {
     title,
@@ -16,7 +21,12 @@ export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
     "line-height": lineHeight,
     iconUrl,
   } = pageWise;
-  return minify(
+
+  const renderedBody = renderLayout(layout);
+  const fullstylesWithIds = fullStylesWithIdsGenerator(layout);
+  const keyframes = keyframeGenerator(fullstylesWithIds);
+
+  return prettify(
     "<!DOCTYPE html>" +
       `<html lang="en">
 <head>
@@ -53,6 +63,23 @@ ${
       : ""
   }
   ${iconUrl ? `<link rel="icon" href="${iconUrl}">` : ""}
+  ${
+    keyframes
+      ? `<script> const observer = new IntersectionObserver((entries, observer) => {
+    entries
+      .filter((entry) => entry.isIntersecting)
+      .forEach((entry) => {
+        entry.target.classList.add("scrolled");
+        observer.unobserve(entry.target); 
+        });
+    });
+
+    document.querySelectorAll(".element").forEach((elem) => {
+      observer.observe(elem);
+    });
+    </script>`
+      : ""
+  }
 <style>
 ${getCssReset()}
   body {
@@ -69,6 +96,8 @@ ${getCssReset()}
     height:100%;
     width:100%
   }  
+  ${fullstylesWithIds}  
+  ${keyframes}
 </style>
 ${
   hasType(layout, "icon")
@@ -78,7 +107,7 @@ ${
 
 </head>
 <body>
-${renderLayout(layout)}
+${renderedBody}
 </body>
 </html>`
   );
@@ -113,11 +142,8 @@ const getCssReset = () => {
     background-color: inherit;
   }
   a {
-    display:inline-block;
     color: inherit;
     text-decoration: inherit;
-    width:100%;
-    height:100%;
   }
   i {
     cursor:pointer
@@ -125,12 +151,17 @@ const getCssReset = () => {
   .flex {
     display:flex;
     align-items:center;
+  }  
+  .inlineBlock {
+    display:inline-block
+  }
+  .element:not(.scrolled) {
+    animation: none;
+  } 
+  .wAndHFull {
     width:100%;
     height:100%;
   }  
-  .inlineblock {
-    display:inline-block
-  }
   `;
 };
 
@@ -161,7 +192,6 @@ const renderLayout = (items: Layout[]): string => {
 
       const [widthAndHeight, rest] = styleDivider(props.style);
       const widthAndHeightGenerated = styleGenerator(widthAndHeight);
-      const restGenerated = styleGenerator(rest);
 
       const isAudioOrVideo = type === "audio" || type === "video";
       const isImage = type === "image";
@@ -171,7 +201,7 @@ const renderLayout = (items: Layout[]): string => {
       const addButtonWrapper = (html: string) => {
         if (type === "button" || type === "icon") {
           return `
-          <a href="${props.href || ""}" target=${
+          <a class="wAndHFull inlineBlock" href="${props.href || ""}" target=${
             props.newTab ? "_blank" : "_self"
           }
           rel="noopener noreferrer"
@@ -184,18 +214,20 @@ const renderLayout = (items: Layout[]): string => {
       };
 
       const addFlexWrapper = (html: string) => {
-        return `<div class="inlineblock" style="${widthAndHeightGenerated}"><div class="flex">${html}</div></div>`;
+        return `<div class="inlineBlock" style="${widthAndHeightGenerated}"><div class="flex wAndHFull">${html}</div></div>`;
       };
 
-      const rendered = `<${renderedType} style="${restGenerated}; width:100%; height:100%" ${
+      const rendered = `<${renderedType} id="id${item.id}" ${
         isAudioOrVideo ? "controls" : ""
-      }  ${
+      }
+      class="element"
+      ${
         isImage
           ? `src="${props.src || ""}"
             alt="${props.alt || ""}"`
           : ""
       } 
-      ${props.iconType ? `class="bi bi-${props.iconType}"` : ""}
+      ${props.iconType ? `class="bi bi-${props.iconType} element"` : ""}
       ${isVoidElement ? "/" : ""}>
         ${
           isAudioOrVideo

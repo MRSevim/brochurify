@@ -13,7 +13,8 @@ const roboto_mono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: "Brochurify",
-  description: "Design single page websites with ui and get the code",
+  description:
+    "Design single page websites with the builder and get the html file",
 };
 
 export default async function RootLayout({

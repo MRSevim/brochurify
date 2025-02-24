@@ -25,29 +25,32 @@ import LetterSpacing from "@/Tiptap/LetterSpacing";
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
   const dispatch = useAppDispatch();
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-      Color,
-      TextStyle,
-      LetterSpacing,
-      Link,
-      Superscript,
-      Subscript,
-      Underline,
-      FontFamily,
-      FontSize,
-      LineHeight,
-    ],
-    content,
-    immediatelyRender: false,
-    editorProps: {
-      attributes: {
-        class: "bg-white text-black p-2 rounded",
+  const editor = useEditor(
+    {
+      extensions: [
+        StarterKit,
+        TextAlign.configure({ types: ["heading", "paragraph"] }),
+        Color,
+        TextStyle,
+        LetterSpacing,
+        Link,
+        Superscript,
+        Subscript,
+        Underline,
+        FontFamily,
+        FontSize,
+        LineHeight,
+      ],
+      content,
+      immediatelyRender: false,
+      editorProps: {
+        attributes: {
+          class: "bg-white text-black p-2 rounded",
+        },
       },
     },
-  });
+    [content]
+  );
   useEffect(() => {
     if (editor) {
       editor.view.dom.addEventListener(

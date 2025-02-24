@@ -148,7 +148,7 @@ const Link = ({ editor }: { editor: Editor }) => {
     <>
       {" "}
       <LinkInput
-        title="Enter the link"
+        title="Enter the link (with https://)"
         value={link}
         onChange={(e) => {
           setLink(e.target.value);

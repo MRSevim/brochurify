@@ -317,9 +317,10 @@ export const editorSlice = createSlice({
           toast.error("Something went wrong");
         } else {
           removeHistoryCurrents(state);
-          history[foundIndex - 1].current = true;
-          state.layout = history[foundIndex - 1].structure.layout;
-          state.pageWise = history[foundIndex - 1].structure.pageWise;
+          const oneBefore = foundIndex - 1;
+          history[oneBefore].current = true;
+          state.layout = history[oneBefore].structure.layout;
+          state.pageWise = history[oneBefore].structure.pageWise;
         }
       }
     },
@@ -338,9 +339,10 @@ export const editorSlice = createSlice({
           toast.error("Something went wrong");
         } else {
           removeHistoryCurrents(state);
-          history[foundIndex + 1].current = true;
-          state.layout = history[foundIndex + 1].structure.layout;
-          state.pageWise = history[foundIndex + 1].structure.pageWise;
+          const oneAfter = foundIndex + 1;
+          history[oneAfter].current = true;
+          state.layout = history[oneAfter].structure.layout;
+          state.pageWise = history[oneAfter].structure.pageWise;
         }
       }
     },

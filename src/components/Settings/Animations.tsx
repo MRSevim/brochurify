@@ -117,7 +117,7 @@ const TypeSelect = ({
   type: string;
 }) => {
   const typeArr = [
-    { text: "onLoad", type: "animation" },
+    { text: "onVisible", type: "animation" },
     { text: "onHover", type: "&:hover" },
     { text: "onClick", type: "&:active" },
   ];

@@ -47,8 +47,8 @@ const SizingAndBorder = () => {
 };
 
 const SizingAndBorderInner = () => {
-  const active = useAppSelector(selectActive);
-  const isIcon = active?.type === "icon";
+  const isIcon = useAppSelector(selectActive)?.type === "icon";
+
   return (
     <>
       {" "}
