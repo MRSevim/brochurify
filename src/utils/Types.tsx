@@ -79,6 +79,10 @@ export type Style = {
   border?: string;
   width?: string;
   height?: string;
+  top?: string;
+  bottom?: string;
+  right?: string;
+  left?: string;
   "max-width"?: string;
   "border-radius"?: string;
   "background-color"?: string;
@@ -93,6 +97,7 @@ export type Style = {
   animation?: string;
   "justify-content"?: string;
   "align-items"?: string;
+  position?: string;
   "&:hover"?: Style;
   "&:active"?: Style;
   [key: string]: StringOrUnd | Style;

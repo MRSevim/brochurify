@@ -32,6 +32,7 @@ const FocusWrapper = ({
       }}
       onDragEnd={(e) => {
         e.stopPropagation();
+        dispatch(setDraggedItem(undefined));
         if (!dropHandled) {
           toast.error("You cannot drop there");
         }

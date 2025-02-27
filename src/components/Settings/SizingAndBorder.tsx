@@ -5,6 +5,7 @@ import { SizingType } from "@/utils/Types";
 import {
   capitalizeFirstLetter,
   getSetting,
+  getUnit,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
@@ -84,11 +85,6 @@ export const WidthAndHeight = () => {
 };
 
 const possibleRadioValues = ["px", "%", "auto"];
-const getUnit = (value: string | undefined) => {
-  if (!value) return;
-  const match = value.match(/\d+(px|%)|auto/);
-  return match ? match[0].replace(/\d+/, "") : null;
-};
 
 const NumberController = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
@@ -97,14 +93,7 @@ const NumberController = ({ type }: { type: string }) => {
   const [radioType, setRadioType] = useState(initialType || "px");
 
   useEffect(() => {
-    if (variable && variable !== "auto" && radioType !== "auto") {
-      dispatch(
-        changeElementStyle({
-          type,
-          newValue: parseInt(variable, 10) + radioType,
-        })
-      );
-    } else if (variable === "auto" && radioType !== "auto") {
+    if (variable === "auto" && radioType !== "auto") {
       dispatch(removeElementStyle({ type }));
     }
   }, [radioType]);
@@ -128,6 +117,13 @@ const NumberController = ({ type }: { type: string }) => {
         onChange={(e) => {
           if (e.target.value === "auto") {
             dispatch(changeElementStyle({ type, newValue: "auto" }));
+          } else if (variable) {
+            dispatch(
+              changeElementStyle({
+                type,
+                newValue: parseInt(variable, 10) + e.target.value,
+              })
+            );
           }
           setRadioType(e.target.value);
         }}

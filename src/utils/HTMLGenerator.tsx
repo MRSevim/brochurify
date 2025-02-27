@@ -1,4 +1,5 @@
 import { hasType } from "./EditorHelpers";
+import { detectTag, styleDivider } from "./Helpers";
 import {
   fullStylesWithIdsGenerator,
   keyframeGenerator,
@@ -96,6 +97,52 @@ ${getCssReset()}
     height:100%;
     width:100%
   }  
+  ${
+    detectTag("blockquote", renderedBody)
+      ? `blockquote {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      margin-left: 30px;
+      padding-left: 15px;
+      border-left: 3px solid var(--gray);
+    }`
+      : ""
+  }
+  ${
+    detectTag("ul", renderedBody) || detectTag("ol", renderedBody)
+      ? `ul,ol {
+      list-style-position: inside;
+      }
+      ul li p,
+      ol li p {
+        display: inline;
+      }`
+      : ""
+  }
+  ${
+    detectTag("hr", renderedBody)
+      ? `hr {
+      border-top: 1px solid var(--gray);
+      }`
+      : ""
+  }
+  ${
+    detectTag("table", renderedBody)
+      ? `table,
+      th,
+      td {
+        border: 1px solid;
+        border-collapse: collapse;
+      }
+      th {
+        background-color: var(--gray);
+      }
+      th,
+      td {
+        padding: 5px;
+      }`
+      : ""
+  }
   ${fullstylesWithIds}  
   ${keyframes}
 </style>
@@ -162,6 +209,12 @@ const getCssReset = () => {
     width:100%;
     height:100%;
   }  
+  .overflow-hidden {
+    overflow:hidden;
+  }  
+  .relative {
+    position:relative
+  }  
   `;
 };
 
@@ -177,7 +230,8 @@ const renderLayout = (items: Layout[]): string => {
           : type === "container" ||
             type === "text" ||
             type === "row" ||
-            type === "column"
+            type === "column" ||
+            type === "fixed"
           ? "div"
           : type === "divider"
           ? "hr"
@@ -185,17 +239,13 @@ const renderLayout = (items: Layout[]): string => {
           ? "i"
           : type;
 
-      const styleDivider = (style: Style) => {
-        const { width, height, ...rest } = style;
-        return [{ width, height }, rest];
-      };
-
       const [widthAndHeight, rest] = styleDivider(props.style);
       const widthAndHeightGenerated = styleGenerator(widthAndHeight);
 
       const isAudioOrVideo = type === "audio" || type === "video";
       const isImage = type === "image";
       const isText = type === "text";
+      const isFixed = type === "fixed";
       const isVoidElement = type === "image" || type === "divider";
 
       const addButtonWrapper = (html: string) => {
@@ -214,13 +264,18 @@ const renderLayout = (items: Layout[]): string => {
       };
 
       const addFlexWrapper = (html: string) => {
-        return `<div class="inlineBlock" style="${widthAndHeightGenerated}"><div class="flex wAndHFull">${html}</div></div>`;
+        return `<div class="inlineBlock ${
+          isFixed ? "" : "relative"
+        }" style="${widthAndHeightGenerated}">
+        <div class="flex wAndHFull overflow-hidden">${html}</div></div>`;
       };
 
       const rendered = `<${renderedType} id="id${item.id}" ${
         isAudioOrVideo ? "controls" : ""
       }
-      class="element"
+      class="element 
+      ${props.iconType ? `bi bi-${props.iconType}` : ""}
+      "
       ${
         isImage
           ? `src="${props.src || ""}"

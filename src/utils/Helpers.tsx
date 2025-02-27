@@ -23,6 +23,7 @@ import Icon from "@/components/BuilderComponents/Icon";
 import { selectVariables } from "@/redux/hooks";
 import styled from "styled-components";
 import { getAllKeyFrames, styleGenerator } from "./StyleGenerators";
+import Fixed from "@/components/BuilderComponents/Fixed";
 
 export const runIntersectionObserver = () => {
   const observer = new IntersectionObserver((entries, observer) => {
@@ -39,6 +40,14 @@ export const runIntersectionObserver = () => {
   });
   return observer;
 };
+export const styleDivider = (style: Style) => {
+  const { width, height, ...rest } = style;
+  return [{ width, height }, rest];
+};
+const getRest = (style: Style): string => {
+  const [widthAndHeight, rest] = styleDivider(style);
+  return styleGenerator(rest);
+};
 export const styledElements = {
   styledEditor: styled.div<{ styles: Style }>`
     ${({ styles }) => {
@@ -48,25 +57,25 @@ export const styledElements = {
     }};
   `,
   styledDiv: styled.div<{ styles: Style }>`
-    ${({ styles }) => styleGenerator(styles)};
+    ${({ styles }) => getRest(styles)};
   `,
   styledAudio: styled.audio<{ styles: Style }>`
-    ${({ styles }) => styleGenerator(styles)}
+    ${({ styles }) => getRest(styles)}
   `,
   styledButton: styled.button<{ styles: Style }>`
-    ${({ styles }) => styleGenerator(styles)}
+    ${({ styles }) => getRest(styles)}
   `,
   styledHr: styled.hr<{ styles: Style }>`
-    ${({ styles }) => styleGenerator(styles)}
+    ${({ styles }) => getRest(styles)}
   `,
   styledI: styled.i<{ styles: Style }>`
-    ${({ styles }) => styleGenerator(styles)}
+    ${({ styles }) => getRest(styles)}
   `,
   styledImg: styled.img<{ styles: Style }>`
-    ${({ styles }) => styleGenerator(styles)}
+    ${({ styles }) => getRest(styles)}
   `,
   styledVideo: styled.video<{ styles: Style }>`
-    ${({ styles }) => styleGenerator(styles)}
+    ${({ styles }) => getRest(styles)}
   `,
 };
 
@@ -81,6 +90,7 @@ export const componentList = {
   container: (props: PropsWithId) => <Container {...props} />,
   divider: (props: PropsWithId) => <Divider {...props} />,
   icon: (props: PropsWithId) => <Icon {...props} />,
+  fixed: (props: PropsWithId) => <Fixed {...props} />,
 };
 
 export const getPageWise = (): PageWise => {
@@ -101,7 +111,10 @@ export const getPageWise = (): PageWise => {
     iconUrl: "",
   };
 };
-
+export const detectTag = (tag: string, htmlStr: string) => {
+  const regex = new RegExp(`<${tag}\\b`, "i"); // Case-insensitive match for opening tag
+  return regex.test(htmlStr);
+};
 export const getDefaultStyle = (type: string): Style => {
   if (type === "row") {
     return {
@@ -150,6 +163,15 @@ export const getDefaultStyle = (type: string): Style => {
     return {
       "font-size": "25px",
       "text-align": "center",
+      ...getDefaultStyle("no-space"),
+    };
+  } else if (type === "fixed") {
+    return {
+      position: "absolute",
+      width: "25px",
+      height: "37.5px",
+      top: "0px",
+      left: "0px",
       ...getDefaultStyle("no-space"),
     };
   }
@@ -220,6 +242,11 @@ export const getDefaultElementProps = (type: string): Props => {
       iconType: "1-circle-fill",
       style: getDefaultStyle("icon"),
     };
+  } else if (type === "fixed") {
+    return {
+      style: getDefaultStyle("fixed"),
+      child: [generateLayoutItem("icon")],
+    };
   }
   return { style: {} };
 };
@@ -239,6 +266,12 @@ export const saveToLocalStorage = (param: EditorState) => {
 
 export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+export const getUnit = (value: string | undefined) => {
+  if (!value) return;
+  const match = value.match(/\d+(px|%)|auto/);
+  return match ? match[0].replace(/\d+/, "") : null;
 };
 
 /*getSetting overloads*/

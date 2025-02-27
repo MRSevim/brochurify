@@ -9,7 +9,7 @@ const NumberInput = ({
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
-  const parsed = parseInt(value, 10) || "";
+  const parsed = isNaN(parseInt(value, 10)) ? "" : parseInt(value, 10);
 
   return (
     <form className="mb-2">

@@ -22,6 +22,7 @@ export const handleDropInner = (
   if (id === targetId) return;
   moveElementInner(state, { item, addLocation });
   handleDragLeaveInner(state);
+  state.draggedItem = undefined;
 };
 export const setDropHandledInner = (state: EditorState, bool: boolean) => {
   state.dropHandled = bool;
@@ -86,7 +87,7 @@ export const canElementHaveChild = (
   addLocation: AddLocation,
   newElement: Layout
 ) => {
-  const parentElements = ["column", "row", "button", "container"];
+  const parentElements = ["column", "row", "button", "container", "fixed"];
 
   // Helper function to check if targetId is inside a button and track parent types
   const isInsideButton = (layout: Layout[], targetId: string): boolean => {

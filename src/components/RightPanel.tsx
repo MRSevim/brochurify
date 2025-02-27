@@ -3,6 +3,7 @@ import PanelWrapper from "./PanelWrapper";
 import { selectActive, useAppSelector } from "@/redux/hooks";
 import PageSettings from "./Settings/PageSettings/PageSettings";
 import ElementSettings from "./Settings/ElementSettings";
+import SmallText from "./SmallText";
 
 const RightPanel = () => {
   const [toggle] = SettingsToggleContext.Use();
@@ -16,10 +17,21 @@ const RightPanel = () => {
 
 const RightPanelInner = () => {
   const active = useAppSelector(selectActive);
+  const draggedItem = useAppSelector((state) => state.editor.draggedItem);
   return (
     <div className="overflow-y-auto max-h-screen-header-excluded p-2 min-h-full gutter-stable">
-      {active && <ElementSettings />}
-      {!active && <PageSettings />}
+      {draggedItem ? (
+        <div className="mt-8 text-center">
+          <SmallText>
+            Stop dragging to see the available pagewise and element settings
+          </SmallText>
+        </div>
+      ) : (
+        <>
+          {active && <ElementSettings />}
+          {!active && <PageSettings />}
+        </>
+      )}
     </div>
   );
 };

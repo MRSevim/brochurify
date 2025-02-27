@@ -11,6 +11,10 @@ import FontSize from "tiptap-extension-font-size";
 import StarterKit from "@tiptap/starter-kit";
 import Color from "@tiptap/extension-color";
 import LineHeight from "@/Tiptap/LineHeight";
+import Table from "@tiptap/extension-table";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import TableRow from "@tiptap/extension-table-row";
 import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import { getProp } from "@/utils/Helpers";
 import Icon from "../../Icon";
@@ -25,32 +29,35 @@ import LetterSpacing from "@/Tiptap/LetterSpacing";
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
   const dispatch = useAppDispatch();
-  const editor = useEditor(
-    {
-      extensions: [
-        StarterKit,
-        TextAlign.configure({ types: ["heading", "paragraph"] }),
-        Color,
-        TextStyle,
-        LetterSpacing,
-        Link,
-        Superscript,
-        Subscript,
-        Underline,
-        FontFamily,
-        FontSize,
-        LineHeight,
-      ],
-      content,
-      immediatelyRender: false,
-      editorProps: {
-        attributes: {
-          class: "bg-white text-black p-2 rounded",
-        },
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      TextAlign.configure({ types: ["heading", "paragraph"] }),
+      Color,
+      TextStyle,
+      LetterSpacing,
+      Link,
+      Superscript,
+      Subscript,
+      Underline,
+      FontFamily,
+      FontSize,
+      LineHeight,
+      Table.configure({
+        resizable: true,
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
+    ],
+    content,
+    immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        class: "bg-white text-black p-2 rounded",
       },
     },
-    [content]
-  );
+  });
   useEffect(() => {
     if (editor) {
       editor.view.dom.addEventListener(
@@ -92,6 +99,15 @@ const Text = () => {
           "ul",
           "ol",
           "li",
+          "table",
+          "tbody",
+          "thead",
+          "tfoot",
+          "tr",
+          "th",
+          "td",
+          "colgroup",
+          "col",
         ], // Only allow needed tags
         allowedAttributes: {
           a: ["href", "target"],
@@ -121,17 +137,20 @@ const Text = () => {
 
 export default Text;
 
+type Icon = {
+  type: string;
+  onClick: (() => void) | (() => boolean);
+  title: string;
+  active?: boolean;
+};
+
 const EditBar = ({ editor }: { editor: Editor | null }) => {
   if (!editor) return null;
   const [popup, setPopup] = useState("");
   const className = "p-1 border rounded";
   const size = "1.2rem";
-  const Icons: {
-    type: string;
-    onClick: (() => void) | (() => boolean);
-    title: string;
-    active?: boolean;
-  }[] = [
+  const [tableMode, setTableMode] = useState(false);
+  const Icons: Icon[] = [
     {
       type: "arrow-counterclockwise",
       onClick: () => editor.chain().focus().undo().run(),
@@ -301,7 +320,14 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
         active: editor.isActive("heading", { level }),
       };
     }),
+    {
+      type: "table",
+      onClick: () => setTableMode(true),
+      title: "Table Mode",
+    },
   ];
+
+  const buttonClasses = "p-2 rounded border border-text text-[12px] m-px";
 
   return (
     <div className="relative flex gap-2 justify-center mb-2 border-b pb-2 flex-wrap">
@@ -338,18 +364,143 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
           </div>
         </Popup>
       )}
-      {Icons.map((item) => (
-        <Icon
-          title={item.title}
-          key={item.type}
-          type={item.type}
-          size={size}
-          className={
-            className + (item.active ? " bg-text text-background" : "")
-          }
-          onClick={item.onClick}
-        />
-      ))}
+      {!tableMode &&
+        Icons.map((item) => (
+          <Icon
+            title={item.title}
+            key={item.type}
+            type={item.type}
+            size={size}
+            className={
+              className + (item.active ? " bg-text text-background" : "")
+            }
+            onClick={item.onClick}
+          />
+        ))}
+      {tableMode && (
+        <div>
+          <button
+            className={buttonClasses}
+            onClick={() =>
+              editor
+                .chain()
+                .focus()
+                .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                .run()
+            }
+          >
+            Insert table
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().deleteTable().run()}
+          >
+            Delete table
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().addColumnBefore().run()}
+          >
+            Add column before
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().addColumnAfter().run()}
+          >
+            Add column after
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().deleteColumn().run()}
+          >
+            Delete column
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().addRowBefore().run()}
+          >
+            Add row before
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().addRowAfter().run()}
+          >
+            Add row after
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().deleteRow().run()}
+          >
+            Delete row
+          </button>
+
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().mergeCells().run()}
+          >
+            Merge cells
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().splitCell().run()}
+          >
+            Split cell
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().toggleHeaderColumn().run()}
+          >
+            Toggle header column
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().toggleHeaderRow().run()}
+          >
+            Toggle header row
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().toggleHeaderCell().run()}
+          >
+            Toggle header cell
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().mergeOrSplit().run()}
+          >
+            Merge or split
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() =>
+              editor.chain().focus().setCellAttribute("colspan", 2).run()
+            }
+          >
+            Set cell attribute
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().fixTables().run()}
+          >
+            Fix tables
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().goToNextCell().run()}
+          >
+            Go to next cell
+          </button>
+          <button
+            className={buttonClasses}
+            onClick={() => editor.chain().focus().goToPreviousCell().run()}
+          >
+            Go to previous cell
+          </button>
+          <button className={buttonClasses} onClick={() => setTableMode(false)}>
+            Go to text editor
+          </button>
+        </div>
+      )}
     </div>
   );
 };

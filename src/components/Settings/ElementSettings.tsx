@@ -8,17 +8,20 @@ import Alignment from "./PageSettings/Alignment";
 import ContainerSettings from "./ContainerSettings";
 import IconType from "./IconType";
 import Animations from "./Animations";
+import FixedSettings from "./FixedSettings";
 
 const ElementSettings = () => {
   const active = useAppSelector(selectActive);
   const activeType = active?.type;
+  const activeId = active?.id;
   const shouldHaveSource =
     activeType === "audio" || activeType === "image" || activeType === "video";
   const isText = activeType === "text";
-  const shouldHaveUrl = activeType === "button" || activeType === "icon";
+  const shouldHaveUrl = activeType === "button";
   const shouldHaveAlignment = activeType === "row";
   const isContainer = activeType === "container";
   const isIcon = activeType === "icon";
+  const isFixed = activeType === "fixed";
 
   return (
     <div className="m-2">
@@ -28,13 +31,14 @@ const ElementSettings = () => {
 
       {!isContainer && <SizingAndBorder />}
       {isContainer && <ContainerSettings />}
+      {isFixed && <FixedSettings />}
       <Background />
-      {shouldHaveSource && <Source />}
-      {isText && <Text />}
-      {shouldHaveUrl && <Url />}
       {shouldHaveAlignment && <Alignment />}
-      {isIcon && <IconType />}
       <Animations />
+      {shouldHaveSource && <Source />}
+      {isIcon && <IconType />}
+      {shouldHaveUrl && <Url />}
+      {isText && <Text key={activeId} />}
     </div>
   );
 };

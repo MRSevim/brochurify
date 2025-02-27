@@ -5,9 +5,14 @@ import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
-import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
-import { fontOptions, getFontVariables, getSetting } from "@/utils/Helpers";
+import {
+  fontOptions,
+  getFontVariables,
+  getPageWise,
+  getSetting,
+} from "@/utils/Helpers";
 
 const Styles = () => {
   return (
@@ -174,14 +179,14 @@ const LineHeight = () => {
 
 export const ResetButtonWithOnClick = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
-  const pageWise = useAppSelector(selectPageWise);
+
   return (
     <ResetButton
       onClick={() => {
         dispatch(
           changeElementStyle({
             type,
-            newValue: pageWise[type] || "",
+            newValue: getPageWise()[type] || "",
           })
         );
       }}

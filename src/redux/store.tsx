@@ -13,7 +13,7 @@ export const makeStore = () => {
       replay: replaySlice,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(
+      getDefaultMiddleware({ serializableCheck: false }).concat(
         saveToHistoryMiddleware,
         saveToLocalStorageMiddleware
       ),

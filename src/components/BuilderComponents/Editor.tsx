@@ -49,7 +49,7 @@ const EditorInner = () => {
   const pageWise = useAppSelector(selectPageWise);
   const [viewMode] = useViewMode();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
-  useIntersectionObserver([data, globalTrigger]);
+  useIntersectionObserver([globalTrigger]);
 
   const maxWidth =
     viewMode === "desktop"
@@ -65,9 +65,7 @@ const EditorInner = () => {
       key={globalTrigger}
     >
       {data.map((item) => {
-        return (
-          <RenderedComponent key={item.id} item={item} parentIsRow={false} />
-        );
+        return <RenderedComponent key={item.id} item={item} />;
       })}
     </styledElements.styledEditor>
   );
@@ -75,13 +73,7 @@ const EditorInner = () => {
 
 export default Editor;
 
-const RenderedComponent = ({
-  item,
-  parentIsRow,
-}: {
-  item: Layout;
-  parentIsRow: boolean;
-}) => {
+const RenderedComponent = ({ item }: { item: Layout }) => {
   const Component = componentList[item.type as keyof typeof componentList];
   const id = item.id;
   const replayTrigger = useAppSelector((state) => {
@@ -90,16 +82,12 @@ const RenderedComponent = ({
 
   useIntersectionObserver([replayTrigger]);
   return (
-    <SideDropOverlay item={item} parentIsRow={parentIsRow}>
+    <SideDropOverlay item={item}>
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
           <Component key={replayTrigger} id={id} {...item.props}>
             {item.props.child?.map((childItem) => (
-              <RenderedComponent
-                key={childItem.id}
-                item={childItem}
-                parentIsRow={item.type === "row"}
-              />
+              <RenderedComponent key={childItem.id} item={childItem} />
             ))}
           </Component>
         </CenterDropOverlay>
@@ -109,11 +97,10 @@ const RenderedComponent = ({
 };
 const SideDropOverlay = ({
   item,
-  parentIsRow,
   children,
 }: {
   item: Layout;
-  parentIsRow: boolean;
+
   children: React.ReactNode;
 }) => {
   const addLocation = useAppSelector(selectAddLocation);
@@ -123,6 +110,7 @@ const SideDropOverlay = ({
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
   const dispatch = useAppDispatch();
+  const notFixed = item.type !== "fixed";
 
   const handleSideDrop = (e: DragEvent<HTMLElement>) => {
     handleSideDropCaller(e, dispatch, id);
@@ -133,35 +121,35 @@ const SideDropOverlay = ({
   };
   return (
     <div
-      className="inline-block relative"
+      className={"inline-block " + (notFixed && " relative")}
       style={{
         width: item.props.style.width,
         height: item.props.style.height,
       }}
     >
-      <div
-        onDrop={handleSideDrop}
-        onDragOver={(e) => handleSideDragOver(e, "before")}
-        onDragLeave={() => handleDragLeaveCaller(dispatch)}
-        className={
-          "absolute z-50 " +
-          (parentIsRow ? "h-full w-1	" : " w-full h-1 top-0") +
-          (beforeSelected ? " bg-lime-700	" : " ")
-        }
-      />
+      {notFixed && (
+        <div
+          onDrop={handleSideDrop}
+          onDragOver={(e) => handleSideDragOver(e, "before")}
+          onDragLeave={() => handleDragLeaveCaller(dispatch)}
+          className={
+            "absolute z-50 h-full w-1 " +
+            (beforeSelected ? " bg-lime-700	" : " ")
+          }
+        />
+      )}
       {children}
-      <div
-        onDrop={handleSideDrop}
-        onDragOver={(e) => handleSideDragOver(e, "after")}
-        onDragLeave={() => handleDragLeaveCaller(dispatch)}
-        className={
-          "absolute z-50 " +
-          (parentIsRow
-            ? "h-full w-1 right-0 top-0 "
-            : " w-full h-1 bottom-0 ") +
-          (afterSelected ? " bg-lime-700	" : " ")
-        }
-      />
+      {notFixed && (
+        <div
+          onDrop={handleSideDrop}
+          onDragOver={(e) => handleSideDragOver(e, "after")}
+          onDragLeave={() => handleDragLeaveCaller(dispatch)}
+          className={
+            "absolute z-50 h-full w-1 right-0 top-0 " +
+            (afterSelected ? " bg-lime-700	" : " ")
+          }
+        />
+      )}
     </div>
   );
 };
