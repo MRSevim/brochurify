@@ -41,12 +41,35 @@ export const runIntersectionObserver = () => {
   return observer;
 };
 export const styleDivider = (style: Style) => {
-  const { width, height, ...rest } = style;
-  return [{ width, height }, rest];
+  const tabletContainerQueryKey =
+    CONFIG.possibleOuterTypes.tabletContainerQuery;
+  const mobileContainerQueryKey =
+    CONFIG.possibleOuterTypes.mobileContainerQuery;
+  const {
+    width,
+    height,
+    [tabletContainerQueryKey]: tabletStyles,
+    [mobileContainerQueryKey]: mobileStyles,
+    ...rest
+  } = style;
+  return [
+    {
+      width,
+      height,
+      [tabletContainerQueryKey]: tabletStyles,
+      [mobileContainerQueryKey]: mobileStyles,
+    },
+    rest,
+  ];
 };
 const getRest = (style: Style): string => {
   const [widthAndHeight, rest] = styleDivider(style);
+
   return styleGenerator(rest);
+};
+const getWidthAndHeight = (style: Style): string => {
+  const [widthAndHeight, rest] = styleDivider(style);
+  return styleGenerator(widthAndHeight);
 };
 export const styledElements = {
   styledEditor: styled.div<{ styles: Style }>`
@@ -56,8 +79,14 @@ export const styledElements = {
       return style + allKeyframes;
     }};
   `,
+  styledComponentWrapperDiv: styled.div<{ styles: Style }>`
+    ${({ styles }) => getWidthAndHeight(styles)};
+  `,
   styledDiv: styled.div<{ styles: Style }>`
     ${({ styles }) => getRest(styles)};
+  `,
+  styledFixed: styled.div<{ styles: Style }>`
+    ${({ styles }) => styleGenerator(styles)};
   `,
   styledAudio: styled.audio<{ styles: Style }>`
     ${({ styles }) => getRest(styles)}
@@ -109,6 +138,7 @@ export const getPageWise = (): PageWise => {
     width: "100%",
     overflow: "auto",
     iconUrl: "",
+    "container-type": "size",
   };
 };
 export const detectTag = (tag: string, htmlStr: string) => {
@@ -168,8 +198,8 @@ export const getDefaultStyle = (type: string): Style => {
   } else if (type === "fixed") {
     return {
       position: "absolute",
-      width: "25px",
-      height: "37.5px",
+      width: "auto",
+      height: "auto",
       top: "0px",
       left: "0px",
       ...getDefaultStyle("no-space"),
@@ -277,9 +307,9 @@ export const getUnit = (value: string | undefined) => {
 /*getSetting overloads*/
 export function getSetting(
   useAppSelector: UseSelector<{ editor: EditorState }>,
-  type: "&:hover" | "&:active",
+  type: PossibleOuterTypes,
   innerType: string
-): Style | undefined;
+): StringOrUnd;
 
 export function getSetting(
   useAppSelector: UseSelector<{ editor: EditorState }>,
@@ -303,10 +333,9 @@ export function getSetting(
     const element = findElementById(layout, activeId);
 
     const style = element?.props.style as Style;
-
-    if (type === "&:hover" || type === "&:active") {
+    if (possibleOuterTypesArr.includes(type as PossibleOuterTypes)) {
       if (innerType) {
-        return style?.[type]?.[innerType];
+        return (style?.[type] as Style)?.[innerType];
       }
       return undefined;
     }
@@ -431,7 +460,17 @@ export function setCookie(cname: String, cvalue: string, exdays: number) {
 
 export const CONFIG = {
   placeholderImgUrl: "/placeholder-image.jpg",
-};
+  possibleOuterTypes: {
+    active: "&:hover",
+    scrolled: "&.scrolled",
+    hover: "&:hover",
+    tabletContainerQuery: "@container (max-width: 768px)",
+    mobileContainerQuery: "@container (max-width: 360px)",
+  },
+} as const;
+const possibleOuterTypesArr = [...Object.values(CONFIG.possibleOuterTypes)];
+
+type PossibleOuterTypes = (typeof possibleOuterTypesArr)[number];
 
 export const fontOptions = [
   "inherit",

@@ -1,12 +1,14 @@
 import { ChangeEvent } from "react";
 
 const NumberInput = ({
+  disabled,
   title,
   value,
   onChange,
 }: {
   title: string;
   value: string;
+  disabled?: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const parsed = isNaN(parseInt(value, 10)) ? "" : parseInt(value, 10);
@@ -20,6 +22,7 @@ const NumberInput = ({
         {title}
       </label>
       <input
+        disabled={disabled}
         type="number"
         id={"number-input-" + title}
         value={parsed}

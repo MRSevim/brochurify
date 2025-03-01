@@ -18,11 +18,12 @@ import {
   useAppSelector,
 } from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
-import { Layout, Where } from "@/utils/Types";
+import { Layout, Style, Where } from "@/utils/Types";
 import React, { DragEvent } from "react";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { styledElements } from "@/utils/Helpers";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
+import { findElementById } from "@/utils/EditorHelpers";
 
 const Editor = () => {
   const [layoutToggle] = LayoutToggleContext.Use();
@@ -79,13 +80,26 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
   const replayTrigger = useAppSelector((state) => {
     return state.replay.replayArr.find((item) => item.id === id)?.trigger;
   });
+  const animationsString = useAppSelector((state) => {
+    const layout = state.editor.layout;
+
+    const element = findElementById(layout, id);
+
+    const style = element?.props.style as Style;
+
+    return style?.["&.scrolled"]?.["animation"];
+  }) as string;
 
   useIntersectionObserver([replayTrigger]);
   return (
     <SideDropOverlay item={item}>
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
-          <Component key={replayTrigger} id={id} {...item.props}>
+          <Component
+            key={(animationsString || "") + (replayTrigger || "")}
+            id={id}
+            {...item.props}
+          >
             {item.props.child?.map((childItem) => (
               <RenderedComponent key={childItem.id} item={childItem} />
             ))}
@@ -120,12 +134,9 @@ const SideDropOverlay = ({
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
   return (
-    <div
+    <styledElements.styledComponentWrapperDiv
       className={"inline-block " + (notFixed && " relative")}
-      style={{
-        width: item.props.style.width,
-        height: item.props.style.height,
-      }}
+      styles={item.props.style}
     >
       {notFixed && (
         <div
@@ -150,7 +161,7 @@ const SideDropOverlay = ({
           }
         />
       )}
-    </div>
+    </styledElements.styledComponentWrapperDiv>
   );
 };
 const CenterDropOverlay = ({

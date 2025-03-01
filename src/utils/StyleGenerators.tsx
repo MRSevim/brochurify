@@ -94,7 +94,6 @@ const keyframes: Record<string, string> = {
   @keyframes scaleUp {
     0% {
       transform: scale(1);
-      opacity: 0;
     }
     100% {
       transform: scale(1.1);
@@ -104,7 +103,6 @@ const keyframes: Record<string, string> = {
   @keyframes scaleDown {
     0% {
       transform: scale(1);
-      opacity: 0;
     }
     100% {
       transform: scale(0.9);

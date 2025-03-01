@@ -1,9 +1,16 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import Icon from "../Icon";
 import Slider from "../Slider";
-import { SizingType } from "@/utils/Types";
+import { SizingType, Style } from "@/utils/Types";
 import {
   capitalizeFirstLetter,
+  CONFIG,
   getSetting,
   getUnit,
   getValueFromShorthandStr,
@@ -69,26 +76,95 @@ const SizingAndBorderInner = () => {
 
 export const WidthAndHeight = () => {
   const activeId = useAppSelector(selectActive)?.id;
+  const [outerType, setOuterType] = useState("base");
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Width and Height" />
       <SmallText>
         Pixel, percentage based or automatic size settings for the element
       </SmallText>
-      <div className="flex gap-2" key={activeId}>
-        <NumberController type="width" />
-        <NumberController type="height" />
+      <TypeSelect type={outerType} setType={setOuterType} />
+      <div className="flex gap-2" key={outerType + activeId}>
+        <NumberController type="width" outerType={outerType} />
+        <NumberController type="height" outerType={outerType} />
       </div>
+      <SmallText>
+        Base styles will apply to every screen size if mobile or tablet is not
+        set
+      </SmallText>
       <BottomLine />
+    </div>
+  );
+};
+const typeArr = [
+  { text: "Base", type: "base" },
+  { text: "Tablet", type: CONFIG.possibleOuterTypes.tabletContainerQuery },
+  { text: "Mobile", type: CONFIG.possibleOuterTypes.mobileContainerQuery },
+];
+const TypeSelect = ({
+  setType,
+  type,
+}: {
+  setType: Dispatch<SetStateAction<string>>;
+  type: string;
+}) => {
+  return (
+    <div className="flex items-center justify-center gap-2 mb-2">
+      {typeArr.map((item) => (
+        <TypeItem
+          key={item.text}
+          globalType={type}
+          type={item.type}
+          text={item.text}
+          onClick={() => {
+            setType(item.type);
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+const TypeItem = ({
+  text,
+  onClick,
+  type,
+  globalType,
+}: {
+  text: string;
+  onClick: () => void;
+  type: string;
+  globalType: string;
+}) => {
+  return (
+    <div
+      className={
+        "text-background  p-2 cursor-pointer " +
+        (type === globalType ? " bg-gray" : "bg-text")
+      }
+      onClick={onClick}
+    >
+      {text}
     </div>
   );
 };
 
 const possibleRadioValues = ["px", "%", "auto"];
 
-const NumberController = ({ type }: { type: string }) => {
+const NumberController = ({
+  type,
+  outerType,
+}: {
+  type: string;
+  outerType: string;
+}) => {
+  const selectorOuterType = outerType === "base" ? type : outerType;
+  const selectorInnerType = outerType === "base" ? undefined : type;
   const dispatch = useAppDispatch();
-  const variable = getSetting(useAppSelector, type);
+  const variable = getSetting(
+    useAppSelector,
+    selectorOuterType,
+    selectorInnerType
+  );
   const initialType = getUnit(variable);
   const [radioType, setRadioType] = useState(initialType || "px");
 
@@ -98,13 +174,25 @@ const NumberController = ({ type }: { type: string }) => {
     }
   }, [radioType]);
 
+  const dispatchChange = (newValue: string | Style): void => {
+    dispatch(
+      changeElementStyle({
+        type: selectorOuterType,
+        newValue,
+      })
+    );
+  };
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
       dispatch(removeElementStyle({ type }));
     } else {
-      dispatch(
-        changeElementStyle({ type, newValue: +e.target.value + radioType })
-      );
+      if (outerType === "base") {
+        dispatchChange(+e.target.value + radioType);
+      } else {
+        if (!selectorInnerType) return;
+        dispatchChange({ [selectorInnerType]: +e.target.value + radioType });
+      }
     }
   };
 
@@ -116,20 +204,30 @@ const NumberController = ({ type }: { type: string }) => {
         name={type}
         onChange={(e) => {
           if (e.target.value === "auto") {
-            dispatch(changeElementStyle({ type, newValue: "auto" }));
+            if (outerType === "base") {
+              dispatchChange("auto");
+            } else {
+              if (!selectorInnerType) return;
+              dispatchChange({
+                [selectorInnerType]: "auto",
+              });
+            }
           } else if (variable) {
-            dispatch(
-              changeElementStyle({
-                type,
-                newValue: parseInt(variable, 10) + e.target.value,
-              })
-            );
+            if (outerType === "base") {
+              dispatchChange(parseInt(variable, 10) + e.target.value);
+            } else {
+              if (!selectorInnerType) return;
+              dispatchChange({
+                [selectorInnerType]: parseInt(variable, 10) + e.target.value,
+              });
+            }
           }
           setRadioType(e.target.value);
         }}
       />
 
       <NumberInput
+        disabled={radioType === "auto"}
         title={type}
         value={variable || ""}
         onChange={handleInputChange}

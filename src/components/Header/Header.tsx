@@ -12,6 +12,7 @@ import { useViewMode } from "@/contexts/ViewModeContext";
 import { useState } from "react";
 import Link from "next/link";
 import { triggerReplay } from "@/redux/slices/replaySlice";
+import DownloadWrapper from "./DownloadWrapper";
 
 const Header = () => {
   const [, setLayoutToggle] = LayoutToggleContext.Use();
@@ -30,6 +31,7 @@ const Header = () => {
             onClick={() => setLayoutToggle((prev) => !prev)}
           />
         </div>
+
         <div className="flex items-center gap-2">
           <Icon
             title="Undo"
@@ -58,6 +60,7 @@ const Header = () => {
               onClick={() => {}}
             />
           </Link>
+          <DownloadWrapper />
         </div>
         <SavePopupWrapper />
       </div>
@@ -104,15 +107,16 @@ const ViewMode = () => {
           {Icons.map((icon) => (
             <div
               key={icon.title}
-              className="hover:shadow-sm hover:shadow-text hover:z-50 p-2"
+              className="hover:shadow-sm hover:shadow-text hover:z-50 p-2 cursor-pointer"
+              onClick={() => {
+                setViewMode(icon.title);
+              }}
             >
               <Icon
                 title={icon.title}
                 type={icon.type}
                 size="20px"
-                onClick={() => {
-                  setViewMode(icon.title);
-                }}
+                onClick={() => {}}
               />
             </div>
           ))}

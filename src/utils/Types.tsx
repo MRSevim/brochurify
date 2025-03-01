@@ -1,5 +1,5 @@
 import { ChangeEvent } from "react";
-
+import { CONFIG } from "./Helpers";
 export interface Props {
   text?: string;
   style: Style;
@@ -8,7 +8,7 @@ export interface Props {
   href?: string;
   newTab?: boolean;
   alt?: string;
-  iconType?: String;
+  iconType?: string;
   children?: React.ReactNode;
   [key: string]:
     | string
@@ -69,6 +69,7 @@ export type PageWise = {
   overflow: "auto";
   "font-family": string;
   "line-height": string;
+  "container-type": string;
   iconUrl: string;
   [key: string]: string | undefined;
 };
@@ -98,8 +99,11 @@ export type Style = {
   "justify-content"?: string;
   "align-items"?: string;
   position?: string;
-  "&:hover"?: Style;
-  "&:active"?: Style;
+  [CONFIG.possibleOuterTypes.scrolled]?: Style;
+  [CONFIG.possibleOuterTypes.hover]?: Style;
+  [CONFIG.possibleOuterTypes.active]?: Style;
+  [CONFIG.possibleOuterTypes.tabletContainerQuery]?: Style;
+  [CONFIG.possibleOuterTypes.mobileContainerQuery]?: Style;
   [key: string]: StringOrUnd | Style;
 };
 

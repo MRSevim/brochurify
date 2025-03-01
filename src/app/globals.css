@@ -124,7 +124,3 @@ td {
   outline: 2px dashed var(--background); /* Works like border but doesn't affect layout */
   z-index: 50;
 }
-/*Animations*/
-.element:not(.scrolled) {
-  animation: none;
-}

@@ -4,11 +4,10 @@ import { styledElements } from "@/utils/Helpers";
 
 const Fixed = ({ id, children, style }: PropsWithId) => {
   const active = useActive(id);
-
   return (
-    <styledElements.styledDiv className={active} styles={style}>
+    <styledElements.styledFixed className={active} styles={style}>
       {children}
-    </styledElements.styledDiv>
+    </styledElements.styledFixed>
   );
 };
 

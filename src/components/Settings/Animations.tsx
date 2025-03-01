@@ -5,6 +5,7 @@ import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import BottomLine from "../BottomLine";
 import {
   addAnimationToString,
+  CONFIG,
   getSetting,
   getValueFromShorthandStr,
   makeArraySplitFromCommas,
@@ -14,7 +15,10 @@ import {
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import EditButton from "../EditButton";
 import DeleteButton from "../DeleteButton";
-import { changeElementStyle } from "@/redux/slices/editorSlice";
+import {
+  changeElementStyle,
+  removeElementStyle,
+} from "@/redux/slices/editorSlice";
 import Select from "../Select";
 import { OptionsObject } from "@/utils/Types";
 import NumberInput from "../NumberInput";
@@ -23,7 +27,7 @@ import ReplayButton from "../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
 
 const Animations = () => {
-  const [type, setType] = useState("animation");
+  const [type, setType] = useState<string>(CONFIG.possibleOuterTypes.scrolled);
   const [showPopup, setShowPopup] = useState(false);
   const innerType = "animation";
   const animationsString = getSetting(useAppSelector, type, innerType);
@@ -34,11 +38,7 @@ const Animations = () => {
 
   const handleAddition = (editedStr: string) => {
     const newValue = addAnimationToString(animationsString || "", editedStr);
-    if (type !== "animation") {
-      dispatch(changeElementStyle({ type, newValue: { animation: newValue } }));
-    } else {
-      dispatch(changeElementStyle({ type, newValue }));
-    }
+    dispatch(changeElementStyle({ type, newValue: { animation: newValue } }));
   };
 
   const handleEditOrDeletion = (
@@ -53,10 +53,10 @@ const Animations = () => {
       i,
       deletion
     );
-    if (type !== "animation") {
-      dispatch(changeElementStyle({ type, newValue: { animation: newValue } }));
+    if (!newValue) {
+      dispatch(removeElementStyle({ type }));
     } else {
-      dispatch(changeElementStyle({ type, newValue }));
+      dispatch(changeElementStyle({ type, newValue: { animation: newValue } }));
     }
   };
   return (
@@ -109,6 +109,11 @@ const Animations = () => {
     </ToggleVisibilityWrapper>
   );
 };
+const typeArr = [
+  { text: "onVisible", type: CONFIG.possibleOuterTypes.scrolled },
+  { text: "onHover", type: CONFIG.possibleOuterTypes.hover },
+  { text: "onClick", type: CONFIG.possibleOuterTypes.active },
+];
 const TypeSelect = ({
   setType,
   type,
@@ -116,12 +121,6 @@ const TypeSelect = ({
   setType: Dispatch<SetStateAction<string>>;
   type: string;
 }) => {
-  const typeArr = [
-    { text: "onVisible", type: "animation" },
-    { text: "onHover", type: "&:hover" },
-    { text: "onClick", type: "&:active" },
-  ];
-
   return (
     <div className="flex items-center justify-between gap-2 mb-2">
       {typeArr.map((item) => (
@@ -175,7 +174,7 @@ const Popup = ({
   const handleChange = (value: string) => {
     handleEdit(editedIndex, value);
   };
-
+  if (!editedStr) return;
   return (
     <div className="absolute z-10 w-full bg-background border border-text rounded p-3 top-5">
       <SelectAnimation
@@ -296,8 +295,8 @@ const SelectAnimation = ({
   const availableAnimations: OptionsObject[] = [
     { title: "Slide in from left", value: "slideInFromLeft" },
     { title: "Slide in from right", value: "slideInFromRight" },
-    { title: "Slide in from Top", value: "slideInFromTop" },
-    { title: "Slide in from Bottom", value: "slideInFromBottom" },
+    { title: "Slide in from top", value: "slideInFromTop" },
+    { title: "Slide in from bottom", value: "slideInFromBottom" },
     { title: "Scale up", value: "scaleUp" },
     { title: "Scale down", value: "scaleDown" },
   ];

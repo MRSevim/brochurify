@@ -66,17 +66,22 @@ ${
   ${iconUrl ? `<link rel="icon" href="${iconUrl}">` : ""}
   ${
     keyframes
-      ? `<script> const observer = new IntersectionObserver((entries, observer) => {
-    entries
-      .filter((entry) => entry.isIntersecting)
-      .forEach((entry) => {
-        entry.target.classList.add("scrolled");
-        observer.unobserve(entry.target); 
+      ? `<script>   
+    document.addEventListener("DOMContentLoaded", () => {
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries
+        .filter((entry) => entry.isIntersecting)
+        .forEach((entry) => {
+          entry.target.classList.add("scrolled");
+          observer.unobserve(entry.target);
         });
     });
 
-    document.querySelectorAll(".element").forEach((elem) => {
+    const elements = document.querySelectorAll(".element");
+
+    elements.forEach((elem) => {
       observer.observe(elem);
+    });
     });
     </script>`
       : ""
@@ -202,9 +207,6 @@ const getCssReset = () => {
   .inlineBlock {
     display:inline-block
   }
-  .element:not(.scrolled) {
-    animation: none;
-  } 
   .wAndHFull {
     width:100%;
     height:100%;
@@ -249,7 +251,7 @@ const renderLayout = (items: Layout[]): string => {
       const isVoidElement = type === "image" || type === "divider";
 
       const addButtonWrapper = (html: string) => {
-        if (type === "button" || type === "icon") {
+        if (type === "button") {
           return `
           <a class="wAndHFull inlineBlock" href="${props.href || ""}" target=${
             props.newTab ? "_blank" : "_self"
@@ -267,7 +269,7 @@ const renderLayout = (items: Layout[]): string => {
         return `<div class="inlineBlock ${
           isFixed ? "" : "relative"
         }" style="${widthAndHeightGenerated}">
-        <div class="flex wAndHFull overflow-hidden">${html}</div></div>`;
+        <div class="flex wAndHFull">${html}</div></div>`;
       };
 
       const rendered = `<${renderedType} id="id${item.id}" ${
@@ -282,7 +284,13 @@ const renderLayout = (items: Layout[]): string => {
             alt="${props.alt || ""}"`
           : ""
       } 
-      ${props.iconType ? `class="bi bi-${props.iconType} element"` : ""}
+     ${
+       isFixed
+         ? `
+        style="${widthAndHeightGenerated}"
+        `
+         : ""
+     }
       ${isVoidElement ? "/" : ""}>
         ${
           isAudioOrVideo

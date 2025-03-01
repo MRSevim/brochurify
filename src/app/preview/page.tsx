@@ -1,6 +1,7 @@
 "use client";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { selectLayout, selectPageWise, useAppSelector } from "@/redux/hooks";
+import { runIntersectionObserver } from "@/utils/Helpers";
 import { generateHTML } from "@/utils/HTMLGenerator";
 import { useEffect } from "react";
 
@@ -26,6 +27,11 @@ const page = () => {
     }
     const generatedHTML = generateHTML(layout, pageWise);
     ReplaceContent(generatedHTML);
+
+    // Re-initialize IntersectionObserver after content replacement
+    setTimeout(() => {
+      runIntersectionObserver();
+    }, 100); // Delay to ensure elements exist
   }, []);
 
   return (
