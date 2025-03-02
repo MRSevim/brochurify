@@ -32,28 +32,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+import { initialLayout as initialLayoutFromFile } from "@/utils/InitialLayout";
 
-const generateInitialContainerChild = (): Layout[] => {
-  const arr = [] as Layout[];
-
-  ["row", "button", "text", "image", "audio", "video", "icon"].forEach(
-    (type) => {
-      arr.push(generateLayoutItem(type));
-    }
-  );
-  return arr;
-};
-
-let initialLayout = [
-  {
-    id: uuidv4(),
-    type: "container",
-    props: {
-      style: getDefaultStyle("container"),
-      child: [...generateInitialContainerChild()],
-    },
-  },
-];
+let initialLayout = initialLayoutFromFile;
 
 const initialState: EditorState = {
   layout: initialLayout,
@@ -128,12 +109,11 @@ export const editorSlice = createSlice({
     },
     deleteElement: (state, action: PayloadAction<string>) => {
       if (state.active) {
-        const found = findElementById(state.layout, state.active.id)?.props
-          .child;
+        const found = findElementById(state.layout, state.active.id);
         if (
           found &&
           (action.payload === state.active.id ||
-            isInChildren(found, action.payload))
+            isInChildren(found.props.child, action.payload))
         ) {
           //if deleted element is active or deleted elements descendant is active
           state.active = undefined;

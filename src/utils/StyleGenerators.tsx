@@ -10,6 +10,7 @@ export const styleGenerator = (style: Style): string => {
         return `${key} { ${nestedStyles} }`;
       } else {
         // Handle regular CSS properties
+        if (!value) return "";
         return `${key}: ${value};`;
       }
     })

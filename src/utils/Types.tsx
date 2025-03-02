@@ -92,7 +92,7 @@ export type Style = {
   "background-repeat"?: string;
   display?: string;
   "font-size"?: string;
-  "text-align"?: "center";
+  "text-align"?: string;
   "flex-wrap"?: "wrap" | "nowrap";
   "box-shadow"?: string;
   animation?: string;

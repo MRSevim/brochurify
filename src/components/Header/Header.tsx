@@ -13,70 +13,129 @@ import { useState } from "react";
 import Link from "next/link";
 import { triggerReplay } from "@/redux/slices/replaySlice";
 import DownloadWrapper from "./DownloadWrapper";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
-  const [, setLayoutToggle] = LayoutToggleContext.Use();
-  const [, setSettingsToggle] = SettingsToggleContext.Use();
-
-  const dispatch = useAppDispatch();
+  const pathname = usePathname();
 
   return (
-    <header className="w-full h-10 bg-background px-2 flex items-center justify-between">
-      <div className="flex items-center">
-        <div className="me-6">
-          <Icon
-            title="Layout"
-            type="list-nested"
-            size="28px"
-            onClick={() => setLayoutToggle((prev) => !prev)}
-          />
-        </div>
+    <header className="w-full h-10 bg-background px-3 flex items-center justify-between">
+      {pathname === "/builder" ? <BuilderHeader /> : <GeneralHeader />}
+    </header>
+  );
+};
 
-        <div className="flex items-center gap-2">
-          <Icon
-            title="Undo"
-            type="arrow-counterclockwise"
-            size="24px"
-            onClick={() => dispatch(undo())}
-          />
-          <Icon
-            title="Redo"
-            type="arrow-clockwise"
-            size="24px"
-            onClick={() => dispatch(redo())}
-          />
-          <Icon
-            title="Replay"
-            type="play-circle"
-            size="24px"
-            onClick={() => dispatch(triggerReplay())}
-          />
-          <ViewMode />
-          <Link href="/preview" target="_blank">
-            <Icon
-              title="Preview the page"
-              type="eye-fill"
-              size="24px"
-              onClick={() => {}}
-            />
-          </Link>
-          <DownloadWrapper />
-        </div>
-        <SavePopupWrapper />
+const GeneralHeader = () => {
+  return (
+    <>
+      <div>
+        <Link href="/">
+          <p className="font-bold text-lg"> Brochurify</p>
+        </Link>
       </div>
+      <div>
+        <Link href="/how-to">
+          <span>How To</span>
+        </Link>
+      </div>
+    </>
+  );
+};
 
-      <div className="flex items-center">
-        <DarkModeToggle />
+const BuilderHeader = () => {
+  return (
+    <>
+      <LeftSide />
+      <RightSide />
+    </>
+  );
+};
+
+const LeftSide = () => {
+  const [, setLayoutToggle] = LayoutToggleContext.Use();
+  const [mobileActionsToggle, setMobileActionsToggle] = useState(false);
+
+  return (
+    <div className="flex items-center ">
+      <div className="me-3 md:me-6">
         <Icon
-          title="Settings"
-          type="gear-fill"
-          size="25px"
-          onClick={() => {
-            setSettingsToggle((prev) => !prev);
-          }}
+          title="Layout"
+          type="list-nested"
+          size="28px"
+          onClick={() => setLayoutToggle((prev) => !prev)}
         />
       </div>
-    </header>
+      <div className="relative md:hidden block">
+        <Icon
+          title="mobile-actions-toggle"
+          type="chevron-double-down"
+          size="24px"
+          onClick={() => setMobileActionsToggle((prev) => !prev)}
+        />
+        {mobileActionsToggle && (
+          <div className="absolute bg-background p-3 border rounded z-[70]">
+            <LeftSideActions />
+          </div>
+        )}
+      </div>
+      <div className="items-center gap-2 hidden md:flex">
+        <LeftSideActions />
+      </div>
+      <SavePopupWrapper />
+    </div>
+  );
+};
+
+const LeftSideActions = () => {
+  const dispatch = useAppDispatch();
+  return (
+    <>
+      <Icon
+        title="Undo"
+        type="arrow-counterclockwise"
+        size="24px"
+        onClick={() => dispatch(undo())}
+      />
+      <Icon
+        title="Redo"
+        type="arrow-clockwise"
+        size="24px"
+        onClick={() => dispatch(redo())}
+      />
+      <Icon
+        title="Replay"
+        type="play-circle"
+        size="24px"
+        onClick={() => dispatch(triggerReplay())}
+      />
+      <ViewMode />
+      <Link href="/preview" target="_blank">
+        <Icon
+          title="Preview the page"
+          type="eye-fill"
+          size="24px"
+          onClick={() => {}}
+        />
+      </Link>
+      <DownloadWrapper />
+    </>
+  );
+};
+
+const RightSide = () => {
+  const [, setSettingsToggle] = SettingsToggleContext.Use();
+  return (
+    <div className="flex items-center">
+      <DarkModeToggle />
+      <Icon
+        title="Settings"
+        type="gear-fill"
+        size="25px"
+        onClick={() => {
+          setSettingsToggle((prev) => !prev);
+        }}
+      />
+    </div>
   );
 };
 
@@ -98,7 +157,7 @@ const ViewMode = () => {
 
   return (
     <div
-      className="relative z-[60]"
+      className="relative z-[70]"
       onClick={() => setChanging((prev) => !prev)}
     >
       <Icon title="View mode" type={type} size="24px" onClick={() => {}} />

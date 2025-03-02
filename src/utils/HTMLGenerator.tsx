@@ -5,7 +5,7 @@ import {
   keyframeGenerator,
   styleGenerator,
 } from "./StyleGenerators";
-import { Layout, PageWise, Style } from "./Types";
+import { Layout, PageWise } from "./Types";
 import { prettify } from "htmlfy";
 
 export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
@@ -205,7 +205,8 @@ const getCssReset = () => {
     align-items:center;
   }  
   .inlineBlock {
-    display:inline-block
+    display:inline-block;
+    vertical-align:top;
   }
   .wAndHFull {
     width:100%;
@@ -290,12 +291,11 @@ const renderLayout = (items: Layout[]): string => {
         style="${widthAndHeightGenerated}"
         `
          : ""
-     }
-      ${isVoidElement ? "/" : ""}>
+     }>
         ${
           isAudioOrVideo
             ? `
-          <source src="${props.src || ""}"/>
+          <source src="${props.src || ""}">
           Your browser does not support this tag.
           `
             : ""

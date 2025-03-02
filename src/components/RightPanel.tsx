@@ -18,6 +18,7 @@ const RightPanel = () => {
 const RightPanelInner = () => {
   const active = useAppSelector(selectActive);
   const draggedItem = useAppSelector((state) => state.editor.draggedItem);
+
   return (
     <div className="overflow-y-auto max-h-screen-header-excluded p-2 min-h-full gutter-stable">
       {draggedItem ? (

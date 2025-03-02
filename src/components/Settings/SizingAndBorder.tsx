@@ -77,6 +77,7 @@ const SizingAndBorderInner = () => {
 export const WidthAndHeight = () => {
   const activeId = useAppSelector(selectActive)?.id;
   const [outerType, setOuterType] = useState("base");
+
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Width and Height" />
@@ -168,12 +169,6 @@ const NumberController = ({
   const initialType = getUnit(variable);
   const [radioType, setRadioType] = useState(initialType || "px");
 
-  useEffect(() => {
-    if (variable === "auto" && radioType !== "auto") {
-      dispatch(removeElementStyle({ type }));
-    }
-  }, [radioType]);
-
   const dispatchChange = (newValue: string | Style): void => {
     dispatch(
       changeElementStyle({
@@ -220,6 +215,10 @@ const NumberController = ({
               dispatchChange({
                 [selectorInnerType]: parseInt(variable, 10) + e.target.value,
               });
+            }
+
+            if (variable === "auto") {
+              dispatch(removeElementStyle({ type: selectorOuterType }));
             }
           }
           setRadioType(e.target.value);

@@ -3,7 +3,7 @@ import ResetButton from "@/components/ResetButton";
 import Select from "@/components/Select";
 import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   changeElementStyle,
   removeElementStyle,
@@ -28,20 +28,32 @@ const horizontalAlignmentOptions = [
     title: "Space evenly (with space in start and end)",
   },
 ];
-const verticalAlignmentOptions = ["start", "center", "end", "stretch"];
+const verticalAlignmentOptionsForRow = ["start", "center", "end", "stretch"];
+const verticalAlignmentOptions = ["start", "center", "end"];
+
 const Alignment = () => {
+  const activeType = useAppSelector(selectActive)?.type;
+  const isRow = activeType === "row";
   return (
     <ToggleVisibilityWrapper title="Alignment">
-      <SmallText>Alignment for row elements</SmallText>
+      <SmallText>Alignment for this element</SmallText>
+      {isRow && (
+        <HorizontalOrVertical
+          type="justify-content"
+          title="Select horizontal alignment type for inner elements"
+          options={horizontalAlignmentOptions}
+        />
+      )}
       <HorizontalOrVertical
-        type="justify-content"
-        title="Select horizontal alignment type"
-        options={horizontalAlignmentOptions}
-      />
-      <HorizontalOrVertical
-        type="align-items"
-        title="Select vertical alignment type"
-        options={verticalAlignmentOptions}
+        type={isRow ? "align-items" : "text-align"}
+        title={
+          isRow
+            ? "Select vertical alignment type for inner elements"
+            : "Select vertical alignment type for this element and its child elements (text-align)"
+        }
+        options={
+          isRow ? verticalAlignmentOptionsForRow : verticalAlignmentOptions
+        }
       />
     </ToggleVisibilityWrapper>
   );

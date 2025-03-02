@@ -1,17 +1,23 @@
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { getProp } from "@/utils/Helpers";
+import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { getProp, getSetting } from "@/utils/Helpers";
 import iconList from "bootstrap-icons/font/bootstrap-icons.json";
 import BottomLine from "../BottomLine";
-import { changeElementProp } from "@/redux/slices/editorSlice";
+import {
+  changeElementProp,
+  changeElementStyle,
+  removeElementStyle,
+} from "@/redux/slices/editorSlice";
 import Icon from "../Icon";
 import { useState } from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
+import ColorPicker from "../ColorPicker";
+import ResetButton from "../ResetButton";
 
 const IconType = () => {
   const [searchString, setSearchString] = useState("");
 
   return (
-    <ToggleVisibilityWrapper title="Icon Type">
+    <ToggleVisibilityWrapper title="Icon Settings">
       <div className="relative pb-2 mb-2">
         <form className="max-w-sm mx-auto mb-2">
           <label className="block mb-2 text-sm font-medium">Icon type</label>
@@ -31,7 +37,39 @@ const IconType = () => {
 
         <BottomLine />
       </div>
+      <IconColor />
     </ToggleVisibilityWrapper>
+  );
+};
+
+const IconColor = () => {
+  const type = "color";
+  const pageWise = useAppSelector(selectPageWise);
+  const colorStr = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+  return (
+    <div className="relative mb-2 pb-2">
+      <ColorPicker
+        onVarSelect={(param) =>
+          dispatch(changeElementStyle({ type, newValue: param }))
+        }
+        title="Pick the icon color"
+        selected={colorStr || pageWise.color || "#000000"}
+        onChange={(e) =>
+          dispatch(changeElementStyle({ type, newValue: e.target.value }))
+        }
+      />
+      <ResetButton
+        onClick={() => {
+          dispatch(
+            removeElementStyle({
+              type,
+            })
+          );
+        }}
+      />
+      <BottomLine />
+    </div>
   );
 };
 

@@ -135,7 +135,7 @@ const SideDropOverlay = ({
   };
   return (
     <styledElements.styledComponentWrapperDiv
-      className={"inline-block " + (notFixed && " relative")}
+      className={"inline-block align-top " + (notFixed && " relative")}
       styles={item.props.style}
     >
       {notFixed && (

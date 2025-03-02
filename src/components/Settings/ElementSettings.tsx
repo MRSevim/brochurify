@@ -4,7 +4,7 @@ import Source from "./Source";
 import Text from "./Text/Text";
 import Url from "./Url";
 import Background from "./Background";
-import Alignment from "./PageSettings/Alignment";
+import Alignment from "./Alignment";
 import ContainerSettings from "./ContainerSettings";
 import IconType from "./IconType";
 import Animations from "./Animations";
@@ -18,7 +18,7 @@ const ElementSettings = () => {
     activeType === "audio" || activeType === "image" || activeType === "video";
   const isText = activeType === "text";
   const shouldHaveUrl = activeType === "button";
-  const shouldHaveAlignment = activeType === "row";
+
   const isContainer = activeType === "container";
   const isIcon = activeType === "icon";
   const isFixed = activeType === "fixed";
@@ -33,7 +33,7 @@ const ElementSettings = () => {
       {isContainer && <ContainerSettings />}
       {isFixed && <FixedSettings />}
       <Background />
-      {shouldHaveAlignment && <Alignment />}
+      <Alignment />
       <Animations />
       {shouldHaveSource && <Source />}
       {isIcon && <IconType />}
