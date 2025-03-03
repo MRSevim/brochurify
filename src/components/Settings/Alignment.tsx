@@ -6,11 +6,13 @@ import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   changeElementStyle,
+  changeInnerElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
-import { getSetting } from "@/utils/Helpers";
+import { CONFIG, getSetting } from "@/utils/Helpers";
 import { OptionsObject } from "@/utils/Types";
 import React from "react";
+import Checkbox from "../Checkbox";
 
 const horizontalAlignmentOptions = [
   {
@@ -55,7 +57,56 @@ const Alignment = () => {
           isRow ? verticalAlignmentOptionsForRow : verticalAlignmentOptions
         }
       />
+      {isRow && <Reverse />}
     </ToggleVisibilityWrapper>
+  );
+};
+
+const Reverse = () => {
+  return (
+    <>
+      <TabletOrMobile
+        title="Reverse on tablet"
+        outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
+      />
+      <TabletOrMobile
+        title="Reverse on mobile"
+        outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
+      />
+    </>
+  );
+};
+
+const TabletOrMobile = ({
+  title,
+  outerType,
+}: {
+  title: string;
+  outerType: string;
+}) => {
+  const reverse = "wrap-reverse";
+  const innerType = "flex-wrap";
+  const variable = getSetting(useAppSelector, outerType, innerType);
+  const dispatch = useAppDispatch();
+  const checked = variable === reverse;
+
+  return (
+    <div className="relative pb-2 mb-2">
+      <Checkbox
+        title={title}
+        checked={checked}
+        onChange={() => {
+          dispatch(
+            changeInnerElementStyle({
+              outerType,
+              innerType,
+              newValue: checked ? "" : reverse,
+            })
+          );
+        }}
+      />
+      <BottomLine />
+    </div>
   );
 };
 

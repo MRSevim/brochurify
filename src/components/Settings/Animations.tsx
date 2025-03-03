@@ -16,7 +16,7 @@ import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import EditButton from "../EditButton";
 import DeleteButton from "../DeleteButton";
 import {
-  changeElementStyle,
+  changeInnerElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import Select from "../Select";
@@ -38,7 +38,7 @@ const Animations = () => {
 
   const handleAddition = (editedStr: string) => {
     const newValue = addAnimationToString(animationsString || "", editedStr);
-    dispatch(changeElementStyle({ type, newValue: { animation: newValue } }));
+    dispatch(changeInnerElementStyle({ outerType: type, innerType, newValue }));
   };
 
   const handleEditOrDeletion = (
@@ -56,7 +56,9 @@ const Animations = () => {
     if (!newValue) {
       dispatch(removeElementStyle({ type }));
     } else {
-      dispatch(changeElementStyle({ type, newValue: { animation: newValue } }));
+      dispatch(
+        changeInnerElementStyle({ outerType: type, innerType, newValue })
+      );
     }
   };
   return (

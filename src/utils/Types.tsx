@@ -93,7 +93,7 @@ export type Style = {
   display?: string;
   "font-size"?: string;
   "text-align"?: string;
-  "flex-wrap"?: "wrap" | "nowrap";
+  "flex-wrap"?: "wrap" | "nowrap" | "wrap-reverse";
   "box-shadow"?: string;
   animation?: string;
   "justify-content"?: string;

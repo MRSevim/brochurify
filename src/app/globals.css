@@ -116,11 +116,13 @@ td {
   font-size: inherit;
   font-family: inherit;
 }
-.editor {
-  padding: 2px;
-}
 .active {
   position: relative;
   outline: 2px dashed var(--background); /* Works like border but doesn't affect layout */
+  outline-offset: -2px;
   z-index: 50;
+}
+/*Homepage*/
+.homepage-hero {
+  margin-top: 150px;
 }

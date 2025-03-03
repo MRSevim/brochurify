@@ -126,7 +126,7 @@ export const editorSlice = createSlice({
     },
     changeElementStyle: (
       state,
-      action: PayloadAction<{ type: string; newValue: string | Style }>
+      action: PayloadAction<{ type: string; newValue: string }>
     ) => {
       const { type, newValue } = action.payload;
       const updateStyle = (layout: Layout[]): Layout[] => {
@@ -157,11 +157,68 @@ export const editorSlice = createSlice({
           return item;
         });
       };
-      if (!state.active && typeof newValue === "string") {
+      if (!state.active) {
         state.pageWise[type] = newValue;
       } else {
         state.layout = updateStyle(state.layout);
       }
+    },
+    changeInnerElementStyle: (
+      state,
+      action: PayloadAction<{
+        outerType: string;
+        innerType: string;
+        newValue: string;
+      }>
+    ) => {
+      const { outerType, innerType, newValue } = action.payload;
+      const updateStyle = (layout: Layout[]): Layout[] => {
+        return layout.map((item) => {
+          if (item.id === state.active?.id) {
+            // Clone existing styles
+            const updatedStyle = { ...item.props.style };
+            const outerStyle = { ...(updatedStyle[outerType] as Style) };
+
+            if (newValue) {
+              // Update the innerType value
+              outerStyle[innerType] = newValue;
+            } else {
+              // Remove innerType if newValue is falsy
+              delete outerStyle[innerType];
+            }
+
+            // Remove outerType if it's now empty
+            if (Object.keys(outerStyle).length === 0) {
+              delete updatedStyle[outerType];
+            } else {
+              updatedStyle[outerType] = outerStyle;
+            }
+
+            return {
+              ...item,
+              props: {
+                ...item.props,
+                style: updatedStyle,
+              },
+            };
+          }
+
+          // Recursively update children
+          if (item.props.child && Array.isArray(item.props.child)) {
+            return {
+              ...item,
+              props: {
+                ...item.props,
+                child: updateStyle(item.props.child),
+              },
+            };
+          }
+
+          return item;
+        });
+      };
+
+      state.layout = updateStyle(state.layout);
     },
     removeElementStyle: (state, action: PayloadAction<{ type: string }>) => {
       const { type } = action.payload;
@@ -391,6 +448,7 @@ export const {
   addToHistory,
   setCopied,
   paste,
+  changeInnerElementStyle,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

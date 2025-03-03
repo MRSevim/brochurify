@@ -1,13 +1,7 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import Icon from "../Icon";
 import Slider from "../Slider";
-import { SizingType, Style } from "@/utils/Types";
+import { SizingType } from "@/utils/Types";
 import {
   capitalizeFirstLetter,
   CONFIG,
@@ -20,6 +14,7 @@ import Border from "./Border";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   changeElementStyle,
+  changeInnerElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import Image from "next/image";
@@ -169,25 +164,36 @@ const NumberController = ({
   const initialType = getUnit(variable);
   const [radioType, setRadioType] = useState(initialType || "px");
 
-  const dispatchChange = (newValue: string | Style): void => {
-    dispatch(
-      changeElementStyle({
-        type: selectorOuterType,
-        newValue,
-      })
-    );
+  const dispatchChange = (newValue: string): void => {
+    if (selectorInnerType) {
+      dispatch(
+        changeInnerElementStyle({
+          outerType: selectorOuterType,
+          innerType: selectorInnerType,
+          newValue,
+        })
+      );
+    } else {
+      dispatch(
+        changeElementStyle({
+          type: selectorOuterType,
+          newValue,
+        })
+      );
+    }
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
-      dispatch(removeElementStyle({ type }));
-    } else {
       if (outerType === "base") {
-        dispatchChange(+e.target.value + radioType);
+        dispatch(removeElementStyle({ type }));
       } else {
-        if (!selectorInnerType) return;
-        dispatchChange({ [selectorInnerType]: +e.target.value + radioType });
+        dispatchChange("");
       }
+    } else {
+      const newValue = +e.target.value + radioType;
+
+      dispatchChange(newValue);
     }
   };
 
@@ -199,26 +205,22 @@ const NumberController = ({
         name={type}
         onChange={(e) => {
           if (e.target.value === "auto") {
-            if (outerType === "base") {
-              dispatchChange("auto");
-            } else {
-              if (!selectorInnerType) return;
-              dispatchChange({
-                [selectorInnerType]: "auto",
-              });
-            }
+            dispatchChange("auto");
           } else if (variable) {
-            if (outerType === "base") {
-              dispatchChange(parseInt(variable, 10) + e.target.value);
-            } else {
-              if (!selectorInnerType) return;
-              dispatchChange({
-                [selectorInnerType]: parseInt(variable, 10) + e.target.value,
-              });
-            }
+            dispatchChange(parseInt(variable, 10) + e.target.value);
 
             if (variable === "auto") {
-              dispatch(removeElementStyle({ type: selectorOuterType }));
+              if (selectorInnerType) {
+                dispatch(
+                  changeInnerElementStyle({
+                    outerType: selectorOuterType,
+                    innerType: selectorInnerType,
+                    newValue: "",
+                  })
+                );
+              } else {
+                dispatch(removeElementStyle({ type: selectorOuterType }));
+              }
             }
           }
           setRadioType(e.target.value);

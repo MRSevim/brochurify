@@ -1,9 +1,8 @@
 import { hasType } from "./EditorHelpers";
-import { detectTag, styleDivider } from "./Helpers";
+import { detectTag } from "./Helpers";
 import {
   fullStylesWithIdsGenerator,
   keyframeGenerator,
-  styleGenerator,
 } from "./StyleGenerators";
 import { Layout, PageWise } from "./Types";
 import { prettify } from "htmlfy";
@@ -24,7 +23,10 @@ export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
   } = pageWise;
 
   const renderedBody = renderLayout(layout);
-  const fullstylesWithIds = fullStylesWithIdsGenerator(layout);
+  const fullstylesWithIds =
+    fullStylesWithIdsGenerator(layout, false) +
+    fullStylesWithIdsGenerator(layout, true);
+
   const keyframes = keyframeGenerator(fullstylesWithIds);
 
   return prettify(
@@ -97,6 +99,7 @@ ${getCssReset()}
     height: 100%;
     width:100%;
     overflow:auto;
+    container-type:size;
   }
   html {
     height:100%;
@@ -242,9 +245,6 @@ const renderLayout = (items: Layout[]): string => {
           ? "i"
           : type;
 
-      const [widthAndHeight, rest] = styleDivider(props.style);
-      const widthAndHeightGenerated = styleGenerator(widthAndHeight);
-
       const isAudioOrVideo = type === "audio" || type === "video";
       const isImage = type === "image";
       const isText = type === "text";
@@ -269,7 +269,7 @@ const renderLayout = (items: Layout[]): string => {
       const addFlexWrapper = (html: string) => {
         return `<div class="inlineBlock ${
           isFixed ? "" : "relative"
-        }" style="${widthAndHeightGenerated}">
+        }" id="idwrapper${item.id}">
         <div class="flex wAndHFull">${html}</div></div>`;
       };
 
@@ -285,13 +285,7 @@ const renderLayout = (items: Layout[]): string => {
             alt="${props.alt || ""}"`
           : ""
       } 
-     ${
-       isFixed
-         ? `
-        style="${widthAndHeightGenerated}"
-        `
-         : ""
-     }>
+      >
         ${
           isAudioOrVideo
             ? `

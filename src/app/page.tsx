@@ -1,9 +1,20 @@
+import Container from "@/components/Container";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <Link href="/builder">
-      <button className="p-2 bg-slate-400	rounded">Go to Builder</button>
-    </Link>
+    <Container>
+      <div className="homepage-hero text-center">
+        <div className="flex flex-col gap-2 mb-3">
+          <h1 className="font-bold text-4xl"> Build a brochure like website</h1>
+          <h2 className="text-2xl">And Get The Html</h2>
+          <Link href="/builder">
+            <button className="p-4 bg-slate-400 text-xl	rounded">
+              Go to Builder
+            </button>
+          </Link>
+        </div>
+      </div>
+    </Container>
   );
 }

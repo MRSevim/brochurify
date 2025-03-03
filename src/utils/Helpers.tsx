@@ -22,7 +22,12 @@ import Divider from "@/components/BuilderComponents/Divider";
 import Icon from "@/components/BuilderComponents/Icon";
 import { selectVariables } from "@/redux/hooks";
 import styled from "styled-components";
-import { getAllKeyFrames, styleGenerator } from "./StyleGenerators";
+import {
+  getAllKeyFrames,
+  getRest,
+  getWidthAndHeight,
+  styleGenerator,
+} from "./StyleGenerators";
 import Fixed from "@/components/BuilderComponents/Fixed";
 
 export const runIntersectionObserver = () => {
@@ -40,37 +45,7 @@ export const runIntersectionObserver = () => {
   });
   return observer;
 };
-export const styleDivider = (style: Style) => {
-  const tabletContainerQueryKey =
-    CONFIG.possibleOuterTypes.tabletContainerQuery;
-  const mobileContainerQueryKey =
-    CONFIG.possibleOuterTypes.mobileContainerQuery;
-  const {
-    width,
-    height,
-    [tabletContainerQueryKey]: tabletStyles,
-    [mobileContainerQueryKey]: mobileStyles,
-    ...rest
-  } = style;
-  return [
-    {
-      width,
-      height,
-      [tabletContainerQueryKey]: tabletStyles,
-      [mobileContainerQueryKey]: mobileStyles,
-    },
-    rest,
-  ];
-};
-const getRest = (style: Style): string => {
-  const [widthAndHeight, rest] = styleDivider(style);
 
-  return styleGenerator(rest);
-};
-const getWidthAndHeight = (style: Style): string => {
-  const [widthAndHeight, rest] = styleDivider(style);
-  return styleGenerator(widthAndHeight);
-};
 export const styledElements = {
   styledEditor: styled.div<{ styles: Style }>`
     ${({ styles }) => {
