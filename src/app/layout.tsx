@@ -6,6 +6,7 @@ import Header from "@/components/Header/Header";
 import ClientWrapper from "@/utils/ClientWrapper";
 import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";
+import Script from "next/script";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -33,6 +34,24 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={roboto_mono.className}>
+      <head>
+        <Script
+          async
+          src={
+            "https://www.googletagmanager.com/gtag/js?id=" +
+            process.env.googleAnalyticsId
+          }
+        />
+        <Script id="google-analytics">
+          {` window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag("js", new Date());
+
+          gtag("config", "${process.env.googleAnalyticsId}");`}
+        </Script>
+      </head>
       <ClientWrapper lightMode={lightMode}>
         <body className={!lightMode ? "dark" : ""}>
           <Header />
