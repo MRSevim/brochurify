@@ -1,8 +1,9 @@
 import useActive from "@/utils/hooks/useActive";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/Helpers";
+import { RefObject } from "react";
 
-const Image = ({ id, style, src, alt }: PropsWithId) => {
+const Image = ({ id, style, src, alt, ref }: PropsWithId) => {
   const active = useActive(id);
 
   return (
@@ -11,6 +12,7 @@ const Image = ({ id, style, src, alt }: PropsWithId) => {
       src={src || undefined}
       alt={alt}
       styles={style}
+      ref={ref as unknown as RefObject<HTMLImageElement>}
     />
   );
 };

@@ -1,11 +1,16 @@
 import useActive from "@/utils/hooks/useActive";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/Helpers";
-const Column = ({ id, children, style }: PropsWithId) => {
+import { RefObject } from "react";
+const Column = ({ id, children, style, ref }: PropsWithId) => {
   const active = useActive(id);
 
   return (
-    <styledElements.styledDiv className={active} styles={style}>
+    <styledElements.styledDiv
+      className={active}
+      styles={style}
+      ref={ref as unknown as RefObject<HTMLDivElement>}
+    >
       {children}
     </styledElements.styledDiv>
   );

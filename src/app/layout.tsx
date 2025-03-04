@@ -15,6 +15,12 @@ export const metadata: Metadata = {
   title: "Brochurify",
   description:
     "Design single page websites with the builder and get the html file",
+  keywords: "builder,website builder,html generator,html",
+  openGraph: {
+    title: "Brochurify",
+    description:
+      "Design single page websites with the builder and get the html file",
+  },
 };
 
 export default async function RootLayout({

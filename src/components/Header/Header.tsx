@@ -6,7 +6,7 @@ import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
-import { redo, undo } from "@/redux/slices/editorSlice";
+import { redo, resetToInitial, undo } from "@/redux/slices/editorSlice";
 import SavePopupWrapper from "./SavePopupWrapper";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { useState } from "react";
@@ -107,6 +107,12 @@ const LeftSideActions = () => {
         type="play-circle"
         size="24px"
         onClick={() => dispatch(triggerReplay())}
+      />
+      <Icon
+        title="Reset to initial"
+        type="x-octagon"
+        size="24px"
+        onClick={() => dispatch(resetToInitial())}
       />
       <ViewMode />
       <Link href="/preview" target="_blank">

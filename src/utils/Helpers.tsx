@@ -30,7 +30,7 @@ import {
 } from "./StyleGenerators";
 import Fixed from "@/components/BuilderComponents/Fixed";
 
-export const runIntersectionObserver = () => {
+export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
   const observer = new IntersectionObserver((entries, observer) => {
     entries
       .filter((entry) => entry.isIntersecting)
@@ -39,10 +39,14 @@ export const runIntersectionObserver = () => {
         observer.unobserve(entry.target); // Stops observing after adding class
       });
   });
-
-  document.querySelectorAll(".element").forEach((elem) => {
+  if (!elem) {
+    document.querySelectorAll(".element").forEach((elem) => {
+      observer.observe(elem);
+    });
+  } else {
     observer.observe(elem);
-  });
+  }
+
   return observer;
 };
 

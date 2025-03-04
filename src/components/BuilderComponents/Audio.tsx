@@ -1,7 +1,8 @@
 import useActive from "@/utils/hooks/useActive";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/Helpers";
-const Audio = ({ id, style, src }: PropsWithId) => {
+import { RefObject } from "react";
+const Audio = ({ id, style, src, ref }: PropsWithId) => {
   const active = useActive(id);
 
   return (
@@ -9,6 +10,7 @@ const Audio = ({ id, style, src }: PropsWithId) => {
       className={active}
       styles={style}
       key={src}
+      ref={ref as unknown as RefObject<HTMLAudioElement>}
       controls
     >
       <source src={src || undefined}></source>

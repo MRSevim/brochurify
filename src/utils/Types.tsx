@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, RefObject } from "react";
 import { CONFIG } from "./Helpers";
 export interface Props {
   text?: string;
@@ -18,8 +18,26 @@ export interface Props {
     | React.ReactNode
     | undefined;
 }
-export interface PropsWithId extends Props {
+export interface PropsWithId {
   id: string;
+  text?: string;
+  style: Style;
+  child?: Layout[];
+  src?: string;
+  href?: string;
+  newTab?: boolean;
+  alt?: string;
+  iconType?: string;
+  children?: React.ReactNode;
+  ref?: ElementRefObject;
+  [key: string]:
+    | string
+    | boolean
+    | Style
+    | Layout[]
+    | React.ReactNode
+    | undefined
+    | ElementRefObject;
 }
 export interface Layout {
   id: string;
@@ -106,7 +124,7 @@ export type Style = {
   [CONFIG.possibleOuterTypes.mobileContainerQuery]?: Style;
   [key: string]: StringOrUnd | Style;
 };
-
+export type ElementRefObject = RefObject<HTMLElement | null>;
 export type StringOrUnd = string | undefined;
 export type LayoutOrUnd = Layout | undefined;
 export type Where = "before" | "after";

@@ -30,7 +30,7 @@ const page = () => {
 
     // Re-initialize IntersectionObserver after content replacement
     setTimeout(() => {
-      runIntersectionObserver();
+      runIntersectionObserver(undefined);
     }, 100); // Delay to ensure elements exist
   }, []);
 

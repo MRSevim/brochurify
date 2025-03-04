@@ -19,7 +19,7 @@ import {
 } from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
 import { Layout, Style, Where } from "@/utils/Types";
-import React, { DragEvent } from "react";
+import React, { DragEvent, useRef } from "react";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { styledElements } from "@/utils/Helpers";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
@@ -50,7 +50,7 @@ const EditorInner = () => {
   const pageWise = useAppSelector(selectPageWise);
   const [viewMode] = useViewMode();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
-  useIntersectionObserver([globalTrigger]);
+  useIntersectionObserver([globalTrigger], undefined);
 
   const maxWidth =
     viewMode === "desktop"
@@ -90,14 +90,18 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
     return style?.["&.scrolled"]?.["animation"];
   }) as string;
 
-  useIntersectionObserver([replayTrigger]);
+  const ref = useRef<HTMLElement | null>(null);
+
+  useIntersectionObserver([replayTrigger, animationsString], ref);
+
   return (
     <SideDropOverlay item={item}>
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
           <Component
-            key={(animationsString || "") + (replayTrigger || "")}
+            key={animationsString + (replayTrigger || "")}
             id={id}
+            ref={ref}
             {...item.props}
           >
             {item.props.child?.map((childItem) => (

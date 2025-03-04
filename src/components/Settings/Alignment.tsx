@@ -64,7 +64,7 @@ const Alignment = () => {
 
 const Reverse = () => {
   return (
-    <>
+    <div className="relative pb-2 mb-2">
       <TabletOrMobile
         title="Reverse on tablet"
         outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
@@ -73,7 +73,9 @@ const Reverse = () => {
         title="Reverse on mobile"
         outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
       />
-    </>
+      <SmallText>Only reverses if items are stacked</SmallText>
+      <BottomLine />
+    </div>
   );
 };
 
@@ -91,22 +93,19 @@ const TabletOrMobile = ({
   const checked = variable === reverse;
 
   return (
-    <div className="relative pb-2 mb-2">
-      <Checkbox
-        title={title}
-        checked={checked}
-        onChange={() => {
-          dispatch(
-            changeInnerElementStyle({
-              outerType,
-              innerType,
-              newValue: checked ? "" : reverse,
-            })
-          );
-        }}
-      />
-      <BottomLine />
-    </div>
+    <Checkbox
+      title={title}
+      checked={checked}
+      onChange={() => {
+        dispatch(
+          changeInnerElementStyle({
+            outerType,
+            innerType,
+            newValue: checked ? "" : reverse,
+          })
+        );
+      }}
+    />
   );
 };
 

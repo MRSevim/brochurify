@@ -12,11 +12,7 @@ import {
   setAddLocationInner,
   setDropHandledInner,
 } from "@/utils/EditorHelpers";
-import {
-  generateLayoutItem,
-  getDefaultStyle,
-  getPageWise,
-} from "@/utils/Helpers";
+import { generateLayoutItem, getPageWise } from "@/utils/Helpers";
 import {
   AddLocation,
   EditorState,
@@ -49,6 +45,9 @@ export const editorSlice = createSlice({
   name: "editor",
   initialState,
   reducers: {
+    resetToInitial: () => {
+      return initialState;
+    },
     setActive: (state, action: PayloadAction<LayoutOrUnd>) => {
       setActiveInner(state, action.payload);
     },
@@ -449,6 +448,7 @@ export const {
   setCopied,
   paste,
   changeInnerElementStyle,
+  resetToInitial,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;
