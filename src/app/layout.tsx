@@ -39,7 +39,7 @@ export default async function RootLayout({
           async
           src={
             "https://www.googletagmanager.com/gtag/js?id=" +
-            process.env.googleAnalyticsId
+            process.env.GOOGLE_ANALYTICS_ID
           }
         />
         <Script id="google-analytics">
@@ -49,7 +49,7 @@ export default async function RootLayout({
           }
           gtag("js", new Date());
 
-          gtag("config", "${process.env.googleAnalyticsId}");`}
+          gtag("config", "${process.env.GOOGLE_ANALYTICS_ID}");`}
         </Script>
       </head>
       <ClientWrapper lightMode={lightMode}>
