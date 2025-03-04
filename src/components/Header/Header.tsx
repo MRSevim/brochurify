@@ -33,7 +33,10 @@ const GeneralHeader = () => {
           <p className="font-bold text-lg"> Brochurify</p>
         </Link>
       </div>
-      <div>
+      <div className="flex gap-4">
+        <Link href="/contact">
+          <span>Contact</span>
+        </Link>
         <Link href="/how-to">
           <span>How To</span>
         </Link>
