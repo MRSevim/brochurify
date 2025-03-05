@@ -107,12 +107,14 @@ const page = () => {
         width/height to the element is related to its parent. For percent
         width/height to apply correctly, parent and all grandparents have to
         have set width/height applied to them other than auto or none. All
-        elements also behave in inline-block manner. So when a new element
-        added, it is added right next to the last element in the editor and
-        elements won't take the full available width by default but applying
-        width and height to them will work. Content elements such as text and
-        image should be structured inside rows and columns to control their
-        place on a page and align them accordingly.
+        elements behave in inline-block manner. So when a new element added, it
+        is added right next to the last element in the editor and elements won't
+        take the full available width by default but applying width and height
+        to them will work. All elements also behave in border-box manner meaning
+        that if width/height is specified for the elements, it will include
+        thier padding and border. Content elements such as text and image should
+        be structured inside rows and columns to control their place on a page
+        and align them accordingly.
       </p>
     </Container>
   );
