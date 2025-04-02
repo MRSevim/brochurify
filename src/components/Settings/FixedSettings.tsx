@@ -12,7 +12,10 @@ import NumberInput from "../NumberInput";
 const FixedSettings = () => {
   const positionsArr = ["top", "bottom", "left", "right"];
   return (
-    <ToggleVisibilityWrapper title="Fixed Position">
+    <ToggleVisibilityWrapper
+      title="Fixed Position"
+      desc="Set how far the element will be from the sides of its container"
+    >
       <div className="flex flex-wrap">
         {positionsArr.map((position) => (
           <div className="w-1/2" key={position}>

@@ -38,20 +38,21 @@ const Alignment = () => {
   const isRow = activeType === "row";
   return (
     <ToggleVisibilityWrapper title="Alignment">
-      <SmallText>Alignment for this element</SmallText>
       {isRow && (
         <HorizontalOrVertical
           type="justify-content"
-          title="Select horizontal alignment type for inner elements"
+          title="Horizontal alignment"
+          desc="This only effects the alignment of columns inside this row"
           options={horizontalAlignmentOptions}
         />
       )}
       <HorizontalOrVertical
         type={isRow ? "align-items" : "text-align"}
-        title={
+        title="Vertical alignment"
+        desc={
           isRow
-            ? "Select vertical alignment type for inner elements"
-            : "Select vertical alignment type for this element and its child elements (text-align)"
+            ? "This only effects the alignment of columns inside this row"
+            : "Select vertical alignment type for this element and its child elements (uses text-align)"
         }
         options={
           isRow ? verticalAlignmentOptionsForRow : verticalAlignmentOptions
@@ -113,10 +114,12 @@ const HorizontalOrVertical = ({
   type,
   title,
   options,
+  desc,
 }: {
   type: string;
   title: string;
   options: OptionsObject[] | string[];
+  desc: string;
 }) => {
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
@@ -125,6 +128,7 @@ const HorizontalOrVertical = ({
     <div className="relative pb-2 mb-2">
       <Select
         title={title}
+        desc={desc}
         showStyled={false}
         options={options}
         selected={variable || ""}

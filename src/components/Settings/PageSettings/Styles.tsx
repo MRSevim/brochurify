@@ -16,8 +16,10 @@ import {
 
 const Styles = () => {
   return (
-    <ToggleVisibilityWrapper title="Styles">
-      <SmallText>Settings to edit the look of the overall page</SmallText>
+    <ToggleVisibilityWrapper
+      title="Styles"
+      desc="Settings to edit the look of the whole page"
+    >
       <Color />
       <BackgroundColor />
       <FontSize />

@@ -126,3 +126,13 @@ td {
 .homepage-hero {
   margin-top: 150px;
 }
+
+/*Info Icon related*/
+.info-icon {
+  max-width: 16px;
+}
+.info-icon:hover .info-text {
+  opacity: 1;
+  transform: translateY(4px);
+  pointer-events: auto;
+}

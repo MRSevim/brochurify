@@ -18,7 +18,6 @@ const ElementSettings = () => {
     activeType === "audio" || activeType === "image" || activeType === "video";
   const isText = activeType === "text";
   const shouldHaveUrl = activeType === "button";
-
   const isContainer = activeType === "container";
   const isIcon = activeType === "icon";
   const isFixed = activeType === "fixed";

@@ -10,7 +10,10 @@ import SmallText from "@/components/SmallText";
 
 const Seo = () => {
   return (
-    <ToggleVisibilityWrapper title="Seo">
+    <ToggleVisibilityWrapper
+      title="Seo"
+      desc="Settings for search engine optimization"
+    >
       <SeoInner />
     </ToggleVisibilityWrapper>
   );
@@ -35,7 +38,6 @@ const WebsiteTitle = () => {
 
   return (
     <div className="relative pb-2 mb-2">
-      <SmallText>Settings for Search Engine Optimization</SmallText>
       <TextInput
         title="Website title"
         value={variable || ""}

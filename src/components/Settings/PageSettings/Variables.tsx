@@ -19,7 +19,10 @@ import { useState } from "react";
 
 const Variables = () => {
   return (
-    <ToggleVisibilityWrapper title="Variables">
+    <ToggleVisibilityWrapper
+      title="Variables"
+      desc="Add variables that you can use throughout your page"
+    >
       <VariablesInner />
     </ToggleVisibilityWrapper>
   );
@@ -30,7 +33,6 @@ const VariablesInner = () => {
   const [editedVar, setEditedVar] = useState<VariableWithId | null>(null);
   return (
     <div className="flex flex-col items-center relative pb-2 mb-2">
-      <SmallText>Add variables that you can use throughout your page</SmallText>
       <AddButton
         onClick={() => {
           setEditedVar(null);

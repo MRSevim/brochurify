@@ -62,9 +62,11 @@ const Animations = () => {
     }
   };
   return (
-    <ToggleVisibilityWrapper title="Animations">
+    <ToggleVisibilityWrapper
+      title="Animations"
+      desc="Manage animations for this element"
+    >
       <div className="flex flex-col items-center relative pb-2 mb-2">
-        <SmallText>Add animations for this element</SmallText>
         <ReplayButton
           onClick={() => {
             dispatch(triggerReplay(activeId));

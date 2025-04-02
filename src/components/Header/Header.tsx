@@ -6,61 +6,105 @@ import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
-import { redo, resetToInitial, undo } from "@/redux/slices/editorSlice";
+import { redo, undo } from "@/redux/slices/editorSlice";
 import SavePopupWrapper from "./SavePopupWrapper";
-import { useViewMode } from "@/contexts/ViewModeContext";
-import { useState } from "react";
 import Link from "next/link";
 import { triggerReplay } from "@/redux/slices/replaySlice";
 import DownloadWrapper from "./DownloadWrapper";
 import { usePathname } from "next/navigation";
+import Container from "../Container";
+import ViewMode from "./ViewMode";
+import { usePreview } from "@/contexts/PreviewContext";
 
 const Header = () => {
   const pathname = usePathname();
+  const isBuilder = pathname === "/builder";
 
   return (
-    <header className="w-full h-10 bg-background px-3 flex items-center justify-between">
-      {pathname === "/builder" ? <BuilderHeader /> : <GeneralHeader />}
+    <header className="w-full bg-background">
+      <Container pushedVertically={false}>
+        <TopHeader isBuilder={isBuilder} />
+        {isBuilder && <BuilderHeader />}
+      </Container>
     </header>
   );
 };
 
-const GeneralHeader = () => {
+const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
+  const [preview, setPreview] = usePreview();
   return (
-    <>
-      <div>
-        <Link href="/">
-          <p className="font-bold text-lg"> Brochurify</p>
-        </Link>
+    <div className="flex justify-between items-center py-2">
+      <Link href="/">
+        <p className="font-bold text-lg">Brochurify</p>
+      </Link>
+      {preview && isBuilder && "You are in preview mode"}
+      <div className="flex gap-4 items-center">
+        <DarkModeToggle />
+        {!isBuilder ? (
+          <>
+            <Link href="/contact">
+              <span>Contact</span>
+            </Link>
+            <Link href="/how-to">
+              <span>How To</span>
+            </Link>
+          </>
+        ) : (
+          <>
+            <Icon
+              title={preview ? "Back to builder" : "Preview the page"}
+              type={preview ? "backspace-fill" : "eye-fill"}
+              size="24px"
+              onClick={() => {
+                setPreview((prev) => !prev);
+              }}
+            />
+            <button className="p-2 rounded bg-amber-800">Publish</button>
+          </>
+        )}
       </div>
-      <div className="flex gap-4">
-        <Link href="/contact">
-          <span>Contact</span>
-        </Link>
-        <Link href="/how-to">
-          <span>How To</span>
-        </Link>
-      </div>
-    </>
+    </div>
   );
 };
 
 const BuilderHeader = () => {
+  const [preview] = usePreview();
+
   return (
-    <>
-      <LeftSide />
-      <RightSide />
-    </>
+    <div className="flex justify-between items-center">
+      <div className={preview ? "invisible" : ""}>
+        <LeftSide />
+      </div>
+      <Center />
+      <div className={preview ? "invisible" : ""}>
+        <RightSide />
+      </div>
+    </div>
+  );
+};
+
+const Center = () => {
+  const dispatch = useAppDispatch();
+
+  return (
+    <div className="flex items-center gap-6">
+      <Icon
+        title="Replay"
+        type="play-circle"
+        size="24px"
+        onClick={() => dispatch(triggerReplay())}
+      />
+      <ViewMode />
+    </div>
   );
 };
 
 const LeftSide = () => {
   const [, setLayoutToggle] = LayoutToggleContext.Use();
-  const [mobileActionsToggle, setMobileActionsToggle] = useState(false);
 
   return (
     <div className="flex items-center ">
-      <div className="me-3 md:me-6">
+      <div className="me-6">
         <Icon
           title="Layout"
           type="list-nested"
@@ -68,20 +112,8 @@ const LeftSide = () => {
           onClick={() => setLayoutToggle((prev) => !prev)}
         />
       </div>
-      <div className="relative md:hidden block">
-        <Icon
-          title="mobile-actions-toggle"
-          type="chevron-double-down"
-          size="24px"
-          onClick={() => setMobileActionsToggle((prev) => !prev)}
-        />
-        {mobileActionsToggle && (
-          <div className="absolute bg-background p-3 border rounded z-[70]">
-            <LeftSideActions />
-          </div>
-        )}
-      </div>
-      <div className="items-center gap-2 hidden md:flex">
+
+      <div className="items-center gap-2 flex">
         <LeftSideActions />
       </div>
       <SavePopupWrapper />
@@ -105,27 +137,6 @@ const LeftSideActions = () => {
         size="24px"
         onClick={() => dispatch(redo())}
       />
-      <Icon
-        title="Replay"
-        type="play-circle"
-        size="24px"
-        onClick={() => dispatch(triggerReplay())}
-      />
-      <Icon
-        title="Reset to initial"
-        type="x-octagon"
-        size="24px"
-        onClick={() => dispatch(resetToInitial())}
-      />
-      <ViewMode />
-      <Link href="/preview" target="_blank">
-        <Icon
-          title="Preview the page"
-          type="eye-fill"
-          size="24px"
-          onClick={() => {}}
-        />
-      </Link>
       <DownloadWrapper />
     </>
   );
@@ -134,63 +145,14 @@ const LeftSideActions = () => {
 const RightSide = () => {
   const [, setSettingsToggle] = SettingsToggleContext.Use();
   return (
-    <div className="flex items-center">
-      <DarkModeToggle />
-      <Icon
-        title="Settings"
-        type="gear-fill"
-        size="25px"
-        onClick={() => {
-          setSettingsToggle((prev) => !prev);
-        }}
-      />
-    </div>
-  );
-};
-
-const ViewMode = () => {
-  const [viewMode, setViewMode] = useViewMode();
-  const [changing, setChanging] = useState(false);
-  const type =
-    viewMode === "desktop"
-      ? "window-fullscreen"
-      : viewMode === "tablet"
-      ? "tablet-fill"
-      : "phone-fill";
-
-  const Icons = [
-    { title: "desktop", type: "window-fullscreen" },
-    { title: "tablet", type: "tablet-fill" },
-    { title: "mobile", type: "phone-fill" },
-  ];
-
-  return (
-    <div
-      className="relative z-[70]"
-      onClick={() => setChanging((prev) => !prev)}
-    >
-      <Icon title="View mode" type={type} size="24px" onClick={() => {}} />
-      {changing && (
-        <div className="absolute border border-text p-2 rounded bg-background top-full left-1/2 -translate-x-1/2 items-center flex flex-col">
-          {Icons.map((icon) => (
-            <div
-              key={icon.title}
-              className="hover:shadow-sm hover:shadow-text hover:z-50 p-2 cursor-pointer"
-              onClick={() => {
-                setViewMode(icon.title);
-              }}
-            >
-              <Icon
-                title={icon.title}
-                type={icon.type}
-                size="20px"
-                onClick={() => {}}
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+    <Icon
+      title="Settings"
+      type="gear-fill"
+      size="24px"
+      onClick={() => {
+        setSettingsToggle((prev) => !prev);
+      }}
+    />
   );
 };
 

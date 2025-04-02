@@ -5,13 +5,13 @@ import ToggleBtn from "./ToggleBtn";
 const DarkModeToggle = () => {
   const [lightMode, setLightMode] = useLightMode();
   return (
-    <div className="flex items-center me-5">
+    <div className="flex items-center">
       <ToggleBtn
         text={
           <Icon
             title="Settings"
             type={!lightMode ? "moon-fill" : "moon"}
-            size="22px"
+            size="24px"
             onClick={() => {}}
           />
         }

@@ -10,20 +10,7 @@ import SmallText from "../SmallText";
 const Source = () => {
   const activeType = useAppSelector(selectActive)?.type;
   return (
-    <ToggleVisibilityWrapper title="Source">
-      <SmallText>Add source for your media</SmallText>
-      {activeType === "image" && (
-        <SmallText>
-          Should be apng, avif, gif, jpeg, png (recommended), svg or webp
-          (recommended)
-        </SmallText>
-      )}
-      {activeType === "video" && (
-        <SmallText> Should be mp4, webm or ogg</SmallText>
-      )}
-      {activeType === "audio" && (
-        <SmallText> Should be mp3, wav or ogg</SmallText>
-      )}
+    <ToggleVisibilityWrapper title="Source" desc="Add the source of your media">
       <SourceUrl />
       {activeType === "image" && <AltText />}
     </ToggleVisibilityWrapper>
@@ -32,11 +19,21 @@ const Source = () => {
 
 const SourceUrl = () => {
   const type = "src";
+  const activeType = useAppSelector(selectActive)?.type;
   const variable = getProp<string>(useAppSelector, type);
   const dispatch = useAppDispatch();
   return (
     <div className="relative pb-2 mb-2">
       <LinkInput
+        desc={
+          activeType === "image"
+            ? "should be apng, avif, gif, jpeg, png (recommended), svg or webp (recommended)"
+            : activeType === "video"
+            ? "should be mp4, webm or ogg"
+            : activeType === "audio"
+            ? "should be mp3, wav or ogg"
+            : ""
+        }
         title="Source url"
         value={variable || ""}
         onChange={(e) =>
@@ -60,6 +57,7 @@ const AltText = () => {
     <div className="relative pb-2 mb-2">
       <TextInput
         title="Alternative text (accessibility)"
+        desc="Add a text to this image that will be used by screen readers and will be visible if image is not available"
         value={variable || ""}
         onChange={(e) =>
           dispatch(

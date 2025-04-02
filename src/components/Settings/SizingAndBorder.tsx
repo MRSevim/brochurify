@@ -24,7 +24,7 @@ import NumberInput from "../NumberInput";
 import SecondaryTitle from "../SecondaryTitle";
 import BottomLine from "../BottomLine";
 import GroupedRadioButtons from "../GroupedRadioButtons";
-import SmallText from "../SmallText";
+import InfoIcon from "../InfoIcon";
 
 const sizingTypeArray: SizingType[] = [
   {
@@ -75,19 +75,19 @@ export const WidthAndHeight = () => {
 
   return (
     <div className="relative pb-2 mb-2">
-      <SecondaryTitle title="Width and Height" />
-      <SmallText>
-        Pixel, percentage based or automatic size settings for the element
-      </SmallText>
+      <SecondaryTitle title="Width and Height">
+        <InfoIcon
+          text="Pixel, percentage based or automatic size settings for the element. Note that base styles will apply to every screen size if mobile or tablet is not
+        set"
+        />
+      </SecondaryTitle>
+
       <TypeSelect type={outerType} setType={setOuterType} />
       <div className="flex gap-2" key={outerType + activeId}>
         <NumberController type="width" outerType={outerType} />
         <NumberController type="height" outerType={outerType} />
       </div>
-      <SmallText>
-        Base styles will apply to every screen size if mobile or tablet is not
-        set
-      </SmallText>
+
       <BottomLine />
     </div>
   );

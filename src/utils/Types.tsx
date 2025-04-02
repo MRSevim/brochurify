@@ -1,5 +1,6 @@
 import { ChangeEvent, RefObject } from "react";
 import { CONFIG } from "./Helpers";
+
 export interface Props {
   text?: string;
   style: Style;

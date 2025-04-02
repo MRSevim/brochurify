@@ -1,22 +1,34 @@
 import { OptionsObject } from "@/utils/Types";
 import { ChangeEvent } from "react";
+import InfoIcon from "./InfoIcon";
 
 type Props = {
   title: string;
   options: (string | OptionsObject)[];
   selected: string;
   showStyled?: boolean;
+  desc?: string;
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
 };
-const Select = ({ title, showStyled, options, selected, onChange }: Props) => {
+const Select = ({
+  title,
+  desc,
+  showStyled,
+  options,
+  selected,
+  onChange,
+}: Props) => {
   return (
     <form className="max-w-sm mx-auto mb-2">
-      <label
-        htmlFor={"options-" + title}
-        className="block mb-2 text-sm font-medium"
-      >
-        {title}
-      </label>
+      <div className="flex justify-between">
+        <label
+          htmlFor={"options-" + title}
+          className="block mb-2 text-sm font-medium"
+        >
+          {title}
+        </label>
+        {desc && <InfoIcon text={desc} />}
+      </div>
       <select
         value={selected}
         onChange={onChange}

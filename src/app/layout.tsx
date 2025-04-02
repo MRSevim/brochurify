@@ -35,22 +35,26 @@ export default async function RootLayout({
   return (
     <html lang="en" className={roboto_mono.className}>
       <head>
-        <Script
-          async
-          src={
-            "https://www.googletagmanager.com/gtag/js?id=" +
-            process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
-          }
-        />
-        <Script id="google-analytics">
-          {` window.dataLayer = window.dataLayer || [];
+        {process.env.ENV === "production" && (
+          <>
+            <Script
+              async
+              src={
+                "https://www.googletagmanager.com/gtag/js?id=" +
+                process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
+              }
+            />
+            <Script id="google-analytics">
+              {` window.dataLayer = window.dataLayer || [];
           function gtag() {
             dataLayer.push(arguments);
-          }
-          gtag("js", new Date());
-
-          gtag("config", "${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}");`}
-        </Script>
+            }
+            gtag("js", new Date());
+            
+            gtag("config", "${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}");`}
+            </Script>
+          </>
+        )}
       </head>
       <ClientWrapper lightMode={lightMode}>
         <body className={!lightMode ? "dark" : ""}>

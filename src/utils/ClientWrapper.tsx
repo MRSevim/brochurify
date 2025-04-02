@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { Provider } from "react-redux";
 import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
+import { Provider as PreviewProvider } from "@/contexts/PreviewContext";
 import { StyleSheetManager } from "styled-components";
 
 export default function ClientWrapper({
@@ -38,7 +39,9 @@ export default function ClientWrapper({
         <SettingsToggleContext.Provider>
           <LightModeProvider lightModeFromCookie={lightMode}>
             <ViewModeProvider>
-              <Provider store={storeRef.current}>{children}</Provider>
+              <PreviewProvider>
+                <Provider store={storeRef.current}>{children}</Provider>
+              </PreviewProvider>
             </ViewModeProvider>
           </LightModeProvider>
         </SettingsToggleContext.Provider>
