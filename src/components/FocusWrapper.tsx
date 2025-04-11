@@ -3,6 +3,7 @@ import {
   setCopied,
   setDraggedItem,
   setDropHandled,
+  setHovered,
 } from "@/redux/slices/editorSlice";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { toast } from "react-toastify";
@@ -25,6 +26,10 @@ const FocusWrapper = ({
       className="cursor-pointer w-full h-full"
       key={itemId}
       draggable
+      onMouseOver={(e) => {
+        e.stopPropagation();
+        dispatch(setHovered(itemId));
+      }}
       onDragStart={(e) => {
         e.stopPropagation();
         dispatch(setDropHandled(false));

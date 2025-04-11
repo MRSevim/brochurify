@@ -12,13 +12,6 @@ export default {
       screens: {
         sm: "400px",
       },
-      height: {
-        "screen-header-excluded": "calc(100vh - 40px);",
-      },
-      maxHeight: {
-        "screen-header-excluded": "calc(100vh - 40px);",
-        "scrollable-container": "calc(100vh - 98px);",
-      },
       width: {
         "screen-one-excluded": "calc(100vw - 384px);",
         "screen-both-excluded": "calc(100vw - 768px);",

@@ -47,6 +47,7 @@ export interface Layout {
 }
 export interface EditorState {
   active?: LayoutOrUnd;
+  hovered?: string;
   history: History;
   layout: Layout[];
   pageWise: PageWise;

@@ -57,7 +57,9 @@ export default async function RootLayout({
         )}
       </head>
       <ClientWrapper lightMode={lightMode}>
-        <body className={!lightMode ? "dark" : ""}>
+        <body
+          className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
+        >
           <Header />
           <ToastContainer />
           {children}

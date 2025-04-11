@@ -55,7 +55,7 @@ const LayoutInner = () => {
   return (
     <>
       <AddSection />
-      <div className="overflow-y-auto max-h-scrollable-container gutter-stable">
+      <div className="overflow-y-auto gutter-stable">
         {data?.map((item) => {
           return (
             <LayoutItem

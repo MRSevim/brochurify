@@ -12,6 +12,7 @@ import {
 } from "@/contexts/ToggleContext";
 import {
   selectAddLocation,
+  selectHovered,
   selectLayout,
   selectPageWise,
   useAppDispatch,
@@ -31,7 +32,8 @@ const Editor = () => {
 
   let addedString;
   if (layoutToggle && settingsToggle) {
-    addedString = "left-full sm:left-96 sm:right-96 w-screen-both-excluded";
+    addedString =
+      "left-full right-full sm:left-96 sm:right-96 w-screen-both-excluded";
   } else if (layoutToggle) {
     addedString = "left-full sm:left-96 w-screen-one-excluded";
   } else if (settingsToggle) {
@@ -39,7 +41,7 @@ const Editor = () => {
   }
 
   return (
-    <section className={"relative h-screen-header-excluded " + addedString}>
+    <section className={"relative h-full overflow-auto " + addedString}>
       <EditorInner />
     </section>
   );
@@ -127,6 +129,8 @@ const SideDropOverlay = ({
     addLocation?.id === id && addLocation?.where === "before";
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
+  const hoveredId = useAppSelector(selectHovered);
+
   const dispatch = useAppDispatch();
   const notFixed = item.type !== "fixed";
 
@@ -139,7 +143,11 @@ const SideDropOverlay = ({
   };
   return (
     <styledElements.styledComponentWrapperDiv
-      className={"inline-block align-top " + (notFixed && " relative")}
+      className={
+        "inline-block align-top " +
+        (notFixed && " relative") +
+        (hoveredId === id ? " hovered" : "")
+      }
       styles={item.props.style}
     >
       {notFixed && (

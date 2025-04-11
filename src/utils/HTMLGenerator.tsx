@@ -20,6 +20,10 @@ export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
     "font-family": fontFamily,
     "line-height": lineHeight,
     iconUrl,
+    height,
+    width,
+    overflow,
+    "container-type": containerType,
   } = pageWise;
 
   const renderedBody = renderLayout(layout);
@@ -96,10 +100,10 @@ ${getCssReset()}
     font-size: ${fontSize || "16px"};
     font-family: ${fontFamily || "inherit"};
     line-height: ${lineHeight || "1.5"};
-    height: 100%;
-    width:100%;
-    overflow:auto;
-    container-type:size;
+    height: ${height || "100vh"};
+    width:${width || "100%"};
+    overflow:${overflow || "auto"};
+    container-type:${containerType || "size"};
   }
   html {
     height:100%;

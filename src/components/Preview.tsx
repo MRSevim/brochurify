@@ -17,12 +17,12 @@ const Preview = () => {
       : "max-w-[360]";
 
   return (
-    <div className="flex justify-center h-full">
+    <div className="flex justify-center overflow-auto w-full">
       <iframe
         key={globalTrigger}
         srcDoc={generateHTML(layout, pageWise)}
         id="myIframe"
-        className={"w-full h-full " + maxWidth}
+        className={"w-full h-screen " + maxWidth}
         height="100%"
         width="100%"
       ></iframe>

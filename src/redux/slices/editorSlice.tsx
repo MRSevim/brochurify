@@ -51,6 +51,9 @@ export const editorSlice = createSlice({
     setActive: (state, action: PayloadAction<LayoutOrUnd>) => {
       setActiveInner(state, action.payload);
     },
+    setHovered: (state, action: PayloadAction<string>) => {
+      state.hovered = action.payload;
+    },
     hydrate: (state, action: PayloadAction<EditorState>) => {
       state.layout = action.payload.layout;
       state.pageWise = action.payload.pageWise;
@@ -449,6 +452,7 @@ export const {
   paste,
   changeInnerElementStyle,
   resetToInitial,
+  setHovered,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

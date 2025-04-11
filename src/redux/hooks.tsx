@@ -9,5 +9,6 @@ export const useAppStore = useStore.withTypes<AppStore>();
 export const selectLayout = (state: RootState) => state.editor.layout;
 export const selectPageWise = (state: RootState) => state.editor.pageWise;
 export const selectActive = (state: RootState) => state.editor.active;
+export const selectHovered = (state: RootState) => state.editor.hovered;
 export const selectVariables = (state: RootState) => state.editor.variables;
 export const selectAddLocation = (state: RootState) => state.editor.addLocation;

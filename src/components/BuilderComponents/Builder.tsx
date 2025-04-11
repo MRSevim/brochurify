@@ -32,7 +32,7 @@ export default function Builder() {
 
   return (
     <div
-      className="overflow-x-hidden h-screen-header-excluded relative"
+      className="overflow-x-hidden w-full relative"
       onPaste={() => {
         dispatch(paste());
       }}

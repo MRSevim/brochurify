@@ -113,7 +113,7 @@ export const getPageWise = (): PageWise => {
     "font-size": "16px",
     "font-family": "inherit",
     "line-height": "1.5",
-    height: "100%",
+    height: "100vh",
     width: "100%",
     overflow: "auto",
     iconUrl: "",
