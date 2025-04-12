@@ -50,10 +50,6 @@ const FocusWrapper = ({
           dispatch(setActive(undefined));
         } else dispatch(setActive(item));
       }}
-      onCopy={(e) => {
-        e.stopPropagation();
-        dispatch(setCopied(item));
-      }}
     >
       {children}
     </div>

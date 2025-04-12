@@ -10,6 +10,11 @@ export const styleDivider = (style: Style) => {
   const {
     width,
     height,
+    position,
+    top,
+    left,
+    bottom,
+    right,
     [tabletContainerQueryKey]: tabletStyles = {},
     [mobileContainerQueryKey]: mobileStyles = {},
     ...rest
@@ -33,6 +38,11 @@ export const styleDivider = (style: Style) => {
     {
       width,
       height,
+      position,
+      top,
+      left,
+      bottom,
+      right,
       ...(tabletWidth || tabletHeight
         ? {
             [tabletContainerQueryKey]: {
@@ -65,13 +75,13 @@ export const styleDivider = (style: Style) => {
 };
 
 export const getRest = (style: Style): string => {
-  const [widthAndHeight, rest] = styleDivider(style);
+  const [, rest] = styleDivider(style);
 
   return styleGenerator(rest);
 };
-export const getWidthAndHeight = (style: Style): string => {
-  const [widthAndHeight, rest] = styleDivider(style);
-  return styleGenerator(widthAndHeight);
+export const getWrapperStyles = (style: Style): string => {
+  const [wrapperStyles, rest] = styleDivider(style);
+  return styleGenerator(wrapperStyles);
 };
 
 // Recursive style generator function
@@ -101,12 +111,12 @@ export const fullStylesWithIdsGenerator = (
       const child = item.props.child;
       const style = item.props.style;
       const isFixed = item.type === "fixed";
-      const styleStr = rest ? getRest(style) : getWidthAndHeight(style);
+      const styleStr = rest ? getRest(style) : getWrapperStyles(style);
       if (!styleStr) return "";
       return `#id${rest ? "" : "wrapper"}${item.id} { ${styleStr} ${
         rest && !isFixed ? "width:100%; height:100%;" : ""
       } 
-      ${isFixed && rest ? getWidthAndHeight(style) : ""}
+      ${isFixed && rest ? getWrapperStyles(style) : ""}
       } ${child ? fullStylesWithIdsGenerator(child, rest) : ""}`;
     })
     .join("\n");

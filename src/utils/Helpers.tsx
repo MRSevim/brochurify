@@ -25,7 +25,7 @@ import styled from "styled-components";
 import {
   getAllKeyFrames,
   getRest,
-  getWidthAndHeight,
+  getWrapperStyles,
   styleGenerator,
 } from "./StyleGenerators";
 import Fixed from "@/components/BuilderComponents/Fixed";
@@ -59,13 +59,13 @@ export const styledElements = {
     }};
   `,
   styledComponentWrapperDiv: styled.div<{ styles: Style }>`
-    ${({ styles }) => getWidthAndHeight(styles)};
+    ${({ styles }) => getWrapperStyles(styles)};
   `,
   styledDiv: styled.div<{ styles: Style }>`
     ${({ styles }) => getRest(styles)};
   `,
   styledFixed: styled.div<{ styles: Style }>`
-    ${({ styles }) => styleGenerator(styles)};
+    ${({ styles }) => getRest(styles)};
   `,
   styledAudio: styled.audio<{ styles: Style }>`
     ${({ styles }) => getRest(styles)}
@@ -113,7 +113,7 @@ export const getPageWise = (): PageWise => {
     "font-size": "16px",
     "font-family": "inherit",
     "line-height": "1.5",
-    height: "100vh",
+    height: "100%",
     width: "100%",
     overflow: "auto",
     iconUrl: "",

@@ -87,14 +87,20 @@ const Center = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="flex items-center gap-6">
-      <Icon
-        title="Replay"
-        type="play-circle"
-        size="24px"
-        onClick={() => dispatch(triggerReplay())}
-      />
-      <ViewMode />
+    <div className="flex items-center justify-between flex-1">
+      <div className="ms-8 flex items-center gap-2">
+        <LeftSideActions />
+        <SavePopupWrapper />
+      </div>
+      <div className="me-8 flex items-center gap-2">
+        <Icon
+          title="Replay"
+          type="play-circle"
+          size="24px"
+          onClick={() => dispatch(triggerReplay())}
+        />
+        <ViewMode />
+      </div>
     </div>
   );
 };
@@ -103,21 +109,12 @@ const LeftSide = () => {
   const [, setLayoutToggle] = LayoutToggleContext.Use();
 
   return (
-    <div className="flex items-center ">
-      <div className="me-6">
-        <Icon
-          title="Layout"
-          type="list-nested"
-          size="28px"
-          onClick={() => setLayoutToggle((prev) => !prev)}
-        />
-      </div>
-
-      <div className="items-center gap-2 flex">
-        <LeftSideActions />
-      </div>
-      <SavePopupWrapper />
-    </div>
+    <Icon
+      title="Layout"
+      type="list-nested"
+      size="28px"
+      onClick={() => setLayoutToggle((prev) => !prev)}
+    />
   );
 };
 

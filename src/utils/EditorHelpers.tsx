@@ -6,6 +6,7 @@ import {
   Layout,
   LayoutOrUnd,
 } from "./Types";
+import { v4 as uuidv4 } from "uuid";
 
 export const setActiveInner = (state: EditorState, payload: LayoutOrUnd) => {
   state.addLocation = null;
@@ -193,6 +194,18 @@ export const findElementById = (
     }
   }
   return undefined; // Return undefined if not found
+};
+
+export const generateNewIds = (copied: Layout) => {
+  const newElement = { ...copied, id: uuidv4() };
+
+  if (newElement.props?.child) {
+    newElement.props.child = newElement.props.child.map((child: Layout) =>
+      generateNewIds(child)
+    );
+  }
+
+  return newElement;
 };
 
 export const hasType = (layout: Layout[], type: string): boolean => {

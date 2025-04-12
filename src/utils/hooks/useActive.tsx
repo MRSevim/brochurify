@@ -1,4 +1,4 @@
-import { selectActive, selectHovered, useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppSelector } from "@/redux/hooks";
 
 export default function useActive(id: string, isFixed: boolean = false) {
   const activeId = useAppSelector(selectActive)?.id;

@@ -2,6 +2,7 @@ import {
   canElementHaveChild,
   deleteFromLayout,
   findElementById,
+  generateNewIds,
   handleDragLeaveInner,
   handleDropInner,
   insertElement,
@@ -407,7 +408,7 @@ export const editorSlice = createSlice({
         toast.error("You have not copied anything");
         return;
       }
-      const newElement = { ...state.copied, id: uuidv4() };
+      const newElement = generateNewIds(state.copied);
       const addLocation = state.addLocation;
       const passed = canElementHaveChild(state, addLocation, newElement);
 

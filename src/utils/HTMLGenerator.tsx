@@ -100,7 +100,7 @@ ${getCssReset()}
     font-size: ${fontSize || "16px"};
     font-family: ${fontFamily || "inherit"};
     line-height: ${lineHeight || "1.5"};
-    height: ${height || "100vh"};
+    height: ${height || "100%"};
     width:${width || "100%"};
     overflow:${overflow || "auto"};
     container-type:${containerType || "size"};

@@ -132,9 +132,9 @@ td {
   width: 100%;
   height: 100%;
   display: block;
-  background-color: rgba(147, 197, 253, 0.4); /* blue overlay */
+  background-color: rgba(147, 197, 253, 0.4); /* blue overlay*/
   pointer-events: none;
-  z-index: 9999;
+  z-index: 50;
 }
 
 /*Homepage*/

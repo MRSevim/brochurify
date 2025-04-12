@@ -12,7 +12,7 @@ import {
 } from "@/contexts/ToggleContext";
 import {
   selectAddLocation,
-  selectHovered,
+  selectHoveredId,
   selectLayout,
   selectPageWise,
   useAppDispatch,
@@ -25,6 +25,7 @@ import { useViewMode } from "@/contexts/ViewModeContext";
 import { styledElements } from "@/utils/Helpers";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
 import { findElementById } from "@/utils/EditorHelpers";
+import useKeyPresses from "@/utils/hooks/useKeypresses";
 
 const Editor = () => {
   const [layoutToggle] = LayoutToggleContext.Use();
@@ -41,7 +42,7 @@ const Editor = () => {
   }
 
   return (
-    <section className={"relative h-full overflow-auto " + addedString}>
+    <section className={"relative h-full overflow-hidden " + addedString}>
       <EditorInner />
     </section>
   );
@@ -53,6 +54,7 @@ const EditorInner = () => {
   const [viewMode] = useViewMode();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   useIntersectionObserver([globalTrigger], undefined);
+  useKeyPresses();
 
   const maxWidth =
     viewMode === "desktop"
@@ -120,7 +122,6 @@ const SideDropOverlay = ({
   children,
 }: {
   item: Layout;
-
   children: React.ReactNode;
 }) => {
   const addLocation = useAppSelector(selectAddLocation);
@@ -129,7 +130,6 @@ const SideDropOverlay = ({
     addLocation?.id === id && addLocation?.where === "before";
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
-  const hoveredId = useAppSelector(selectHovered);
 
   const dispatch = useAppDispatch();
   const notFixed = item.type !== "fixed";
@@ -143,11 +143,7 @@ const SideDropOverlay = ({
   };
   return (
     <styledElements.styledComponentWrapperDiv
-      className={
-        "inline-block align-top " +
-        (notFixed && " relative") +
-        (hoveredId === id ? " hovered" : "")
-      }
+      className={"block align-top " + (notFixed && "relative")}
       styles={item.props.style}
     >
       {notFixed && (
@@ -181,14 +177,17 @@ const CenterDropOverlay = ({
   item,
 }: {
   item: Layout;
-
   children: React.ReactNode;
 }) => {
   const dispatch = useAppDispatch();
+  const hoveredId = useAppSelector(selectHoveredId);
   return (
     <>
       <div
-        className="w-full h-full flex items-center"
+        className={
+          "w-full h-full flex items-center" +
+          (hoveredId === item.id ? " hovered" : "")
+        }
         onDrop={(e) => {
           e.stopPropagation();
           handleCenterDropCaller(e, dispatch, item.id);

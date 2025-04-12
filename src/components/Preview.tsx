@@ -22,7 +22,7 @@ const Preview = () => {
         key={globalTrigger}
         srcDoc={generateHTML(layout, pageWise)}
         id="myIframe"
-        className={"w-full h-screen " + maxWidth}
+        className={"w-full h-full " + maxWidth}
         height="100%"
         width="100%"
       ></iframe>
