@@ -11,6 +11,7 @@ import {
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
 import {
+  selectActive,
   selectAddLocation,
   selectHoveredId,
   selectLayout,
@@ -130,9 +131,9 @@ const SideDropOverlay = ({
     addLocation?.id === id && addLocation?.where === "before";
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
-
   const dispatch = useAppDispatch();
   const notFixed = item.type !== "fixed";
+  const notColumn = item.type !== "column";
 
   const handleSideDrop = (e: DragEvent<HTMLElement>) => {
     handleSideDropCaller(e, dispatch, id);
@@ -143,7 +144,7 @@ const SideDropOverlay = ({
   };
   return (
     <styledElements.styledComponentWrapperDiv
-      className={"block align-top " + (notFixed && "relative")}
+      className={"block " + (notFixed && "relative")}
       styles={item.props.style}
     >
       {notFixed && (
@@ -181,12 +182,14 @@ const CenterDropOverlay = ({
 }) => {
   const dispatch = useAppDispatch();
   const hoveredId = useAppSelector(selectHoveredId);
+  const activeId = useAppSelector(selectActive)?.id;
   return (
     <>
       <div
         className={
           "w-full h-full flex items-center" +
-          (hoveredId === item.id ? " hovered" : "")
+          (hoveredId === item.id ? " hovered" : "") +
+          (activeId === item.id ? " active" : "")
         }
         onDrop={(e) => {
           e.stopPropagation();

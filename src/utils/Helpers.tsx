@@ -157,11 +157,16 @@ export const getDefaultStyle = (type: string): Style => {
     };
   } else if (type === "column") {
     return {
+      display: "flex",
+      width: "50%",
+      "flex-direction": "column",
       margin: "0px 0px 0px 0px",
       padding: "10px 10px 10px 10px",
     };
   } else if (type === "container") {
     return {
+      display: "flex",
+      "flex-direction": "column",
       "max-width": "1300px",
       margin: "0 auto",
       padding: "0 12px",
@@ -176,12 +181,20 @@ export const getDefaultStyle = (type: string): Style => {
     };
   } else if (type === "fixed") {
     return {
+      display: "flex",
+      "flex-direction": "column",
       position: "absolute",
       width: "auto",
       height: "auto",
       top: "0px",
       left: "0px",
       ...getDefaultStyle("no-space"),
+    };
+  } else if (type === "button") {
+    return {
+      display: "flex",
+      "flex-direction": "column",
+      ...getDefaultStyle(""),
     };
   }
   return {

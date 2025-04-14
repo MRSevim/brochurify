@@ -5,21 +5,22 @@ import {
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
-import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
+import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import ColorPicker from "../ColorPicker";
+import ColorPicker from "../../ColorPicker";
 import {
   changeElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
-import BottomLine from "../BottomLine";
+import BottomLine from "../../BottomLine";
 import { HandleChangeType } from "@/utils/Types";
-import SecondaryTitle from "../SecondaryTitle";
-import ToggleBtn from "../ToggleBtn";
-import LinkInput from "../LinkInput";
-import Select from "../Select";
-import ResetButton from "../ResetButton";
-import Slider from "../Slider";
+import SecondaryTitle from "../../SecondaryTitle";
+import ToggleBtn from "../../ToggleBtn";
+import LinkInput from "../../LinkInput";
+import Select from "../../Select";
+import ResetButton from "../../ResetButton";
+import Slider from "../../Slider";
+import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
 
 const Background = () => {
   return (
@@ -174,13 +175,20 @@ const BackgroundImage = () => {
       dispatch(
         changeElementStyle({
           type: "background-position",
-          newValue: "center center",
+          newValue: "50% 50%",
+        })
+      );
+      dispatch(
+        changeElementStyle({
+          type: "background-size",
+          newValue: "cover",
         })
       );
     } else {
       dispatch(removeElementStyle({ type }));
       dispatch(removeElementStyle({ type: "background-position" }));
       dispatch(removeElementStyle({ type: "background-repeat" }));
+      dispatch(removeElementStyle({ type: "background-size" }));
     }
   };
 
@@ -192,7 +200,8 @@ const BackgroundImage = () => {
       {toggled && (
         <>
           <Link />
-          <Alignment />
+          <BackgroundPositionPicker />
+          <BackgroundSize />
         </>
       )}
 
@@ -221,55 +230,23 @@ const Link = () => {
   );
 };
 
-const Alignment = () => {
-  const type = "background-position";
-  const positionStr = getSetting(useAppSelector, type);
+const BackgroundSize = () => {
+  const type = "background-size";
+  const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
-
-  const handleChange: HandleChangeType = (e, i) => {
-    dispatch(
-      changeElementStyle({
-        type,
-        newValue: setValueFromShorthandStr(positionStr, i, e.target.value),
-      })
-    );
-  };
-
-  return (
-    <>
-      <VerticalOrHorizontal
-        type="vertical"
-        options={["right", "center", "left"]}
-        onChange={(e) => handleChange(e, 0)}
-        value={getValueFromShorthandStr(positionStr, 0)}
-      />
-      <VerticalOrHorizontal
-        type="horizontal"
-        options={["top", "center", "bottom"]}
-        onChange={(e) => handleChange(e, 1)}
-        value={getValueFromShorthandStr(positionStr, 1)}
-      />
-    </>
-  );
-};
-
-const VerticalOrHorizontal = ({
-  type,
-  onChange,
-  value,
-  options,
-}: {
-  type: string;
-  onChange: HandleChangeType;
-  value: string;
-  options: string[];
-}) => {
   return (
     <Select
-      title={"Select " + type + " alignment"}
-      options={options}
-      selected={value}
-      onChange={onChange}
+      title="Background Size"
+      options={["cover", "contain"]}
+      selected={variable || "auto"}
+      onChange={(e) =>
+        dispatch(
+          changeElementStyle({
+            type: "background-size",
+            newValue: e.target.value,
+          })
+        )
+      }
     />
   );
 };

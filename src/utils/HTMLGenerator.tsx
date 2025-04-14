@@ -209,11 +209,9 @@ const getCssReset = () => {
   }
   .flex {
     display:flex;
-    align-items:center;
   }  
-  .inlineBlock {
-    display:inline-block;
-    vertical-align:top;
+  .block {
+    display:block;
   }
   .wAndHFull {
     width:100%;
@@ -258,7 +256,7 @@ const renderLayout = (items: Layout[]): string => {
       const addButtonWrapper = (html: string) => {
         if (type === "button") {
           return `
-          <a class="wAndHFull inlineBlock" href="${props.href || ""}" target=${
+          <a class="wAndHFull flex" href="${props.href || ""}" target=${
             props.newTab ? "_blank" : "_self"
           }
           rel="noopener noreferrer"
@@ -271,9 +269,9 @@ const renderLayout = (items: Layout[]): string => {
       };
 
       const addFlexWrapper = (html: string) => {
-        return `<div class="inlineBlock ${
-          isFixed ? "" : "relative"
-        }" id="idwrapper${item.id}">
+        return `<div class="block ${isFixed ? "" : "relative"}" id="idwrapper${
+          item.id
+        }">
         <div class="flex wAndHFull">${html}</div></div>`;
       };
 

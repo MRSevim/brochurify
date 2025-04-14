@@ -3,10 +3,11 @@ import React from "react";
 interface Props {
   toggle: boolean;
   from: "left" | "right";
+  zIndex: string;
   children: React.ReactNode;
 }
 
-const PanelWrapper = ({ toggle, from, children }: Props) => {
+const PanelWrapper = ({ toggle, from, children, zIndex }: Props) => {
   const translateString =
     from === "left" ? "-translate-x-full" : "translate-x-full";
 
@@ -17,6 +18,7 @@ const PanelWrapper = ({ toggle, from, children }: Props) => {
         (from === "right" ? " right-0 " : "") +
         (!toggle ? translateString : "")
       }
+      style={{ zIndex }}
     >
       {children}
     </section>

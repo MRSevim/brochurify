@@ -1,59 +1,33 @@
 import { v4 as uuidv4 } from "uuid";
 import { Layout } from "./Types";
+import { getDefaultStyle } from "./Helpers";
 
 export const initialLayout: Layout[] = [
   {
     id: uuidv4(),
     type: "container",
     props: {
-      style: {
-        "max-width": "1300px",
-        margin: "0 auto",
-        padding: "0 12px",
-        height: "100%",
-        width: "100%",
-      },
+      style: getDefaultStyle("container"),
       child: [
         {
           id: uuidv4(),
           type: "row",
           props: {
-            style: {
-              display: "flex",
-              "flex-wrap": "wrap",
-              width: "100%",
-              margin: "10px 10px 10px 10px",
-              padding: "10px 10px 10px 10px",
-              "justify-content": "start",
-              "align-items": "center",
-              height: "60%",
-              "@container (max-width: 768px)": {
-                height: "auto",
-              },
-            },
+            style: getDefaultStyle("row"),
             child: [
               {
                 id: uuidv4(),
                 type: "column",
                 props: {
-                  style: {
-                    margin: "0px 0px 0px 0px",
-                    padding: "0px 0px 0px 0px",
-                    width: "60%",
-                    "@container (max-width: 768px)": {
-                      width: "100%",
-                    },
-                  },
+                  style: getDefaultStyle("column"),
+
                   child: [
                     {
                       id: uuidv4(),
                       type: "text",
                       props: {
-                        style: {
-                          margin: "10px 10px 10px 10px",
-                          padding: "10px 10px 10px 10px",
-                          width: "100%",
-                        },
+                        style: getDefaultStyle("text"),
+
                         text: '<h1 style="text-align:center"><span style="font-size:41px">I am a text</span></h1>',
                       },
                     },
@@ -61,10 +35,7 @@ export const initialLayout: Layout[] = [
                       id: uuidv4(),
                       type: "text",
                       props: {
-                        style: {
-                          margin: "10px 10px 10px 10px",
-                          padding: "10px 10px 10px 10px",
-                        },
+                        style: getDefaultStyle("text"),
                         text: '<p><strong>Lorem Ipsum</strong><span style="color:rgb(0, 0, 0);font-family:&quot;Open Sans&quot;, Arial, sans-serif;font-size:14px"> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,</span></p>',
                       },
                     },
@@ -75,26 +46,13 @@ export const initialLayout: Layout[] = [
                 id: uuidv4(),
                 type: "column",
                 props: {
-                  style: {
-                    margin: "0px 0px 0px 0px",
-                    padding: "10px 10px 10px 10px",
-                    width: "40%",
-                    "@container (max-width: 768px)": {
-                      width: "100%",
-                    },
-                    "text-align": "center",
-                  },
+                  style: getDefaultStyle("column"),
                   child: [
                     {
                       id: uuidv4(),
                       type: "image",
                       props: {
-                        style: {
-                          width: "200px",
-                          height: "200px",
-                          margin: "0px 0px 0px 0px",
-                          padding: "0px 0px 0px 0px",
-                        },
+                        style: getDefaultStyle("image"),
                         src: "/placeholder-image.jpg",
                       },
                     },
@@ -108,49 +66,26 @@ export const initialLayout: Layout[] = [
           id: uuidv4(),
           type: "row",
           props: {
-            style: {
-              display: "flex",
-              "flex-wrap": "wrap",
-              width: "100%",
-              margin: "10px 10px 10px 10px",
-              padding: "10px 10px 10px 10px",
-              "justify-content": "center",
-              "align-items": "center",
-            },
+            style: getDefaultStyle("row"),
             child: [
               {
                 id: uuidv4(),
                 type: "column",
                 props: {
-                  style: {
-                    margin: "0px 0px 0px 0px",
-                    padding: "10px 10px 10px 10px",
-                  },
+                  style: getDefaultStyle("column"),
                   child: [
                     {
                       id: uuidv4(),
                       type: "button",
                       props: {
-                        style: {
-                          margin: "0px 0px 0px 0px",
-                          padding: "10px 10px 10px 10px",
-                          "background-color": "#c33232",
-                          border: "0px solid #000000",
-                          "border-radius": "50%",
-                        },
+                        style: getDefaultStyle("button"),
                         child: [
                           {
                             id: uuidv4(),
                             type: "icon",
                             props: {
                               iconType: "alarm-fill",
-                              style: {
-                                "font-size": "25px",
-                                "text-align": "center",
-                                margin: "0px 0px 0px 0px",
-                                padding: "0px 0px 0px 0px",
-                                color: "#ffffff",
-                              },
+                              style: getDefaultStyle("icon"),
                             },
                           },
                         ],
@@ -163,19 +98,13 @@ export const initialLayout: Layout[] = [
                 id: uuidv4(),
                 type: "column",
                 props: {
-                  style: {
-                    margin: "0px 0px 0px 0px",
-                    padding: "10px 10px 10px 10px",
-                  },
+                  style: getDefaultStyle("column"),
                   child: [
                     {
                       id: uuidv4(),
                       type: "text",
                       props: {
-                        style: {
-                          margin: "10px 10px 10px 10px",
-                          padding: "10px 10px 10px 10px",
-                        },
+                        style: getDefaultStyle("text"),
                         text: "I am a text",
                       },
                     },
@@ -189,27 +118,14 @@ export const initialLayout: Layout[] = [
           id: uuidv4(),
           type: "fixed",
           props: {
-            style: {
-              position: "absolute",
-              width: "auto",
-              height: "auto",
-              margin: "10px 10px 10px 10px",
-              padding: "0px 0px 0px 0px",
-              bottom: "0px",
-              right: "0px",
-            },
+            style: getDefaultStyle("fixed"),
             child: [
               {
                 id: uuidv4(),
                 type: "icon",
                 props: {
                   iconType: "1-circle-fill",
-                  style: {
-                    "font-size": "25px",
-                    "text-align": "center",
-                    margin: "0px 0px 0px 0px",
-                    padding: "0px 0px 0px 0px",
-                  },
+                  style: getDefaultStyle("icon"),
                 },
               },
             ],

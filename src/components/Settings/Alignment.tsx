@@ -14,13 +14,13 @@ import { OptionsObject } from "@/utils/Types";
 import React from "react";
 import Checkbox from "../Checkbox";
 
-const horizontalAlignmentOptions = [
+const justifyContentAlignmentOptionsForRow = [
   {
     value: "start",
-    title: "start",
+    title: "Left",
   },
-  { value: "center", title: "center" },
-  { value: "end", title: "end" },
+  { value: "center", title: "Center" },
+  { value: "end", title: "Right" },
   {
     value: "space-between",
     title: "Space evenly (with no space in start and end)",
@@ -30,34 +30,101 @@ const horizontalAlignmentOptions = [
     title: "Space evenly (with space in start and end)",
   },
 ];
-const verticalAlignmentOptionsForRow = ["start", "center", "end", "stretch"];
-const verticalAlignmentOptions = ["start", "center", "end"];
+const alignItemsAlignmentOptionsForRow = [
+  {
+    value: "start",
+    title: "Top",
+  },
+  {
+    value: "center",
+    title: "Center",
+  },
+  {
+    value: "end",
+    title: "Bottom",
+  },
+  {
+    value: "stretch",
+    title: "Stretch",
+  },
+];
+const justifyContentAlignmentOptionsForColumn = [
+  {
+    value: "start",
+    title: "Top",
+  },
+  { value: "center", title: "Center" },
+  { value: "end", title: "Bottom" },
+  {
+    value: "space-between",
+    title: "Space evenly (with no space in start and end)",
+  },
+  {
+    value: "space-around",
+    title: "Space evenly (with space in start and end)",
+  },
+];
+const alignItemsAlignmentOptionsForColumn = [
+  {
+    value: "start",
+    title: "Left",
+  },
+  {
+    value: "center",
+    title: "Center",
+  },
+  {
+    value: "end",
+    title: "Right",
+  },
+  {
+    value: "stretch",
+    title: "Stretch",
+  },
+];
 
 const Alignment = () => {
   const activeType = useAppSelector(selectActive)?.type;
   const isRow = activeType === "row";
+  const otherAlignable =
+    activeType === "column" ||
+    activeType === "container" ||
+    activeType === "fixed" ||
+    activeType === "button";
   return (
-    <ToggleVisibilityWrapper title="Alignment">
+    <ToggleVisibilityWrapper
+      title="Alignment"
+      desc="Change the alignment of items inside"
+    >
       {isRow && (
-        <HorizontalOrVertical
-          type="justify-content"
-          title="Horizontal alignment"
-          desc="This only effects the alignment of columns inside this row"
-          options={horizontalAlignmentOptions}
-        />
+        <>
+          <HorizontalOrVertical
+            type="justify-content"
+            title="Horizontal alignment"
+            options={justifyContentAlignmentOptionsForRow}
+          />
+          <HorizontalOrVertical
+            type="align-items"
+            title="Vertical alignment"
+            options={alignItemsAlignmentOptionsForRow}
+          />
+        </>
       )}
-      <HorizontalOrVertical
-        type={isRow ? "align-items" : "text-align"}
-        title="Vertical alignment"
-        desc={
-          isRow
-            ? "This only effects the alignment of columns inside this row"
-            : "Select vertical alignment type for this element and its child elements (uses text-align)"
-        }
-        options={
-          isRow ? verticalAlignmentOptionsForRow : verticalAlignmentOptions
-        }
-      />
+      {otherAlignable && (
+        <>
+          <HorizontalOrVertical
+            type="justify-content"
+            title="Vertical alignment"
+            options={justifyContentAlignmentOptionsForColumn}
+          />
+          <HorizontalOrVertical
+            type="align-items"
+            title="Horizontal alignment"
+            options={alignItemsAlignmentOptionsForColumn}
+          />
+        </>
+      )}
+
       {isRow && <Reverse />}
     </ToggleVisibilityWrapper>
   );
@@ -114,12 +181,10 @@ const HorizontalOrVertical = ({
   type,
   title,
   options,
-  desc,
 }: {
   type: string;
   title: string;
   options: OptionsObject[] | string[];
-  desc: string;
 }) => {
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
@@ -128,7 +193,6 @@ const HorizontalOrVertical = ({
     <div className="relative pb-2 mb-2">
       <Select
         title={title}
-        desc={desc}
         showStyled={false}
         options={options}
         selected={variable || ""}

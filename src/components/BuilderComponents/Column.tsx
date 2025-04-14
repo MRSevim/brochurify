@@ -1,9 +1,9 @@
-import useActive from "@/utils/hooks/useActive";
+import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/Helpers";
 import { RefObject } from "react";
 const Column = ({ id, children, style, ref }: PropsWithId) => {
-  const active = useActive(id);
+  const active = useClasses(id);
 
   return (
     <styledElements.styledDiv

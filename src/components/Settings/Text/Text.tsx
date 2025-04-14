@@ -54,7 +54,7 @@ const Text = () => {
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: "bg-white text-black p-2 rounded",
+        class: "bg-text text-background p-2 rounded",
       },
     },
   });

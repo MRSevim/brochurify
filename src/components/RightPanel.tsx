@@ -9,7 +9,7 @@ const RightPanel = () => {
   const [toggle] = SettingsToggleContext.Use();
 
   return (
-    <PanelWrapper toggle={toggle} from="right">
+    <PanelWrapper toggle={toggle} from="right" zIndex="20">
       <RightPanelInner />
     </PanelWrapper>
   );

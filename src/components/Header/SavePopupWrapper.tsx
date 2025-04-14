@@ -6,7 +6,7 @@ const SavePopupWrapper = () => {
   return (
     <>
       {savePopup && (
-        <div className="ms-3">
+        <div className="ms-2">
           <SuccessAlert
             text={savePopup === "saving" ? "Saving..." : "Saved locally!"}
           />

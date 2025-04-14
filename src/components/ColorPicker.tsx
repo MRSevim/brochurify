@@ -37,10 +37,7 @@ const ColorPicker = ({
 
   return (
     <div className="mb-2 flex items-center relative">
-      <label
-        htmlFor={"colorpicker-" + title}
-        className="text-sm font-medium text-light"
-      >
+      <label htmlFor={"colorpicker-" + title} className="text-sm font-medium">
         {title}
       </label>
       <input

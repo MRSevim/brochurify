@@ -16,7 +16,7 @@ const Slider = ({ min, max, step, title, onChange, value, parse }: Props) => {
     <div className="relative mb-8">
       <label
         htmlFor={"steps-range-" + title}
-        className=" mb-1 text-sm font-medium text-light "
+        className=" mb-1 text-sm font-medium "
       >
         {title}
       </label>

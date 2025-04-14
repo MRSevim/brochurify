@@ -26,7 +26,7 @@ const GroupedRadioButtons = ({
           />
           <label
             htmlFor={"radio-" + item + name}
-            className="mx-1 me-3 text-sm font-medium text-light"
+            className="mx-1 me-3 text-sm font-medium"
           >
             {item}
           </label>

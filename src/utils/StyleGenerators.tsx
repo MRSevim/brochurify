@@ -114,7 +114,7 @@ export const fullStylesWithIdsGenerator = (
       const styleStr = rest ? getRest(style) : getWrapperStyles(style);
       if (!styleStr) return "";
       return `#id${rest ? "" : "wrapper"}${item.id} { ${styleStr} ${
-        rest && !isFixed ? "width:100%; height:100%;" : ""
+        rest && !isFixed ? "flex-grow:1;max-width:100%;max-height:100%;" : ""
       } 
       ${isFixed && rest ? getWrapperStyles(style) : ""}
       } ${child ? fullStylesWithIdsGenerator(child, rest) : ""}`;

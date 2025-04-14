@@ -1,0 +1,33 @@
+.bg-position-picker {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  position: relative;
+  cursor: crosshair;
+}
+
+/* Checkerboard grid */
+.bg-position-picker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(
+    rgba(245, 245, 245, 0.2) 0% 25%,
+    /* Lighter gray */ rgba(221, 221, 221, 0.2) 0% 50% /* Darker gray */
+  );
+  background-size: 20px 20px;
+  z-index: 1;
+  pointer-events: none; /* Allows interaction with the layer below */
+}
+
+.bg-position-dot {
+  width: 14px;
+  height: 14px;
+  background-color: #007aff;
+  border: 2px solid white;
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}

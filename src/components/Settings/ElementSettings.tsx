@@ -3,7 +3,7 @@ import SizingAndBorder from "./SizingAndBorder";
 import Source from "./Source";
 import Text from "./Text/Text";
 import Url from "./Url";
-import Background from "./Background";
+import Background from "./Background/Background";
 import Alignment from "./Alignment";
 import ContainerSettings from "./ContainerSettings";
 import IconType from "./IconType";
@@ -18,13 +18,19 @@ const ElementSettings = () => {
     activeType === "audio" || activeType === "image" || activeType === "video";
   const isText = activeType === "text";
   const shouldHaveUrl = activeType === "button";
+  const shouldHaveAlignment =
+    activeType === "column" ||
+    activeType === "container" ||
+    activeType === "fixed" ||
+    activeType === "button" ||
+    activeType === "row";
   const isContainer = activeType === "container";
   const isIcon = activeType === "icon";
   const isFixed = activeType === "fixed";
 
   return (
     <div className="m-2">
-      <h1 className="font-bold text-xl text-light text-center mb-2">
+      <h1 className="font-bold text-xl text-center mb-2">
         Settings For The Selected Element
       </h1>
 
@@ -32,7 +38,7 @@ const ElementSettings = () => {
       {isContainer && <ContainerSettings />}
       {isFixed && <FixedSettings />}
       <Background />
-      <Alignment />
+      {shouldHaveAlignment && <Alignment />}
       <Animations />
       {shouldHaveSource && <Source />}
       {isIcon && <IconType />}

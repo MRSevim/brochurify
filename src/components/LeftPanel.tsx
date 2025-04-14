@@ -40,7 +40,7 @@ const LeftPanel = () => {
   const [toggle] = LayoutToggleContext.Use();
 
   return (
-    <PanelWrapper toggle={toggle} from="left">
+    <PanelWrapper toggle={toggle} from="left" zIndex="10">
       <LayoutInner />
     </PanelWrapper>
   );
@@ -217,7 +217,7 @@ const CenterDropWrapper = ({
       onDragLeave={handleDragLeave}
       className={
         "p-2 border flex items-center justify-between	" +
-        (activeId === id ? "border-white" : "border-gray")
+        (activeId === id ? "border-green-500" : "border-gray")
       }
     >
       {children}

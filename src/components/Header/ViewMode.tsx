@@ -1,6 +1,7 @@
 import { useViewMode } from "@/contexts/ViewModeContext";
 import Icon from "../Icon";
 import { FaDesktop } from "react-icons/fa";
+import { capitalizeFirstLetter } from "@/utils/Helpers";
 
 const ViewMode = () => {
   const [viewMode, setViewMode] = useViewMode();
@@ -20,9 +21,17 @@ const ViewMode = () => {
           }}
         >
           {icon === "desktop" ? (
-            <FaDesktop className="text-[24px]" />
+            <FaDesktop
+              className="text-[24px]"
+              title={capitalizeFirstLetter(icon)}
+            />
           ) : (
-            <Icon title={icon} type={icon} size="24px" onClick={() => {}} />
+            <Icon
+              title={capitalizeFirstLetter(icon)}
+              type={icon}
+              size="24px"
+              onClick={() => {}}
+            />
           )}
         </div>
       ))}

@@ -7,7 +7,7 @@ const SecondaryTitle = ({
 }) => {
   return (
     <div className="flex justify-between items-center mb-1">
-      <h3 className="font-medium text-light ">{title}</h3>
+      <h3 className="font-medium">{title}</h3>
       {children}
     </div>
   );

@@ -108,9 +108,11 @@ export type Style = {
   "border-radius"?: string;
   "background-color"?: string;
   "background-image"?: string;
+  "background-size"?: string;
   "background-position"?: string;
   "background-repeat"?: string;
   display?: string;
+  "flex-direction"?: string;
   "font-size"?: string;
   "text-align"?: string;
   "flex-wrap"?: "wrap" | "nowrap" | "wrap-reverse";

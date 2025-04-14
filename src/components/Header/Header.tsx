@@ -1,12 +1,12 @@
 "use client";
-import { useAppDispatch } from "@/redux/hooks";
+import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import DarkModeToggle from "../DarkModeToggle";
 import Icon from "../Icon";
 import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
-import { redo, undo } from "@/redux/slices/editorSlice";
+import { redo, setActive, undo } from "@/redux/slices/editorSlice";
 import SavePopupWrapper from "./SavePopupWrapper";
 import Link from "next/link";
 import { triggerReplay } from "@/redux/slices/replaySlice";
@@ -59,7 +59,9 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
                 setPreview((prev) => !prev);
               }}
             />
-            <button className="p-2 rounded bg-amber-800">Publish</button>
+            <button className="p-2 rounded bg-amber-800 text-white">
+              Publish
+            </button>
           </>
         )}
       </div>
@@ -85,13 +87,19 @@ const BuilderHeader = () => {
 
 const Center = () => {
   const dispatch = useAppDispatch();
+  const [preview] = usePreview();
 
   return (
-    <div className="flex items-center justify-between flex-1">
-      <div className="ms-8 flex items-center gap-2">
+    <div className="flex items-center justify-between flex-1 flex-col md:flex-row">
+      <div
+        className={
+          "ms-6 flex items-center gap-2 " + (preview ? "invisible" : "")
+        }
+      >
         <LeftSideActions />
         <SavePopupWrapper />
       </div>
+
       <div className="me-8 flex items-center gap-2">
         <Icon
           title="Replay"
@@ -120,6 +128,9 @@ const LeftSide = () => {
 
 const LeftSideActions = () => {
   const dispatch = useAppDispatch();
+  const active = useAppSelector(selectActive);
+  const [, setSettingsToggle] = SettingsToggleContext.Use();
+
   return (
     <>
       <Icon
@@ -133,6 +144,19 @@ const LeftSideActions = () => {
         type="arrow-clockwise"
         size="24px"
         onClick={() => dispatch(redo())}
+      />
+      <Icon
+        title="Pagewise settings"
+        type="globe"
+        size="24px"
+        onClick={() => {
+          if (!active) {
+            setSettingsToggle((prev) => !prev);
+          } else {
+            setSettingsToggle(true);
+          }
+          dispatch(setActive(undefined));
+        }}
       />
       <DownloadWrapper />
     </>
