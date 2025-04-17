@@ -3,7 +3,6 @@ import ColorPicker from "@/components/ColorPicker";
 import ResetButton from "@/components/ResetButton";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
-import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
@@ -13,6 +12,8 @@ import {
   getPageWise,
   getSetting,
 } from "@/utils/Helpers";
+import HeadingStyles from "./HeadingStyles";
+import { Style } from "@/utils/Types";
 
 const Styles = () => {
   return (
@@ -25,6 +26,7 @@ const Styles = () => {
       <FontSize />
       <FontFamily />
       <LineHeight />
+      <HeadingStyles />
     </ToggleVisibilityWrapper>
   );
 };
@@ -47,11 +49,11 @@ const Color = () => {
         }
         title={"Select pagewise text color"}
         selected={variable || "#000000"}
-        onChange={(e) =>
+        onChange={(newValue) =>
           dispatch(
             changeElementStyle({
               type,
-              newValue: e.target.value,
+              newValue,
             })
           )
         }
@@ -79,11 +81,11 @@ const BackgroundColor = () => {
         }
         title="Select pagewise background color"
         selected={variable || "#000000"}
-        onChange={(e) =>
+        onChange={(newValue) =>
           dispatch(
             changeElementStyle({
               type,
-              newValue: e.target.value,
+              newValue,
             })
           )
         }
@@ -102,7 +104,7 @@ const FontSize = () => {
     <div className="relative pb-2 mb-2">
       <Slider
         parse={true}
-        title="Pick pagewise font size"
+        title="Select pagewise font size"
         min={1}
         max={70}
         step={1}
@@ -131,7 +133,7 @@ const FontFamily = () => {
   return (
     <div className="relative pb-2 mb-2">
       <Select
-        title="Pick pagewise font family"
+        title="Select pagewise font family"
         showStyled={true}
         options={[...fontOptions, ...fontVariables]}
         selected={variable || ""}
@@ -159,9 +161,10 @@ const LineHeight = () => {
     <div className="relative pb-2 mb-2">
       <Slider
         parse={false}
-        title="Pick pagewise line-height"
+        title="Select pagewise line-height"
         min={1}
         max={5}
+        unit=""
         step={0.5}
         value={variable || "1.5"}
         onChange={(e) =>
@@ -188,7 +191,7 @@ export const ResetButtonWithOnClick = ({ type }: { type: string }) => {
         dispatch(
           changeElementStyle({
             type,
-            newValue: getPageWise()[type] || "",
+            newValue: (getPageWise()[type] as string) || "",
           })
         );
       }}

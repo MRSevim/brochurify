@@ -15,6 +15,7 @@ import { usePathname } from "next/navigation";
 import Container from "../Container";
 import ViewMode from "./ViewMode";
 import { usePreview } from "@/contexts/PreviewContext";
+import ZoomView from "./ZoomView";
 
 const Header = () => {
   const pathname = usePathname();
@@ -108,6 +109,7 @@ const Center = () => {
           onClick={() => dispatch(triggerReplay())}
         />
         <ViewMode />
+        <ZoomView />
       </div>
     </div>
   );

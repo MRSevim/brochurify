@@ -27,6 +27,7 @@ import { styledElements } from "@/utils/Helpers";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
 import { findElementById } from "@/utils/EditorHelpers";
 import useKeyPresses from "@/utils/hooks/useKeypresses";
+import { useZoom } from "@/contexts/ZoomContext";
 
 const Editor = () => {
   const [layoutToggle] = LayoutToggleContext.Use();
@@ -53,6 +54,7 @@ const EditorInner = () => {
   const data = useAppSelector(selectLayout);
   const pageWise = useAppSelector(selectPageWise);
   const [viewMode] = useViewMode();
+  const [zoom] = useZoom();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   useIntersectionObserver([globalTrigger], undefined);
   useKeyPresses();
@@ -64,11 +66,18 @@ const EditorInner = () => {
       ? "max-w-[768]"
       : "max-w-[360]";
 
+  const scale = 1 - zoom / 100;
+
   return (
     <styledElements.styledEditor
       styles={pageWise}
       className={"editor mx-auto " + maxWidth}
       key={globalTrigger}
+      style={{
+        transform: `scale(${scale})`,
+        transformOrigin: "top center",
+        transition: "transform 0.3s ease",
+      }}
     >
       {data.map((item) => {
         return <RenderedComponent key={item.id} item={item} />;
@@ -133,7 +142,6 @@ const SideDropOverlay = ({
     addLocation?.id === id && addLocation?.where === "after";
   const dispatch = useAppDispatch();
   const notFixed = item.type !== "fixed";
-  const notColumn = item.type !== "column";
 
   const handleSideDrop = (e: DragEvent<HTMLElement>) => {
     handleSideDropCaller(e, dispatch, id);

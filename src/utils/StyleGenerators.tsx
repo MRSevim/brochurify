@@ -86,6 +86,7 @@ export const getWrapperStyles = (style: Style): string => {
 
 // Recursive style generator function
 export const styleGenerator = (style: Style): string => {
+  const bgColor = style["background-color"];
   return Object.entries(style || {})
     .map(([key, value]) => {
       if (typeof value === "object") {
@@ -95,6 +96,9 @@ export const styleGenerator = (style: Style): string => {
       } else {
         // Handle regular CSS properties
         if (!value || !key) return "";
+        if (key === "background-image") {
+          return `${key}: linear-gradient(${bgColor}), ${value};`;
+        }
 
         return `${key}: ${value};`;
       }
@@ -110,11 +114,16 @@ export const fullStylesWithIdsGenerator = (
     .map((item) => {
       const child = item.props.child;
       const style = item.props.style;
+      const isContainer = item.type === "container";
       const isFixed = item.type === "fixed";
       const styleStr = rest ? getRest(style) : getWrapperStyles(style);
       if (!styleStr) return "";
       return `#id${rest ? "" : "wrapper"}${item.id} { ${styleStr} ${
-        rest && !isFixed ? "flex-grow:1;max-width:100%;max-height:100%;" : ""
+        rest && !isFixed
+          ? `flex-grow:1;max-height:100%;${
+              !isContainer ? "max-width:100%;" : ""
+            }`
+          : ""
       } 
       ${isFixed && rest ? getWrapperStyles(style) : ""}
       } ${child ? fullStylesWithIdsGenerator(child, rest) : ""}`;

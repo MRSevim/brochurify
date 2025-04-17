@@ -6,7 +6,7 @@ const ResetButton = ({ onClick }: { onClick: () => void }) => {
         onClick={onClick}
       >
         {" "}
-        Remove
+        Reset
       </button>
     </div>
   );

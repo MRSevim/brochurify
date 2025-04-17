@@ -10,6 +10,7 @@ import { Provider } from "react-redux";
 import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
 import { Provider as PreviewProvider } from "@/contexts/PreviewContext";
+import { Provider as ZoomProvider } from "@/contexts/ZoomContext";
 import { StyleSheetManager } from "styled-components";
 
 export default function ClientWrapper({
@@ -40,7 +41,9 @@ export default function ClientWrapper({
           <LightModeProvider lightModeFromCookie={lightMode}>
             <ViewModeProvider>
               <PreviewProvider>
-                <Provider store={storeRef.current}>{children}</Provider>
+                <ZoomProvider>
+                  <Provider store={storeRef.current}>{children}</Provider>
+                </ZoomProvider>
               </PreviewProvider>
             </ViewModeProvider>
           </LightModeProvider>

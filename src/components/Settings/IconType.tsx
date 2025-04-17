@@ -55,8 +55,8 @@ const IconColor = () => {
         }
         title="Pick the icon color"
         selected={colorStr || pageWise.color || "#000000"}
-        onChange={(e) =>
-          dispatch(changeElementStyle({ type, newValue: e.target.value }))
+        onChange={(newValue) =>
+          dispatch(changeElementStyle({ type, newValue }))
         }
       />
       <ResetButton

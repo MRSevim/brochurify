@@ -14,7 +14,7 @@ import Select from "../Select";
 import ColorPicker from "../ColorPicker";
 import BottomLine from "../BottomLine";
 import SecondaryTitle from "../SecondaryTitle";
-import { HandleChangeType } from "@/utils/Types";
+import { AppChangeEvent, HandleChangeType } from "@/utils/Types";
 
 const Border = () => {
   const type = "border";
@@ -44,16 +44,16 @@ const Border = () => {
     }
   };
 
-  const handleChange: HandleChangeType = (e, i) => {
+  const handleChange = (e: AppChangeEvent | string, i: number) => {
     const px = i === 0 ? "px" : "";
+    const value = i !== 2 && typeof e !== "string" ? e.target.value : e;
     dispatch(
       changeElementStyle({
         type,
-        newValue: setValueFromShorthandStr(borderStr, i, e.target.value + px),
+        newValue: setValueFromShorthandStr(borderStr, i, value + px),
       })
     );
   };
-
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Border">
@@ -115,7 +115,7 @@ const BorderColor = ({
   handleVarSelect,
   value,
 }: {
-  onChange: HandleChangeType;
+  onChange: (e: string) => void;
   handleVarSelect: (param: string) => void;
   value: string;
 }) => {

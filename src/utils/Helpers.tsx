@@ -118,6 +118,9 @@ export const getPageWise = (): PageWise => {
     overflow: "auto",
     iconUrl: "",
     "container-type": "size",
+    h1: { "font-size": "2.5em" },
+    h2: { "font-size": "2em" },
+    h3: { "font-size": "1.5em" },
   };
 };
 export const detectTag = (tag: string, htmlStr: string) => {
@@ -319,6 +322,9 @@ export function getSetting(
     const activeId = state.editor.active?.id;
 
     if (!activeId) {
+      if (innerType) {
+        return (state.editor.pageWise?.[type] as Style)?.[innerType];
+      }
       return state.editor.pageWise?.[type];
     }
 
@@ -453,7 +459,7 @@ export function setCookie(cname: String, cvalue: string, exdays: number) {
 export const CONFIG = {
   placeholderImgUrl: "/placeholder-image.jpg",
   possibleOuterTypes: {
-    active: "&:hover",
+    active: "&:active",
     scrolled: "&.scrolled",
     hover: "&:hover",
     tabletContainerQuery: "@container (max-width: 768px)",

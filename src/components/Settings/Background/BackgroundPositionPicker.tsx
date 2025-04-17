@@ -75,26 +75,49 @@ export const BackgroundPositionPicker = () => {
     <>
       <p className="text-sm font-medium mb-2">Background Position</p>
       <div className="flex justify-center">
-        <div
-          ref={containerRef}
-          className="bg-position-picker bg-text flex-[0_0_auto] me-2"
-          onMouseDown={startDrag}
-          onTouchStart={startTouch}
-          style={{
-            backgroundImage,
-            backgroundRepeat,
-            backgroundSize,
-            backgroundPosition: "center center",
-          }}
-        >
+        <div>
           <div
-            className="bg-position-dot"
+            ref={containerRef}
+            className="bg-position-picker bg-text flex-[0_0_auto] me-2"
+            onMouseDown={startDrag}
+            onTouchStart={startTouch}
             style={{
-              left: `${position0}%`,
-              top: `${position1}%`,
+              backgroundImage,
+              backgroundRepeat,
+              backgroundSize,
+              backgroundPosition: "center center",
             }}
-            title={`${position0.toFixed(0)}%, ${position1.toFixed(0)}%`}
-          />
+          >
+            <div className="snap-line vertical left" />
+            <div className="snap-line vertical center" />
+            <div className="snap-line vertical right" />
+            <div className="snap-line horizontal top" />
+            <div className="snap-line horizontal center" />
+            <div className="snap-line horizontal bottom" />
+            <div
+              className="bg-position-dot"
+              style={{
+                left: `${position0}%`,
+                top: `${position1}%`,
+              }}
+              title={`${position0.toFixed(0)}%, ${position1.toFixed(0)}%`}
+            />
+          </div>
+          <div className="flex justify-center">
+            <button
+              className="text-background bg-gray p-1 rounded cursor-pointer my-1"
+              onClick={() =>
+                dispatch(
+                  changeElementStyle({
+                    type: "background-position",
+                    newValue: "50% 50%",
+                  })
+                )
+              }
+            >
+              Center
+            </button>
+          </div>
         </div>
         <Alignment isCover={isCover} />
       </div>

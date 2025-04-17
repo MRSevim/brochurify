@@ -221,7 +221,30 @@ export const editorSlice = createSlice({
         });
       };
 
-      state.layout = updateStyle(state.layout);
+      if (!state.active) {
+        const updatedStyle = { ...state.pageWise };
+        const outerStyle = {
+          ...(state.pageWise[outerType] as Style),
+        };
+
+        if (newValue) {
+          // Update the innerType value
+          outerStyle[innerType] = newValue;
+        } else {
+          // Remove innerType if newValue is falsy
+          delete outerStyle[innerType];
+        }
+
+        // Remove outerType if it's now empty
+        if (Object.keys(outerStyle).length === 0) {
+          delete updatedStyle[outerType];
+        } else {
+          updatedStyle[outerType] = outerStyle;
+        }
+        state.pageWise = updatedStyle;
+      } else {
+        state.layout = updateStyle(state.layout);
+      }
     },
     removeElementStyle: (state, action: PayloadAction<{ type: string }>) => {
       const { type } = action.payload;

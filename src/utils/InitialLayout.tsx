@@ -28,7 +28,7 @@ export const initialLayout: Layout[] = [
                       props: {
                         style: getDefaultStyle("text"),
 
-                        text: '<h1 style="text-align:center"><span style="font-size:41px">I am a text</span></h1>',
+                        text: "<h1><span >I am a text</span></h1>",
                       },
                     },
                     {
@@ -36,7 +36,7 @@ export const initialLayout: Layout[] = [
                       type: "text",
                       props: {
                         style: getDefaultStyle("text"),
-                        text: '<p><strong>Lorem Ipsum</strong><span style="color:rgb(0, 0, 0);font-family:&quot;Open Sans&quot;, Arial, sans-serif;font-size:14px"> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,</span></p>',
+                        text: "<p><strong>Lorem Ipsum</strong><span> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,</span></p>",
                       },
                     },
                   ],

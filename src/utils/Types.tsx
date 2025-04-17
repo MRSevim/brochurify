@@ -90,8 +90,9 @@ export type PageWise = {
   "font-family": string;
   "line-height": string;
   "container-type": string;
+  "h1,h2,h3,h4,h5,h6"?: Style;
   iconUrl: string;
-  [key: string]: string | undefined;
+  [key: string]: string | Style | undefined;
 };
 
 export type Style = {
@@ -138,8 +139,6 @@ export type SizingType = {
 };
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 export type OptionsObject = { title: string; value: string };
-export type HandleChangeType = (
-  e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  i?: number
-) => void;
+export type AppChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
+export type HandleChangeType = (e: AppChangeEvent, i?: number) => void;
 export type SavePopup = "saving" | "saved" | null;

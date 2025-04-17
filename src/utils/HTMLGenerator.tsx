@@ -3,28 +3,13 @@ import { detectTag } from "./Helpers";
 import {
   fullStylesWithIdsGenerator,
   keyframeGenerator,
+  styleGenerator,
 } from "./StyleGenerators";
 import { Layout, PageWise } from "./Types";
-import { prettify } from "htmlfy";
 
 export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
-  const {
-    title,
-    description,
-    keywords,
-    canonical,
-    image,
-    color,
-    "background-color": backgroundColor,
-    "font-size": fontSize,
-    "font-family": fontFamily,
-    "line-height": lineHeight,
-    iconUrl,
-    height,
-    width,
-    overflow,
-    "container-type": containerType,
-  } = pageWise;
+  const { title, description, keywords, canonical, image, iconUrl, ...rest } =
+    pageWise;
 
   const renderedBody = renderLayout(layout);
   const fullstylesWithIds =
@@ -33,9 +18,9 @@ export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
 
   const keyframes = keyframeGenerator(fullstylesWithIds);
 
-  return prettify(
+  return (
     "<!DOCTYPE html>" +
-      `<html lang="en">
+    `<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -95,15 +80,7 @@ ${
 <style>
 ${getCssReset()}
   body {
-    color: ${color || "#ffffff"};
-    background-color: ${backgroundColor || "#000000"};
-    font-size: ${fontSize || "16px"};
-    font-family: ${fontFamily || "inherit"};
-    line-height: ${lineHeight || "1.5"};
-    height: ${height || "100%"};
-    width:${width || "100%"};
-    overflow:${overflow || "auto"};
-    container-type:${containerType || "size"};
+  ${styleGenerator(rest)}
   }
   html {
     height:100%;

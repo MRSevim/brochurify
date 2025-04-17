@@ -7,13 +7,16 @@ import {
 } from "@/utils/Helpers";
 import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import ColorPicker from "../../ColorPicker";
+import ColorPicker, {
+  hexToHexWithAlpha,
+  separateHexAlpha,
+} from "../../ColorPicker";
 import {
   changeElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import BottomLine from "../../BottomLine";
-import { HandleChangeType } from "@/utils/Types";
+import { AppChangeEvent, HandleChangeType } from "@/utils/Types";
 import SecondaryTitle from "../../SecondaryTitle";
 import ToggleBtn from "../../ToggleBtn";
 import LinkInput from "../../LinkInput";
@@ -51,11 +54,11 @@ const BackgroundColor = () => {
         }
         title="Select background color"
         selected={variable || pageWise[type] || "#ffffff"}
-        onChange={(e) =>
+        onChange={(newValue) =>
           dispatch(
             changeElementStyle({
               type,
-              newValue: e.target.value,
+              newValue,
             })
           )
         }
@@ -83,12 +86,13 @@ const BackgroundShadow = () => {
       dispatch(removeElementStyle({ type }));
     }
   };
-  const handleChange: HandleChangeType = (e, i) => {
+  const handleChange = (e: AppChangeEvent | string, i: number) => {
     const px = i !== 4 ? "px" : "";
+    const value = i !== 4 && typeof e !== "string" ? e.target.value : e;
     dispatch(
       changeElementStyle({
         type,
-        newValue: setValueFromShorthandStr(variable, i, e.target.value + px),
+        newValue: setValueFromShorthandStr(variable, i, value + px),
       })
     );
   };

@@ -7,10 +7,20 @@ type Props = {
   value: string;
   title: string;
   parse: boolean;
+  unit?: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
-const Slider = ({ min, max, step, title, onChange, value, parse }: Props) => {
-  const parsed = parse ? parseInt(value, 10) : value; //gets the first full number inside value if necessary
+const Slider = ({
+  min,
+  max,
+  step,
+  title,
+  onChange,
+  value,
+  parse,
+  unit = "px",
+}: Props) => {
+  const parsed = parse ? parseFloat(value) : value; //gets the first full number inside value if necessary
 
   return (
     <div className="relative mb-8">
@@ -34,7 +44,7 @@ const Slider = ({ min, max, step, title, onChange, value, parse }: Props) => {
         {min}
       </span>
       <span className="text-sm text-gray-400 absolute start-0 end-0 mx-auto text-center -bottom-6">
-        Current: {value}
+        Current:{parsed + unit}
       </span>
       <span className="text-sm text-gray-400 absolute end-0 -bottom-6">
         {max}

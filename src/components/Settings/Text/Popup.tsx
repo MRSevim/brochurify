@@ -30,9 +30,7 @@ const Popup = ({
             pageWise.color ||
             "#000000"
           }
-          onChange={(e) =>
-            editor.chain().focus().setColor(e.target.value).run()
-          }
+          onChange={(e) => editor.chain().focus().setColor(e).run()}
         />
       )}
       {type === "font-family" && (
