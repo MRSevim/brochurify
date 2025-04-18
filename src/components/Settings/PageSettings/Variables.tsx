@@ -97,7 +97,7 @@ const Popup = ({
           variableSelect={false}
           title="Pick a color"
           selected={color}
-          onChange={(e) => setColor(e.target.value)}
+          onChange={(e) => setColor(e)}
         />
       )}
       {type === "font-family" && (

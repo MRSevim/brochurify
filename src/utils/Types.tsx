@@ -86,6 +86,7 @@ export type PageWise = {
   color: string;
   "background-color": string;
   "font-size": string;
+  height: string;
   overflow: "auto";
   "font-family": string;
   "line-height": string;

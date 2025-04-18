@@ -53,11 +53,12 @@ const Editor = () => {
 const EditorInner = () => {
   const data = useAppSelector(selectLayout);
   const pageWise = useAppSelector(selectPageWise);
-  const [viewMode] = useViewMode();
-  const [zoom] = useZoom();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   useIntersectionObserver([globalTrigger], undefined);
   useKeyPresses();
+  const [zoom] = useZoom();
+  const scale = 1 - zoom / 100;
+  const [viewMode] = useViewMode();
 
   const maxWidth =
     viewMode === "desktop"
@@ -65,8 +66,6 @@ const EditorInner = () => {
       : viewMode === "tablet"
       ? "max-w-[768]"
       : "max-w-[360]";
-
-  const scale = 1 - zoom / 100;
 
   return (
     <styledElements.styledEditor
@@ -79,6 +78,7 @@ const EditorInner = () => {
         transition: "transform 0.3s ease",
       }}
     >
+      {" "}
       {data.map((item) => {
         return <RenderedComponent key={item.id} item={item} />;
       })}

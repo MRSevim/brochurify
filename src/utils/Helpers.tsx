@@ -111,11 +111,10 @@ export const getPageWise = (): PageWise => {
     color: "#000000",
     "background-color": "#ffffff",
     "font-size": "16px",
+    height: "100%",
+    overflow: "auto",
     "font-family": "inherit",
     "line-height": "1.5",
-    height: "100%",
-    width: "100%",
-    overflow: "auto",
     iconUrl: "",
     "container-type": "size",
     h1: { "font-size": "2.5em" },
@@ -173,8 +172,6 @@ export const getDefaultStyle = (type: string): Style => {
       "max-width": "1300px",
       margin: "0 auto",
       padding: "0 12px",
-      height: "100%",
-      width: "100%",
     };
   } else if (type === "icon") {
     return {
