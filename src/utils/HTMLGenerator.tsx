@@ -229,13 +229,25 @@ const renderLayout = (items: Layout[]): string => {
       const isText = type === "text";
       const isFixed = type === "fixed";
       const isVoidElement = type === "image" || type === "divider";
+      const href = props.href?.startsWith("#")
+        ? `#user-${props.href.slice(1)}`
+        : props.href;
+
+      const formatOnClick = (href?: string) => {
+        if (href?.startsWith("#")) {
+          const targetId = `user-${href.slice(1)}`;
+          return `event.preventDefault(); document.getElementById('${targetId}')?.scrollIntoView({ behavior: 'smooth' });`;
+        }
+        return "";
+      };
+      const onclick = formatOnClick(props.href);
 
       const addButtonWrapper = (html: string) => {
         if (type === "button") {
           return `
-          <a class="wAndHFull flex" href="${props.href || ""}" target=${
-            props.newTab ? "_blank" : "_self"
-          }
+          <a class="wAndHFull flex" href="${href || ""}" ${
+            onclick ? `onclick="${onclick}"` : ""
+          } target=${props.newTab ? "_blank" : "_self"}
           rel="noopener noreferrer"
           >
           ${html}
@@ -249,7 +261,9 @@ const renderLayout = (items: Layout[]): string => {
         return `<div class="block ${isFixed ? "" : "relative"}" id="idwrapper${
           item.id
         }">
-        <div class="flex wAndHFull">${html}</div></div>`;
+        <div class="flex wAndHFull" id="user-${
+          item.props.anchorId
+        }">${html}</div></div>`;
       };
 
       const rendered = `<${renderedType} id="id${item.id}" ${

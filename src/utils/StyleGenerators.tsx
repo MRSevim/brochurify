@@ -117,7 +117,6 @@ export const fullStylesWithIdsGenerator = (
       const isContainer = item.type === "container";
       const isFixed = item.type === "fixed";
       const styleStr = rest ? getRest(style) : getWrapperStyles(style);
-      if (!styleStr) return "";
       return `#id${rest ? "" : "wrapper"}${item.id} { ${styleStr} ${
         rest && !isFixed
           ? `flex-grow:1;max-height:100%;${

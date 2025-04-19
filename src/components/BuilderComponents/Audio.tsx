@@ -2,13 +2,14 @@ import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/Helpers";
 import { RefObject } from "react";
-const Audio = ({ id, style, src, ref }: PropsWithId) => {
+const Audio = ({ id, style, src, ref, anchorId }: PropsWithId) => {
   const active = useClasses(id);
 
   return (
     <styledElements.styledAudio
       className={active}
       styles={style}
+      id={anchorId}
       key={src}
       ref={ref as unknown as RefObject<HTMLAudioElement>}
       controls

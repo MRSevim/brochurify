@@ -11,6 +11,7 @@ import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
 import { Provider as PreviewProvider } from "@/contexts/PreviewContext";
 import { Provider as ZoomProvider } from "@/contexts/ZoomContext";
+import { Provider as AddSectionToggleProvider } from "@/contexts/AddSectionToggleContext";
 import { StyleSheetManager } from "styled-components";
 
 export default function ClientWrapper({
@@ -42,7 +43,9 @@ export default function ClientWrapper({
             <ViewModeProvider>
               <PreviewProvider>
                 <ZoomProvider>
-                  <Provider store={storeRef.current}>{children}</Provider>
+                  <AddSectionToggleProvider>
+                    <Provider store={storeRef.current}>{children}</Provider>
+                  </AddSectionToggleProvider>
                 </ZoomProvider>
               </PreviewProvider>
             </ViewModeProvider>

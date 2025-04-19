@@ -3,12 +3,13 @@ import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/Helpers";
 import { RefObject } from "react";
 
-const Image = ({ id, style, src, alt, ref }: PropsWithId) => {
+const Image = ({ id, style, src, alt, ref, anchorId }: PropsWithId) => {
   const active = useClasses(id);
 
   return (
     <styledElements.styledImg
       className={active}
+      id={anchorId}
       src={src || undefined}
       alt={alt}
       styles={style}

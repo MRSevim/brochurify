@@ -9,6 +9,7 @@ export interface Props {
   href?: string;
   newTab?: boolean;
   alt?: string;
+  anchorId?: string;
   iconType?: string;
   children?: React.ReactNode;
   [key: string]:
@@ -28,6 +29,7 @@ export interface PropsWithId {
   href?: string;
   newTab?: boolean;
   alt?: string;
+  anchorId?: string;
   iconType?: string;
   children?: React.ReactNode;
   ref?: ElementRefObject;

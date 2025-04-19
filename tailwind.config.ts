@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import colors from "tailwindcss/colors";
 
 export default {
   content: [
@@ -20,6 +21,8 @@ export default {
         background: "var(--background)",
         text: "var(--text)",
         gray: "var(--gray)",
+        hoveredBlue: colors.blue[500],
+        activeBlue: colors.blue[800],
       },
     },
   },

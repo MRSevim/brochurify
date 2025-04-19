@@ -3,12 +3,13 @@ import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/Helpers";
 import { RefObject } from "react";
 
-const Video = ({ id, style, src, ref }: PropsWithId) => {
+const Video = ({ id, style, src, ref, anchorId }: PropsWithId) => {
   const active = useClasses(id);
   return (
     <styledElements.styledVideo
       className={active}
       key={src}
+      id={anchorId}
       controls
       styles={style}
       ref={ref as unknown as RefObject<HTMLVideoElement>}

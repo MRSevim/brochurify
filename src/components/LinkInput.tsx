@@ -24,7 +24,7 @@ const LinkInput = ({
         <InfoIcon
           text={
             <>
-              {"This should start with https://"} <br />
+              {"This should start with https:// or # for anchors "} <br />
               {desc ? "and " + desc : ""}
             </>
           }

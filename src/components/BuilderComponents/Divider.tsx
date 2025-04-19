@@ -3,12 +3,13 @@ import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/Helpers";
 import { RefObject } from "react";
 
-const Container = ({ id, style, ref }: PropsWithId) => {
+const Container = ({ id, style, ref, anchorId }: PropsWithId) => {
   const active = useClasses(id);
 
   return (
     <styledElements.styledHr
       className={active}
+      id={anchorId}
       styles={style}
       ref={ref as unknown as RefObject<HTMLHRElement>}
     />

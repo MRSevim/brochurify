@@ -27,12 +27,14 @@ import {
 import {
   addElement,
   deleteElement,
+  setActive,
   setAddLocation,
 } from "@/redux/slices/editorSlice";
 import Icon from "./Icon";
 import { Layout, Where } from "@/utils/Types";
 import AddButton from "./AddButton";
 import DeleteButton from "./DeleteButton";
+import { useAddSectionToggle } from "@/contexts/AddSectionToggleContext";
 
 type VisibilityMap = Map<string, boolean>;
 
@@ -55,7 +57,7 @@ const LayoutInner = () => {
   return (
     <>
       <AddSection />
-      <div className="overflow-y-auto gutter-stable">
+      <div className="overflow-auto gutter-stable z-10 py-2">
         {data?.map((item) => {
           return (
             <LayoutItem
@@ -117,14 +119,15 @@ const LayoutItem = ({
         <FocusWrapper item={item}>
           <CenterDropWrapper
             item={item}
-            visibilityMap={visibilityMap}
             setVisibilityMap={setVisibilityMap}
             handleDragLeave={handleDragLeave}
           >
-            {item.props.child && item.props.child.length > 0 && (
-              <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
-            )}
-            {item.type}
+            <div className="flex items-center">
+              {item.props.child && item.props.child.length > 0 && (
+                <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
+              )}
+              {item.type}
+            </div>
 
             <DeleteButton
               onClick={(event) => {
@@ -142,7 +145,7 @@ const LayoutItem = ({
             <LayoutItem
               key={childItem.id}
               item={childItem}
-              depth={Math.min(depth + 1, 2)} // Cap depth at 2
+              depth={depth + 1}
               visibilityMap={visibilityMap}
               setVisibilityMap={setVisibilityMap}
             />
@@ -155,22 +158,20 @@ const LayoutItem = ({
 
 const CenterDropWrapper = ({
   item,
-  visibilityMap,
   setVisibilityMap,
   children,
   handleDragLeave,
 }: {
   item: Layout;
-
   handleDragLeave: () => void;
   children: React.ReactNode;
-  visibilityMap: VisibilityMap;
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
 }) => {
   const activeId = useAppSelector(selectActive)?.id;
   const id = item.id;
   const dispatch = useAppDispatch();
   const layout = useAppSelector(selectLayout);
+  const [, setToggle] = useAddSectionToggle();
 
   useEffect(() => {
     const reveal = (activeId: string | undefined, layout: Layout[]) => {
@@ -216,10 +217,21 @@ const CenterDropWrapper = ({
       }}
       onDragLeave={handleDragLeave}
       className={
-        "p-2 border flex items-center justify-between	" +
+        "p-1 border flex items-center justify-between me-1 relative " +
         (activeId === id ? "border-green-500" : "border-gray")
       }
     >
+      {" "}
+      <div
+        onClick={(e) => {
+          setToggle(true);
+          dispatch(setActive(item));
+          e.stopPropagation();
+        }}
+        className="z-40 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-hoveredBlue opacity-0 hover:opacity-100 transition-opacity duration-200"
+      >
+        +
+      </div>
       {children}
     </div>
   );
@@ -239,17 +251,22 @@ const SideDropWrapper = ({
   const addLocation = useAppSelector(selectAddLocation);
   const id = item.id;
   const dispatch = useAppDispatch();
+  const [, setToggle] = useAddSectionToggle();
   const beforeSelected =
     addLocation?.id === id && addLocation?.where === "before";
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
-  // Calculate the margin based on depth, capping it at ml-4
-  const marginLeftClass = depth === 0 ? "ml-2" : depth === 1 ? "ml-5" : "ml-7";
+  const commonClasses =
+    "cursor-pointer absolute flex justify-center align-center left-0 right-0 ms-2 me-4 h-1 opacity-0 hover:opacity-100 transition-opacity duration-200 ";
+  const selectedClasses = "opacity-100 bg-activeBlue";
 
   const handleAddLocationClick = (where: Where) => {
     if (addLocation && addLocation.id === id && addLocation.where === where) {
       dispatch(setAddLocation(null));
-    } else dispatch(setAddLocation({ id, where }));
+    } else {
+      dispatch(setAddLocation({ id, where }));
+      setToggle(true);
+    }
   };
 
   const handleSideDrop = (e: DragEvent<HTMLElement>) => {
@@ -260,6 +277,14 @@ const SideDropWrapper = ({
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
 
+  const marginLeftStyle = { marginLeft: depth * 8 };
+
+  const AddSign = () => (
+    <div className="z-40 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit">
+      +
+    </div>
+  );
+
   return (
     <div className="relative">
       <div
@@ -268,12 +293,17 @@ const SideDropWrapper = ({
         onDragOver={(e) => handleSideDragOver(e, "before")}
         onDragLeave={handleDragLeave}
         className={
-          "absolute -top-3 left-0 right-0 m-2 h-2 hover:bg-gray " +
-          marginLeftClass +
-          (beforeSelected ? " bg-text hover:bg-text" : "")
+          commonClasses +
+          "bottom-full " +
+          (beforeSelected ? selectedClasses : "bg-hoveredBlue")
         }
-      ></div>
-      <div className={"m-2 " + marginLeftClass}>{children} </div>
+        style={marginLeftStyle}
+      >
+        <AddSign />
+      </div>
+      <div className="m-2 min-w-40" style={marginLeftStyle}>
+        {children}{" "}
+      </div>
       <div
         onClick={() => {
           handleAddLocationClick("after");
@@ -282,21 +312,24 @@ const SideDropWrapper = ({
         onDragOver={(e) => handleSideDragOver(e, "after")}
         onDragLeave={handleDragLeave}
         className={
-          "absolute -bottom-3 left-0 right-0 m-2 h-2 hover:bg-gray " +
-          marginLeftClass +
-          (afterSelected ? " bg-text hover:bg-text" : "")
+          commonClasses +
+          "top-full " +
+          (afterSelected ? selectedClasses : "bg-hoveredBlue")
         }
-      ></div>
+        style={marginLeftStyle}
+      >
+        <AddSign />
+      </div>
     </div>
   );
 };
 
 const AddSection = () => {
   const availableElements = Object.keys(componentList);
-  const [toggle, setToggle] = useState(false);
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement | null>(null);
   const addLocation = useAppSelector(selectAddLocation);
+  const [toggle, setToggle] = useAddSectionToggle();
 
   const handleGeneralClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as HTMLElement)) {
@@ -313,7 +346,7 @@ const AddSection = () => {
   });
 
   return (
-    <div className="flex justify-center relative z-10 p-1">
+    <div className="flex justify-center relative z-20 p-1">
       <AddButton onClick={() => setToggle((prev) => !prev)} />
       {toggle && (
         <div

@@ -73,9 +73,10 @@ const EditorInner = () => {
       className={"editor mx-auto " + maxWidth}
       key={globalTrigger}
       style={{
+        height: `${100 / scale}%`,
         transform: `scale(${scale})`,
         transformOrigin: "top center",
-        transition: "transform 0.3s ease",
+        transition: "all 0.3s ease",
       }}
     >
       {" "}
@@ -117,6 +118,7 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
             id={id}
             ref={ref}
             {...item.props}
+            anchorId={"user-" + item.props.anchorId}
           >
             {item.props.child?.map((childItem) => (
               <RenderedComponent key={childItem.id} item={childItem} />
