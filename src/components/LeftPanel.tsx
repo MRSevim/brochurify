@@ -168,6 +168,7 @@ const CenterDropWrapper = ({
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
 }) => {
   const activeId = useAppSelector(selectActive)?.id;
+  const addLocation = useAppSelector(selectAddLocation);
   const id = item.id;
   const dispatch = useAppDispatch();
   const layout = useAppSelector(selectLayout);
@@ -206,7 +207,8 @@ const CenterDropWrapper = ({
     };
 
     reveal(activeId, layout);
-  }, [activeId]);
+    reveal(addLocation?.id, layout);
+  }, [activeId, addLocation]);
   return (
     <div
       onDrop={(e) => {

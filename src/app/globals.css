@@ -121,6 +121,9 @@ td {
   font-size: inherit;
   font-family: inherit;
 }
+.editor {
+  margin: 3px;
+}
 .active {
   position: relative;
   outline: 4px solid #348888; /* Works like border but doesn't affect layout */

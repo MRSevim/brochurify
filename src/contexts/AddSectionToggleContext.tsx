@@ -29,7 +29,11 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (toggle && !layoutToggle) setLayoutToggle(true);
-  }, [layoutToggle, toggle]);
+  }, [toggle]);
+
+  useEffect(() => {
+    if (!layoutToggle) setToggle(false);
+  }, [layoutToggle]);
 
   return (
     <AddSectionToggleContext.Provider value={[toggle, setToggle]}>

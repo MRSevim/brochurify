@@ -28,6 +28,8 @@ import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
 import { findElementById } from "@/utils/EditorHelpers";
 import useKeyPresses from "@/utils/hooks/useKeypresses";
 import { useZoom } from "@/contexts/ZoomContext";
+import { useAddSectionToggle } from "@/contexts/AddSectionToggleContext";
+import { setAddLocation } from "@/redux/slices/editorSlice";
 
 const Editor = () => {
   const [layoutToggle] = LayoutToggleContext.Use();
@@ -118,7 +120,7 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
             id={id}
             ref={ref}
             {...item.props}
-            anchorId={"user-" + item.props.anchorId}
+            anchorId={item.props.anchorId && "user-" + item.props.anchorId}
           >
             {item.props.child?.map((childItem) => (
               <RenderedComponent key={childItem.id} item={childItem} />
@@ -143,7 +145,32 @@ const SideDropOverlay = ({
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
   const dispatch = useAppDispatch();
+  const [, setToggle] = useAddSectionToggle();
+
   const notFixed = item.type !== "fixed";
+  const isColumn = item.type === "column";
+  const commonClasses =
+    "cursor-pointer absolute flex justify-center align-center opacity-0 hover:opacity-100 transition-opacity duration-200 z-50 ";
+  const selectedClasses = "opacity-100 bg-activeBlue";
+
+  const AddSign = () => (
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit">
+      +
+    </div>
+  );
+
+  const handleAddLocationClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    where: Where
+  ) => {
+    e.stopPropagation();
+    if (addLocation && addLocation.id === id && addLocation.where === where) {
+      dispatch(setAddLocation(null));
+    } else {
+      dispatch(setAddLocation({ id, where }));
+      setToggle(true);
+    }
+  };
 
   const handleSideDrop = (e: DragEvent<HTMLElement>) => {
     handleSideDropCaller(e, dispatch, id);
@@ -162,11 +189,15 @@ const SideDropOverlay = ({
           onDrop={handleSideDrop}
           onDragOver={(e) => handleSideDragOver(e, "before")}
           onDragLeave={() => handleDragLeaveCaller(dispatch)}
+          onClick={(e) => handleAddLocationClick(e, "before")}
           className={
-            "absolute z-50 h-full w-1 " +
-            (beforeSelected ? " bg-lime-700	" : " ")
+            commonClasses +
+            (isColumn ? "h-full w-1 " : "w-full h-1 ") +
+            (beforeSelected ? selectedClasses : "bg-hoveredBlue")
           }
-        />
+        >
+          <AddSign />
+        </div>
       )}
       {children}
       {notFixed && (
@@ -174,11 +205,17 @@ const SideDropOverlay = ({
           onDrop={handleSideDrop}
           onDragOver={(e) => handleSideDragOver(e, "after")}
           onDragLeave={() => handleDragLeaveCaller(dispatch)}
+          onClick={(e) => handleAddLocationClick(e, "after")}
           className={
-            "absolute z-50 h-full w-1 right-0 top-0 " +
-            (afterSelected ? " bg-lime-700	" : " ")
+            commonClasses +
+            "right-0 " +
+            (isColumn ? "h-full w-1 top-0 " : "w-full h-1 top-full ") +
+            (afterSelected ? selectedClasses : "bg-hoveredBlue")
           }
-        />
+        >
+          {" "}
+          <AddSign />
+        </div>
       )}
     </styledElements.styledComponentWrapperDiv>
   );

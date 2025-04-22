@@ -14,7 +14,7 @@ export default function Builder() {
   if (!mounted) return <Loading size={16} />;
 
   return (
-    <div className=" w-full relative overflow-hidden">
+    <div className="w-full relative overflow-hidden">
       <Editor />
       <LeftPanel />
       <RightPanel />
