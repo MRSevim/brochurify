@@ -145,3 +145,4 @@ export type OptionsObject = { title: string; value: string };
 export type AppChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 export type HandleChangeType = (e: AppChangeEvent, i?: number) => void;
 export type SavePopup = "saving" | "saved" | null;
+export type MoveTo = { item: Layout; location: "previous" | "next" };

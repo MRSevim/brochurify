@@ -5,6 +5,7 @@ import {
   ItemAndLocation,
   Layout,
   LayoutOrUnd,
+  MoveTo,
 } from "./Types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -197,15 +198,19 @@ export const findElementById = (
 };
 
 export const generateNewIds = (copied: Layout) => {
-  const newElement = { ...copied, id: uuidv4() };
+  const newProps = { ...copied.props };
 
-  if (newElement.props?.child) {
-    newElement.props.child = newElement.props.child.map((child: Layout) =>
+  if (copied.props?.child) {
+    newProps.child = copied.props.child.map((child: Layout) =>
       generateNewIds(child)
     );
   }
 
-  return newElement;
+  return {
+    ...copied,
+    id: uuidv4(),
+    props: newProps,
+  };
 };
 
 export const hasType = (layout: Layout[], type: string): boolean => {
@@ -287,4 +292,47 @@ export const insertElement = (
   }
 
   return layout;
+};
+export const moveToNextOrPreviousInner = (
+  state: EditorState,
+  payload: MoveTo
+) => {
+  const item = payload.item;
+  const location = payload.location;
+
+  const moveInArray = (arr: Layout[]): boolean => {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i].id === item.id) {
+        if (location === "previous") {
+          if (i === 0) {
+            // Can't move, already first
+            toast.error(
+              "This element is the first element and can't be moved further"
+            );
+            return true;
+          }
+          [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+        } else if (location === "next") {
+          if (i === arr.length - 1) {
+            // Can't move, already last
+            toast.error(
+              "This element is the last element and can't be moved further"
+            );
+            return true;
+          }
+          [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+        }
+        return true; // Move complete
+      }
+
+      if (Array.isArray(arr[i].props.child)) {
+        const moved = moveInArray(arr[i].props.child!);
+        if (moved) return true;
+      }
+    }
+    return false;
+  };
+
+  moveInArray(state.layout);
+  return state.layout;
 };

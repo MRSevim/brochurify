@@ -8,6 +8,7 @@ import {
   insertElement,
   isInChildren,
   moveElementInner,
+  moveToNextOrPreviousInner,
   removeHistoryCurrents,
   setActiveInner,
   setAddLocationInner,
@@ -20,6 +21,7 @@ import {
   ItemAndLocation,
   Layout,
   LayoutOrUnd,
+  MoveTo,
   PageWise,
   Style,
   Variable,
@@ -445,6 +447,39 @@ export const editorSlice = createSlice({
         );
       }
     },
+    moveToNextOrPrevious: (state, action: PayloadAction<MoveTo>) => {
+      const currentElement = action.payload.item;
+
+      if (!currentElement) {
+        toast.error("Something went wrong");
+        return;
+      }
+      state.layout = moveToNextOrPreviousInner(state, action.payload);
+    },
+    duplicate: (state, action: PayloadAction<Layout>) => {
+      const targetId = action.payload.id;
+
+      const insertDuplicate = (layout: Layout[]): boolean => {
+        for (let i = 0; i < layout.length; i++) {
+          const item = layout[i];
+
+          if (item.id === targetId) {
+            const duplicated = generateNewIds(item); // your function for deep ID regeneration
+            layout.splice(i + 1, 0, duplicated); // insert right after
+            return true;
+          }
+
+          if (Array.isArray(item.props.child)) {
+            const inserted = insertDuplicate(item.props.child);
+            if (inserted) return true;
+          }
+        }
+
+        return false;
+      };
+
+      insertDuplicate(state.layout);
+    },
   },
 });
 
@@ -477,6 +512,8 @@ export const {
   changeInnerElementStyle,
   resetToInitial,
   setHovered,
+  moveToNextOrPrevious,
+  duplicate,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

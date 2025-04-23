@@ -121,8 +121,8 @@ td {
   font-size: inherit;
   font-family: inherit;
 }
-.editor {
-  margin: 3px;
+.editor-action {
+  color: var(--text) !important;
 }
 .active {
   position: relative;

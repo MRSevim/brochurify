@@ -1,0 +1,160 @@
+import { useAddSectionToggle } from "@/contexts/AddSectionToggleContext";
+import {
+  selectAddLocation,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
+import { setAddLocation } from "@/redux/slices/editorSlice";
+import {
+  handleDragLeaveCaller,
+  handleSideDragOverCaller,
+  handleSideDropCaller,
+} from "@/utils/DragAndDropHelpers";
+import { Layout, Where } from "@/utils/Types";
+import { DragEvent, RefObject, useEffect, useRef, useState } from "react";
+import { styledElements } from "@/utils/Helpers";
+
+export const SideDropOverlay = ({
+  item,
+  children,
+  editorRef,
+}: {
+  item: Layout;
+  children: React.ReactNode;
+  editorRef: React.RefObject<HTMLDivElement | null>;
+}) => {
+  const addLocation = useAppSelector(selectAddLocation);
+  const id = item.id;
+  const beforeSelected =
+    addLocation?.id === id && addLocation?.where === "before";
+  const afterSelected =
+    addLocation?.id === id && addLocation?.where === "after";
+  const dispatch = useAppDispatch();
+  const [, setToggle] = useAddSectionToggle();
+  const notFixed = item.type !== "fixed";
+  const isColumn = item.type === "column";
+  const commonClasses =
+    "cursor-pointer absolute flex justify-center align-center opacity-0 hover:opacity-100 transition-opacity duration-200 z-[60] ";
+  const selectedClasses = "opacity-100 bg-activeBlue";
+
+  const handleAddLocationClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    where: Where
+  ) => {
+    e.stopPropagation();
+    if (addLocation && addLocation.id === id && addLocation.where === where) {
+      dispatch(setAddLocation(null));
+    } else {
+      dispatch(setAddLocation({ id, where }));
+      setToggle(true);
+    }
+  };
+
+  const handleSideDrop = (e: DragEvent<HTMLElement>) => {
+    handleSideDropCaller(e, dispatch, id);
+  };
+
+  const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
+    handleSideDragOverCaller({ e, id, where, dispatch });
+  };
+  return (
+    <styledElements.styledComponentWrapperDiv
+      className={"block " + (notFixed && "relative")}
+      styles={item.props.style}
+    >
+      {notFixed && (
+        <div
+          onDrop={handleSideDrop}
+          onDragOver={(e) => handleSideDragOver(e, "before")}
+          onDragLeave={() => handleDragLeaveCaller(dispatch)}
+          onClick={(e) => handleAddLocationClick(e, "before")}
+          className={
+            commonClasses +
+            (isColumn ? "h-full w-1 " : "w-full h-1 ") +
+            (beforeSelected ? selectedClasses : "bg-hoveredBlue")
+          }
+        >
+          <AddSign editorRef={editorRef} />
+        </div>
+      )}
+      {children}
+      {notFixed && (
+        <div
+          onDrop={handleSideDrop}
+          onDragOver={(e) => handleSideDragOver(e, "after")}
+          onDragLeave={() => handleDragLeaveCaller(dispatch)}
+          onClick={(e) => handleAddLocationClick(e, "after")}
+          className={
+            commonClasses +
+            "right-0 " +
+            (isColumn ? "h-full w-1 top-0 " : "w-full h-1 top-full ") +
+            (afterSelected ? selectedClasses : "bg-hoveredBlue")
+          }
+        >
+          {" "}
+          <AddSign editorRef={editorRef} />
+        </div>
+      )}
+    </styledElements.styledComponentWrapperDiv>
+  );
+};
+
+const AddSign = ({
+  editorRef,
+}: {
+  editorRef: React.RefObject<HTMLDivElement | null>;
+}) => {
+  const [marginTop, setMarginTop] = useState<number>(0);
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  const updateSignPosition = () => {
+    if (ref.current && editorRef.current) {
+      const signRect = ref.current.getBoundingClientRect();
+      const editorRect = editorRef.current.getBoundingClientRect();
+
+      // Clear margin
+      let newMargin = 0;
+
+      if (signRect.top <= editorRect.top) {
+        newMargin = 8; // push down if too close to top
+      } else if (signRect.bottom >= editorRect.bottom) {
+        newMargin = -8; // Pull up slightly if near the bottom
+      }
+
+      setMarginTop(newMargin);
+    }
+  };
+
+  useEffect(() => {
+    updateSignPosition();
+
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    // Debounce utility
+    let animationFrame: number;
+    const onScrollOrResize = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(updateSignPosition);
+    };
+
+    editor.addEventListener("scroll", onScrollOrResize);
+    editor.addEventListener("resize", onScrollOrResize);
+
+    return () => {
+      editor.removeEventListener("scroll", onScrollOrResize);
+      editor.removeEventListener("resize", onScrollOrResize);
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [editorRef]);
+
+  return (
+    <div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit"
+      style={{ marginTop }}
+      ref={ref}
+    >
+      +
+    </div>
+  );
+};

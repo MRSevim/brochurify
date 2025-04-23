@@ -20,7 +20,6 @@ export const initialLayout: Layout[] = [
                 type: "column",
                 props: {
                   style: getDefaultStyle("column"),
-
                   child: [
                     {
                       id: uuidv4(),

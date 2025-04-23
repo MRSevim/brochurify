@@ -2,8 +2,6 @@ import {
   handleCenterDragOverCaller,
   handleCenterDropCaller,
   handleDragLeaveCaller,
-  handleSideDragOverCaller,
-  handleSideDropCaller,
 } from "@/utils/DragAndDropHelpers";
 import { componentList } from "@/utils/Helpers";
 import {
@@ -12,7 +10,6 @@ import {
 } from "@/contexts/ToggleContext";
 import {
   selectActive,
-  selectAddLocation,
   selectHoveredId,
   selectLayout,
   selectPageWise,
@@ -20,16 +17,16 @@ import {
   useAppSelector,
 } from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
-import { Layout, Style, Where } from "@/utils/Types";
-import React, { DragEvent, useRef } from "react";
+import { Layout, Style } from "@/utils/Types";
+import React, { useRef } from "react";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { styledElements } from "@/utils/Helpers";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
 import { findElementById } from "@/utils/EditorHelpers";
 import useKeyPresses from "@/utils/hooks/useKeypresses";
 import { useZoom } from "@/contexts/ZoomContext";
-import { useAddSectionToggle } from "@/contexts/AddSectionToggleContext";
-import { setAddLocation } from "@/redux/slices/editorSlice";
+import { SideDropOverlay } from "./SideDropOverlay";
+import EditorActions from "./EditorActions";
 
 const Editor = () => {
   const [layoutToggle] = LayoutToggleContext.Use();
@@ -61,6 +58,7 @@ const EditorInner = () => {
   const [zoom] = useZoom();
   const scale = 1 - zoom / 100;
   const [viewMode] = useViewMode();
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const maxWidth =
     viewMode === "desktop"
@@ -74,6 +72,7 @@ const EditorInner = () => {
       styles={pageWise}
       className={"editor mx-auto " + maxWidth}
       key={globalTrigger}
+      ref={ref}
       style={{
         height: `${100 / scale}%`,
         transform: `scale(${scale})`,
@@ -83,7 +82,7 @@ const EditorInner = () => {
     >
       {" "}
       {data.map((item) => {
-        return <RenderedComponent key={item.id} item={item} />;
+        return <RenderedComponent key={item.id} item={item} editorRef={ref} />;
       })}
     </styledElements.styledEditor>
   );
@@ -91,7 +90,13 @@ const EditorInner = () => {
 
 export default Editor;
 
-const RenderedComponent = ({ item }: { item: Layout }) => {
+const RenderedComponent = ({
+  item,
+  editorRef,
+}: {
+  item: Layout;
+  editorRef: React.RefObject<HTMLDivElement | null>;
+}) => {
   const Component = componentList[item.type as keyof typeof componentList];
   const id = item.id;
   const replayTrigger = useAppSelector((state) => {
@@ -112,7 +117,7 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
   useIntersectionObserver([replayTrigger, animationsString], ref);
 
   return (
-    <SideDropOverlay item={item}>
+    <SideDropOverlay item={item} editorRef={editorRef}>
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
           <Component
@@ -123,101 +128,16 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
             anchorId={item.props.anchorId && "user-" + item.props.anchorId}
           >
             {item.props.child?.map((childItem) => (
-              <RenderedComponent key={childItem.id} item={childItem} />
+              <RenderedComponent
+                key={childItem.id}
+                item={childItem}
+                editorRef={editorRef}
+              />
             ))}
           </Component>
         </CenterDropOverlay>
       </FocusWrapper>
     </SideDropOverlay>
-  );
-};
-const SideDropOverlay = ({
-  item,
-  children,
-}: {
-  item: Layout;
-  children: React.ReactNode;
-}) => {
-  const addLocation = useAppSelector(selectAddLocation);
-  const id = item.id;
-  const beforeSelected =
-    addLocation?.id === id && addLocation?.where === "before";
-  const afterSelected =
-    addLocation?.id === id && addLocation?.where === "after";
-  const dispatch = useAppDispatch();
-  const [, setToggle] = useAddSectionToggle();
-
-  const notFixed = item.type !== "fixed";
-  const isColumn = item.type === "column";
-  const commonClasses =
-    "cursor-pointer absolute flex justify-center align-center opacity-0 hover:opacity-100 transition-opacity duration-200 z-50 ";
-  const selectedClasses = "opacity-100 bg-activeBlue";
-
-  const AddSign = () => (
-    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit">
-      +
-    </div>
-  );
-
-  const handleAddLocationClick = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    where: Where
-  ) => {
-    e.stopPropagation();
-    if (addLocation && addLocation.id === id && addLocation.where === where) {
-      dispatch(setAddLocation(null));
-    } else {
-      dispatch(setAddLocation({ id, where }));
-      setToggle(true);
-    }
-  };
-
-  const handleSideDrop = (e: DragEvent<HTMLElement>) => {
-    handleSideDropCaller(e, dispatch, id);
-  };
-
-  const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
-    handleSideDragOverCaller({ e, id, where, dispatch });
-  };
-  return (
-    <styledElements.styledComponentWrapperDiv
-      className={"block " + (notFixed && "relative")}
-      styles={item.props.style}
-    >
-      {notFixed && (
-        <div
-          onDrop={handleSideDrop}
-          onDragOver={(e) => handleSideDragOver(e, "before")}
-          onDragLeave={() => handleDragLeaveCaller(dispatch)}
-          onClick={(e) => handleAddLocationClick(e, "before")}
-          className={
-            commonClasses +
-            (isColumn ? "h-full w-1 " : "w-full h-1 ") +
-            (beforeSelected ? selectedClasses : "bg-hoveredBlue")
-          }
-        >
-          <AddSign />
-        </div>
-      )}
-      {children}
-      {notFixed && (
-        <div
-          onDrop={handleSideDrop}
-          onDragOver={(e) => handleSideDragOver(e, "after")}
-          onDragLeave={() => handleDragLeaveCaller(dispatch)}
-          onClick={(e) => handleAddLocationClick(e, "after")}
-          className={
-            commonClasses +
-            "right-0 " +
-            (isColumn ? "h-full w-1 top-0 " : "w-full h-1 top-full ") +
-            (afterSelected ? selectedClasses : "bg-hoveredBlue")
-          }
-        >
-          {" "}
-          <AddSign />
-        </div>
-      )}
-    </styledElements.styledComponentWrapperDiv>
   );
 };
 const CenterDropOverlay = ({
@@ -228,15 +148,15 @@ const CenterDropOverlay = ({
   children: React.ReactNode;
 }) => {
   const dispatch = useAppDispatch();
-  const hoveredId = useAppSelector(selectHoveredId);
-  const activeId = useAppSelector(selectActive)?.id;
+  const hovered = useAppSelector(selectHoveredId) === item.id;
+  const active = useAppSelector(selectActive)?.id === item.id;
   return (
     <>
       <div
         className={
           "w-full h-full flex items-center" +
-          (hoveredId === item.id ? " hovered" : "") +
-          (activeId === item.id ? " active" : "")
+          (hovered ? " hovered" : "") +
+          (active ? " active" : "")
         }
         onDrop={(e) => {
           e.stopPropagation();
@@ -248,6 +168,7 @@ const CenterDropOverlay = ({
         }}
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
       >
+        {(active || hovered) && <EditorActions item={item} />}
         {children}
       </div>
     </>
