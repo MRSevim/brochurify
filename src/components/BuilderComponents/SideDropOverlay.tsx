@@ -87,7 +87,7 @@ export const SideDropOverlay = ({
           className={
             commonClasses +
             "right-0 " +
-            (isColumn ? "h-full w-1 top-0 " : "w-full h-1 top-full ") +
+            (isColumn ? "h-full w-1 top-0 " : "w-full h-1 bottom-0 ") +
             (afterSelected ? selectedClasses : "bg-hoveredBlue")
           }
         >

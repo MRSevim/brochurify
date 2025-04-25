@@ -51,9 +51,10 @@ export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
 };
 
 export const styledElements = {
-  styledEditor: styled.div<{ styles: Style }>`
+  styledEditor: styled.div<{ styles: Style | PageWise }>`
     ${({ styles }) => {
-      const style = styleGenerator(styles);
+      const { overflow, ...rest } = styles;
+      const style = styleGenerator(rest);
       const allKeyframes = getAllKeyFrames();
       return style + allKeyframes;
     }};
@@ -111,8 +112,9 @@ export const getPageWise = (): PageWise => {
     color: "#000000",
     "background-color": "#ffffff",
     "font-size": "16px",
-    height: "100%",
+    height: "100vh",
     overflow: "auto",
+    position: "relative",
     "font-family": "inherit",
     "line-height": "1.5",
     iconUrl: "",

@@ -8,7 +8,7 @@ export default function Home() {
         <div className="flex flex-col gap-2 mb-3">
           <h1 className="font-bold text-4xl"> Build a brochure like website</h1>
           <h2 className="text-2xl">And get the html</h2>
-          <Link href="/builder" target="_blank">
+          <Link href="/builder">
             <button className="p-4 bg-slate-400 text-xl	rounded">
               Go to Builder
             </button>

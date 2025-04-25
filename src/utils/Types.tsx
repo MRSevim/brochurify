@@ -90,6 +90,7 @@ export type PageWise = {
   "font-size": string;
   height: string;
   overflow: "auto";
+  position: "relative";
   "font-family": string;
   "line-height": string;
   "container-type": string;

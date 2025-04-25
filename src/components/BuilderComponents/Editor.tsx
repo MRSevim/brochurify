@@ -18,7 +18,7 @@ import {
 } from "@/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
 import { Layout, Style } from "@/utils/Types";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { styledElements } from "@/utils/Helpers";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
@@ -31,54 +31,69 @@ import EditorActions from "./EditorActions";
 const Editor = () => {
   const [layoutToggle] = LayoutToggleContext.Use();
   const [settingsToggle] = SettingsToggleContext.Use();
+  const [zoom] = useZoom();
+  const scale = 1 - zoom / 100;
+  const [viewMode] = useViewMode();
+  const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
+  const pageWise = useAppSelector(selectPageWise);
 
   let addedString;
   if (layoutToggle && settingsToggle) {
     addedString =
       "left-full right-full sm:left-96 sm:right-96 w-screen-both-excluded";
   } else if (layoutToggle) {
-    addedString = "left-full sm:left-96 w-screen-one-excluded";
+    addedString = "left-full sm:left-96 w-screen-one-excluded ";
   } else if (settingsToggle) {
     addedString = "right-full sm:left-0 sm:right-96 w-screen-one-excluded";
   }
-
-  return (
-    <section className={"relative h-full overflow-hidden " + addedString}>
-      <EditorInner />
-    </section>
-  );
-};
-
-const EditorInner = () => {
-  const data = useAppSelector(selectLayout);
-  const pageWise = useAppSelector(selectPageWise);
-  const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
-  useIntersectionObserver([globalTrigger], undefined);
-  useKeyPresses();
-  const [zoom] = useZoom();
-  const scale = 1 - zoom / 100;
-  const [viewMode] = useViewMode();
-  const ref = useRef<HTMLDivElement | null>(null);
-
   const maxWidth =
     viewMode === "desktop"
-      ? undefined
+      ? "max-w-full"
       : viewMode === "tablet"
       ? "max-w-[768]"
       : "max-w-[360]";
 
   return (
+    <section className={"relative h-full overflow-hidden " + addedString}>
+      <div
+        className={"overflow-auto mx-auto " + maxWidth}
+        style={{
+          transform: `scale(${scale})`,
+          transformOrigin: "top center",
+          transition: "all 0.3s ease",
+          height: `${100 / scale}%`,
+          backgroundColor: pageWise["background-color"],
+          maxHeight,
+        }}
+      >
+        <EditorInner setMaxHeight={setMaxHeight} />
+      </div>
+    </section>
+  );
+};
+
+const EditorInner = ({
+  setMaxHeight,
+}: {
+  setMaxHeight: React.Dispatch<React.SetStateAction<number | undefined>>;
+}) => {
+  const data = useAppSelector(selectLayout);
+  const pageWise = useAppSelector(selectPageWise);
+  const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
+  useIntersectionObserver([globalTrigger], undefined);
+  useKeyPresses();
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (ref.current) setMaxHeight(ref.current.scrollHeight);
+  }, []);
+
+  return (
     <styledElements.styledEditor
       styles={pageWise}
-      className={"editor mx-auto " + maxWidth}
+      className="editor"
       key={globalTrigger}
       ref={ref}
-      style={{
-        height: `${100 / scale}%`,
-        transform: `scale(${scale})`,
-        transformOrigin: "top center",
-        transition: "all 0.3s ease",
-      }}
     >
       {" "}
       {data.map((item) => {
@@ -168,7 +183,7 @@ const CenterDropOverlay = ({
         }}
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
       >
-        {(active || hovered) && <EditorActions item={item} />}
+        {active && <EditorActions item={item} />}
         {children}
       </div>
     </>
