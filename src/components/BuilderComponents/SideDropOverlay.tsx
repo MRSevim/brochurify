@@ -11,17 +11,17 @@ import {
   handleSideDropCaller,
 } from "@/utils/DragAndDropHelpers";
 import { Layout, Where } from "@/utils/Types";
-import { DragEvent, RefObject, useEffect, useRef, useState } from "react";
+import { DragEvent, useRef, useState } from "react";
 import { styledElements } from "@/utils/Helpers";
+import usePositionListener from "@/utils/hooks/usePositionListener";
+import { useEditorRef } from "@/contexts/EditorRefContext";
 
 export const SideDropOverlay = ({
   item,
   children,
-  editorRef,
 }: {
   item: Layout;
   children: React.ReactNode;
-  editorRef: React.RefObject<HTMLDivElement | null>;
 }) => {
   const addLocation = useAppSelector(selectAddLocation);
   const id = item.id;
@@ -74,7 +74,7 @@ export const SideDropOverlay = ({
             (beforeSelected ? selectedClasses : "bg-hoveredBlue")
           }
         >
-          <AddSign editorRef={editorRef} />
+          <AddSign />
         </div>
       )}
       {children}
@@ -92,20 +92,17 @@ export const SideDropOverlay = ({
           }
         >
           {" "}
-          <AddSign editorRef={editorRef} />
+          <AddSign />
         </div>
       )}
     </styledElements.styledComponentWrapperDiv>
   );
 };
 
-const AddSign = ({
-  editorRef,
-}: {
-  editorRef: React.RefObject<HTMLDivElement | null>;
-}) => {
+const AddSign = () => {
   const [marginTop, setMarginTop] = useState<number>(0);
   const ref = useRef<HTMLDivElement | null>(null);
+  const editorRef = useEditorRef();
 
   const updateSignPosition = () => {
     if (ref.current && editorRef.current) {
@@ -125,28 +122,7 @@ const AddSign = ({
     }
   };
 
-  useEffect(() => {
-    updateSignPosition();
-
-    const editor = editorRef.current;
-    if (!editor) return;
-
-    // Debounce utility
-    let animationFrame: number;
-    const onScrollOrResize = () => {
-      cancelAnimationFrame(animationFrame);
-      animationFrame = requestAnimationFrame(updateSignPosition);
-    };
-
-    editor.addEventListener("scroll", onScrollOrResize);
-    editor.addEventListener("resize", onScrollOrResize);
-
-    return () => {
-      editor.removeEventListener("scroll", onScrollOrResize);
-      editor.removeEventListener("resize", onScrollOrResize);
-      cancelAnimationFrame(animationFrame);
-    };
-  }, [editorRef]);
+  usePositionListener(updateSignPosition);
 
   return (
     <div

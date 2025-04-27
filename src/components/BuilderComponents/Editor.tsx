@@ -27,6 +27,7 @@ import useKeyPresses from "@/utils/hooks/useKeypresses";
 import { useZoom } from "@/contexts/ZoomContext";
 import { SideDropOverlay } from "./SideDropOverlay";
 import EditorActions from "./EditorActions";
+import { useEditorRef } from "@/contexts/EditorRefContext";
 
 const Editor = () => {
   const [layoutToggle] = LayoutToggleContext.Use();
@@ -36,6 +37,7 @@ const Editor = () => {
   const [viewMode] = useViewMode();
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
   const pageWise = useAppSelector(selectPageWise);
+  const ref = useEditorRef();
 
   let addedString;
   if (layoutToggle && settingsToggle) {
@@ -53,6 +55,12 @@ const Editor = () => {
       ? "max-w-[768]"
       : "max-w-[360]";
 
+  useEffect(() => {
+    if (ref.current) {
+      setMaxHeight(ref.current.scrollHeight);
+    }
+  }, []);
+
   return (
     <section className={"relative h-full overflow-hidden " + addedString}>
       <div
@@ -65,6 +73,7 @@ const Editor = () => {
           backgroundColor: pageWise["background-color"],
           maxHeight,
         }}
+        ref={ref}
       >
         <EditorInner setMaxHeight={setMaxHeight} />
       </div>
@@ -82,22 +91,16 @@ const EditorInner = ({
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   useIntersectionObserver([globalTrigger], undefined);
   useKeyPresses();
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (ref.current) setMaxHeight(ref.current.scrollHeight);
-  }, []);
 
   return (
     <styledElements.styledEditor
       styles={pageWise}
       className="editor"
       key={globalTrigger}
-      ref={ref}
     >
       {" "}
       {data.map((item) => {
-        return <RenderedComponent key={item.id} item={item} editorRef={ref} />;
+        return <RenderedComponent key={item.id} item={item} />;
       })}
     </styledElements.styledEditor>
   );
@@ -105,13 +108,7 @@ const EditorInner = ({
 
 export default Editor;
 
-const RenderedComponent = ({
-  item,
-  editorRef,
-}: {
-  item: Layout;
-  editorRef: React.RefObject<HTMLDivElement | null>;
-}) => {
+const RenderedComponent = ({ item }: { item: Layout }) => {
   const Component = componentList[item.type as keyof typeof componentList];
   const id = item.id;
   const replayTrigger = useAppSelector((state) => {
@@ -132,7 +129,7 @@ const RenderedComponent = ({
   useIntersectionObserver([replayTrigger, animationsString], ref);
 
   return (
-    <SideDropOverlay item={item} editorRef={editorRef}>
+    <SideDropOverlay item={item}>
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
           <Component
@@ -143,11 +140,7 @@ const RenderedComponent = ({
             anchorId={item.props.anchorId && "user-" + item.props.anchorId}
           >
             {item.props.child?.map((childItem) => (
-              <RenderedComponent
-                key={childItem.id}
-                item={childItem}
-                editorRef={editorRef}
-              />
+              <RenderedComponent key={childItem.id} item={childItem} />
             ))}
           </Component>
         </CenterDropOverlay>

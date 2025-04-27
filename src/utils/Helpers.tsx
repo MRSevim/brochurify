@@ -51,7 +51,7 @@ export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
 };
 
 export const styledElements = {
-  styledEditor: styled.div<{ styles: Style | PageWise }>`
+  styledEditor: styled.div<{ styles: PageWise }>`
     ${({ styles }) => {
       const { overflow, ...rest } = styles;
       const style = styleGenerator(rest);

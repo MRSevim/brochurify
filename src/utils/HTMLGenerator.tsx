@@ -7,9 +7,17 @@ import {
 } from "./StyleGenerators";
 import { Layout, PageWise } from "./Types";
 
-export const generateHTML = (layout: Layout[], pageWise: PageWise): string => {
+export const generateHTML = (
+  layout: Layout[],
+  pageWise: PageWise,
+  preview: boolean
+): string => {
   const { title, description, keywords, canonical, image, iconUrl, ...rest } =
     pageWise;
+
+  if (preview) {
+    delete (rest as { overflow?: any }).overflow;
+  }
 
   const renderedBody = renderLayout(layout);
   const fullstylesWithIds =
