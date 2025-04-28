@@ -76,6 +76,7 @@ const Popup = ({
       {type === "link" && <Link editor={editor} />}
       {type === "line-height" && (
         <Slider
+          unit=""
           parse={false}
           title="Pick a line-height"
           min={1}

@@ -15,8 +15,10 @@ const Preview = () => {
   const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (ref.current) setMaxHeight(ref.current.scrollHeight);
-  }, []);
+    if (ref.current) {
+      setMaxHeight(ref.current.scrollHeight);
+    }
+  }, [zoom]);
 
   const maxWidth =
     viewMode === "desktop"
@@ -60,11 +62,23 @@ function ShadowContent({ html }: { html: string }) {
         shadowRef.current = containerRef.current.attachShadow({ mode: "open" });
       }
 
-      // Find <style> tags and replace 'body' with 'shadow-root'
       const newHtml = html.replace(
         /<style[^>]*>([\s\S]*?)<\/style>/g,
         (match, cssContent) => {
-          const modifiedCss = cssContent.replace(/body/g, ":host");
+          // First, find 'body' blocks and update line-height properties
+          let modifiedCss = cssContent.replace(
+            /body\s*{[^}]*}/g,
+            (bodyBlock: string) => {
+              return bodyBlock.replace(
+                /line-height\s*:\s*([^;]+);/g,
+                (lineMatch, value) => `line-height: ${value.trim()} !important;`
+              );
+            }
+          );
+
+          // Then replace 'body' selector with ':host'
+          modifiedCss = modifiedCss.replace(/body/g, ":host");
+
           return `<style>${modifiedCss}</style>`;
         }
       );
@@ -73,5 +87,5 @@ function ShadowContent({ html }: { html: string }) {
     }
   }, [html]);
 
-  return <div ref={containerRef} />;
+  return <div className="relative" ref={containerRef} />;
 }

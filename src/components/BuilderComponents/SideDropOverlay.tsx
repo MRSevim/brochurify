@@ -111,18 +111,17 @@ const AddSign = () => {
 
       // Clear margin
       let newMargin = 0;
-
       if (signRect.top <= editorRect.top) {
-        newMargin = 8; // push down if too close to top
+        newMargin = 15; // push down if too close to top
       } else if (signRect.bottom >= editorRect.bottom) {
-        newMargin = -8; // Pull up slightly if near the bottom
+        newMargin = -15; // Pull up slightly if near the bottom
       }
 
       setMarginTop(newMargin);
     }
   };
 
-  usePositionListener(updateSignPosition);
+  usePositionListener(updateSignPosition, true);
 
   return (
     <div

@@ -12,7 +12,7 @@ const DownloadWrapper = () => {
         type="download"
         size="24px"
         onClick={() => {
-          const generatedHTML = generateHTML(layout, pageWise);
+          const generatedHTML = generateHTML(layout, pageWise, false);
           // Create a Blob from the HTML string
           const blob = new Blob([generatedHTML], { type: "text/html" });
 

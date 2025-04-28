@@ -13,8 +13,8 @@ import usePositionListener from "@/utils/hooks/usePositionListener";
 const EditorActions = ({ item }: { item: Layout }) => {
   const dispatch = useAppDispatch();
   const isColumn = item.type === "column";
-  const [marginTop, setMarginTop] = useState<number>(0);
-  const [marginLeft, setMarginLeft] = useState<number>(0);
+  const [translateY, setTranslateY] = useState<number>(0);
+  const [translateX, setTranslateX] = useState<number>(0);
   const ref = useRef<HTMLDivElement | null>(null);
   const editorRef = useEditorRef();
 
@@ -22,16 +22,17 @@ const EditorActions = ({ item }: { item: Layout }) => {
     if (ref.current && editorRef.current) {
       const actionsRect = ref.current.getBoundingClientRect();
       const editorRect = editorRef.current.getBoundingClientRect();
-      // Clear margin
-      let newMarginTop = 0;
-
-      if (actionsRect.top <= editorRect.top) {
-        newMarginTop = editorRect.top - actionsRect.top; // push down if too close to top
-      } else if (actionsRect.bottom >= editorRect.bottom) {
-        newMarginTop = -(actionsRect.bottom - editorRect.bottom); // Pull up slightly if near the bottom
+      let offset = 0;
+      if (actionsRect.top < editorRect.top) {
+        offset = editorRect.top - actionsRect.top; // push down
+      } else if (actionsRect.bottom > editorRect.bottom) {
+        offset = editorRect.bottom - actionsRect.bottom; // pull up
       }
 
-      setMarginTop(newMarginTop);
+      setTranslateY(offset);
+
+      if (actionsRect.left < editorRect.left)
+        setTranslateX(editorRect.left - actionsRect.left);
     }
   };
   usePositionListener(updateActionsPosition);
@@ -70,8 +71,11 @@ const EditorActions = ({ item }: { item: Layout }) => {
   return (
     <div
       ref={ref}
-      className="absolute editor-actions right-0 flex flex-col z-[70]"
-      style={{ marginTop: "100px", marginLeft }}
+      className="absolute editor-actions right-0 flex flex-col z-[70] min-w-[26px]"
+      style={{
+        transform: `translate(${translateX}px,${translateY}px)`,
+        transition: "transform 0.2s ease",
+      }}
     >
       {icons.map((icon) => (
         <div

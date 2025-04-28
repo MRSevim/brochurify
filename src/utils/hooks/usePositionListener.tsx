@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 import { useEditorRef } from "@/contexts/EditorRefContext";
 
-export default function usePositionListener(update: () => void) {
+export default function usePositionListener(
+  update: () => void,
+  listener = false
+) {
   const editorRef = useEditorRef();
 
   useEffect(() => {
@@ -15,10 +18,10 @@ export default function usePositionListener(update: () => void) {
       cancelAnimationFrame(animationFrame);
       animationFrame = requestAnimationFrame(update);
     };
-
-    editor.addEventListener("scroll", onScrollOrResize);
-    editor.addEventListener("resize", onScrollOrResize);
-
+    if (listener) {
+      editor.addEventListener("scroll", onScrollOrResize);
+      editor.addEventListener("resize", onScrollOrResize);
+    }
     return () => {
       editor.removeEventListener("scroll", onScrollOrResize);
       editor.removeEventListener("resize", onScrollOrResize);

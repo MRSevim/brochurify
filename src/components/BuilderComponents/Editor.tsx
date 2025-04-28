@@ -59,7 +59,7 @@ const Editor = () => {
     if (ref.current) {
       setMaxHeight(ref.current.scrollHeight);
     }
-  }, []);
+  }, [zoom]);
 
   return (
     <section className={"relative h-full overflow-hidden " + addedString}>
@@ -75,17 +75,13 @@ const Editor = () => {
         }}
         ref={ref}
       >
-        <EditorInner setMaxHeight={setMaxHeight} />
+        <EditorInner />
       </div>
     </section>
   );
 };
 
-const EditorInner = ({
-  setMaxHeight,
-}: {
-  setMaxHeight: React.Dispatch<React.SetStateAction<number | undefined>>;
-}) => {
+const EditorInner = () => {
   const data = useAppSelector(selectLayout);
   const pageWise = useAppSelector(selectPageWise);
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
@@ -95,7 +91,7 @@ const EditorInner = ({
   return (
     <styledElements.styledEditor
       styles={pageWise}
-      className="editor"
+      className="editor relative"
       key={globalTrigger}
     >
       {" "}
