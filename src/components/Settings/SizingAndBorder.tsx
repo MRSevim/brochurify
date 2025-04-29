@@ -25,6 +25,7 @@ import SecondaryTitle from "../SecondaryTitle";
 import BottomLine from "../BottomLine";
 import GroupedRadioButtons from "../GroupedRadioButtons";
 import InfoIcon from "../InfoIcon";
+import Checkbox from "../Checkbox";
 
 const sizingTypeArray: SizingType[] = [
   {
@@ -87,7 +88,7 @@ export const WidthAndHeight = () => {
         <NumberController type="width" outerType={outerType} />
         <NumberController type="height" outerType={outerType} />
       </div>
-
+      <Hide />
       <BottomLine />
     </div>
   );
@@ -237,6 +238,8 @@ const NumberController = ({
   );
 };
 
+const units = ["px", "em", "%"];
+
 const MarginOrPadding = ({
   sizingTypeArray,
   type,
@@ -248,10 +251,7 @@ const MarginOrPadding = ({
   const dispatch = useAppDispatch();
   const variable = getSetting(useAppSelector, type);
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    i: number | undefined
-  ) => {
+  const handleInputChange = (e: string, i: number | undefined) => {
     const dispatchFunc = (type: string, newValue: string) => {
       dispatch(
         changeElementStyle({
@@ -261,19 +261,12 @@ const MarginOrPadding = ({
       );
     };
     if (i !== undefined) {
-      dispatchFunc(
-        type,
-        setValueFromShorthandStr(variable, i, e.target.value + "px")
-      );
+      dispatchFunc(type, setValueFromShorthandStr(variable, i, e));
     } else {
       let updatedVariable = variable || "";
 
       sizingTypeArray?.forEach((item, i) => {
-        updatedVariable = setValueFromShorthandStr(
-          updatedVariable,
-          i,
-          e.target.value + "px"
-        );
+        updatedVariable = setValueFromShorthandStr(updatedVariable, i, e);
       });
       dispatchFunc(type, updatedVariable);
     }
@@ -294,12 +287,10 @@ const MarginOrPadding = ({
         <>
           {sizingTypeArray.map((item, i) => (
             <Slider
-              parse={true}
+              units={units}
               key={i}
               value={getValueFromShorthandStr(variable, i)}
-              min={0}
               max={50}
-              step={2}
               title={item.title}
               onChange={(e) => handleInputChange(e, i)}
             />
@@ -308,11 +299,9 @@ const MarginOrPadding = ({
       )}
       {!toggle && (
         <Slider
-          parse={true}
+          units={units}
           value={getValueFromShorthandStr(variable, 0)}
-          min={0}
           max={50}
-          step={2}
           title={"All sides"}
           onChange={(e) => handleInputChange(e, undefined)}
         />
@@ -328,20 +317,63 @@ const Size = () => {
   const variable = getSetting(useAppSelector, type);
   return (
     <Slider
-      parse={true}
       value={variable || "25px"}
-      min={5}
       max={80}
       step={2}
       title="Size"
-      onChange={(e) =>
+      onChange={(newValue) =>
         dispatch(
           changeElementStyle({
             type,
-            newValue: e.target.value + "px",
+            newValue,
           })
         )
       }
+    />
+  );
+};
+const Hide = () => {
+  return (
+    <div className="relative pb-2 mb-2">
+      <TabletOrMobile
+        title="Hide on tablet and below"
+        outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
+      />
+      <TabletOrMobile
+        title="Hide on mobile and below"
+        outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
+      />
+      <BottomLine />
+    </div>
+  );
+};
+
+const TabletOrMobile = ({
+  title,
+  outerType,
+}: {
+  title: string;
+  outerType: string;
+}) => {
+  const hidden = "none";
+  const innerType = "display";
+  const variable = getSetting(useAppSelector, outerType, innerType);
+  const dispatch = useAppDispatch();
+  const checked = variable === hidden;
+
+  return (
+    <Checkbox
+      title={title}
+      checked={checked}
+      onChange={() => {
+        dispatch(
+          changeInnerElementStyle({
+            outerType,
+            innerType,
+            newValue: checked ? "" : hidden,
+          })
+        );
+      }}
     />
   );
 };

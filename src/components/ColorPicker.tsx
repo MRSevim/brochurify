@@ -44,8 +44,8 @@ const ColorPicker = ({
     onChange(newHex);
   };
 
-  const handleAlphaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const percent = parseInt(e.target.value); // 0–100
+  const handleAlphaChange = (e: string) => {
+    const percent = parseInt(e); // 0–100
     const newAlpha = Math.round((percent / 100) * 255); // convert to 0–255
     const newHex = hexToHexWithAlpha(hex, newAlpha);
     onChange(newHex);
@@ -74,14 +74,13 @@ const ColorPicker = ({
           </div>
         </div>
         <Slider
-          unit="%"
+          showManualInput={false}
           value={Math.round((alpha / 255) * 100).toString()} // shows percentage
           min={0}
           max={100}
           step={1}
           title="Opacity"
           onChange={handleAlphaChange}
-          parse={true}
         />
       </div>
       {variableSelect && (

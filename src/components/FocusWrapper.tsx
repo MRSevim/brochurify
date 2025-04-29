@@ -30,6 +30,10 @@ const FocusWrapper = ({
         e.stopPropagation();
         dispatch(setHovered(itemId));
       }}
+      onMouseLeave={(e) => {
+        e.stopPropagation();
+        dispatch(setHovered(undefined));
+      }}
       onDragStart={(e) => {
         e.stopPropagation();
         dispatch(setDropHandled(false));

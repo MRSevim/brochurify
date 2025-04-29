@@ -265,9 +265,9 @@ const renderLayout = (items: Layout[]): string => {
         return `<div class="block ${isFixed ? "" : "relative"}" id="idwrapper${
           item.id
         }">
-        <div class="flex wAndHFull" id="user-${
-          item.props.anchorId
-        }">${html}</div></div>`;
+        <div class="flex wAndHFull" ${
+          item.props.anchorId ? `id="user-${item.props.anchorId}"` : ""
+        }>${html}</div></div>`;
       };
 
       const rendered = `<${renderedType} id="id${item.id}" ${

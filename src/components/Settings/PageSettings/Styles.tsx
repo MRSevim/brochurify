@@ -13,7 +13,6 @@ import {
   getSetting,
 } from "@/utils/Helpers";
 import HeadingStyles from "./HeadingStyles";
-import { Style } from "@/utils/Types";
 
 const Styles = () => {
   return (
@@ -103,17 +102,16 @@ const FontSize = () => {
   return (
     <div className="relative pb-2 mb-2">
       <Slider
-        parse={true}
         title="Select pagewise font size"
-        min={1}
         max={70}
         step={1}
+        units={["px"]}
         value={variable || "16px"}
-        onChange={(e) =>
+        onChange={(newValue) =>
           dispatch(
             changeElementStyle({
               type,
-              newValue: e.target.value + "px",
+              newValue,
             })
           )
         }
@@ -160,18 +158,16 @@ const LineHeight = () => {
   return (
     <div className="relative pb-2 mb-2">
       <Slider
-        parse={false}
         title="Select pagewise line-height"
-        min={1}
         max={5}
-        unit=""
-        step={0.5}
+        units={["", "px", "em", "%"]}
+        step={0.1}
         value={variable || "1.5"}
-        onChange={(e) =>
+        onChange={(newValue) =>
           dispatch(
             changeElementStyle({
               type,
-              newValue: e.target.value,
+              newValue,
             })
           )
         }

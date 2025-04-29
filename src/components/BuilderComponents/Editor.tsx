@@ -26,7 +26,6 @@ import { findElementById } from "@/utils/EditorHelpers";
 import useKeyPresses from "@/utils/hooks/useKeypresses";
 import { useZoom } from "@/contexts/ZoomContext";
 import { SideDropOverlay } from "./SideDropOverlay";
-import EditorActions from "./EditorActions";
 import { useEditorRef } from "@/contexts/EditorRefContext";
 
 const Editor = () => {
@@ -38,6 +37,7 @@ const Editor = () => {
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
   const pageWise = useAppSelector(selectPageWise);
   const ref = useEditorRef();
+  const data = useAppSelector(selectLayout);
 
   let addedString;
   if (layoutToggle && settingsToggle) {
@@ -75,14 +75,17 @@ const Editor = () => {
         }}
         ref={ref}
       >
-        <EditorInner />
+        <EditorInner>
+          {data.map((item) => {
+            return <RenderedComponent key={item.id} item={item} />;
+          })}
+        </EditorInner>
       </div>
     </section>
   );
 };
 
-const EditorInner = () => {
-  const data = useAppSelector(selectLayout);
+const EditorInner = ({ children }: { children: React.ReactNode }) => {
   const pageWise = useAppSelector(selectPageWise);
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   useIntersectionObserver([globalTrigger], undefined);
@@ -95,9 +98,7 @@ const EditorInner = () => {
       key={globalTrigger}
     >
       {" "}
-      {data.map((item) => {
-        return <RenderedComponent key={item.id} item={item} />;
-      })}
+      {children}
     </styledElements.styledEditor>
   );
 };
@@ -172,7 +173,6 @@ const CenterDropOverlay = ({
         }}
         onDragLeave={() => handleDragLeaveCaller(dispatch)}
       >
-        {active && <EditorActions item={item} />}
         {children}
       </div>
     </>

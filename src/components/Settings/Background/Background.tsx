@@ -86,13 +86,11 @@ const BackgroundShadow = () => {
       dispatch(removeElementStyle({ type }));
     }
   };
-  const handleChange = (e: AppChangeEvent | string, i: number) => {
-    const px = i !== 4 ? "px" : "";
-    const value = i !== 4 && typeof e !== "string" ? e.target.value : e;
+  const handleChange = (e: string, i: number) => {
     dispatch(
       changeElementStyle({
         type,
-        newValue: setValueFromShorthandStr(variable, i, value + px),
+        newValue: setValueFromShorthandStr(variable, i, e),
       })
     );
   };
@@ -143,7 +141,7 @@ const BackgroundShadowSlider = ({
 }: {
   value: string;
   title: string;
-  onChange: HandleChangeType;
+  onChange: (e: string) => void;
 }) => {
   return (
     <Slider
@@ -153,7 +151,6 @@ const BackgroundShadowSlider = ({
       value={value}
       title={title}
       onChange={onChange}
-      parse={true}
     />
   );
 };

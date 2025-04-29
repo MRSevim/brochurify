@@ -294,8 +294,8 @@ export const capitalizeFirstLetter = (str: string) => {
 
 export const getUnit = (value: string | undefined) => {
   if (!value) return;
-  const match = value.match(/\d+(px|%)|auto/);
-  return match ? match[0].replace(/\d+/, "") : null;
+  const match = value.match(/[\d.\-+]*\s*(.*)/);
+  return match ? match[1] : "";
 };
 
 /*getSetting overloads*/

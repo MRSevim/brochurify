@@ -54,7 +54,7 @@ export const editorSlice = createSlice({
     setActive: (state, action: PayloadAction<LayoutOrUnd>) => {
       setActiveInner(state, action.payload);
     },
-    setHovered: (state, action: PayloadAction<string>) => {
+    setHovered: (state, action: PayloadAction<string | undefined>) => {
       state.hovered = action.payload;
     },
     hydrate: (state, action: PayloadAction<EditorState>) => {
@@ -324,19 +324,6 @@ export const editorSlice = createSlice({
 
       state.layout = changeProp(state.layout); // Update the state layout with the modified structure
     },
-    updateText: (state, action: PayloadAction<string>) => {
-      const activeId = state.active?.id;
-      if (!activeId) {
-        toast.error("Active id not found");
-        return;
-      }
-      const element = findElementById(state.layout, activeId);
-      if (!element) {
-        toast.error("Element not found");
-        return;
-      }
-      element.props.text = action.payload;
-    },
     addVariable: (state, action: PayloadAction<Variable>) => {
       const newVariable = { id: uuidv4(), ...action.payload };
       state.variables.push(newVariable);
@@ -500,7 +487,6 @@ export const {
   changeElementStyle,
   removeElementStyle,
   changeElementProp,
-  updateText,
   addVariable,
   editVariable,
   deleteVariable,

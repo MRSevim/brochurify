@@ -1,5 +1,6 @@
 import { useAddSectionToggle } from "@/contexts/AddSectionToggleContext";
 import {
+  selectActive,
   selectAddLocation,
   useAppDispatch,
   useAppSelector,
@@ -11,10 +12,11 @@ import {
   handleSideDropCaller,
 } from "@/utils/DragAndDropHelpers";
 import { Layout, Where } from "@/utils/Types";
-import { DragEvent, useRef, useState } from "react";
+import { DragEvent, useEffect, useRef, useState } from "react";
 import { styledElements } from "@/utils/Helpers";
 import usePositionListener from "@/utils/hooks/usePositionListener";
 import { useEditorRef } from "@/contexts/EditorRefContext";
+import EditorActions from "./EditorActions";
 
 export const SideDropOverlay = ({
   item,
@@ -33,6 +35,8 @@ export const SideDropOverlay = ({
   const [, setToggle] = useAddSectionToggle();
   const notFixed = item.type !== "fixed";
   const isColumn = item.type === "column";
+  const active = useAppSelector(selectActive)?.id === item.id;
+
   const commonClasses =
     "cursor-pointer absolute flex justify-center align-center opacity-0 hover:opacity-100 transition-opacity duration-200 z-[60] ";
   const selectedClasses = "opacity-100 bg-activeBlue";
@@ -57,6 +61,7 @@ export const SideDropOverlay = ({
   const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
     handleSideDragOverCaller({ e, id, where, dispatch });
   };
+
   return (
     <styledElements.styledComponentWrapperDiv
       className={"block " + (notFixed && "relative")}
@@ -77,6 +82,7 @@ export const SideDropOverlay = ({
           <AddSign />
         </div>
       )}
+      {active && <EditorActions item={item} />}
       {children}
       {notFixed && (
         <div
@@ -105,20 +111,21 @@ const AddSign = () => {
   const editorRef = useEditorRef();
 
   const updateSignPosition = () => {
-    if (ref.current && editorRef.current) {
-      const signRect = ref.current.getBoundingClientRect();
-      const editorRect = editorRef.current.getBoundingClientRect();
+    requestAnimationFrame(() => {
+      if (ref.current && editorRef.current) {
+        const signRect = ref.current.getBoundingClientRect();
+        const editorRect = editorRef.current.getBoundingClientRect();
 
-      // Clear margin
-      let newMargin = 0;
-      if (signRect.top <= editorRect.top) {
-        newMargin = 15; // push down if too close to top
-      } else if (signRect.bottom >= editorRect.bottom) {
-        newMargin = -15; // Pull up slightly if near the bottom
+        let newMargin = 0;
+        if (signRect.top <= editorRect.top) {
+          newMargin = 12;
+        } else if (signRect.bottom >= editorRect.bottom) {
+          newMargin = -12;
+        }
+
+        setMarginTop(newMargin);
       }
-
-      setMarginTop(newMargin);
-    }
+    });
   };
 
   usePositionListener(updateSignPosition, true);

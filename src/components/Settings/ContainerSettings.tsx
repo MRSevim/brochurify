@@ -28,7 +28,7 @@ const MaxWidth = () => {
   return (
     <div className="relative pb-2 mb-2">
       <NumberInput
-        title="Maximum width of the container"
+        title="Maximum width of the container (in pixels)"
         value={variable || ""}
         onChange={(e) =>
           dispatch(
@@ -49,22 +49,15 @@ const Padding = () => {
   return (
     <div className="relative pb-2 mb-2">
       <Slider
-        parse={true}
         key={i}
         value={getValueFromShorthandStr(variable, i)}
-        min={0}
         max={50}
-        step={2}
         title="Horizontal padding"
         onChange={(e) =>
           dispatch(
             changeElementStyle({
               type,
-              newValue: setValueFromShorthandStr(
-                variable,
-                i,
-                e.target.value + "px"
-              ),
+              newValue: setValueFromShorthandStr(variable, i, e),
             })
           )
         }

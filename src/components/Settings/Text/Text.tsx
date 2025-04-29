@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { HeadingLevel } from "@/utils/Types";
 import SecondaryTitle from "../../SecondaryTitle";
 import Popup from "./Popup";
-import { updateText } from "@/redux/slices/editorSlice";
+import { changeElementProp } from "@/redux/slices/editorSlice";
 import sanitizeHtml from "sanitize-html";
 import LetterSpacing from "@/Tiptap/LetterSpacing";
 
@@ -115,7 +115,7 @@ const Text = () => {
         },
       });
 
-      dispatch(updateText(cleanHtml));
+      dispatch(changeElementProp({ type: "text", newValue: cleanHtml }));
     };
 
     editor.on("update", updateHandler);
@@ -124,6 +124,13 @@ const Text = () => {
       editor.off("update", updateHandler); // Cleanup event listener
     };
   }, [editor, dispatch]);
+
+  //Listen for content change from outside
+  useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content, false); // false = don't emit new update event
+    }
+  }, [content, editor]);
 
   return (
     <div className="relative pb-2 mb-2">

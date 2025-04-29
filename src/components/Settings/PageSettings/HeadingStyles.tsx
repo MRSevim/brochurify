@@ -70,19 +70,18 @@ const FontSize = ({ outerType }: { outerType: string }) => {
   return (
     <>
       <Slider
-        parse={true}
-        title={`Select ${outerType} font size (relative to base font size)`}
+        title={`Select ${outerType} font size`}
         min={0}
         max={5}
         step={0.5}
-        unit="x"
+        units={["em", "px"]}
         value={variable || "1"}
-        onChange={(e) =>
+        onChange={(newValue) =>
           dispatch(
             changeInnerElementStyle({
               outerType,
               innerType,
-              newValue: e.target.value + "em",
+              newValue,
             })
           )
         }

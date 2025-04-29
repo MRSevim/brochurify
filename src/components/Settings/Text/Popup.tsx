@@ -54,7 +54,6 @@ const Popup = ({
       )}
       {type === "font-size" && (
         <Slider
-          parse={true}
           title="Pick a font size"
           min={1}
           max={70}
@@ -64,20 +63,13 @@ const Popup = ({
             pageWise.fontSize ||
             "16px"
           }
-          onChange={(e) =>
-            editor
-              .chain()
-              .focus()
-              .setFontSize(e.target.value + "px")
-              .run()
-          }
+          onChange={(e) => editor.chain().focus().setFontSize(e).run()}
         />
       )}
       {type === "link" && <Link editor={editor} />}
       {type === "line-height" && (
         <Slider
-          unit=""
-          parse={false}
+          units={["", "px", "em", "%"]}
           title="Pick a line-height"
           min={1}
           max={5}
@@ -88,15 +80,16 @@ const Popup = ({
             pageWise.lineHeight ||
             "1.5"
           }
-          onChange={(e) =>
-            editor.chain().focus().setLineHeight(e.target.value).run()
-          }
+          onChange={(e) => {
+            console.log(e);
+            editor.chain().focus().setLineHeight(e).run();
+          }}
         />
       )}
       {type === "letter-spacing" && (
         <Slider
-          parse={true}
           title="Pick a letter spacing"
+          units={["px", "em"]}
           min={-5}
           max={40}
           step={1}
@@ -105,13 +98,7 @@ const Popup = ({
             editor.getAttributes("heading").letterSpacing ||
             "0px"
           }
-          onChange={(e) =>
-            editor
-              .chain()
-              .focus()
-              .setLetterSpacing(e.target.value + "px")
-              .run()
-          }
+          onChange={(e) => editor.chain().focus().setLetterSpacing(e).run()}
         />
       )}
       {children}

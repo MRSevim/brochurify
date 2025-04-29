@@ -134,11 +134,11 @@ const Reverse = () => {
   return (
     <div className="relative pb-2 mb-2">
       <TabletOrMobile
-        title="Reverse on tablet"
+        title="Reverse on tablet and below"
         outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
       />
       <TabletOrMobile
-        title="Reverse on mobile"
+        title="Reverse on mobile and below"
         outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
       />
       <SmallText>Only reverses if items are stacked</SmallText>
