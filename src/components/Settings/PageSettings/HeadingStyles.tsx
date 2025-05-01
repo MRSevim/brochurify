@@ -1,11 +1,8 @@
 import Select from "@/components/Select";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
 import {
-  changeElementStyle,
-  changeInnerElementStyle,
-} from "@/redux/slices/editorSlice";
-import {
-  fontOptions,
+  defaultInheritFontOptions,
   getFontVariables,
   getPageWise,
   getSetting,
@@ -17,7 +14,7 @@ import ResetButton from "@/components/ResetButton";
 import { Style } from "@/utils/Types";
 
 const HeadingStyles = () => {
-  const outerType = "h1,h2,h3,h4,h5,h6";
+  const outerType = "h1,h2,h3";
 
   return (
     <div className="relative pb-2 mb-2">
@@ -45,7 +42,7 @@ const FontFamily = ({ outerType }: { outerType: string }) => {
       <Select
         title="Select heading font family"
         showStyled={true}
-        options={[...fontOptions, ...fontVariables]}
+        options={[...fontVariables, ...defaultInheritFontOptions]}
         selected={variable || ""}
         onChange={(e) => {
           dispatch(
@@ -99,7 +96,6 @@ export const ResetButtonWithOnClick = ({
   innerType: string;
 }) => {
   const dispatch = useAppDispatch();
-
   return (
     <ResetButton
       onClick={() => {

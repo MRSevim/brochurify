@@ -1,5 +1,6 @@
 import { hasType } from "./EditorHelpers";
-import { detectTag } from "./Helpers";
+import { mapOverFonts } from "./GoogleFonts";
+import { detectTag, getUsedFontsFromHTML } from "./Helpers";
 import {
   fullStylesWithIdsGenerator,
   keyframeGenerator,
@@ -26,46 +27,46 @@ export const generateHTML = (
 
   const keyframes = keyframeGenerator(fullstylesWithIds);
 
-  return (
-    "<!DOCTYPE html>" +
-    `<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title || "Generated Page"}</title>
+  const baseHTMLHead = `<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title || "Generated Page"}</title>
+    ${
+      title
+        ? `<meta property="og:title" content="${title}">
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta property="twitter:title" content="${title}">`
+        : ""
+    }
   ${
-    title
-      ? `<meta property="og:title" content="${title}">
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:title" content="${title}">`
+    description
+      ? `<meta name="description" content="${description}">
+        <meta property="og:description" content="${description}">
+        <meta property="twitter:description" content="${description}">`
       : ""
   }
-${
-  description
-    ? `<meta name="description" content="${description}">
-      <meta property="og:description" content="${description}">
-      <meta property="twitter:description" content="${description}">`
-    : ""
-}
-${keywords ? `<meta name="keywords" content="${keywords}">` : ""}
-${
-  canonical
-    ? `<link rel="canonical" href="${canonical}">
-        <meta property="og:url" content="${canonical}" />`
-    : ""
-}
+  ${keywords ? `<meta name="keywords" content="${keywords}">` : ""}
   ${
-    image
-      ? `
-        <meta property="og:image" content="${image}" />
-        <meta name="twitter:image" content="${image}">
-        `
+    canonical
+      ? `<link rel="canonical" href="${canonical}">
+          <meta property="og:url" content="${canonical}" />`
       : ""
   }
-  ${iconUrl ? `<link rel="icon" href="${iconUrl}">` : ""}
-  ${
-    keyframes
-      ? `<script>   
+    ${
+      image
+        ? `
+          <meta property="og:image" content="${image}" />
+          <meta name="twitter:image" content="${image}">
+          `
+        : ""
+    }
+    ${iconUrl ? `<link rel="icon" href="${iconUrl}">` : ""}
+    ${
+      hasType(layout, "icon")
+        ? '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">'
+        : ""
+    }`;
+  const observerScript = keyframes
+    ? `<script>   
     document.addEventListener("DOMContentLoaded", () => {
     const observer = new IntersectionObserver((entries, observer) => {
       entries
@@ -83,78 +84,93 @@ ${
     });
     });
     </script>`
-      : ""
-  }
-<style>
-${getCssReset()}
-  body {
-  ${styleGenerator(rest)}
-  }
-  html {
-    height:100%;
-    width:100%
-  }  
-  ${
-    detectTag("blockquote", renderedBody)
-      ? `blockquote {
-      margin-top: 10px;
-      margin-bottom: 10px;
-      margin-left: 30px;
-      padding-left: 15px;
-      border-left: 3px solid var(--gray);
-    }`
-      : ""
-  }
-  ${
-    detectTag("ul", renderedBody) || detectTag("ol", renderedBody)
-      ? `ul,ol {
-      list-style-position: inside;
+    : "";
+  const additionalStyles = `<style>
+    ${getCssReset()}
+      body {
+      ${styleGenerator(rest)}
       }
-      ul li p,
-      ol li p {
-        display: inline;
-      }`
-      : ""
-  }
-  ${
-    detectTag("hr", renderedBody)
-      ? `hr {
-      border-top: 1px solid var(--gray);
-      }`
-      : ""
-  }
-  ${
-    detectTag("table", renderedBody)
-      ? `table,
-      th,
-      td {
-        border: 1px solid;
-        border-collapse: collapse;
+      html {
+        height:100%;
+        width:100%
+      }  
+      ${
+        detectTag("blockquote", renderedBody)
+          ? `blockquote {
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-left: 30px;
+          padding-left: 15px;
+          border-left: 3px solid var(--gray);
+        }`
+          : ""
       }
-      th {
-        background-color: var(--gray);
+      ${
+        detectTag("ul", renderedBody) || detectTag("ol", renderedBody)
+          ? `ul,ol {
+          list-style-position: inside;
+          }
+          ul li p,
+          ol li p {
+            display: inline;
+          }`
+          : ""
       }
-      th,
-      td {
-        padding: 5px;
-      }`
-      : ""
-  }
-  ${fullstylesWithIds}  
-  ${keyframes}
-</style>
-${
-  hasType(layout, "icon")
-    ? '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">'
-    : ""
-}
+      ${
+        detectTag("hr", renderedBody)
+          ? `hr {
+          border-top: 1px solid var(--gray);
+          }`
+          : ""
+      }
+      ${
+        detectTag("table", renderedBody)
+          ? `table,
+          th,
+          td {
+            border: 1px solid;
+            border-collapse: collapse;
+          }
+          th {
+            background-color: var(--gray);
+          }
+          th,
+          td {
+            padding: 5px;
+          }`
+          : ""
+      }
+      ${fullstylesWithIds}  
+      ${keyframes}
+    </style>`;
+  const tempHTML = `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+      ${baseHTMLHead}
+      ${observerScript}
+      ${additionalStyles}
+      </head>
+      <body>
+      ${renderedBody}
+      </body>
+      </html>`;
 
-</head>
-<body>
-${renderedBody}
-</body>
-</html>`
-  );
+  const fonts = getUsedFontsFromHTML(tempHTML);
+  const fontLinks = mapOverFonts(fonts);
+  const finalHTML = `<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  ${fontLinks}
+  ${baseHTMLHead}
+  ${observerScript}
+  ${additionalStyles}
+  </head>
+  <body>
+  ${renderedBody}
+  </body>
+  </html>`;
+
+  return finalHTML;
 };
 
 const getCssReset = () => {

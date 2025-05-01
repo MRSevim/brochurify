@@ -45,10 +45,13 @@ const Select = ({
           return (
             <option
               key={i}
-              value={optionValue}
+              value={
+                (item as OptionsObject).id
+                  ? optionValue + "-id:" + (item as OptionsObject).id
+                  : optionValue
+              }
               style={{
-                fontFamily:
-                  showStyled && item !== "initial" ? optionValue : "inherit",
+                fontFamily: showStyled ? optionValue : "inherit",
               }}
             >
               {optionLabel}

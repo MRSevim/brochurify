@@ -99,6 +99,10 @@ export const styleGenerator = (style: Style): string => {
         if (key === "background-image") {
           return `${key}: linear-gradient(${bgColor}), ${value};`;
         }
+        if (key === "font-family") {
+          const cleanFont = value.split("-id:")[0];
+          return `${key}: ${cleanFont};`;
+        }
 
         return `${key}: ${value};`;
       }

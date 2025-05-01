@@ -142,7 +142,7 @@ export type SizingType = {
   title: string;
 };
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
-export type OptionsObject = { title: string; value: string };
+export type OptionsObject = { id?: string; title: string; value: string };
 export type AppChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 export type HandleChangeType = (e: AppChangeEvent, i?: number) => void;
 export type SavePopup = "saving" | "saved" | null;

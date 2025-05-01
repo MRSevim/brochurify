@@ -44,16 +44,15 @@ const Border = () => {
     }
   };
 
-  const handleChange = (e: AppChangeEvent | string, i: number) => {
-    const px = i === 0 ? "px" : "";
-    const value = i !== 2 && typeof e !== "string" ? e.target.value : e;
+  const handleChange = (e: string, i: number) => {
     dispatch(
       changeElementStyle({
         type,
-        newValue: setValueFromShorthandStr(borderStr, i, value + px),
+        newValue: setValueFromShorthandStr(borderStr, i, e),
       })
     );
   };
+
   return (
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Border">
@@ -62,7 +61,7 @@ const Border = () => {
       {toggled && (
         <>
           <Slider
-            parse={true}
+            units={["px", "em"]}
             value={getValueFromShorthandStr(borderStr, 0)}
             min={0}
             max={50}
@@ -87,17 +86,17 @@ const Border = () => {
             value={getValueFromShorthandStr(borderStr, 2)}
           />
           <Slider
-            parse={true}
+            units={["px", "%"]}
             value={borderRadiusValue || "0"}
             min={0}
             max={50}
             step={1}
-            title={"Border Radius (%)"}
-            onChange={(e) =>
+            title={"Border Radius"}
+            onChange={(newValue) =>
               dispatch(
                 changeElementStyle({
                   type: borderRadiusType,
-                  newValue: e.target.value + "%",
+                  newValue,
                 })
               )
             }
@@ -133,7 +132,7 @@ const BorderType = ({
   onChange,
   value,
 }: {
-  onChange: HandleChangeType;
+  onChange: (e: string) => void;
   value: string;
 }) => {
   const types = [
@@ -152,7 +151,7 @@ const BorderType = ({
       title={"Select a border type"}
       options={types}
       selected={value}
-      onChange={onChange}
+      onChange={(e) => onChange(e.target.value)}
     />
   );
 };

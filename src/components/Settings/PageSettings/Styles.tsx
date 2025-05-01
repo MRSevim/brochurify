@@ -133,7 +133,7 @@ const FontFamily = () => {
       <Select
         title="Select pagewise font family"
         showStyled={true}
-        options={[...fontOptions, ...fontVariables]}
+        options={[...fontVariables, ...fontOptions]}
         selected={variable || ""}
         onChange={(e) => {
           dispatch(

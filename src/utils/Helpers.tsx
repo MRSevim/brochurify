@@ -29,6 +29,7 @@ import {
   styleGenerator,
 } from "./StyleGenerators";
 import Fixed from "@/components/BuilderComponents/Fixed";
+import { googleFontOptions } from "./GoogleFonts";
 
 export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
   const observer = new IntersectionObserver((entries, observer) => {
@@ -115,13 +116,14 @@ export const getPageWise = (): PageWise => {
     height: "100vh",
     overflow: "auto",
     position: "relative",
-    "font-family": "inherit",
+    "font-family": "initial",
     "line-height": "1.5",
     iconUrl: "",
     "container-type": "size",
     h1: { "font-size": "2.5em" },
     h2: { "font-size": "2em" },
     h3: { "font-size": "1.5em" },
+    "h1,h2,h3": { "font-family": "inherit" },
   };
 };
 export const detectTag = (tag: string, htmlStr: string) => {
@@ -365,7 +367,7 @@ export const getFontVariables = (
 ) => {
   return useAppSelector(selectVariables)
     .filter((item) => item.type === "font-family")
-    .map((item) => ({ title: item.name, value: item.value }));
+    .map((item) => ({ id: item.id, title: item.name, value: item.value }));
 };
 
 export const makeArraySplitFromCommas = (str: string | undefined): string[] => {
@@ -469,15 +471,60 @@ const possibleOuterTypesArr = [...Object.values(CONFIG.possibleOuterTypes)];
 
 type PossibleOuterTypes = (typeof possibleOuterTypesArr)[number];
 
-export const fontOptions = [
-  "inherit",
-  "Arial ,sans-serif",
-  "Verdana ,sans-serif",
-  "Tahoma ,sans-serif",
-  "Trebuchet MS ,sans-serif",
-  "Times New Roman ,serif",
-  "Georgia ,serif",
-  "Garamond ,serif",
-  "Courier New ,monospace",
-  "Brush Script MT ,cursive",
+export const systemFontOptions = [
+  { title: "Default", value: "initial" },
+  { title: "Arial", value: "'Arial', sans-serif" },
+  { title: "Verdana", value: "'Verdana', sans-serif" },
+  { title: "Tahoma", value: "'Tahoma', sans-serif" },
+  { title: "Trebuchet MS", value: "'Trebuchet MS', sans-serif" },
+  { title: "Times New Roman", value: "'Times New Roman', serif" },
+  { title: "Georgia", value: "'Georgia', serif" },
+  { title: "Garamond", value: "'Garamond', serif" },
+  { title: "Courier New", value: "'Courier New', monospace" },
+  { title: "Brush Script MT", value: "'Brush Script MT', cursive" },
 ];
+export const fontOptions = [...systemFontOptions, ...googleFontOptions];
+export const defaultInheritFontOptions = [
+  ...systemFontOptions.map((option) => {
+    if (option.value === "initial") return { ...option, value: "inherit" };
+    return option;
+  }),
+  ...googleFontOptions,
+];
+
+export function getUsedFontsFromHTML(html: string): string[] {
+  const fontSet = new Set<string>();
+  const dom = new DOMParser().parseFromString(html, "text/html");
+
+  // Matches only the first font name (quoted or unquoted)
+  const fontRegex = /font-family\s*:\s*(['"][^'"]+['"]|[^,;]+)/gi;
+
+  const validFontTitles = new Set(googleFontOptions.map((f) => f.title));
+
+  const cleanFont = (fontValue: string) =>
+    fontValue.trim().replace(/^['"]|['"]$/g, ""); // remove surrounding quotes
+
+  // 1. Check <style> tags
+  const styleTags = dom.querySelectorAll("style");
+  styleTags.forEach((style) => {
+    const css = style.textContent || "";
+    let match;
+    while ((match = fontRegex.exec(css)) !== null) {
+      const font = cleanFont(match[1]);
+      if (validFontTitles.has(font)) fontSet.add(font);
+    }
+  });
+
+  // 2. Check inline style attributes
+  const allElements = dom.querySelectorAll("*[style]");
+  allElements.forEach((el) => {
+    const styleAttr = el.getAttribute("style") || "";
+    let match;
+    while ((match = fontRegex.exec(styleAttr)) !== null) {
+      const font = cleanFont(match[1]);
+      if (validFontTitles.has(font)) fontSet.add(font);
+    }
+  });
+
+  return Array.from(fontSet);
+}

@@ -7,6 +7,7 @@ import ClientWrapper from "@/utils/ClientWrapper";
 import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";
 import Script from "next/script";
+import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -54,6 +55,10 @@ export default async function RootLayout({
             gtag("config", "${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}");`}
             </Script>
           </>
+        )}
+        {mapOverFonts(
+          googleFontOptions.map((font) => font.title),
+          true
         )}
       </head>
       <ClientWrapper lightMode={lightMode}>

@@ -36,7 +36,6 @@ const Preview = () => {
         transition: "all 0.3s ease",
         height: `${100 / scale}%`,
         backgroundColor: pageWise["background-color"],
-        fontFamily: "initial",
         maxHeight,
       }}
       ref={ref}

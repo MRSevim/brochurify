@@ -4,7 +4,7 @@ import LinkInput from "@/components/LinkInput";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import { selectPageWise, useAppSelector } from "@/redux/hooks";
-import { fontOptions, getFontVariables } from "@/utils/Helpers";
+import { defaultInheritFontOptions, getFontVariables } from "@/utils/Helpers";
 import { Editor } from "@tiptap/react";
 import { useEffect, useState } from "react";
 
@@ -37,11 +37,15 @@ const Popup = ({
         <Select
           title="Pick a font"
           showStyled={true}
-          options={[...fontOptions, ...fontVariables]}
+          options={[...fontVariables, ...defaultInheritFontOptions]}
           selected={
-            editor.getAttributes("textStyle").fontFamily ||
-            pageWise.fontFamily ||
-            ""
+            editor.getAttributes("textStyle").fontFamily?.includes('"')
+              ? editor.getAttributes("textStyle").fontFamily?.replace(/"/g, "'")
+              : editor
+                  .getAttributes("textStyle")
+                  .fontFamily?.replace(/^([a-zA-Z0-9\-]+)(,)/, "'$1'$2") ||
+                pageWise["font-family"] ||
+                "inherit"
           }
           onChange={(e) => {
             if (e.target.value === "inherit") {
@@ -60,7 +64,7 @@ const Popup = ({
           step={1}
           value={
             editor.getAttributes("textStyle").fontSize ||
-            pageWise.fontSize ||
+            pageWise["font-size"] ||
             "16px"
           }
           onChange={(e) => editor.chain().focus().setFontSize(e).run()}
@@ -77,11 +81,10 @@ const Popup = ({
           value={
             editor.getAttributes("paragraph").lineHeight ||
             editor.getAttributes("heading").lineHeight ||
-            pageWise.lineHeight ||
+            pageWise["line-height"] ||
             "1.5"
           }
           onChange={(e) => {
-            console.log(e);
             editor.chain().focus().setLineHeight(e).run();
           }}
         />
