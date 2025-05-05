@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectVariables, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import BottomLine from "../../BottomLine";
 import TextAlign from "@tiptap/extension-text-align";
 import TextStyle from "@tiptap/extension-text-style";
@@ -25,10 +25,13 @@ import Popup from "./Popup";
 import { changeElementProp } from "@/redux/slices/editorSlice";
 import sanitizeHtml from "sanitize-html";
 import LetterSpacing from "@/Tiptap/LetterSpacing";
+import { styledElements } from "@/utils/Helpers";
 
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
   const dispatch = useAppDispatch();
+  const variables = useAppSelector(selectVariables);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -125,7 +128,7 @@ const Text = () => {
     };
   }, [editor, dispatch]);
 
-  //Listen for content change from outside
+  //Listen for content change from outside such as history
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content, false); // false = don't emit new update event
@@ -133,12 +136,15 @@ const Text = () => {
   }, [content, editor]);
 
   return (
-    <div className="relative pb-2 mb-2">
+    <styledElements.styledTiptapWrapperDiv
+      className="relative pb-2 mb-2"
+      variables={variables}
+    >
       <SecondaryTitle title="Editable Text" />
       <EditBar editor={editor} />
       <EditorContent editor={editor} />
       <BottomLine />
-    </div>
+    </styledElements.styledTiptapWrapperDiv>
   );
 };
 
@@ -231,7 +237,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
     {
       type: "palette",
       onClick: () => {
-        setPopup("color");
+        handlePopupOpen("color");
       },
       title: "Text color",
       active: editor.getAttributes("textStyle").color,
@@ -239,7 +245,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
     {
       type: "type",
       onClick: () => {
-        setPopup("font-family");
+        handlePopupOpen("font-family");
       },
       title: "Font family",
       active: editor.getAttributes("textStyle").fontFamily,
@@ -247,7 +253,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
     {
       type: "123",
       onClick: () => {
-        setPopup("font-size");
+        handlePopupOpen("font-size");
       },
       title: "Font size",
       active: editor.getAttributes("textStyle").fontSize,
@@ -279,7 +285,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
     {
       type: "link-45deg",
       onClick: () => {
-        setPopup("link");
+        handlePopupOpen("link");
       },
       title: "Link",
       active: editor.isActive("link"),
@@ -287,7 +293,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
     {
       type: "arrows-vertical",
       onClick: () => {
-        setPopup("line-height");
+        handlePopupOpen("line-height");
       },
       title: "Line height",
       active:
@@ -297,7 +303,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
     {
       type: "arrows",
       onClick: () => {
-        setPopup("letter-spacing");
+        handlePopupOpen("letter-spacing");
       },
       title: "Letter spacing",
       active:
@@ -336,6 +342,14 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
 
   const buttonClasses = "p-2 rounded border border-text text-[12px] m-px";
 
+  const handlePopupOpen = (type: string) => {
+    setPopup(type);
+  };
+
+  const handlePopupClose = () => {
+    setPopup(""); // Close the popup
+    editor.commands.focus(); // Ensure focus is on editor when closing popup
+  };
   return (
     <div className="relative flex gap-2 justify-center mb-2 border-b pb-2 flex-wrap">
       {popup && (
@@ -343,7 +357,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
           <div className="flex justify-center gap-2">
             <button
               className="p-1 text-background bg-gray rounded cursor-pointer"
-              onClick={() => setPopup("")}
+              onClick={handlePopupClose}
             >
               {" "}
               Close
@@ -351,6 +365,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
             <button
               className="p-1 text-background bg-gray rounded cursor-pointer"
               onClick={() => {
+                editor.commands.focus();
                 if (popup === "color") {
                   editor.chain().focus().unsetColor().run();
                 } else if (popup === "font-family") {
@@ -381,7 +396,10 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
             className={
               className + (item.active ? " bg-text text-background" : "")
             }
-            onClick={item.onClick}
+            onClick={() => {
+              editor.commands.focus();
+              item.onClick();
+            }}
           />
         ))}
       {tableMode && (

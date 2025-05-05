@@ -23,6 +23,7 @@ export default {
         gray: "var(--gray)",
         hoveredBlue: colors.blue[500],
         activeBlue: colors.blue[800],
+        deleteRed: colors.red[800],
       },
     },
   },

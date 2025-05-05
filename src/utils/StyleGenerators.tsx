@@ -1,5 +1,5 @@
 import { CONFIG } from "./Helpers";
-import { Layout, Style } from "./Types";
+import { Layout, Style, Variable } from "./Types";
 
 export const styleDivider = (style: Style) => {
   const tabletContainerQueryKey =
@@ -107,7 +107,7 @@ export const styleGenerator = (style: Style): string => {
         return `${key}: ${value};`;
       }
     })
-    .join("");
+    .join("\n");
 };
 
 export const fullStylesWithIdsGenerator = (
@@ -132,6 +132,14 @@ export const fullStylesWithIdsGenerator = (
       } ${child ? fullStylesWithIdsGenerator(child, rest) : ""}`;
     })
     .join("\n");
+};
+
+export const variablesGenerator = (variables: Variable[]): string => {
+  const cssVariables = variables
+    .map((v) => `--${v.name}: ${v.value};`)
+    .join("\n");
+
+  return cssVariables;
 };
 
 export const keyframeGenerator = (styleStr: string) => {

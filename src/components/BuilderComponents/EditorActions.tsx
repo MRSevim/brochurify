@@ -82,7 +82,7 @@ const EditorActions = ({ item }: { item: Layout }) => {
           key={icon.type}
           className={
             "p-1 rounded editor-action " +
-            (icon.type === "trash" ? "bg-red-800" : "bg-background")
+            (icon.type === "trash" ? "bg-deleteRed" : "bg-background")
           }
           onClick={(e) => {
             e.stopPropagation();

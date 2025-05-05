@@ -2,6 +2,7 @@ import Select from "@/components/Select";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
 import {
+  CONFIG,
   defaultInheritFontOptions,
   getFontVariables,
   getPageWise,
@@ -14,7 +15,7 @@ import ResetButton from "@/components/ResetButton";
 import { Style } from "@/utils/Types";
 
 const HeadingStyles = () => {
-  const outerType = "h1,h2,h3";
+  const outerType = CONFIG.headings;
 
   return (
     <div className="relative pb-2 mb-2">

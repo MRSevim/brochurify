@@ -16,10 +16,7 @@ const ZoomView = () => {
         onClick={() => setToggled((prev) => !prev)}
       />
       {toggled && (
-        <div
-          className="absolute right-0 top-full bg-background rounded border border-text"
-          style={{ zIndex: "100" }}
-        >
+        <div className="absolute right-0 top-full bg-background rounded border border-text z-[100]">
           {percentages.map((percentage) => (
             <div
               key={percentage}

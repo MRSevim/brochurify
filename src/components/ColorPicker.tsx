@@ -1,5 +1,5 @@
 import { selectVariables, useAppSelector } from "@/redux/hooks";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import SmallText from "./SmallText";
 import Slider from "./Slider";
 
@@ -13,7 +13,6 @@ type Props = {
 
 // Converts hex (3/6/8-digit) + alpha to 8-digit hex string
 export function hexToHexWithAlpha(hex: string, alpha: number): string {
-  console.log(hex, alpha);
   return hex.slice(0, 7) + Math.round(alpha).toString(16).padStart(2, "0");
 }
 
@@ -103,7 +102,7 @@ const ColorPicker = ({
                     className="flex gap-3 justify-center items-center py-2 pe-2 w-1/2 cursor-pointer hover:shadow-sm hover:shadow-text hover:z-50"
                     onClick={() => {
                       setVarOpen(false);
-                      if (onVarSelect) onVarSelect(color.value);
+                      if (onVarSelect) onVarSelect(`var(--${color.name})`);
                     }}
                   >
                     {color.name}{" "}

@@ -56,10 +56,11 @@ export interface EditorState {
   addLocation: AddLocation;
   dropHandled: boolean;
   draggedItem?: string;
-  variables: VariableWithId[];
+  variables: Variable[];
   copied?: Layout;
 }
 export type Variable = {
+  id: string;
   type: "color" | "font-family";
   name: string;
   value: string;
@@ -71,9 +72,6 @@ export type History = {
     pageWise: PageWise;
   };
 }[];
-export interface VariableWithId extends Variable {
-  id: string;
-}
 export type AddLocation = {
   id: string;
   where: Where;
@@ -90,11 +88,13 @@ export type PageWise = {
   "font-size": string;
   height: string;
   overflow: "auto";
-  position: "relative";
   "font-family": string;
   "line-height": string;
   "container-type": string;
-  "h1,h2,h3,h4,h5,h6"?: Style;
+  [CONFIG.headings]?: Style;
+  h1: Style;
+  h2: Style;
+  h3: Style;
   iconUrl: string;
   [key: string]: string | Style | undefined;
 };

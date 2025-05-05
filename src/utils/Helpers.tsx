@@ -7,6 +7,7 @@ import {
   PageWise,
   Layout,
   StringOrUnd,
+  Variable,
 } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
@@ -27,6 +28,7 @@ import {
   getRest,
   getWrapperStyles,
   styleGenerator,
+  variablesGenerator,
 } from "./StyleGenerators";
 import Fixed from "@/components/BuilderComponents/Fixed";
 import { googleFontOptions } from "./GoogleFonts";
@@ -52,16 +54,20 @@ export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
 };
 
 export const styledElements = {
-  styledEditor: styled.div<{ styles: PageWise }>`
-    ${({ styles }) => {
+  styledEditor: styled.div<{ styles: PageWise; variables: Variable[] }>`
+    ${({ styles, variables }) => {
       const { overflow, ...rest } = styles;
+      const variablesString = variablesGenerator(variables);
       const style = styleGenerator(rest);
       const allKeyframes = getAllKeyFrames();
-      return style + allKeyframes;
+      return variablesString + style + allKeyframes;
     }};
   `,
   styledComponentWrapperDiv: styled.div<{ styles: Style }>`
     ${({ styles }) => getWrapperStyles(styles)};
+  `,
+  styledTiptapWrapperDiv: styled.div<{ variables: Variable[] }>`
+    ${({ variables }) => variablesGenerator(variables)};
   `,
   styledDiv: styled.div<{ styles: Style }>`
     ${({ styles }) => getRest(styles)};
@@ -115,7 +121,6 @@ export const getPageWise = (): PageWise => {
     "font-size": "16px",
     height: "100vh",
     overflow: "auto",
-    position: "relative",
     "font-family": "initial",
     "line-height": "1.5",
     iconUrl: "",
@@ -123,7 +128,7 @@ export const getPageWise = (): PageWise => {
     h1: { "font-size": "2.5em" },
     h2: { "font-size": "2em" },
     h3: { "font-size": "1.5em" },
-    "h1,h2,h3": { "font-family": "inherit" },
+    [CONFIG.headings]: { "font-family": "inherit" },
   };
 };
 export const detectTag = (tag: string, htmlStr: string) => {
@@ -459,6 +464,7 @@ export function setCookie(cname: String, cvalue: string, exdays: number) {
 
 export const CONFIG = {
   placeholderImgUrl: "/placeholder-image.jpg",
+  headings: "h1,h2,h3,h4,h5,h6",
   possibleOuterTypes: {
     active: "&:active",
     scrolled: "&.scrolled",

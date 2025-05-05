@@ -1,4 +1,9 @@
-import { selectLayout, selectPageWise, useAppSelector } from "@/redux/hooks";
+import {
+  selectLayout,
+  selectPageWise,
+  selectVariables,
+  useAppSelector,
+} from "@/redux/hooks";
 import React, { useEffect, useRef, useState } from "react";
 import { useViewMode } from "@/contexts/ViewModeContext";
 import { generateHTML } from "@/utils/HTMLGenerator";
@@ -7,6 +12,8 @@ import { useZoom } from "@/contexts/ZoomContext";
 const Preview = () => {
   const layout = useAppSelector(selectLayout);
   const pageWise = useAppSelector(selectPageWise);
+  const variables = useAppSelector(selectVariables);
+
   const [viewMode] = useViewMode();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   const [zoom] = useZoom();
@@ -42,7 +49,7 @@ const Preview = () => {
     >
       <ShadowContent
         key={globalTrigger}
-        html={generateHTML(layout, pageWise, true)}
+        html={generateHTML(layout, pageWise, variables, true)}
       />
     </div>
   );

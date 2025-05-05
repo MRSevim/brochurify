@@ -12,7 +12,7 @@ import {
   handleSideDropCaller,
 } from "@/utils/DragAndDropHelpers";
 import { Layout, Where } from "@/utils/Types";
-import { DragEvent, useEffect, useRef, useState } from "react";
+import { DragEvent, useRef, useState } from "react";
 import { styledElements } from "@/utils/Helpers";
 import usePositionListener from "@/utils/hooks/usePositionListener";
 import { useEditorRef } from "@/contexts/EditorRefContext";

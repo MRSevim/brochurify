@@ -47,7 +47,7 @@ const Select = ({
               key={i}
               value={
                 (item as OptionsObject).id
-                  ? optionValue + "-id:" + (item as OptionsObject).id
+                  ? `var(--${optionLabel})`
                   : optionValue
               }
               style={{

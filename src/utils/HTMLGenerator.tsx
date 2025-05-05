@@ -5,12 +5,14 @@ import {
   fullStylesWithIdsGenerator,
   keyframeGenerator,
   styleGenerator,
+  variablesGenerator,
 } from "./StyleGenerators";
-import { Layout, PageWise } from "./Types";
+import { Layout, PageWise, Variable } from "./Types";
 
 export const generateHTML = (
   layout: Layout[],
   pageWise: PageWise,
+  variables: Variable[],
   preview: boolean
 ): string => {
   const { title, description, keywords, canonical, image, iconUrl, ...rest } =
@@ -24,7 +26,7 @@ export const generateHTML = (
   const fullstylesWithIds =
     fullStylesWithIdsGenerator(layout, false) +
     fullStylesWithIdsGenerator(layout, true);
-
+  const variablesString = variablesGenerator(variables);
   const keyframes = keyframeGenerator(fullstylesWithIds);
 
   const baseHTMLHead = `<meta charset="UTF-8">
@@ -88,6 +90,7 @@ export const generateHTML = (
   const additionalStyles = `<style>
     ${getCssReset()}
       body {
+      ${variablesString}
       ${styleGenerator(rest)}
       }
       html {

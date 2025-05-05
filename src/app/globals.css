@@ -47,19 +47,14 @@ a {
 input,
 select,
 textarea {
-  background-color: #ededed;
-  color: #0a0a0a;
+  background-color: var(--text);
+  color: var(--background);
 }
 body {
   color: var(--text);
 }
 .gutter-stable {
   scrollbar-gutter: stable;
-}
-input,
-select {
-  background-color: var(--text);
-  color: var(--background);
 }
 /*Scrollbar*/
 *::-webkit-scrollbar {

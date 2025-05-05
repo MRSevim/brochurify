@@ -1,10 +1,17 @@
-import { selectLayout, selectPageWise, useAppSelector } from "@/redux/hooks";
+import {
+  selectLayout,
+  selectPageWise,
+  selectVariables,
+  useAppSelector,
+} from "@/redux/hooks";
 import Icon from "../Icon";
 import { generateHTML } from "@/utils/HTMLGenerator";
 
 const DownloadWrapper = () => {
   const layout = useAppSelector(selectLayout);
   const pageWise = useAppSelector(selectPageWise);
+  const variables = useAppSelector(selectVariables);
+
   return (
     <>
       <Icon
@@ -12,7 +19,12 @@ const DownloadWrapper = () => {
         type="download"
         size="24px"
         onClick={() => {
-          const generatedHTML = generateHTML(layout, pageWise, false);
+          const generatedHTML = generateHTML(
+            layout,
+            pageWise,
+            variables,
+            false
+          );
           // Create a Blob from the HTML string
           const blob = new Blob([generatedHTML], { type: "text/html" });
 

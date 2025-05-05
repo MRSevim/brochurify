@@ -4,9 +4,14 @@ import LinkInput from "@/components/LinkInput";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import { selectPageWise, useAppSelector } from "@/redux/hooks";
-import { defaultInheritFontOptions, getFontVariables } from "@/utils/Helpers";
+import {
+  CONFIG,
+  defaultInheritFontOptions,
+  getFontVariables,
+} from "@/utils/Helpers";
+import { Style } from "@/utils/Types";
 import { Editor } from "@tiptap/react";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 
 const Popup = ({
   type,
@@ -19,6 +24,37 @@ const Popup = ({
 }) => {
   const fontVariables = getFontVariables(useAppSelector);
   const pageWise = useAppSelector(selectPageWise);
+
+  const selectedFontFamily = editor
+    .getAttributes("textStyle")
+    .fontFamily?.includes('"')
+    ? editor.getAttributes("textStyle").fontFamily?.replace(/"/g, "'")
+    : editor.isActive("heading")
+    ? pageWise[CONFIG.headings]?.["font-family"]
+    : pageWise["font-family"] || "inherit";
+  const finalSelectedFontFamily =
+    selectedFontFamily === "initial" ? "inherit" : selectedFontFamily;
+
+  const { state } = editor;
+  const { $from } = state.selection;
+
+  const parentNode = $from.node($from.depth); // Get the block-level parent node
+  const nodeType = parentNode.type.name;
+
+  let tag = nodeType;
+
+  // For heading levels, convert "heading" + level to "h1", "h2", etc.
+  if (nodeType === "heading") {
+    tag = `h${parentNode.attrs.level}`;
+  }
+  const sizedHeadingTags = ["h1", "h2", "h3"];
+
+  const selectedFontSize =
+    editor.getAttributes("textStyle").fontSize ||
+    (sizedHeadingTags.includes(tag)
+      ? (pageWise[tag] as Style)?.["font-size"] || "16px"
+      : pageWise["font-size"] || "16px");
+
   return (
     <div className="absolute z-10 bg-background border border-text rounded p-3 top-5">
       {type === "color" && (
@@ -38,15 +74,7 @@ const Popup = ({
           title="Pick a font"
           showStyled={true}
           options={[...fontVariables, ...defaultInheritFontOptions]}
-          selected={
-            editor.getAttributes("textStyle").fontFamily?.includes('"')
-              ? editor.getAttributes("textStyle").fontFamily?.replace(/"/g, "'")
-              : editor
-                  .getAttributes("textStyle")
-                  .fontFamily?.replace(/^([a-zA-Z0-9\-]+)(,)/, "'$1'$2") ||
-                pageWise["font-family"] ||
-                "inherit"
-          }
+          selected={finalSelectedFontFamily}
           onChange={(e) => {
             if (e.target.value === "inherit") {
               editor.chain().focus().unsetFontFamily().run();
@@ -62,11 +90,7 @@ const Popup = ({
           min={1}
           max={70}
           step={1}
-          value={
-            editor.getAttributes("textStyle").fontSize ||
-            pageWise["font-size"] ||
-            "16px"
-          }
+          value={selectedFontSize}
           onChange={(e) => editor.chain().focus().setFontSize(e).run()}
         />
       )}

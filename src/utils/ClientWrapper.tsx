@@ -37,7 +37,9 @@ export default function ClientWrapper({
   }
 
   return (
-    <StyleSheetManager shouldForwardProp={(prop) => prop !== "styles"}>
+    <StyleSheetManager
+      shouldForwardProp={(prop) => prop !== "styles" && prop !== "variables"}
+    >
       <LayoutToggleContext.Provider>
         <SettingsToggleContext.Provider>
           <LightModeProvider lightModeFromCookie={lightMode}>

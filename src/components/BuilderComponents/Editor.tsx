@@ -13,6 +13,7 @@ import {
   selectHoveredId,
   selectLayout,
   selectPageWise,
+  selectVariables,
   useAppDispatch,
   useAppSelector,
 } from "@/redux/hooks";
@@ -88,12 +89,14 @@ const Editor = () => {
 const EditorInner = ({ children }: { children: React.ReactNode }) => {
   const pageWise = useAppSelector(selectPageWise);
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
+  const variables = useAppSelector(selectVariables);
   useIntersectionObserver([globalTrigger], undefined);
   useKeyPresses();
 
   return (
     <styledElements.styledEditor
       styles={pageWise}
+      variables={variables}
       className="editor relative"
       key={globalTrigger}
     >
