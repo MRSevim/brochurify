@@ -26,6 +26,7 @@ import styled from "styled-components";
 import {
   getAllKeyFrames,
   getRest,
+  getStyleResets,
   getWrapperStyles,
   styleGenerator,
   variablesGenerator,
@@ -58,16 +59,24 @@ export const styledElements = {
     ${({ styles, variables }) => {
       const { overflow, ...rest } = styles;
       const variablesString = variablesGenerator(variables);
+      const styleResets = getStyleResets(styles);
       const style = styleGenerator(rest);
       const allKeyframes = getAllKeyFrames();
-      return variablesString + style + allKeyframes;
+      return variablesString + styleResets + style + allKeyframes;
     }};
   `,
   styledComponentWrapperDiv: styled.div<{ styles: Style }>`
     ${({ styles }) => getWrapperStyles(styles)};
   `,
-  styledWrapperDivWithVariables: styled.div<{ variables: Variable[] }>`
-    ${({ variables }) => variablesGenerator(variables)};
+  styledWrapperDivWithVariables: styled.div<{
+    variables: Variable[];
+    pageWise: PageWise;
+  }>`
+    ${({ variables, pageWise }) => {
+      const styleResets = getStyleResets(pageWise);
+      const variablesStyles = variablesGenerator(variables);
+      return variablesStyles + styleResets;
+    }};
   `,
   styledDiv: styled.div<{ styles: Style }>`
     ${({ styles }) => getRest(styles)};

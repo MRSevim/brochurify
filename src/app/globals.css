@@ -73,41 +73,6 @@ body {
 *::-webkit-scrollbar-thumb:hover {
   background-color: var(--gray);
 }
-/*Blockquote*/
-blockquote {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 30px;
-  padding-left: 15px;
-  border-left: 3px solid var(--gray);
-}
-/*ul-ol*/
-ul,
-ol {
-  list-style-position: inside;
-}
-ul li p,
-ol li p {
-  display: inline;
-}
-/*hr*/
-hr {
-  border-top: 1px solid var(--gray);
-}
-/*table*/
-table,
-th,
-td {
-  border: 1px solid;
-  border-collapse: collapse;
-}
-th {
-  background-color: var(--gray);
-}
-th,
-td {
-  padding: 5px;
-}
 /*editor*/
 .editor * {
   color: inherit;

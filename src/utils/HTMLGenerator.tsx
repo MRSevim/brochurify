@@ -3,6 +3,7 @@ import { mapOverFonts } from "./GoogleFonts";
 import { getUsedFontsFromHTML } from "./Helpers";
 import {
   fullStylesWithIdsGenerator,
+  getStyleResets,
   keyframeGenerator,
   styleGenerator,
   variablesGenerator,
@@ -88,7 +89,7 @@ export const generateHTML = (
     </script>`
     : "";
   const additionalStyles = `<style>
-    ${getCssReset()}
+    ${getCssReset(pageWise)}
       body {
       ${variablesString}
       ${styleGenerator(rest)}
@@ -131,7 +132,7 @@ export const generateHTML = (
   return finalHTML;
 };
 
-const getCssReset = () => {
+const getCssReset = (pageWise: PageWise) => {
   return `*,
   ::after,
   ::before,
@@ -178,41 +179,7 @@ const getCssReset = () => {
   .relative {
     position:relative
   }   
-  /*Blockquote*/
-  blockquote {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 30px;
-    padding-left: 15px;
-    border-left: 3px solid var(--gray);
-  }
-  /*ul-ol*/
-  ul,
-  ol {
-    list-style-position: inside;
-  }
-  ul li p,
-  ol li p {
-    display: inline;
-  }
-  /*hr*/
-  hr {
-    border-top: 1px solid var(--gray);
-  }
-  /*table*/
-  table,
-  th,
-  td {
-    border: 1px solid;
-    border-collapse: collapse;
-  }
-  th {
-    background-color: var(--gray);
-  }
-  th,
-  td {
-    padding: 5px;
-  }
+${getStyleResets(pageWise)}
   `;
 };
 

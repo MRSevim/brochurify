@@ -1,5 +1,5 @@
 import { CONFIG } from "./Helpers";
-import { Layout, Style, Variable } from "./Types";
+import { Layout, PageWise, Style, Variable } from "./Types";
 
 export const styleDivider = (style: Style) => {
   const tabletContainerQueryKey =
@@ -218,4 +218,42 @@ const keyframes: Record<string, string> = {
       transform: scale(0.9);
     }
   }`,
+};
+
+export const getStyleResets = (pageWise: PageWise) => {
+  return `  /*Blockquote*/
+  blockquote {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 15px;
+    border-left: 3px solid ${pageWise.color};
+  }
+  /*ul-ol*/
+  ul,
+  ol {
+    list-style-position: inside;
+  }
+  ul li p,
+  ol li p {
+    display: inline;
+  }
+  /*hr*/
+  hr {
+    border-top: 1px solid ${pageWise.color};
+  }
+  /*table*/
+  table,
+  th,
+  td {
+    border: 1px solid;
+    border-collapse: collapse;
+  }
+  th {
+    background-color: ${pageWise.color};
+  }
+  th,
+  td {
+    padding: 5px;
+  }`;
 };

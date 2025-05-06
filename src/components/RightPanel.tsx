@@ -1,6 +1,11 @@
 import { SettingsToggleContext } from "@/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
-import { selectActive, selectVariables, useAppSelector } from "@/redux/hooks";
+import {
+  selectActive,
+  selectPageWise,
+  selectVariables,
+  useAppSelector,
+} from "@/redux/hooks";
 import PageSettings from "./Settings/PageSettings/PageSettings";
 import ElementSettings from "./Settings/ElementSettings";
 import SmallText from "./SmallText";
@@ -20,10 +25,12 @@ const RightPanelInner = () => {
   const active = useAppSelector(selectActive);
   const draggedItem = useAppSelector((state) => state.editor.draggedItem);
   const variables = useAppSelector(selectVariables);
+  const pageWise = useAppSelector(selectPageWise);
 
   return (
     <styledElements.styledWrapperDivWithVariables
       variables={variables}
+      pageWise={pageWise}
       className="overflow-y-auto p-2 min-h-full gutter-stable"
     >
       {draggedItem ? (
