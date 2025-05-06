@@ -22,7 +22,7 @@ const GroupedRadioButtons = ({
             value={item}
             checked={checked === item}
             onChange={onChange}
-            className="w-4 h-4 bg-gray-100 border-gray-300 rounded-sm"
+            className="w-4 h-4 rounded-sm"
           />
           <label
             htmlFor={"radio-" + item + name}

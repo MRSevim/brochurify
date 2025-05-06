@@ -33,7 +33,7 @@ const Select = ({
         value={selected}
         onChange={onChange}
         id={"options-" + title}
-        className="bg-gray-700 border border-gray-600 text-sm rounded-lg focus:ring-gray-300 focus:border-gray-500 block w-full p-2.5"
+        className="text-sm rounded-lg block w-full p-2.5"
       >
         {options.map((item, i) => {
           const optionValue = (item as OptionsObject).value
@@ -47,7 +47,7 @@ const Select = ({
               key={i}
               value={
                 (item as OptionsObject).id
-                  ? `var(--${optionLabel})`
+                  ? `var(--${(item as OptionsObject).id})`
                   : optionValue
               }
               style={{

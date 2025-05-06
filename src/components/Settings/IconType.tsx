@@ -50,9 +50,6 @@ const IconColor = () => {
   return (
     <div className="relative mb-2 pb-2">
       <ColorPicker
-        onVarSelect={(param) =>
-          dispatch(changeElementStyle({ type, newValue: param }))
-        }
         title="Pick the icon color"
         selected={colorStr || pageWise.color || "#000000"}
         onChange={(newValue) =>
@@ -89,7 +86,7 @@ const Filtered = ({ searchString }: { searchString: string }) => {
           key={icon}
           onClick={() => dispatch(changeElementProp({ type, newValue: icon }))}
           className={
-            "flex flex-col items-center text-center cursor-pointer " +
+            "flex flex-col items-center text-center cursor-pointer rounded hover:shadow-sm hover:shadow-gray hover:z-50 " +
             (variable === icon ? " border p-1 border-text rounded" : "")
           }
         >

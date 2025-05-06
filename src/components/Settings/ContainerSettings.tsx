@@ -4,12 +4,14 @@ import BottomLine from "../BottomLine";
 import { WidthAndHeight } from "./SizingAndBorder";
 import NumberInput from "../NumberInput";
 import {
+  getDefaultStyle,
   getSetting,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Slider from "../Slider";
+import ResetButton from "../ResetButton";
 
 const ContainerSettings = () => {
   return (
@@ -36,7 +38,17 @@ const MaxWidth = () => {
           )
         }
       />
-
+      <ResetButton
+        onClick={() =>
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue:
+                getDefaultStyle("container")["max-width"] || "1300" + "px",
+            })
+          )
+        }
+      />
       <BottomLine />
     </div>
   );
@@ -46,6 +58,7 @@ const Padding = () => {
   const dispatch = useAppDispatch();
   const variable = getSetting(useAppSelector, type);
   const i = 1;
+
   return (
     <div className="relative pb-2 mb-2">
       <Slider
@@ -62,7 +75,24 @@ const Padding = () => {
           )
         }
       />
-
+      <ResetButton
+        onClick={() => {
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue:
+                setValueFromShorthandStr(
+                  getDefaultStyle("container").padding,
+                  i,
+                  getValueFromShorthandStr(
+                    getDefaultStyle("container").padding,
+                    i
+                  )
+                ) || "0 12" + "px",
+            })
+          );
+        }}
+      />
       <BottomLine />
     </div>
   );

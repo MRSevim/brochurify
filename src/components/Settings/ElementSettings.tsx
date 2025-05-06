@@ -43,8 +43,8 @@ const ElementSettings = () => {
       <Animations />
       {shouldHaveSource && <Source />}
       {isIcon && <IconType />}
-      {shouldHaveUrl && <Url />}
       <Anchor />
+      {shouldHaveUrl && <Url />}
       {isText && <Text key={activeId} />}
     </div>
   );

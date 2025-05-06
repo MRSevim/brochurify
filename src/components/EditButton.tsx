@@ -6,7 +6,7 @@ const EditButton = ({
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
-    <button className="bg-amber-800 p-1 rounded" onClick={onClick}>
+    <button className="bg-amberVar p-1 rounded" onClick={onClick}>
       <Icon type="pencil-fill" size="20px" title="Delete" />
     </button>
   );

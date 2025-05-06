@@ -78,7 +78,7 @@ export const WidthAndHeight = () => {
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Width and Height">
         <InfoIcon
-          text="Pixel, percentage based or automatic size settings for the element. Note that base styles will apply to every screen size if mobile or tablet is not
+          text="Pixel, percentage based or automatic size settings for the element. Note that base styles will apply to every screen size if mobile and tablet styles are not
         set"
         />
       </SecondaryTitle>
@@ -220,7 +220,7 @@ const NumberController = ({
                   })
                 );
               } else {
-                dispatch(removeElementStyle({ type: selectorOuterType }));
+                dispatch(removeElementStyle({ type }));
               }
             }
           }
@@ -276,7 +276,7 @@ const MarginOrPadding = ({
     <div className="relative pb-2 mb-2">
       <SecondaryTitle title={capitalizeFirstLetter(type)}>
         <Icon
-          type={toggle ? "arrows-angle-contract" : "arrows-angle-expand "}
+          type={toggle ? "arrows-angle-contract" : "arrows-angle-expand"}
           size="20px"
           onClick={() => setToggle((prev) => !prev)}
           title="Expand/Contract"

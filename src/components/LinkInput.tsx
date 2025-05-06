@@ -35,7 +35,7 @@ const LinkInput = ({
         id={"link-input-" + title}
         value={value}
         onChange={onChange}
-        className="bg-gray-700 border border-gray-600 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
+        className="text-sm rounded-lg block w-full p-2.5"
       />
     </form>
   );

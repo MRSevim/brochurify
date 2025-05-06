@@ -13,7 +13,6 @@ const Preview = () => {
   const layout = useAppSelector(selectLayout);
   const pageWise = useAppSelector(selectPageWise);
   const variables = useAppSelector(selectVariables);
-
   const [viewMode] = useViewMode();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   const [zoom] = useZoom();

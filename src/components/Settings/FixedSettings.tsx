@@ -35,17 +35,6 @@ const NumberController = ({ type }: { type: string }) => {
   const initialType = getUnit(variable);
   const [radioType, setRadioType] = useState(initialType || "px");
 
-  useEffect(() => {
-    if (variable) {
-      dispatch(
-        changeElementStyle({
-          type,
-          newValue: parseInt(variable, 10) + radioType,
-        })
-      );
-    }
-  }, [radioType]);
-
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
       dispatch(removeElementStyle({ type }));
@@ -63,6 +52,14 @@ const NumberController = ({ type }: { type: string }) => {
         checked={radioType}
         name={type}
         onChange={(e) => {
+          if (variable) {
+            dispatch(
+              changeElementStyle({
+                type,
+                newValue: parseInt(variable, 10) + e.target.value,
+              })
+            );
+          }
           setRadioType(e.target.value);
         }}
       />

@@ -25,7 +25,6 @@ import {
   PageWise,
   Style,
   Variable,
-  VariableWithId,
 } from "@/utils/Types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -328,7 +327,7 @@ export const editorSlice = createSlice({
       const newVariable = { id: uuidv4(), ...action.payload };
       state.variables.push(newVariable);
     },
-    editVariable: (state, action: PayloadAction<VariableWithId>) => {
+    editVariable: (state, action: PayloadAction<Variable>) => {
       const newVariable = action.payload;
       const found = state.variables.find((item) => item.id === newVariable.id);
       if (!found) {
@@ -341,7 +340,7 @@ export const editorSlice = createSlice({
         } else return item;
       });
     },
-    deleteVariable: (state, action: PayloadAction<VariableWithId>) => {
+    deleteVariable: (state, action: PayloadAction<Variable>) => {
       const variableToDel = action.payload;
       const found = state.variables.find(
         (item) => item.id === variableToDel.id

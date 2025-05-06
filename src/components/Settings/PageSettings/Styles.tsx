@@ -38,14 +38,6 @@ const Color = () => {
   return (
     <div className="relative pb-2 mb-2">
       <ColorPicker
-        onVarSelect={(param) =>
-          dispatch(
-            changeElementStyle({
-              type,
-              newValue: param,
-            })
-          )
-        }
         title={"Select pagewise text color"}
         selected={variable || "#000000"}
         onChange={(newValue) =>
@@ -70,14 +62,6 @@ const BackgroundColor = () => {
   return (
     <div className="relative pb-2 mb-2">
       <ColorPicker
-        onVarSelect={(param) =>
-          dispatch(
-            changeElementStyle({
-              type,
-              newValue: param,
-            })
-          )
-        }
         title="Select pagewise background color"
         selected={variable || "#000000"}
         onChange={(newValue) =>

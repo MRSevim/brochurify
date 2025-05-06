@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import AddButton from "../AddButton";
-import SmallText from "../SmallText";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import BottomLine from "../BottomLine";
 import {
@@ -336,7 +335,7 @@ const SelectTimingFunction = ({
   ];
   return (
     <Select
-      title="Animation type"
+      title="Animation timing function"
       options={availableFuncs}
       selected={value}
       showStyled={false}

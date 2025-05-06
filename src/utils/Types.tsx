@@ -60,7 +60,7 @@ export interface EditorState {
   copied?: Layout;
 }
 export type Variable = {
-  id: string;
+  id?: string;
   type: "color" | "font-family";
   name: string;
   value: string;

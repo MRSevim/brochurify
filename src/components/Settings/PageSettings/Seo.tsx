@@ -6,7 +6,6 @@ import { getSetting } from "@/utils/Helpers";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import TextareaInput from "@/components/TextareaInput";
 import LinkInput from "@/components/LinkInput";
-import SmallText from "@/components/SmallText";
 
 const Seo = () => {
   return (

@@ -73,13 +73,13 @@ const Slider = ({
             value={parsed}
             step=".1"
             onChange={(e) => onChange(e.target.value + unit)}
-            className="w-12 bg-gray-700 border border-gray-600 text-sm rounded-lg focus:ring-gray-500 focus:border-gray-500 p-1"
+            className="w-12 text-sm rounded-lg p-1"
           />
           <select
             value={unit}
             onChange={(e) => onChange(parsed + e.target.value)}
             id={"unit-options-" + title}
-            className="w-12 bg-gray-700 border border-gray-600 text-sm rounded-lg focus:ring-gray-300 focus:border-gray-500 p-1"
+            className="w-12 border border-gray-600 text-sm rounded-lg p-1"
           >
             {units.map((item) => {
               return (

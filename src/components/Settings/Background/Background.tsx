@@ -7,16 +7,12 @@ import {
 } from "@/utils/Helpers";
 import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import ColorPicker, {
-  hexToHexWithAlpha,
-  separateHexAlpha,
-} from "../../ColorPicker";
+import ColorPicker from "../../ColorPicker";
 import {
   changeElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import BottomLine from "../../BottomLine";
-import { AppChangeEvent, HandleChangeType } from "@/utils/Types";
 import SecondaryTitle from "../../SecondaryTitle";
 import ToggleBtn from "../../ToggleBtn";
 import LinkInput from "../../LinkInput";
@@ -44,14 +40,6 @@ const BackgroundColor = () => {
   return (
     <div className="relative pb-2 mb-2">
       <ColorPicker
-        onVarSelect={(param) =>
-          dispatch(
-            changeElementStyle({
-              type,
-              newValue: param,
-            })
-          )
-        }
         title="Select background color"
         selected={variable || pageWise[type] || "#ffffff"}
         onChange={(newValue) =>
@@ -239,7 +227,7 @@ const BackgroundSize = () => {
     <Select
       title="Background Size"
       options={["cover", "contain"]}
-      selected={variable || "auto"}
+      selected={variable || ""}
       onChange={(e) =>
         dispatch(
           changeElementStyle({

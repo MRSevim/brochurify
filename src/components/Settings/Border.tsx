@@ -14,7 +14,6 @@ import Select from "../Select";
 import ColorPicker from "../ColorPicker";
 import BottomLine from "../BottomLine";
 import SecondaryTitle from "../SecondaryTitle";
-import { AppChangeEvent, HandleChangeType } from "@/utils/Types";
 
 const Border = () => {
   const type = "border";
@@ -74,14 +73,6 @@ const Border = () => {
             value={getValueFromShorthandStr(borderStr, 1)}
           />
           <BorderColor
-            handleVarSelect={(param) => {
-              dispatch(
-                changeElementStyle({
-                  type,
-                  newValue: setValueFromShorthandStr(borderStr, 2, param),
-                })
-              );
-            }}
             onChange={(e) => handleChange(e, 2)}
             value={getValueFromShorthandStr(borderStr, 2)}
           />
@@ -111,16 +102,13 @@ const Border = () => {
 
 const BorderColor = ({
   onChange,
-  handleVarSelect,
   value,
 }: {
   onChange: (e: string) => void;
-  handleVarSelect: (param: string) => void;
   value: string;
 }) => {
   return (
     <ColorPicker
-      onVarSelect={handleVarSelect}
       title={"Select a border color"}
       selected={value}
       onChange={onChange}

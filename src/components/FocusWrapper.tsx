@@ -1,6 +1,5 @@
 import {
   setActive,
-  setCopied,
   setDraggedItem,
   setDropHandled,
   setHovered,

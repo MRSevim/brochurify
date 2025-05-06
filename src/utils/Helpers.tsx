@@ -66,7 +66,7 @@ export const styledElements = {
   styledComponentWrapperDiv: styled.div<{ styles: Style }>`
     ${({ styles }) => getWrapperStyles(styles)};
   `,
-  styledTiptapWrapperDiv: styled.div<{ variables: Variable[] }>`
+  styledWrapperDivWithVariables: styled.div<{ variables: Variable[] }>`
     ${({ variables }) => variablesGenerator(variables)};
   `,
   styledDiv: styled.div<{ styles: Style }>`
@@ -131,10 +131,7 @@ export const getPageWise = (): PageWise => {
     [CONFIG.headings]: { "font-family": "inherit" },
   };
 };
-export const detectTag = (tag: string, htmlStr: string) => {
-  const regex = new RegExp(`<${tag}\\b`, "i"); // Case-insensitive match for opening tag
-  return regex.test(htmlStr);
-};
+
 export const getDefaultStyle = (type: string): Style => {
   if (type === "row") {
     return {
@@ -357,7 +354,7 @@ export const getProp = <T extends unknown>(
   return useAppSelector((state) => {
     const layout = state.editor.layout;
     const activeId = state.editor.active?.id;
-    if (!activeId) throw Error("no activeId in getProp");
+    if (!activeId) throw Error("no activeId in getProp func");
 
     const element = findElementById(layout, activeId);
 

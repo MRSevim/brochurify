@@ -7,11 +7,10 @@ type Props = {
   title: string;
   variableSelect?: boolean;
   selected: string;
-  onVarSelect?: (variable: string) => void;
   onChange: (e: string) => void;
 };
 
-// Converts hex (3/6/8-digit) + alpha to 8-digit hex string
+// Converts a hex color (#rrggbb) and alpha (0–255) to 8-digit hex string (#rrggbbaa)
 export function hexToHexWithAlpha(hex: string, alpha: number): string {
   return hex.slice(0, 7) + Math.round(alpha).toString(16).padStart(2, "0");
 }
@@ -26,7 +25,6 @@ export function separateHexAlpha(hex: string) {
 
 const ColorPicker = ({
   title,
-  onVarSelect,
   variableSelect = true,
   selected,
   onChange,
@@ -36,7 +34,16 @@ const ColorPicker = ({
   const colorVariables = useAppSelector(selectVariables).filter(
     (item) => item.type === type
   );
-  const { hex, alpha } = separateHexAlpha(selected || "#ffffff");
+  const isVariable = selected.startsWith("var(--");
+  const variableId = isVariable
+    ? selected.slice(6, -1) // Extract the ID from `var(--<id>)`
+    : null;
+
+  const finalSelected = isVariable
+    ? colorVariables.find((v) => v.id === variableId)?.value ?? "#ffffff"
+    : selected;
+
+  const { hex, alpha } = separateHexAlpha(finalSelected || "#ffffff");
 
   const handleColorChange = (color: string) => {
     const newHex = hexToHexWithAlpha(color, alpha);
@@ -62,9 +69,10 @@ const ColorPicker = ({
           <div className="relative">
             <div
               className="mx-2 absolute rounded outline outline-text w-10 h-10 border border-2 border-background"
-              style={{ backgroundColor: selected }}
+              style={{ backgroundColor: finalSelected }}
             ></div>
             <input
+              value={hex}
               className="mx-2 opacity-0 w-10 h-10"
               type="color"
               id={"colorpicker-" + title}
@@ -102,7 +110,7 @@ const ColorPicker = ({
                     className="flex gap-3 justify-center items-center py-2 pe-2 w-1/2 cursor-pointer hover:shadow-sm hover:shadow-text hover:z-50"
                     onClick={() => {
                       setVarOpen(false);
-                      if (onVarSelect) onVarSelect(`var(--${color.name})`);
+                      onChange(`var(--${color.id})`);
                     }}
                   >
                     {color.name}{" "}

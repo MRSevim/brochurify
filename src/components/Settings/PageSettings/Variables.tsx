@@ -4,7 +4,6 @@ import ColorPicker from "@/components/ColorPicker";
 import DeleteButton from "@/components/DeleteButton";
 import EditButton from "@/components/EditButton";
 import Select from "@/components/Select";
-import SmallText from "@/components/SmallText";
 import TextInput from "@/components/TextInput";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
 import { selectVariables, useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -14,7 +13,7 @@ import {
   editVariable,
 } from "@/redux/slices/editorSlice";
 import { fontOptions } from "@/utils/Helpers";
-import { VariableWithId } from "@/utils/Types";
+import { Variable } from "@/utils/Types";
 import { useState } from "react";
 
 const Variables = () => {
@@ -30,7 +29,7 @@ const Variables = () => {
 
 const VariablesInner = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [editedVar, setEditedVar] = useState<VariableWithId | null>(null);
+  const [editedVar, setEditedVar] = useState<Variable | null>(null);
   return (
     <div className="flex flex-col items-center relative pb-2 mb-2">
       <AddButton
@@ -63,7 +62,7 @@ const Popup = ({
   editedVar,
 }: {
   onClose: () => void;
-  editedVar: VariableWithId | null;
+  editedVar: Variable | null;
 }) => {
   const dispatch = useAppDispatch();
   const [type, setType] = useState<"color" | "font-family">(
@@ -77,7 +76,7 @@ const Popup = ({
       {!editedVar && (
         <Select
           title="Pick a variable type"
-          showStyled={true}
+          showStyled={false}
           options={["color", "font-family"]}
           selected={type}
           onChange={(e) => {
@@ -149,7 +148,7 @@ const Popup = ({
 const VariablesList = ({
   onEditClick,
 }: {
-  onEditClick: (variable: VariableWithId) => void;
+  onEditClick: (variable: Variable) => void;
 }) => {
   const variables = useAppSelector(selectVariables);
   const dispatch = useAppDispatch();

@@ -288,7 +288,7 @@ const SideDropWrapper = ({
   );
 
   return (
-    <div className="relative">
+    <div className="relative" style={marginLeftStyle}>
       <div
         onClick={() => handleAddLocationClick("before")}
         onDrop={handleSideDrop}
@@ -299,13 +299,10 @@ const SideDropWrapper = ({
           "bottom-full " +
           (beforeSelected ? selectedClasses : "bg-hoveredBlue")
         }
-        style={marginLeftStyle}
       >
         <AddSign />
       </div>
-      <div className="m-2 min-w-40" style={marginLeftStyle}>
-        {children}{" "}
-      </div>
+      <div className="m-2 min-w-40">{children} </div>
       <div
         onClick={() => {
           handleAddLocationClick("after");
@@ -318,7 +315,6 @@ const SideDropWrapper = ({
           "top-full " +
           (afterSelected ? selectedClasses : "bg-hoveredBlue")
         }
-        style={marginLeftStyle}
       >
         <AddSign />
       </div>

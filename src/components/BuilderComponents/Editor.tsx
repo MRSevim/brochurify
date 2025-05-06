@@ -92,7 +92,6 @@ const EditorInner = ({ children }: { children: React.ReactNode }) => {
   const variables = useAppSelector(selectVariables);
   useIntersectionObserver([globalTrigger], undefined);
   useKeyPresses();
-
   return (
     <styledElements.styledEditor
       styles={pageWise}

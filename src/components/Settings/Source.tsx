@@ -1,14 +1,14 @@
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import BottomLine from "../BottomLine";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
-import { getProp, getSetting } from "@/utils/Helpers";
+import { getProp } from "@/utils/Helpers";
 import LinkInput from "../LinkInput";
 import { changeElementProp } from "@/redux/slices/editorSlice";
 import TextInput from "../TextInput";
-import SmallText from "../SmallText";
 
 const Source = () => {
   const activeType = useAppSelector(selectActive)?.type;
+
   return (
     <ToggleVisibilityWrapper title="Source" desc="Add the source of your media">
       <SourceUrl />
@@ -53,6 +53,7 @@ const AltText = () => {
   const type = "alt";
   const variable = getProp<string>(useAppSelector, type);
   const dispatch = useAppDispatch();
+
   return (
     <div className="relative pb-2 mb-2">
       <TextInput

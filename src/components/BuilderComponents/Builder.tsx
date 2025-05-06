@@ -11,7 +11,7 @@ export default function Builder() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return <Loading size={16} />;
+  if (!mounted) return <Loading size={50} />;
 
   return (
     <div className="w-full relative overflow-hidden">

@@ -14,7 +14,7 @@ const Anchor = () => {
   return (
     <ToggleVisibilityWrapper
       title="Anchor"
-      desc="Add anchor to your element so you can link to it later. Names should be unique for each element with anchors"
+      desc="Add anchor to your element so you can link to it later. Name should be unique for each element with anchor"
     >
       <div className="relative pb-2 mb-2">
         <TextInput

@@ -293,6 +293,7 @@ export const insertElement = (
 
   return layout;
 };
+
 export const moveToNextOrPreviousInner = (
   state: EditorState,
   payload: MoveTo
@@ -307,7 +308,7 @@ export const moveToNextOrPreviousInner = (
           if (i === 0) {
             // Can't move, already first
             toast.error(
-              "This element is the first element and can't be moved further"
+              "This element is the first element in its parent and can't be moved further"
             );
             return true;
           }
@@ -316,7 +317,7 @@ export const moveToNextOrPreviousInner = (
           if (i === arr.length - 1) {
             // Can't move, already last
             toast.error(
-              "This element is the last element and can't be moved further"
+              "This element is the last element in its parent and can't be moved further"
             );
             return true;
           }

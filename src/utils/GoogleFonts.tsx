@@ -10,28 +10,24 @@ export const googleFontOptions = [
 ];
 
 export const mapOverFonts = (fonts: string[], keyed = false) => {
+  const getHref = (font: string) =>
+    `https://fonts.googleapis.com/css2?family=${font.replace(
+      / /g,
+      "+"
+    )}:ital,wght@0,400;0,700;1,400;1,700&display=swap`;
+
   if (!keyed) {
     return fonts
       .map(
         (font) => `
       <link
-      href="https://fonts.googleapis.com/css2?family=${font.replace(
-        / /g,
-        "+"
-      )}:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      href="${getHref(font)}"
            rel="stylesheet"/>
            `
       )
       .join("\n");
   }
   return fonts.map((font) => (
-    <link
-      key={font}
-      href={`https://fonts.googleapis.com/css2?family=${font.replace(
-        / /g,
-        "+"
-      )}:ital,wght@0,400;0,700;1,400;1,700&display=swap`}
-      rel="stylesheet"
-    />
+    <link key={font} href={getHref(font)} rel="stylesheet" />
   ));
 };

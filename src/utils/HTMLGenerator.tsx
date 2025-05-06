@@ -1,6 +1,6 @@
 import { hasType } from "./EditorHelpers";
 import { mapOverFonts } from "./GoogleFonts";
-import { detectTag, getUsedFontsFromHTML } from "./Helpers";
+import { getUsedFontsFromHTML } from "./Helpers";
 import {
   fullStylesWithIdsGenerator,
   keyframeGenerator,
@@ -97,55 +97,10 @@ export const generateHTML = (
         height:100%;
         width:100%
       }  
-      ${
-        detectTag("blockquote", renderedBody)
-          ? `blockquote {
-          margin-top: 10px;
-          margin-bottom: 10px;
-          margin-left: 30px;
-          padding-left: 15px;
-          border-left: 3px solid var(--gray);
-        }`
-          : ""
-      }
-      ${
-        detectTag("ul", renderedBody) || detectTag("ol", renderedBody)
-          ? `ul,ol {
-          list-style-position: inside;
-          }
-          ul li p,
-          ol li p {
-            display: inline;
-          }`
-          : ""
-      }
-      ${
-        detectTag("hr", renderedBody)
-          ? `hr {
-          border-top: 1px solid var(--gray);
-          }`
-          : ""
-      }
-      ${
-        detectTag("table", renderedBody)
-          ? `table,
-          th,
-          td {
-            border: 1px solid;
-            border-collapse: collapse;
-          }
-          th {
-            background-color: var(--gray);
-          }
-          th,
-          td {
-            padding: 5px;
-          }`
-          : ""
-      }
       ${fullstylesWithIds}  
       ${keyframes}
     </style>`;
+
   const tempHTML = `<!DOCTYPE html>
       <html lang="en">
       <head>
@@ -223,6 +178,41 @@ const getCssReset = () => {
   .relative {
     position:relative
   }   
+  /*Blockquote*/
+  blockquote {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    padding-left: 15px;
+    border-left: 3px solid var(--gray);
+  }
+  /*ul-ol*/
+  ul,
+  ol {
+    list-style-position: inside;
+  }
+  ul li p,
+  ol li p {
+    display: inline;
+  }
+  /*hr*/
+  hr {
+    border-top: 1px solid var(--gray);
+  }
+  /*table*/
+  table,
+  th,
+  td {
+    border: 1px solid;
+    border-collapse: collapse;
+  }
+  th {
+    background-color: var(--gray);
+  }
+  th,
+  td {
+    padding: 5px;
+  }
   `;
 };
 

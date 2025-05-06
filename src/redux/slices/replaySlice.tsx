@@ -4,7 +4,7 @@ type ReplayState = { id: string; trigger: number };
 
 const initialState: { replayArr: ReplayState[]; globalTrigger: number } = {
   replayArr: [],
-  globalTrigger: 0,
+  globalTrigger: 1,
 };
 
 const replaySlice = createSlice({
@@ -19,7 +19,7 @@ const replaySlice = createSlice({
         if (found) {
           found.trigger += 1; // Increase trigger for same id
         } else {
-          state.replayArr.push({ id, trigger: 0 });
+          state.replayArr.push({ id, trigger: 1 });
         }
       } else {
         state.globalTrigger++;

@@ -1,4 +1,4 @@
-import { selectVariables, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import BottomLine from "../../BottomLine";
 import TextAlign from "@tiptap/extension-text-align";
 import TextStyle from "@tiptap/extension-text-style";
@@ -25,12 +25,10 @@ import Popup from "./Popup";
 import { changeElementProp } from "@/redux/slices/editorSlice";
 import sanitizeHtml from "sanitize-html";
 import LetterSpacing from "@/Tiptap/LetterSpacing";
-import { styledElements } from "@/utils/Helpers";
 
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
   const dispatch = useAppDispatch();
-  const variables = useAppSelector(selectVariables);
 
   const editor = useEditor({
     extensions: [
@@ -136,15 +134,12 @@ const Text = () => {
   }, [content, editor]);
 
   return (
-    <styledElements.styledTiptapWrapperDiv
-      className="relative pb-2 mb-2"
-      variables={variables}
-    >
+    <div className="relative pb-2 mb-2">
       <SecondaryTitle title="Editable Text" />
       <EditBar editor={editor} />
       <EditorContent editor={editor} />
       <BottomLine />
-    </styledElements.styledTiptapWrapperDiv>
+    </div>
   );
 };
 
@@ -403,7 +398,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
           />
         ))}
       {tableMode && (
-        <div>
+        <>
           <button
             className={buttonClasses}
             onClick={() =>
@@ -458,7 +453,6 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
           >
             Delete row
           </button>
-
           <button
             className={buttonClasses}
             onClick={() => editor.chain().focus().mergeCells().run()}
@@ -524,7 +518,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
           <button className={buttonClasses} onClick={() => setTableMode(false)}>
             Go to text editor
           </button>
-        </div>
+        </>
       )}
     </div>
   );

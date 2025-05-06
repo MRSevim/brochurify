@@ -60,7 +60,7 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
                 setPreview((prev) => !prev);
               }}
             />
-            <button className="p-2 rounded bg-amber-800 text-white">
+            <button className="p-2 rounded bg-amberVar text-white">
               Publish
             </button>
           </>

@@ -11,7 +11,7 @@ import {
 } from "@/utils/Helpers";
 import { Style } from "@/utils/Types";
 import { Editor } from "@tiptap/react";
-import { RefObject, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const Popup = ({
   type,
@@ -32,6 +32,7 @@ const Popup = ({
     : editor.isActive("heading")
     ? pageWise[CONFIG.headings]?.["font-family"]
     : pageWise["font-family"] || "inherit";
+
   const finalSelectedFontFamily =
     selectedFontFamily === "initial" ? "inherit" : selectedFontFamily;
 
@@ -43,7 +44,7 @@ const Popup = ({
 
   let tag = nodeType;
 
-  // For heading levels, convert "heading" + level to "h1", "h2", etc.
+  // For headings, convert "heading" + level to "h1", "h2", etc.
   if (nodeType === "heading") {
     tag = `h${parentNode.attrs.level}`;
   }
@@ -59,7 +60,6 @@ const Popup = ({
     <div className="absolute z-10 bg-background border border-text rounded p-3 top-5">
       {type === "color" && (
         <ColorPicker
-          onVarSelect={(param) => editor.chain().focus().setColor(param).run()}
           title="Pick a color"
           selected={
             editor.getAttributes("textStyle").color ||
@@ -159,9 +159,8 @@ const Link = ({ editor }: { editor: Editor }) => {
   };
   return (
     <>
-      {" "}
       <LinkInput
-        title="Enter the link (with https://)"
+        title="Enter the link"
         value={link}
         onChange={(e) => {
           setLink(e.target.value);
