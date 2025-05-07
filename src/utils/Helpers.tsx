@@ -382,43 +382,62 @@ export const getFontVariables = (
 };
 
 export const makeArraySplitFromCommas = (str: string | undefined): string[] => {
-  if (str) {
-    return str.split(",").map((item) => item.trim());
-  } else return [];
+  if (!str) return [];
+
+  const result: string[] = [];
+  let current = "";
+  let depth = 0;
+
+  for (const char of str) {
+    if (char === "(") {
+      depth++;
+    } else if (char === ")") {
+      depth--;
+    }
+
+    if (char === "," && depth === 0) {
+      result.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+
+  if (current) {
+    result.push(current.trim());
+  }
+
+  return result;
 };
 
-export const addAnimationToString = (
-  str: string,
-  animation: string
-): string => {
+export const addToString = (str: string, newVal: string): string => {
   if (!str) {
-    return animation;
-  } else
-    return [...str.split(",").map((str) => str.trim()), animation].join(", ");
+    return newVal;
+  } else return [...str.split(",").map((str) => str.trim()), newVal].join(", ");
 };
 
-export const updateOrDeleteAnimationAtIndex = (
+export const updateOrDeleteAtIndex = (
   str: string,
-  animation: string | undefined,
+  newVal: string | undefined,
   i: number,
   deletion: boolean
 ) => {
-  const animations = str.split(",").map((str) => str.trim());
+  const arr = makeArraySplitFromCommas(str);
 
   if (!str || i === undefined || i < 0) {
     throw Error("Please pass in str and i");
     // Handle edge cases like undefined or invalid index
   }
-  if (i >= animations.length) {
+  if (i >= arr.length) {
     throw Error("Index higher than split array's length"); // Index out of range
   }
 
   if (deletion) {
-    animations.splice(i, 1); // Remove the animation at the specified index
-  } else if (animation) {
-    animations[i] = animation; // Replace the animation at the given index
+    arr.splice(i, 1); // Remove the animation at the specified index
+  } else if (newVal) {
+    arr[i] = newVal; // Replace the animation at the given index
   }
-  return animations.join(", "); // Return updated string
+  return arr.join(", "); // Return updated string
 };
 
 export const getValueFromShorthandStr = (

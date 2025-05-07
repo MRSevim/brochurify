@@ -3,13 +3,13 @@ import AddButton from "../AddButton";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import BottomLine from "../BottomLine";
 import {
-  addAnimationToString,
+  addToString,
   CONFIG,
   getSetting,
   getValueFromShorthandStr,
   makeArraySplitFromCommas,
   setValueFromShorthandStr,
-  updateOrDeleteAnimationAtIndex,
+  updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import EditButton from "../EditButton";
@@ -36,7 +36,7 @@ const Animations = () => {
   const activeId = useAppSelector(selectActive)?.id || "";
 
   const handleAddition = (editedStr: string) => {
-    const newValue = addAnimationToString(animationsString || "", editedStr);
+    const newValue = addToString(animationsString || "", editedStr);
     dispatch(changeInnerElementStyle({ outerType: type, innerType, newValue }));
   };
 
@@ -46,7 +46,7 @@ const Animations = () => {
     animation: string | undefined
   ) => {
     if (!animationsString) return;
-    const newValue = updateOrDeleteAnimationAtIndex(
+    const newValue = updateOrDeleteAtIndex(
       animationsString,
       animation,
       i,

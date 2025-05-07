@@ -87,8 +87,6 @@ const Popup = ({
       {type === "font-size" && (
         <Slider
           title="Pick a font size"
-          min={1}
-          max={70}
           step={1}
           value={selectedFontSize}
           onChange={(e) => editor.chain().focus().setFontSize(e).run()}
@@ -115,10 +113,9 @@ const Popup = ({
       )}
       {type === "letter-spacing" && (
         <Slider
+          letterSpacing={true}
           title="Pick a letter spacing"
           units={["px", "em"]}
-          min={-5}
-          max={40}
           step={1}
           value={
             editor.getAttributes("paragraph").letterSpacing ||

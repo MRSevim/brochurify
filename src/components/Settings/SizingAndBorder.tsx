@@ -1,15 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import Icon from "../Icon";
 import Slider from "../Slider";
 import { SizingType } from "@/utils/Types";
-import {
-  capitalizeFirstLetter,
-  CONFIG,
-  getSetting,
-  getUnit,
-  getValueFromShorthandStr,
-  setValueFromShorthandStr,
-} from "@/utils/Helpers";
+import { CONFIG, getSetting, getUnit } from "@/utils/Helpers";
 import Border from "./Border";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
@@ -25,7 +17,7 @@ import SecondaryTitle from "../SecondaryTitle";
 import BottomLine from "../BottomLine";
 import GroupedRadioButtons from "../GroupedRadioButtons";
 import InfoIcon from "../InfoIcon";
-import Checkbox from "../Checkbox";
+import ShorthandToggler from "./ShorthandToggler";
 
 const sizingTypeArray: SizingType[] = [
   {
@@ -61,9 +53,9 @@ const SizingAndBorderInner = () => {
         alt="Margin, border, padding schema"
         className="mb-2 w-full h-auto"
       />
-      <MarginOrPadding sizingTypeArray={sizingTypeArray} type="margin" />
+      <ShorthandToggler sizingTypeArray={sizingTypeArray} type="margin" />
       <Border />
-      <MarginOrPadding sizingTypeArray={sizingTypeArray} type="padding" />
+      <ShorthandToggler sizingTypeArray={sizingTypeArray} type="padding" />
       <WidthAndHeight />
       {isIcon && <Size />}
     </>
@@ -88,7 +80,7 @@ export const WidthAndHeight = () => {
         <NumberController type="width" outerType={outerType} />
         <NumberController type="height" outerType={outerType} />
       </div>
-      <Hide />
+
       <BottomLine />
     </div>
   );
@@ -238,79 +230,6 @@ const NumberController = ({
   );
 };
 
-const units = ["px", "em", "%"];
-
-const MarginOrPadding = ({
-  sizingTypeArray,
-  type,
-}: {
-  sizingTypeArray: SizingType[];
-  type: string;
-}) => {
-  const [toggle, setToggle] = useState(false);
-  const dispatch = useAppDispatch();
-  const variable = getSetting(useAppSelector, type);
-
-  const handleInputChange = (e: string, i: number | undefined) => {
-    const dispatchFunc = (type: string, newValue: string) => {
-      dispatch(
-        changeElementStyle({
-          type,
-          newValue,
-        })
-      );
-    };
-    if (i !== undefined) {
-      dispatchFunc(type, setValueFromShorthandStr(variable, i, e));
-    } else {
-      let updatedVariable = variable || "";
-
-      sizingTypeArray?.forEach((item, i) => {
-        updatedVariable = setValueFromShorthandStr(updatedVariable, i, e);
-      });
-      dispatchFunc(type, updatedVariable);
-    }
-  };
-
-  return (
-    <div className="relative pb-2 mb-2">
-      <SecondaryTitle title={capitalizeFirstLetter(type)}>
-        <Icon
-          type={toggle ? "arrows-angle-contract" : "arrows-angle-expand"}
-          size="20px"
-          onClick={() => setToggle((prev) => !prev)}
-          title="Expand/Contract"
-        />
-      </SecondaryTitle>
-
-      {toggle && (
-        <>
-          {sizingTypeArray.map((item, i) => (
-            <Slider
-              units={units}
-              key={i}
-              value={getValueFromShorthandStr(variable, i)}
-              max={50}
-              title={item.title}
-              onChange={(e) => handleInputChange(e, i)}
-            />
-          ))}
-        </>
-      )}
-      {!toggle && (
-        <Slider
-          units={units}
-          value={getValueFromShorthandStr(variable, 0)}
-          max={50}
-          title={"All sides"}
-          onChange={(e) => handleInputChange(e, undefined)}
-        />
-      )}
-      <BottomLine />
-    </div>
-  );
-};
-
 const Size = () => {
   const type = "font-size";
   const dispatch = useAppDispatch();
@@ -318,8 +237,7 @@ const Size = () => {
   return (
     <Slider
       value={variable || "25px"}
-      max={80}
-      step={2}
+      step={1}
       title="Size"
       onChange={(newValue) =>
         dispatch(
@@ -332,49 +250,5 @@ const Size = () => {
     />
   );
 };
-const Hide = () => {
-  return (
-    <div className="relative pb-2 mb-2">
-      <TabletOrMobile
-        title="Hide on tablet and below"
-        outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
-      />
-      <TabletOrMobile
-        title="Hide on mobile and below"
-        outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
-      />
-      <BottomLine />
-    </div>
-  );
-};
 
-const TabletOrMobile = ({
-  title,
-  outerType,
-}: {
-  title: string;
-  outerType: string;
-}) => {
-  const hidden = "none";
-  const innerType = "display";
-  const variable = getSetting(useAppSelector, outerType, innerType);
-  const dispatch = useAppDispatch();
-  const checked = variable === hidden;
-
-  return (
-    <Checkbox
-      title={title}
-      checked={checked}
-      onChange={() => {
-        dispatch(
-          changeInnerElementStyle({
-            outerType,
-            innerType,
-            newValue: checked ? "" : hidden,
-          })
-        );
-      }}
-    />
-  );
-};
 export default SizingAndBorder;

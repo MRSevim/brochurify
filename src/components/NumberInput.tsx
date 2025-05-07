@@ -3,12 +3,14 @@ import { ChangeEvent } from "react";
 const NumberInput = ({
   disabled,
   title,
+  children,
   value,
   onChange,
 }: {
   title: string;
   value: string;
   disabled?: boolean;
+  children?: React.ReactNode;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const parsed = isNaN(parseInt(value, 10)) ? "" : parseInt(value, 10);
@@ -21,14 +23,17 @@ const NumberInput = ({
       >
         {title}
       </label>
-      <input
-        disabled={disabled}
-        type="number"
-        id={"number-input-" + title}
-        value={parsed}
-        onChange={onChange}
-        className="text-sm rounded-lg block w-full p-2.5"
-      />
+      <div className="flex gap-1 mx-2">
+        <input
+          disabled={disabled}
+          type="number"
+          id={"number-input-" + title}
+          value={parsed}
+          onChange={onChange}
+          className="text-sm rounded-lg block w-full p-2.5"
+        />
+        {children && children}
+      </div>
     </form>
   );
 };

@@ -14,12 +14,28 @@ import Select from "../Select";
 import ColorPicker from "../ColorPicker";
 import BottomLine from "../BottomLine";
 import SecondaryTitle from "../SecondaryTitle";
+import { SizingType } from "@/utils/Types";
+import ShorthandToggler from "./ShorthandToggler";
+
+const sizingTypeArray: SizingType[] = [
+  {
+    title: "Top Left",
+  },
+  {
+    title: "Top Right",
+  },
+  {
+    title: "Bottom Right",
+  },
+  {
+    title: "Bottom Left",
+  },
+];
 
 const Border = () => {
   const type = "border";
   const borderRadiusType = "border-radius";
   const borderStr = getSetting(useAppSelector, type);
-  const borderRadiusValue = getSetting(useAppSelector, borderRadiusType);
   const toggled = !!borderStr;
   const dispatch = useAppDispatch();
 
@@ -34,7 +50,7 @@ const Border = () => {
       dispatch(
         changeElementStyle({
           type: borderRadiusType,
-          newValue: "0%",
+          newValue: "0% 0% 0% 0%",
         })
       );
     } else {
@@ -62,8 +78,6 @@ const Border = () => {
           <Slider
             units={["px", "em"]}
             value={getValueFromShorthandStr(borderStr, 0)}
-            min={0}
-            max={50}
             step={2}
             title={"Thickness"}
             onChange={(e) => handleChange(e, 0)}
@@ -76,21 +90,9 @@ const Border = () => {
             onChange={(e) => handleChange(e, 2)}
             value={getValueFromShorthandStr(borderStr, 2)}
           />
-          <Slider
-            units={["px", "%"]}
-            value={borderRadiusValue || "0"}
-            min={0}
-            max={50}
-            step={1}
-            title={"Border Radius"}
-            onChange={(newValue) =>
-              dispatch(
-                changeElementStyle({
-                  type: borderRadiusType,
-                  newValue,
-                })
-              )
-            }
+          <ShorthandToggler
+            sizingTypeArray={sizingTypeArray}
+            type={borderRadiusType}
           />
         </>
       )}

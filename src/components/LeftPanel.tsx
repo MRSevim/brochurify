@@ -126,7 +126,7 @@ const LayoutItem = ({
               {item.props.child && item.props.child.length > 0 && (
                 <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
               )}
-              {item.type}
+              <div className="ms-2">{item.type}</div>
             </div>
 
             <DeleteButton
@@ -379,7 +379,7 @@ const ToggleButton = ({
   const type = toggled ? "chevron-up" : "chevron-down";
   return (
     <button
-      className="p-1 mr-2"
+      className="p-1"
       onClick={(event) => {
         event.stopPropagation();
         onClick();

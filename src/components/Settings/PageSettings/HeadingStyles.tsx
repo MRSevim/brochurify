@@ -69,8 +69,6 @@ const FontSize = ({ outerType }: { outerType: string }) => {
     <>
       <Slider
         title={`Select ${outerType} font size`}
-        min={0}
-        max={5}
         step={0.5}
         units={["em", "px"]}
         value={variable || "1"}

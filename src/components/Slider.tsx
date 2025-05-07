@@ -1,16 +1,19 @@
 import { getUnit } from "@/utils/Helpers";
+import UnitSelector from "./UnitSelector";
 
 type Props = {
   min?: number;
-  max: number;
+  max?: number;
   step?: number;
   value: string;
   title: string;
   units?: string[];
+  letterSpacing?: boolean;
   showManualInput?: boolean;
   onChange: (e: string) => void;
 };
 const Slider = ({
+  letterSpacing,
   min = 1,
   max,
   step = 1,
@@ -31,7 +34,11 @@ const Slider = ({
       ? 6
       : max;
 
-  const minNumber = unit === "em" || unit === "rem" || unit === "%" ? 0 : min;
+  const minNumber = letterSpacing
+    ? -5
+    : unit === "em" || unit === "rem" || unit === "%" || unit === "px"
+    ? 0
+    : min;
   const stepValue = unit === "em" || unit === "rem" ? 0.1 : step;
 
   return (
@@ -75,20 +82,12 @@ const Slider = ({
             onChange={(e) => onChange(e.target.value + unit)}
             className="w-12 text-sm rounded-lg p-1"
           />
-          <select
-            value={unit}
+          <UnitSelector
+            value={unit || ""}
             onChange={(e) => onChange(parsed + e.target.value)}
-            id={"unit-options-" + title}
-            className="w-12 border border-gray-600 text-sm rounded-lg p-1"
-          >
-            {units.map((item) => {
-              return (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              );
-            })}
-          </select>
+            title={title}
+            units={units}
+          />
         </div>
       )}
     </div>

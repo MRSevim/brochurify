@@ -10,6 +10,7 @@ import IconType from "./IconType";
 import Animations from "./Animations";
 import FixedSettings from "./FixedSettings";
 import Anchor from "./Anchor";
+import Others from "./Others";
 
 const ElementSettings = () => {
   const active = useAppSelector(selectActive);
@@ -44,6 +45,7 @@ const ElementSettings = () => {
       {shouldHaveSource && <Source />}
       {isIcon && <IconType />}
       <Anchor />
+      <Others />
       {shouldHaveUrl && <Url />}
       {isText && <Text key={activeId} />}
     </div>

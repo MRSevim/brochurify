@@ -87,7 +87,6 @@ const FontSize = () => {
     <div className="relative pb-2 mb-2">
       <Slider
         title="Select pagewise font size"
-        max={70}
         step={1}
         units={["px"]}
         value={variable || "16px"}

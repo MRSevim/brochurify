@@ -64,7 +64,6 @@ const Padding = () => {
       <Slider
         key={i}
         value={getValueFromShorthandStr(variable, i)}
-        max={50}
         title="Horizontal padding"
         onChange={(e) =>
           dispatch(

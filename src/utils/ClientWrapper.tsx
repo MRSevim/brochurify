@@ -38,7 +38,9 @@ export default function ClientWrapper({
 
   return (
     <StyleSheetManager
-      shouldForwardProp={(prop) => prop !== "styles" && prop !== "variables"}
+      shouldForwardProp={(prop) =>
+        prop !== "styles" && prop !== "variables" && prop !== "pageWise"
+      }
     >
       <LayoutToggleContext.Provider>
         <SettingsToggleContext.Provider>

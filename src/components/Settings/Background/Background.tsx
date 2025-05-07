@@ -134,7 +134,6 @@ const BackgroundShadowSlider = ({
   return (
     <Slider
       min={title === "Blur" ? 0 : -50}
-      max={50}
       step={1}
       value={value}
       title={title}
