@@ -62,14 +62,17 @@ const BackgroundShadow = () => {
   const pageWise = useAppSelector(selectPageWise);
   const toggled = !!variable;
   const dispatch = useAppDispatch();
+
+  const setToInitial = () =>
+    dispatch(
+      changeElementStyle({
+        type,
+        newValue: "5px 5px 5px 2px " + pageWise.color || "#000000",
+      })
+    );
   const handleToggle = () => {
     if (!toggled) {
-      dispatch(
-        changeElementStyle({
-          type,
-          newValue: "5px 5px 5px 2px " + pageWise.color || "#000000",
-        })
-      );
+      setToInitial();
     } else {
       dispatch(removeElementStyle({ type }));
     }
@@ -114,6 +117,7 @@ const BackgroundShadow = () => {
             selected={getValueFromShorthandStr(variable, 4)}
             onChange={(e) => handleChange(e, 4)}
           />
+          <ResetButton onClick={() => setToInitial()} />
         </>
       )}
 
@@ -146,32 +150,36 @@ const BackgroundImage = () => {
   const variable = getSetting(useAppSelector, type);
   const toggled = !!variable;
   const dispatch = useAppDispatch();
+
+  const setToInitial = () => {
+    dispatch(
+      changeElementStyle({
+        type,
+        newValue: `url("${CONFIG.placeholderImgUrl}")`,
+      })
+    );
+    dispatch(
+      changeElementStyle({
+        type: "background-repeat",
+        newValue: "no-repeat",
+      })
+    );
+    dispatch(
+      changeElementStyle({
+        type: "background-position",
+        newValue: "50% 50%",
+      })
+    );
+    dispatch(
+      changeElementStyle({
+        type: "background-size",
+        newValue: "cover",
+      })
+    );
+  };
   const handleToggle = () => {
     if (!toggled) {
-      dispatch(
-        changeElementStyle({
-          type,
-          newValue: `url("${CONFIG.placeholderImgUrl}")`,
-        })
-      );
-      dispatch(
-        changeElementStyle({
-          type: "background-repeat",
-          newValue: "no-repeat",
-        })
-      );
-      dispatch(
-        changeElementStyle({
-          type: "background-position",
-          newValue: "50% 50%",
-        })
-      );
-      dispatch(
-        changeElementStyle({
-          type: "background-size",
-          newValue: "cover",
-        })
-      );
+      setToInitial();
     } else {
       dispatch(removeElementStyle({ type }));
       dispatch(removeElementStyle({ type: "background-position" }));
@@ -190,6 +198,7 @@ const BackgroundImage = () => {
           <Link />
           <BackgroundPositionPicker />
           <BackgroundSize />
+          <ResetButton onClick={() => setToInitial()} />
         </>
       )}
 

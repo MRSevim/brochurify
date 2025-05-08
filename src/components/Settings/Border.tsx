@@ -16,6 +16,7 @@ import BottomLine from "../BottomLine";
 import SecondaryTitle from "../SecondaryTitle";
 import { SizingType } from "@/utils/Types";
 import ShorthandToggler from "./ShorthandToggler";
+import ResetButton from "../ResetButton";
 
 const sizingTypeArray: SizingType[] = [
   {
@@ -39,14 +40,17 @@ const Border = () => {
   const toggled = !!borderStr;
   const dispatch = useAppDispatch();
 
+  const setToInitial = () =>
+    dispatch(
+      changeElementStyle({
+        type,
+        newValue: "2px solid #000000",
+      })
+    );
+
   const handleToggle = () => {
     if (!toggled) {
-      dispatch(
-        changeElementStyle({
-          type,
-          newValue: "2px solid #000000",
-        })
-      );
+      setToInitial();
       dispatch(
         changeElementStyle({
           type: borderRadiusType,
@@ -75,21 +79,25 @@ const Border = () => {
       </SecondaryTitle>
       {toggled && (
         <>
-          <Slider
-            units={["px", "em"]}
-            value={getValueFromShorthandStr(borderStr, 0)}
-            step={2}
-            title={"Thickness"}
-            onChange={(e) => handleChange(e, 0)}
-          />
-          <BorderType
-            onChange={(e) => handleChange(e, 1)}
-            value={getValueFromShorthandStr(borderStr, 1)}
-          />
-          <BorderColor
-            onChange={(e) => handleChange(e, 2)}
-            value={getValueFromShorthandStr(borderStr, 2)}
-          />
+          <div className="relative mb-2 pb-2">
+            <Slider
+              units={["px", "em"]}
+              value={getValueFromShorthandStr(borderStr, 0)}
+              step={2}
+              title={"Thickness"}
+              onChange={(e) => handleChange(e, 0)}
+            />
+            <BorderType
+              onChange={(e) => handleChange(e, 1)}
+              value={getValueFromShorthandStr(borderStr, 1)}
+            />
+            <BorderColor
+              onChange={(e) => handleChange(e, 2)}
+              value={getValueFromShorthandStr(borderStr, 2)}
+            />
+            <ResetButton onClick={() => setToInitial()} />
+            <BottomLine />
+          </div>
           <ShorthandToggler
             sizingTypeArray={sizingTypeArray}
             type={borderRadiusType}

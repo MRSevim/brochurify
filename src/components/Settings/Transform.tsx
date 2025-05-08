@@ -10,7 +10,7 @@ import {
   addToString,
   getSetting,
   getUnit,
-  makeArraySplitFromCommas,
+  makeArraySplitFrom,
   updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -18,23 +18,24 @@ import {
   changeElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
-import EditButton from "../EditButton";
-import DeleteButton from "../DeleteButton";
 import NumberInput from "../NumberInput";
 import UnitSelector from "../UnitSelector";
+import EditableList from "./EditableList";
+
+const splitValue = " ";
 
 const Transform = () => {
   const type = "transform";
   const [showPopup, setShowPopup] = useState(false);
   const [editedIndex, setEditedIndex] = useState<number>(0);
   const transformsString = getSetting(useAppSelector, type);
-  const transforms = makeArraySplitFromCommas(transformsString);
+  const transforms = makeArraySplitFrom(transformsString, splitValue);
   const dispatch = useAppDispatch();
+
   const handleAddition = (editedStr: string) => {
-    const newValue = addToString(transformsString || "", editedStr);
+    const newValue = addToString(transformsString || "", editedStr, splitValue);
     dispatch(changeElementStyle({ type, newValue }));
   };
-
   const handleEditOrDeletion = (
     i: number,
     deletion: boolean,
@@ -45,7 +46,8 @@ const Transform = () => {
       transformsString,
       newVal,
       i,
-      deletion
+      deletion,
+      splitValue
     );
     if (!newValue) {
       dispatch(removeElementStyle({ type }));
@@ -64,7 +66,8 @@ const Transform = () => {
         <AddButton
           onClick={() => {
             if (!showPopup) {
-              handleAddition("translate(0,0)");
+              handleAddition("translate(0px,0px)");
+              setEditedIndex(transforms.length);
             }
             setShowPopup((prev) => !prev);
           }}
@@ -85,8 +88,9 @@ const Transform = () => {
         </RightPanelPopup>
       )}
       {transforms && (
-        <TransformsList
-          transforms={transforms}
+        <EditableList
+          items={transforms}
+          name="Transform"
           onEditClick={(i) => {
             setEditedIndex(i);
             setShowPopup(true);
@@ -101,34 +105,8 @@ const Transform = () => {
   );
 };
 
-const TransformsList = ({
-  onEditClick,
-  onDeleteClick,
-  transforms,
-}: {
-  onEditClick: (i: number) => void;
-  onDeleteClick: (i: number) => void;
-  transforms: string[];
-}) => {
-  return (
-    <div className="mt-2 w-full">
-      {transforms.map((transform, i) => (
-        <div
-          key={i}
-          className="flex justify-between items-center border border-text p-2 m-2"
-        >
-          <div className="px-2">
-            <span className="pe-2 border-r-2">Transform {i + 1}</span>
-          </div>
-          <div className="flex gap-1">
-            <EditButton onClick={() => onEditClick(i)} />
-            <DeleteButton onClick={() => onDeleteClick(i)} />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+const translateUnits = ["px", "%"];
+const degreeUnits = ["deg", "turn"];
 
 const Popup = ({
   handleEdit,
@@ -137,32 +115,69 @@ const Popup = ({
   editedStr: string;
   handleEdit: (value: string) => void;
 }) => {
-  const handleChange = (value: string) => {
-    handleEdit(value);
-  };
   if (!editedStr) return;
-  const startingValue = extractStartText(editedStr);
+  const type = extractStartText(editedStr); // e.g., "translate"
+  const values = extractValuesInParentheses(editedStr); // e.g., ["0px", "0px"]
+
+  const updateValueAtIndex = (i: number, newVal: string) => {
+    const newValues = [...values];
+    newValues[i] = newVal;
+    handleEdit(`${type}(${newValues.join(", ")})`);
+  };
+
+  const handleTypeChange = (newType: string) => {
+    let finalParenthesisValue = "";
+    if (newType === "translate") {
+      finalParenthesisValue = "0px,0px";
+    } else if (newType === "rotate" || newType === "skew") {
+      finalParenthesisValue = "0deg";
+    } else {
+      finalParenthesisValue = "1";
+    }
+    handleEdit(`${newType}(${finalParenthesisValue})`);
+  };
   return (
     <div className="mb-2">
-      <TransformType
-        value={editedStr}
-        onChange={(value) => {
-          handleChange(value);
-        }}
-      />
-      {startingValue === "translate" && (
+      <TransformType value={editedStr} onChange={handleTypeChange} />
+      {type === "translate" && (
         <div className="flex justify-between">
           <NumberSelector
             title="Coordinates in x Axis"
-            value={extractValuesInParentheses(editedStr)[0]}
-            handleChange={() => {}}
+            value={values[0] || "0px"}
+            units={translateUnits}
+            handleChange={(val) => updateValueAtIndex(0, val)}
           />
           <NumberSelector
-            title="Coordinates in y Axis"
-            value={extractValuesInParentheses(editedStr)[1]}
-            handleChange={() => {}}
+            units={translateUnits}
+            title="Coordinates in y Axis (inverted)"
+            value={values[1] || "0px"}
+            handleChange={(val) => updateValueAtIndex(1, val)}
           />
         </div>
+      )}
+      {type === "scale" && (
+        <NumberSelector
+          title="Scale multiplier"
+          value={values[0] || "1"}
+          units={[""]}
+          handleChange={(val) => updateValueAtIndex(0, val)}
+        />
+      )}
+      {type === "rotate" && (
+        <NumberSelector
+          title="Rotation degree"
+          value={values[0] || "0"}
+          units={degreeUnits}
+          handleChange={(val) => updateValueAtIndex(0, val)}
+        />
+      )}
+      {type === "skew" && (
+        <NumberSelector
+          title="Skew degree"
+          value={values[0] || "0"}
+          units={degreeUnits}
+          handleChange={(val) => updateValueAtIndex(0, val)}
+        />
       )}
     </div>
   );
@@ -171,31 +186,31 @@ const Popup = ({
 const NumberSelector = ({
   title,
   value,
+  units,
   handleChange,
 }: {
   title: string;
   value: string;
+  units: string[];
   handleChange: (e: string) => void;
 }) => {
   const parsed = parseFloat(value); //gets the first full number inside value
   const unit = getUnit(value);
   return (
-    <div className="flex">
-      <NumberInput
-        title="Coordinates in x Axis"
-        value={`${parsed}`}
-        onChange={(e) => {
-          handleChange(e.target.value + unit);
-        }}
-      >
-        <UnitSelector
-          value={unit || ""}
-          onChange={(e) => handleChange(parsed + e.target.value)}
-          title={title}
-          units={["px", "%"]}
-        />
-      </NumberInput>
-    </div>
+    <NumberInput
+      title={title}
+      value={`${parsed}`}
+      onChange={(e) => {
+        handleChange(e.target.value + unit);
+      }}
+    >
+      <UnitSelector
+        value={unit || ""}
+        onChange={(e) => handleChange(parsed + e.target.value)}
+        title={title}
+        units={units}
+      />
+    </NumberInput>
   );
 };
 

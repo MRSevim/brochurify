@@ -26,7 +26,6 @@ export const initialLayout: Layout[] = [
                       type: "text",
                       props: {
                         style: getDefaultStyle("text"),
-
                         text: "<h1><span >I am a text</span></h1>",
                       },
                     },

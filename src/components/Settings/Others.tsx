@@ -7,9 +7,11 @@ import Checkbox from "../Checkbox";
 import {
   changeElementStyle,
   changeInnerElementStyle,
+  removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import Transform from "./Transform";
 import Slider from "../Slider";
+import ResetButton from "../ResetButton";
 
 const Others = () => {
   return (
@@ -93,6 +95,7 @@ const Opacity = () => {
           dispatch(changeElementStyle({ type, newValue }))
         }
       />
+      <ResetButton onClick={() => dispatch(removeElementStyle({ type }))} />
       <BottomLine />
     </div>
   );

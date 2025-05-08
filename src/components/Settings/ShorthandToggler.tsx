@@ -1,7 +1,8 @@
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import {
   capitalizeFirstLetter,
+  getDefaultStyle,
   getSetting,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
@@ -12,6 +13,7 @@ import SecondaryTitle from "../SecondaryTitle";
 import Icon from "../Icon";
 import Slider from "../Slider";
 import BottomLine from "../BottomLine";
+import ResetButton from "../ResetButton";
 
 const units = ["px", "em", "%"];
 
@@ -26,6 +28,7 @@ const ShorthandToggler = ({
 }) => {
   const [toggle, setToggle] = useState(false);
   const dispatch = useAppDispatch();
+  const activeType = useAppSelector(selectActive)?.type;
   const variable = getSetting(useAppSelector, type);
 
   const handleInputChange = (e: string, i: number | undefined) => {
@@ -81,6 +84,19 @@ const ShorthandToggler = ({
           onChange={(e) => handleInputChange(e, undefined)}
         />
       )}
+      <ResetButton
+        onClick={() => {
+          if (!activeType) return;
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue:
+                (getDefaultStyle(activeType)[type] as string) ||
+                "0px 0px 0px 0px ",
+            })
+          );
+        }}
+      />
       <BottomLine />
     </div>
   );

@@ -7,7 +7,7 @@ import {
   CONFIG,
   getSetting,
   getValueFromShorthandStr,
-  makeArraySplitFromCommas,
+  makeArraySplitFrom,
   setValueFromShorthandStr,
   updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
@@ -24,19 +24,22 @@ import NumberInput from "../NumberInput";
 import Checkbox from "../Checkbox";
 import ReplayButton from "../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
+import EditableList from "./EditableList";
+
+const splitValue = ",";
 
 const Animations = () => {
   const [type, setType] = useState<string>(CONFIG.possibleOuterTypes.scrolled);
   const [showPopup, setShowPopup] = useState(false);
   const innerType = "animation";
   const animationsString = getSetting(useAppSelector, type, innerType);
-  const animations = makeArraySplitFromCommas(animationsString);
+  const animations = makeArraySplitFrom(animationsString, splitValue);
   const [editedIndex, setEditedIndex] = useState<number>(0);
   const dispatch = useAppDispatch();
   const activeId = useAppSelector(selectActive)?.id || "";
 
   const handleAddition = (editedStr: string) => {
-    const newValue = addToString(animationsString || "", editedStr);
+    const newValue = addToString(animationsString || "", editedStr, splitValue);
     dispatch(changeInnerElementStyle({ outerType: type, innerType, newValue }));
   };
 
@@ -50,7 +53,8 @@ const Animations = () => {
       animationsString,
       animation,
       i,
-      deletion
+      deletion,
+      splitValue
     );
     if (!newValue) {
       dispatch(removeElementStyle({ type }));
@@ -96,8 +100,9 @@ const Animations = () => {
           />
         )}
         {animations && (
-          <AnimationsList
-            animations={animations}
+          <EditableList
+            items={animations}
+            name="Animation"
             onEditClick={(i) => {
               setEditedIndex(i);
               setShowPopup(true);

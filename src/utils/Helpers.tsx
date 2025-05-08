@@ -381,7 +381,10 @@ export const getFontVariables = (
     .map((item) => ({ id: item.id, title: item.name, value: item.value }));
 };
 
-export const makeArraySplitFromCommas = (str: string | undefined): string[] => {
+export const makeArraySplitFrom = (
+  str: string | undefined,
+  splitValue: string
+): string[] => {
   if (!str) return [];
 
   const result: string[] = [];
@@ -395,7 +398,7 @@ export const makeArraySplitFromCommas = (str: string | undefined): string[] => {
       depth--;
     }
 
-    if (char === "," && depth === 0) {
+    if (char === splitValue && depth === 0) {
       result.push(current.trim());
       current = "";
     } else {
@@ -410,19 +413,27 @@ export const makeArraySplitFromCommas = (str: string | undefined): string[] => {
   return result;
 };
 
-export const addToString = (str: string, newVal: string): string => {
+export const addToString = (
+  str: string,
+  newVal: string,
+  splitValue: string
+): string => {
   if (!str) {
     return newVal;
-  } else return [...str.split(",").map((str) => str.trim()), newVal].join(", ");
+  } else {
+    const arr = makeArraySplitFrom(str, splitValue);
+    return [...arr.map((str) => str.trim()), newVal].join(splitValue);
+  }
 };
 
 export const updateOrDeleteAtIndex = (
   str: string,
   newVal: string | undefined,
   i: number,
-  deletion: boolean
+  deletion: boolean,
+  splitValue: string
 ) => {
-  const arr = makeArraySplitFromCommas(str);
+  const arr = makeArraySplitFrom(str, splitValue);
 
   if (!str || i === undefined || i < 0) {
     throw Error("Please pass in str and i");
@@ -433,11 +444,11 @@ export const updateOrDeleteAtIndex = (
   }
 
   if (deletion) {
-    arr.splice(i, 1); // Remove the animation at the specified index
+    arr.splice(i, 1); // Remove at the specified index
   } else if (newVal) {
-    arr[i] = newVal; // Replace the animation at the given index
+    arr[i] = newVal; // Replace at the given index
   }
-  return arr.join(", "); // Return updated string
+  return arr.join(splitValue); // Return updated string
 };
 
 export const getValueFromShorthandStr = (
@@ -475,6 +486,7 @@ export const setValueFromShorthandStr = (
 
   return values.join(" "); // Recombine the values into a shorthand string
 };
+
 export const extractUrlValue = (cssUrl: string): string => {
   const match = cssUrl.match(/url\(["']?(.*?)["']?\)/);
   return match ? match[1] : "";

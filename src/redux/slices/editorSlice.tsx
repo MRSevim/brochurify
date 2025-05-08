@@ -1,5 +1,7 @@
 import {
+  adjustRowChildrenWidths,
   canElementHaveChild,
+  deepClone,
   deleteFromLayout,
   findElementById,
   generateNewIds,
@@ -109,6 +111,7 @@ export const editorSlice = createSlice({
           action.payload.addLocation,
           true
         );
+        adjustRowChildrenWidths(state.layout);
       }
     },
     deleteElement: (state, action: PayloadAction<string>) => {
@@ -124,6 +127,7 @@ export const editorSlice = createSlice({
         }
       }
       state.layout = deleteFromLayout(state.layout, action.payload);
+      adjustRowChildrenWidths(state.layout);
     },
     moveElement: (state, action: PayloadAction<ItemAndLocation>) => {
       moveElementInner(state, action.payload);
@@ -405,8 +409,8 @@ export const editorSlice = createSlice({
       state.history.push({
         current: true,
         structure: {
-          layout: action.payload.layout,
-          pageWise: action.payload.pageWise,
+          layout: deepClone(action.payload.layout),
+          pageWise: deepClone(action.payload.pageWise),
         },
       });
     },
@@ -465,6 +469,7 @@ export const editorSlice = createSlice({
       };
 
       insertDuplicate(state.layout);
+      adjustRowChildrenWidths(state.layout);
     },
   },
 });

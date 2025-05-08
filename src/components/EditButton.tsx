@@ -7,7 +7,7 @@ const EditButton = ({
 }) => {
   return (
     <button className="bg-amberVar p-1 rounded" onClick={onClick}>
-      <Icon type="pencil-fill" size="20px" title="Delete" />
+      <Icon type="pencil-fill" size="20px" title="Edit" />
     </button>
   );
 };
