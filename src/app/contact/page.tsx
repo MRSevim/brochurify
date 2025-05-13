@@ -1,6 +1,6 @@
 "use client";
 import Container from "@/components/Container";
-import { submitForm } from "./submitAction";
+import { submitAction } from "./submitAction";
 import { useState } from "react";
 
 const initialState = {
@@ -16,10 +16,11 @@ export default function ContactForm() {
     setIsPending(true);
     setState(initialState);
     const formData = new FormData(e.currentTarget);
-    const state = await submitForm(formData);
+    const state = await submitAction(formData);
     setState(state);
     setIsPending(false);
   };
+
   return (
     <Container>
       <div className="max-w-xl mx-auto p-6 bg-background text-text rounded-lg shadow-lg">
@@ -33,7 +34,6 @@ export default function ContactForm() {
               type="text"
               name="name"
               placeholder="Your Name"
-              required
               className="w-full p-3 border border-text rounded-md focus:outline"
             />
           </div>
