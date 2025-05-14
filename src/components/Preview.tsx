@@ -14,7 +14,6 @@ const Preview = () => {
   const pageWise = useAppSelector(selectPageWise);
   const variables = useAppSelector(selectVariables);
   const [viewMode] = useViewMode();
-  const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
   const [zoom] = useZoom();
   const scale = 1 - zoom / 100;
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
@@ -46,10 +45,7 @@ const Preview = () => {
       }}
       ref={ref}
     >
-      <ShadowContent
-        key={globalTrigger}
-        html={generateHTML(layout, pageWise, variables, true)}
-      />
+      <ShadowContent html={generateHTML(layout, pageWise, variables, true)} />
     </div>
   );
 };
@@ -59,6 +55,7 @@ export default Preview;
 function ShadowContent({ html }: { html: string }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const shadowRef = useRef<ShadowRoot | null>(null); // Save shadow root separately
+  const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -66,7 +63,6 @@ function ShadowContent({ html }: { html: string }) {
         // Only attach shadow once
         shadowRef.current = containerRef.current.attachShadow({ mode: "open" });
       }
-
       const newHtml = html.replace(
         /<style[^>]*>([\s\S]*?)<\/style>/g,
         (match, cssContent) => {
@@ -89,8 +85,24 @@ function ShadowContent({ html }: { html: string }) {
       );
       // Assign the modified HTML to the shadow root
       shadowRef.current.innerHTML = newHtml;
+      // 👉 Run IntersectionObserver directly in Shadow DOM
+      const elements = shadowRef.current.querySelectorAll(".element");
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("scrolled");
+            obs.unobserve(entry.target);
+          }
+        });
+      });
+
+      elements.forEach((el) => observer.observe(el));
+
+      return () => {
+        observer.disconnect();
+      };
     }
-  }, [html]);
+  }, [html, globalTrigger]);
 
   return <div className="relative" ref={containerRef} />;
 }

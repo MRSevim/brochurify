@@ -13,6 +13,7 @@ export const useIntersectionObserver = (
       return () => observer.disconnect(); // Clean up on unmount
     } else {
       if (!ref.current) return;
+
       const observer = runIntersectionObserver(ref.current);
 
       return () => observer.disconnect(); // Clean up on unmount

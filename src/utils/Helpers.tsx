@@ -8,6 +8,7 @@ import {
   Layout,
   StringOrUnd,
   Variable,
+  OptionsObject,
 } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
@@ -510,9 +511,30 @@ export const CONFIG = {
     mobileContainerQuery: "@container (max-width: 360px)",
   },
 } as const;
-const possibleOuterTypesArr = [...Object.values(CONFIG.possibleOuterTypes)];
+export const possibleOuterTypesArr = [
+  ...Object.values(CONFIG.possibleOuterTypes),
+];
 
-type PossibleOuterTypes = (typeof possibleOuterTypesArr)[number];
+export type PossibleOuterTypes = (typeof possibleOuterTypesArr)[number];
+
+export const availableTimingFunctions: OptionsObject[] = [
+  { title: "Start slow, middle fast, end slow (ease)", value: "ease" },
+  { title: "Start slow, end fast (ease-in)", value: "ease-in" },
+  { title: "Start fast, end slow (ease-out)", value: "ease-out" },
+  {
+    title: "Start slow, middle fast, end slow (ease-in-out)",
+    value: "ease-in-out",
+  },
+  {
+    title: "Linear speed",
+    value: "linear",
+  },
+];
+export const outerTypeArr = [
+  { text: "onVisible", type: CONFIG.possibleOuterTypes.scrolled },
+  { text: "onHover", type: CONFIG.possibleOuterTypes.hover },
+  { text: "onClick", type: CONFIG.possibleOuterTypes.active },
+];
 
 export const systemFontOptions = [
   { title: "Default", value: "initial" },

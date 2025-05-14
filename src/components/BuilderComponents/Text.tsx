@@ -5,6 +5,7 @@ import { RefObject } from "react";
 
 const Text = ({ id, text, style, ref, anchorId }: PropsWithId) => {
   const active = useClasses(id);
+
   return (
     <styledElements.styledDiv
       ref={ref as unknown as RefObject<HTMLDivElement>}

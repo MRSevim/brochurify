@@ -10,6 +10,7 @@ import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ColorPicker from "../../ColorPicker";
 import {
   changeElementStyle,
+  changeInnerElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import BottomLine from "../../BottomLine";
@@ -31,9 +32,11 @@ const Background = () => {
   );
 };
 
-const BackgroundColor = () => {
+export const BackgroundColor = ({ outerType }: { outerType?: string }) => {
   const type = "background-color";
-  const variable = getSetting(useAppSelector, type);
+  const variable = outerType
+    ? getSetting(useAppSelector, outerType, type)
+    : getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
   const pageWise = useAppSelector(selectPageWise);
 
@@ -42,16 +45,40 @@ const BackgroundColor = () => {
       <ColorPicker
         title="Select background color"
         selected={variable || pageWise[type] || "#ffffff"}
-        onChange={(newValue) =>
-          dispatch(
-            changeElementStyle({
-              type,
-              newValue,
-            })
-          )
-        }
+        onChange={(newValue) => {
+          if (outerType) {
+            dispatch(
+              changeInnerElementStyle({
+                outerType,
+                innerType: type,
+                newValue,
+              })
+            );
+          } else {
+            dispatch(
+              changeElementStyle({
+                type,
+                newValue,
+              })
+            );
+          }
+        }}
       />
-      <ResetButton onClick={() => dispatch(removeElementStyle({ type }))} />
+      <ResetButton
+        onClick={() => {
+          if (outerType) {
+            dispatch(
+              changeInnerElementStyle({
+                outerType,
+                innerType: type,
+                newValue: "",
+              })
+            );
+          } else {
+            dispatch(removeElementStyle({ type }));
+          }
+        }}
+      />
       <BottomLine />
     </div>
   );

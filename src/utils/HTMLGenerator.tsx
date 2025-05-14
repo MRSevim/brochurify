@@ -68,8 +68,7 @@ export const generateHTML = (
         ? '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">'
         : ""
     }`;
-  const observerScript = keyframes
-    ? `<script>   
+  const observerScript = `<script>   
     document.addEventListener("DOMContentLoaded", () => {
     const observer = new IntersectionObserver((entries, observer) => {
       entries
@@ -86,8 +85,7 @@ export const generateHTML = (
       observer.observe(elem);
     });
     });
-    </script>`
-    : "";
+    </script>`;
   const additionalStyles = `<style>
     ${getCssReset(pageWise)}
       body {

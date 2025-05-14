@@ -11,6 +11,7 @@ import Animations from "./Animations";
 import FixedSettings from "./FixedSettings";
 import Anchor from "./Anchor";
 import Others from "./Others";
+import Transitions from "./Transitions/Transitions";
 
 const ElementSettings = () => {
   const active = useAppSelector(selectActive);
@@ -42,6 +43,7 @@ const ElementSettings = () => {
       <Background />
       {shouldHaveAlignment && <Alignment />}
       <Animations />
+      <Transitions />
       {shouldHaveSource && <Source />}
       {isIcon && <IconType />}
       <Anchor />

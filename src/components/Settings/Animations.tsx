@@ -4,27 +4,25 @@ import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import BottomLine from "../BottomLine";
 import {
   addToString,
+  availableTimingFunctions,
   CONFIG,
   getSetting,
   getValueFromShorthandStr,
   makeArraySplitFrom,
+  outerTypeArr,
   setValueFromShorthandStr,
   updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import EditButton from "../EditButton";
-import DeleteButton from "../DeleteButton";
-import {
-  changeInnerElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
 import Select from "../Select";
 import { OptionsObject } from "@/utils/Types";
 import NumberInput from "../NumberInput";
 import Checkbox from "../Checkbox";
 import ReplayButton from "../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
-import EditableList from "./EditableList";
+import EditableList from "./EditableListItem";
+import EditableListItem from "./EditableListItem";
 
 const splitValue = ",";
 
@@ -56,13 +54,8 @@ const Animations = () => {
       deletion,
       splitValue
     );
-    if (!newValue) {
-      dispatch(removeElementStyle({ type }));
-    } else {
-      dispatch(
-        changeInnerElementStyle({ outerType: type, innerType, newValue })
-      );
-    }
+
+    dispatch(changeInnerElementStyle({ outerType: type, innerType, newValue }));
   };
   return (
     <ToggleVisibilityWrapper
@@ -82,6 +75,7 @@ const Animations = () => {
               handleAddition(
                 "slideInFromLeft 100ms ease 0ms 1 normal none running"
               );
+              setEditedIndex(animations.length);
             }
             setShowPopup((prev) => !prev);
           }}
@@ -100,29 +94,32 @@ const Animations = () => {
           />
         )}
         {animations && (
-          <EditableList
-            items={animations}
-            name="Animation"
-            onEditClick={(i) => {
-              setEditedIndex(i);
-              setShowPopup(true);
-            }}
-            onDeleteClick={(i) => {
-              handleEditOrDeletion(i, true, undefined);
-            }}
-          />
+          <>
+            <div className="mt-2 w-full">
+              {animations.map((item, i) => (
+                <EditableListItem
+                  key={i}
+                  i={i}
+                  onEditClick={(i) => {
+                    setEditedIndex(i);
+                    setShowPopup(true);
+                  }}
+                  onDeleteClick={(i) => {
+                    handleEditOrDeletion(i, true, undefined);
+                  }}
+                >
+                  {"Animation " + i}
+                </EditableListItem>
+              ))}
+            </div>
+          </>
         )}
         <BottomLine />
       </div>
     </ToggleVisibilityWrapper>
   );
 };
-const typeArr = [
-  { text: "onVisible", type: CONFIG.possibleOuterTypes.scrolled },
-  { text: "onHover", type: CONFIG.possibleOuterTypes.hover },
-  { text: "onClick", type: CONFIG.possibleOuterTypes.active },
-];
-const TypeSelect = ({
+export const TypeSelect = ({
   setType,
   type,
 }: {
@@ -131,7 +128,7 @@ const TypeSelect = ({
 }) => {
   return (
     <div className="flex items-center justify-between gap-2 mb-2">
-      {typeArr.map((item) => (
+      {outerTypeArr.map((item) => (
         <TypeItem
           key={item.text}
           globalType={type}
@@ -201,6 +198,7 @@ const Popup = ({
         }}
       />
       <SelectTimingFunction
+        type="Animation"
         value={getValueFromShorthandStr(editedStr, 2)}
         onChange={(value) => {
           handleChange(setValueFromShorthandStr(editedStr, 2, value));
@@ -264,35 +262,14 @@ const Popup = ({
     </div>
   );
 };
-const AnimationsList = ({
-  onEditClick,
-  onDeleteClick,
-  animations,
-}: {
-  onEditClick: (i: number) => void;
-  onDeleteClick: (i: number) => void;
-  animations: string[];
-}) => {
-  return (
-    <div className="mt-2 w-full">
-      {animations.map((animation, i) => (
-        <div
-          key={i}
-          className="flex justify-between items-center border border-text p-2 m-2"
-        >
-          <div className="px-2">
-            <span className="pe-2 border-r-2">Animation {i}</span>
-          </div>
-          <div className="flex gap-1">
-            <EditButton onClick={() => onEditClick(i)} />
-            <DeleteButton onClick={() => onDeleteClick(i)} />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
+const availableAnimations: OptionsObject[] = [
+  { title: "Slide in from left", value: "slideInFromLeft" },
+  { title: "Slide in from right", value: "slideInFromRight" },
+  { title: "Slide in from top", value: "slideInFromTop" },
+  { title: "Slide in from bottom", value: "slideInFromBottom" },
+  { title: "Scale up", value: "scaleUp" },
+  { title: "Scale down", value: "scaleDown" },
+];
 const SelectAnimation = ({
   value,
   onChange,
@@ -300,14 +277,6 @@ const SelectAnimation = ({
   value: string;
   onChange: (str: string) => void;
 }) => {
-  const availableAnimations: OptionsObject[] = [
-    { title: "Slide in from left", value: "slideInFromLeft" },
-    { title: "Slide in from right", value: "slideInFromRight" },
-    { title: "Slide in from top", value: "slideInFromTop" },
-    { title: "Slide in from bottom", value: "slideInFromBottom" },
-    { title: "Scale up", value: "scaleUp" },
-    { title: "Scale down", value: "scaleDown" },
-  ];
   return (
     <Select
       title="Animation type"
@@ -318,30 +287,19 @@ const SelectAnimation = ({
     />
   );
 };
-const SelectTimingFunction = ({
+export const SelectTimingFunction = ({
+  type,
   value,
   onChange,
 }: {
+  type: string;
   value: string;
   onChange: (str: string) => void;
 }) => {
-  const availableFuncs: OptionsObject[] = [
-    { title: "Start slow, middle fast, end slow (ease)", value: "ease" },
-    { title: "Start slow, end fast (ease-in)", value: "ease-in" },
-    { title: "Start fast, end slow (ease-out)", value: "ease-out" },
-    {
-      title: "Start slow, middle fast, end slow (ease-in-out)",
-      value: "ease-in-out",
-    },
-    {
-      title: "Linear speed",
-      value: "linear",
-    },
-  ];
   return (
     <Select
-      title="Animation timing function"
-      options={availableFuncs}
+      title={type + " timing function"}
+      options={availableTimingFunctions}
       selected={value}
       showStyled={false}
       onChange={(e) => onChange(e.target.value)}

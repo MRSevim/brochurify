@@ -113,26 +113,37 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
   const replayTrigger = useAppSelector((state) => {
     return state.replay.replayArr.find((item) => item.id === id)?.trigger;
   });
-  const animationsString = useAppSelector((state) => {
+  const scrolled = JSON.stringify(
+    useAppSelector((state) => {
+      const layout = state.editor.layout;
+
+      const element = findElementById(layout, id);
+
+      const style = element?.props.style as Style;
+
+      return style?.["&.scrolled"];
+    })
+  );
+  const transition = useAppSelector((state) => {
     const layout = state.editor.layout;
 
     const element = findElementById(layout, id);
 
     const style = element?.props.style as Style;
 
-    return style?.["&.scrolled"]?.["animation"];
-  }) as string;
+    return style?.transition;
+  });
 
   const ref = useRef<HTMLElement | null>(null);
 
-  useIntersectionObserver([replayTrigger, animationsString], ref);
+  useIntersectionObserver([replayTrigger, scrolled, transition], ref);
 
   return (
     <SideDropOverlay item={item}>
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
           <Component
-            key={animationsString + (replayTrigger || "")}
+            key={scrolled + transition + (replayTrigger || "")}
             id={id}
             ref={ref}
             {...item.props}
