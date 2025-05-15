@@ -1,24 +1,59 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import BottomLine from "../../BottomLine";
-import { CONFIG } from "@/utils/Helpers";
+import { CONFIG, getSetting, getValueFromShorthandStr } from "@/utils/Helpers";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ReplayButton from "../../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
 import { TypeSelect } from "../Animations";
-import { TransformItem } from "../Transform";
-import { BackgroundColor } from "../Background/Background";
-import { SelectTransition } from "./Transitions";
+import { TransformItemPicker } from "../Transform";
+import { BackgroundColorPicker } from "../Background/Background";
+import { availableTransitions, SelectTransition } from "./Transitions";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
+import AddButton from "@/components/AddButton";
+import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
+import { findElementById } from "@/utils/EditorHelpers";
+import EditableListItem from "../EditableListItem";
+import Popup from "@/components/Popup";
+import { OpacityPicker } from "../Others";
 
 const Styles = () => {
   const [outerType, setOuterType] = useState<string>(
     CONFIG.possibleOuterTypes.scrolled
   );
+  const [showPopup, setShowPopup] = useState(false);
   const dispatch = useAppDispatch();
-  const [editedProperty, setEditedProperty] = useState("translate");
+  const [innerType, setInnerType] = useState<string>("");
   const activeId = useAppSelector(selectActive)?.id || "";
+  const editedStr = getSetting(useAppSelector, outerType, innerType) || "";
+  const styles = useAppSelector((state) => {
+    const layout = state.editor.layout;
+    const activeId = state.editor.active?.id;
 
+    if (!activeId) return;
+
+    const element = findElementById(layout, activeId);
+    return element?.props.style?.[outerType];
+  });
+  const activeStylesArr =
+    styles && typeof styles === "object"
+      ? Object.entries(styles)
+          .filter(([_, value]) => value !== "")
+          .map(([key]) => key)
+      : [];
+
+  const handleStyleChange = (
+    innerTypeParam: string | undefined,
+    newValue: string | undefined
+  ) => {
+    dispatch(
+      changeInnerElementStyle({
+        outerType,
+        innerType: innerTypeParam ?? innerType,
+        newValue: newValue ?? "",
+      })
+    );
+  };
   return (
     <div className="flex flex-col items-center relative pb-2 mb-2">
       <SecondaryTitle title="Transitioned styles">
@@ -30,24 +65,138 @@ const Styles = () => {
         }}
       />
       <TypeSelect type={outerType} setType={setOuterType} />
+      <AddButton
+        onClick={() => {
+          const typeNotActiveStyle =
+            availableTransitions.find(
+              (option) => !activeStylesArr.includes(option.value)
+            )?.value || "transition";
 
-      <SelectTransition
-        value={editedProperty}
-        onChange={(value) => {
-          setEditedProperty(value);
+          setInnerType(typeNotActiveStyle);
+          setShowPopup((prev) => !prev);
         }}
       />
-      {(editedProperty === "translate" ||
-        editedProperty === "rotate" ||
-        editedProperty === "scale") && (
-        <TransformItem type={editedProperty} outerType={outerType} />
+      {showPopup && (
+        <PopupComp
+          activeStylesArr={activeStylesArr}
+          setInnerType={setInnerType}
+          innerType={innerType}
+          handleAddOrSave={(value) => {
+            handleStyleChange(undefined, value);
+            setShowPopup(false);
+          }}
+          editedStr={editedStr}
+          onClose={() => {
+            setShowPopup(false);
+          }}
+        />
       )}
-      {editedProperty === "background-color" && (
-        <BackgroundColor outerType={outerType} />
+      {activeStylesArr && (
+        <>
+          <div className="mt-2 w-full">
+            {activeStylesArr.map((item, i) => (
+              <EditableListItem
+                key={i}
+                onEditClick={() => {
+                  setInnerType(activeStylesArr[i]);
+                  setShowPopup(true);
+                }}
+                onDeleteClick={() => {
+                  handleStyleChange(activeStylesArr[i], undefined);
+                }}
+              >
+                {
+                  availableTransitions.find(
+                    (transition) =>
+                      transition.value === getValueFromShorthandStr(item, 0)
+                  )?.title
+                }
+              </EditableListItem>
+            ))}
+          </div>
+        </>
       )}
-
       <BottomLine />
     </div>
+  );
+};
+
+const PopupComp = ({
+  onClose,
+  handleAddOrSave,
+  setInnerType,
+  innerType,
+  activeStylesArr,
+  editedStr,
+}: {
+  onClose: () => void;
+  setInnerType: Dispatch<SetStateAction<string>>;
+  innerType: string;
+  editedStr: string;
+  activeStylesArr: string[];
+  handleAddOrSave: (value: string) => void;
+}) => {
+  const [editedString, setEditedString] = useState(editedStr);
+
+  useEffect(() => {
+    let premadeEditedString;
+    if (innerType === "translate") {
+      premadeEditedString = "0px 0px";
+    } else if (innerType === "rotate") {
+      premadeEditedString = "0deg";
+    } else if (innerType === "scale" || innerType === "opacity") {
+      premadeEditedString = "1";
+    } else {
+      premadeEditedString = "";
+    }
+    if (!editedStr) {
+      setEditedString(premadeEditedString);
+    } else {
+      setEditedString(editedStr);
+    }
+  }, [innerType, editedStr]);
+
+  return (
+    <Popup
+      editing={!!editedStr}
+      onClose={onClose}
+      onEditOrAdd={() => {
+        handleAddOrSave(editedString);
+      }}
+    >
+      {!editedStr && (
+        <SelectTransition
+          options={availableTransitions.filter(
+            (option) => !activeStylesArr.some((t) => t.startsWith(option.value))
+          )}
+          value={innerType}
+          onChange={(value) => {
+            setInnerType(value);
+          }}
+        />
+      )}
+      {(innerType === "translate" ||
+        innerType === "rotate" ||
+        innerType === "scale") && (
+        <TransformItemPicker
+          type={innerType}
+          onChange={(newVal) => setEditedString(newVal)}
+          variableStr={editedString}
+        />
+      )}
+      {innerType === "background-color" && (
+        <BackgroundColorPicker
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {innerType === "opacity" && (
+        <OpacityPicker
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+    </Popup>
   );
 };
 

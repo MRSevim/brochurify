@@ -16,7 +16,7 @@ const NumberInput = ({
   const parsed = isNaN(parseInt(value, 10)) ? "" : parseInt(value, 10);
 
   return (
-    <form className="mb-2">
+    <form className="mb-2 flex flex-col justify-between">
       <label
         htmlFor={"number-input-" + title}
         className="block mb-2 text-sm font-medium text-text"

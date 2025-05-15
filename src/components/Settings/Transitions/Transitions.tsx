@@ -18,20 +18,20 @@ import {
 import Select from "../../Select";
 import { OptionsObject } from "@/utils/Types";
 import NumberInput from "../../NumberInput";
-
 import { SelectTimingFunction } from "../Animations";
-
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import Styles from "./Styles";
 import EditableListItem from "../EditableListItem";
+import Popup from "@/components/Popup";
 
 const splitValue = ",";
-const availableTransitions: OptionsObject[] = [
+export const availableTransitions: OptionsObject[] = [
   { title: "Move", value: "translate" },
   { title: "Rotate", value: "rotate" },
   { title: "Scale", value: "scale" },
   { title: "Background Color", value: "background-color" },
+  { title: "Opacity", value: "opacity" },
 ];
 
 const Transitions = () => {
@@ -40,7 +40,13 @@ const Transitions = () => {
   const transitionsString = getSetting(useAppSelector, type);
   const transitions = makeArraySplitFrom(transitionsString, splitValue);
   const [editedIndex, setEditedIndex] = useState<number>(0);
+  const [editing, setEditing] = useState(false);
   const dispatch = useAppDispatch();
+
+  const firstValueNotInsideTransitions =
+    availableTransitions.find(
+      (option) => !transitions.some((t) => t.startsWith(option.value))
+    )?.value || availableTransitions[0].value;
 
   const handleAddition = (editedStr: string) => {
     const newValue = addToString(
@@ -82,22 +88,30 @@ const Transitions = () => {
         </SecondaryTitle>
         <AddButton
           onClick={() => {
-            if (!showPopup) {
-              handleAddition("translate 100ms ease-in 0ms");
-              setEditedIndex(transitions.length);
-            }
             setShowPopup((prev) => !prev);
           }}
         />
         {showPopup && (
-          <Popup
-            handleEdit={(i, value) => {
-              handleEditOrDeletion(i, false, value);
+          <PopupComp
+            transitions={transitions}
+            handleAddOrSave={(value) => {
+              if (!editing) {
+                handleAddition(value);
+              } else {
+                handleEditOrDeletion(editedIndex, false, value);
+                setEditing(false);
+              }
+              setShowPopup(false);
             }}
-            editedIndex={editedIndex}
-            editedStr={transitions[editedIndex]}
+            editing={editing}
+            editedStr={
+              editing
+                ? transitions[editedIndex]
+                : firstValueNotInsideTransitions + " 100ms ease-in 0ms"
+            }
             onClose={() => {
               setEditedIndex(0);
+              setEditing(false);
               setShowPopup(false);
             }}
           />
@@ -108,12 +122,12 @@ const Transitions = () => {
               {transitions.map((item, i) => (
                 <EditableListItem
                   key={i}
-                  i={i}
-                  onEditClick={(i) => {
+                  onEditClick={() => {
                     setEditedIndex(i);
+                    setEditing(true);
                     setShowPopup(true);
                   }}
-                  onDeleteClick={(i) => {
+                  onDeleteClick={() => {
                     handleEditOrDeletion(i, true, undefined);
                   }}
                 >
@@ -135,58 +149,72 @@ const Transitions = () => {
   );
 };
 
-const Popup = ({
+const PopupComp = ({
   onClose,
-  handleEdit,
+  handleAddOrSave,
+  editing,
   editedStr,
-  editedIndex,
+  transitions,
 }: {
   onClose: () => void;
   editedStr: string;
-  editedIndex: number;
-  handleEdit: (i: number, value: string) => void;
+  editing: boolean;
+  transitions: string[];
+  handleAddOrSave: (value: string) => void;
 }) => {
+  const [editedString, setEditedString] = useState(editedStr);
   const handleChange = (value: string) => {
-    handleEdit(editedIndex, value);
+    setEditedString(value);
   };
+
   if (!editedStr) return;
-  const transitionProperty = getValueFromShorthandStr(editedStr, 0);
+  const transitionProperty = getValueFromShorthandStr(editedString, 0);
 
   return (
-    <div className="absolute z-10 w-full bg-background border border-text rounded p-3 top-5">
-      <SelectTransition
-        value={transitionProperty}
-        onChange={(value) => {
-          handleChange(setValueFromShorthandStr(editedStr, 0, value));
-        }}
-      />
-
+    <Popup
+      editing={!!editing}
+      onClose={onClose}
+      onEditOrAdd={() => {
+        handleAddOrSave(editedString);
+      }}
+    >
+      {!editing && (
+        <SelectTransition
+          options={availableTransitions.filter(
+            (option) => !transitions.some((t) => t.startsWith(option.value))
+          )}
+          value={transitionProperty}
+          onChange={(value) => {
+            handleChange(setValueFromShorthandStr(editedString, 0, value));
+          }}
+        />
+      )}
       <NumberInput
         title="Transition duration (in ms)"
-        value={getValueFromShorthandStr(editedStr, 1)}
+        value={getValueFromShorthandStr(editedString, 1)}
         onChange={(e) => {
           handleChange(
-            setValueFromShorthandStr(editedStr, 1, e.target.value + "ms")
+            setValueFromShorthandStr(editedString, 1, e.target.value + "ms")
           );
         }}
       />
       <SelectTimingFunction
         type="Transition"
-        value={getValueFromShorthandStr(editedStr, 2)}
+        value={getValueFromShorthandStr(editedString, 2)}
         onChange={(value) => {
-          handleChange(setValueFromShorthandStr(editedStr, 2, value));
+          handleChange(setValueFromShorthandStr(editedString, 2, value));
         }}
       />
       <NumberInput
         title="Transition delay (in ms)"
-        value={getValueFromShorthandStr(editedStr, 3)}
+        value={getValueFromShorthandStr(editedString, 3)}
         onChange={(e) => {
           let newValue;
           if (e.target.value === "") {
-            newValue = setValueFromShorthandStr(editedStr, 3, "0ms");
+            newValue = setValueFromShorthandStr(editedString, 3, "0ms");
           } else {
             newValue = setValueFromShorthandStr(
-              editedStr,
+              editedString,
               3,
               e.target.value + "ms"
             );
@@ -194,30 +222,22 @@ const Popup = ({
           handleChange(newValue);
         }}
       />
-
-      <div className="flex justify-center gap-2">
-        <button
-          className="p-1 text-background bg-gray rounded cursor-pointer"
-          onClick={onClose}
-        >
-          {" "}
-          Close
-        </button>
-      </div>
-    </div>
+    </Popup>
   );
 };
 export const SelectTransition = ({
   value,
   onChange,
+  options,
 }: {
   value: string;
   onChange: (str: string) => void;
+  options: OptionsObject[];
 }) => {
   return (
     <Select
       title="Transition property"
-      options={availableTransitions}
+      options={options}
       selected={value}
       showStyled={false}
       onChange={(e) => onChange(e.target.value)}

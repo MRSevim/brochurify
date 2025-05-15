@@ -12,6 +12,7 @@ import {
 import Transform from "./Transform";
 import Slider from "../Slider";
 import ResetButton from "../ResetButton";
+import { StringOrUnd } from "@/utils/Types";
 
 const Others = () => {
   return (
@@ -84,13 +85,8 @@ const Opacity = () => {
 
   return (
     <div className="relative pb-2 mb-2">
-      <Slider
-        value={variable || "1"}
-        units={[""]}
-        title="Opacity"
-        max={1}
-        min={0}
-        step={0.1}
+      <OpacityPicker
+        variable={variable}
         onChange={(newValue) =>
           dispatch(changeElementStyle({ type, newValue }))
         }
@@ -101,4 +97,23 @@ const Opacity = () => {
   );
 };
 
+export const OpacityPicker = ({
+  variable,
+  onChange,
+}: {
+  variable: StringOrUnd;
+  onChange: (e: string) => void;
+}) => {
+  return (
+    <Slider
+      value={variable || "1"}
+      units={[""]}
+      title="Opacity"
+      max={1}
+      min={0}
+      step={0.1}
+      onChange={onChange}
+    />
+  );
+};
 export default Others;

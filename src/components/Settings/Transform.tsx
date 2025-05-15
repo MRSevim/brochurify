@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import SecondaryTitle from "../SecondaryTitle";
 import InfoIcon from "../InfoIcon";
 import BottomLine from "../BottomLine";
@@ -11,7 +11,6 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   changeElementStyle,
-  changeInnerElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import NumberInput from "../NumberInput";
@@ -47,35 +46,22 @@ const degreeUnits = ["deg", "turn"];
 export const TransformItem = ({
   type,
   title,
-  outerType,
 }: {
   type: string;
   outerType?: string;
   title?: string;
 }) => {
-  const variableStr = outerType
-    ? getSetting(useAppSelector, outerType, type)
-    : getSetting(useAppSelector, type);
+  const variableStr = getSetting(useAppSelector, type);
   const toggled = !!variableStr;
   const dispatch = useAppDispatch();
 
   const changeStyle = (newValue: string) => {
-    if (outerType) {
-      dispatch(
-        changeInnerElementStyle({
-          outerType,
-          innerType: type,
-          newValue,
-        })
-      );
-    } else {
-      dispatch(
-        changeElementStyle({
-          type,
-          newValue,
-        })
-      );
-    }
+    dispatch(
+      changeElementStyle({
+        type,
+        newValue,
+      })
+    );
   };
 
   const setToInitial = () => {
@@ -93,21 +79,10 @@ export const TransformItem = ({
   const handleToggle = () => {
     if (!toggled) {
       setToInitial();
-    } else if (outerType) {
-      dispatch(
-        changeInnerElementStyle({ outerType, innerType: type, newValue: "" })
-      );
     } else {
       dispatch(removeElementStyle({ type }));
     }
   };
-
-  const handleChange = (e: string, i: number) => {
-    changeStyle(setValueFromShorthandStr(variableStr, i, e));
-  };
-
-  const valueAt = (index: number) =>
-    getValueFromShorthandStr(variableStr, index);
 
   return (
     <div className="relative pb-2 mb-2 w-full text-center">
@@ -120,43 +95,67 @@ export const TransformItem = ({
       )}
 
       {toggled && (
-        <>
-          {type === "translate" && (
-            <div className="flex justify-between">
-              <NumberSelector
-                title="Coordinates in x Axis"
-                value={valueAt(0)}
-                units={translateUnits}
-                handleChange={(e) => handleChange(e, 0)}
-              />
-              <NumberSelector
-                units={translateUnits}
-                title="Coordinates in y Axis (inverted)"
-                value={valueAt(1)}
-                handleChange={(e) => handleChange(e, 1)}
-              />
-            </div>
-          )}
-          {type === "scale" && (
-            <NumberSelector
-              title="Scale multiplier"
-              value={valueAt(0)}
-              units={[""]}
-              handleChange={(e) => handleChange(e, 0)}
-            />
-          )}
-          {type === "rotate" && (
-            <NumberSelector
-              title="Rotation degree"
-              value={valueAt(0)}
-              units={degreeUnits}
-              handleChange={(e) => handleChange(e, 0)}
-            />
-          )}
-        </>
+        <TransformItemPicker
+          type={type}
+          onChange={changeStyle}
+          variableStr={variableStr}
+        />
       )}
       <BottomLine />
     </div>
+  );
+};
+
+export const TransformItemPicker = ({
+  type,
+  onChange,
+  variableStr,
+}: {
+  type: string;
+  onChange: (str: string) => void;
+  variableStr: string;
+}) => {
+  const handleChange = (e: string, i: number) => {
+    onChange(setValueFromShorthandStr(variableStr, i, e));
+  };
+
+  const valueAt = (index: number) =>
+    getValueFromShorthandStr(variableStr, index);
+  return (
+    <>
+      {type === "translate" && (
+        <div className="flex justify-between">
+          <NumberSelector
+            title="Coordinates in x Axis"
+            value={valueAt(0)}
+            units={translateUnits}
+            handleChange={(e) => handleChange(e, 0)}
+          />
+          <NumberSelector
+            units={translateUnits}
+            title="Coordinates in y Axis (inverted)"
+            value={valueAt(1)}
+            handleChange={(e) => handleChange(e, 1)}
+          />
+        </div>
+      )}
+      {type === "scale" && (
+        <NumberSelector
+          title="Scale multiplier"
+          value={valueAt(0)}
+          units={[""]}
+          handleChange={(e) => handleChange(e, 0)}
+        />
+      )}
+      {type === "rotate" && (
+        <NumberSelector
+          title="Rotation degree"
+          value={valueAt(0)}
+          units={degreeUnits}
+          handleChange={(e) => handleChange(e, 0)}
+        />
+      )}
+    </>
   );
 };
 

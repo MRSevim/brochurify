@@ -457,13 +457,12 @@ export const getValueFromShorthandStr = (
   i: number | undefined
 ) => {
   if (!str || i === undefined || i < 0) {
-    throw Error("Please pass in str and i");
-    // Handle edge cases like undefined or invalid index
+    return "";
   }
 
   const values = str.split(" "); // Split the shorthand string into individual values
   if (i >= values.length) {
-    throw Error("Index higher than string values' length"); // Index out of range
+    return "";
   }
 
   return values[i];

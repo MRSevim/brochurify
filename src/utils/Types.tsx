@@ -124,6 +124,9 @@ export type Style = {
   "box-shadow"?: string;
   animation?: string;
   transition?: string;
+  scale?: string;
+  rotate?: string;
+  opacity?: string;
   "justify-content"?: string;
   "align-items"?: string;
   position?: string;

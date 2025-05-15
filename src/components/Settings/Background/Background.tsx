@@ -10,7 +10,6 @@ import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ColorPicker from "../../ColorPicker";
 import {
   changeElementStyle,
-  changeInnerElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import BottomLine from "../../BottomLine";
@@ -21,6 +20,7 @@ import Select from "../../Select";
 import ResetButton from "../../ResetButton";
 import Slider from "../../Slider";
 import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
+import { StringOrUnd } from "@/utils/Types";
 
 const Background = () => {
   return (
@@ -32,55 +32,51 @@ const Background = () => {
   );
 };
 
-export const BackgroundColor = ({ outerType }: { outerType?: string }) => {
-  const type = "background-color";
-  const variable = outerType
-    ? getSetting(useAppSelector, outerType, type)
-    : getSetting(useAppSelector, type);
+const type = "background-color";
+
+export const BackgroundColor = () => {
+  const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
-  const pageWise = useAppSelector(selectPageWise);
 
   return (
     <div className="relative pb-2 mb-2">
-      <ColorPicker
-        title="Select background color"
-        selected={variable || pageWise[type] || "#ffffff"}
+      <BackgroundColorPicker
+        variable={variable}
         onChange={(newValue) => {
-          if (outerType) {
-            dispatch(
-              changeInnerElementStyle({
-                outerType,
-                innerType: type,
-                newValue,
-              })
-            );
-          } else {
-            dispatch(
-              changeElementStyle({
-                type,
-                newValue,
-              })
-            );
-          }
+          dispatch(
+            changeElementStyle({
+              type,
+              newValue,
+            })
+          );
         }}
       />
       <ResetButton
         onClick={() => {
-          if (outerType) {
-            dispatch(
-              changeInnerElementStyle({
-                outerType,
-                innerType: type,
-                newValue: "",
-              })
-            );
-          } else {
-            dispatch(removeElementStyle({ type }));
-          }
+          dispatch(removeElementStyle({ type }));
         }}
       />
       <BottomLine />
     </div>
+  );
+};
+
+export const BackgroundColorPicker = ({
+  variable,
+  onChange,
+}: {
+  variable: StringOrUnd;
+  onChange: (newVal: string) => void;
+}) => {
+  const pageWise = useAppSelector(selectPageWise);
+  return (
+    <ColorPicker
+      title="Select background color"
+      selected={variable || pageWise[type] || "#ffffff"}
+      onChange={(newValue) => {
+        onChange(newValue);
+      }}
+    />
   );
 };
 const BackgroundShadow = () => {

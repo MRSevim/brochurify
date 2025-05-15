@@ -21,7 +21,6 @@ import NumberInput from "../NumberInput";
 import Checkbox from "../Checkbox";
 import ReplayButton from "../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
-import EditableList from "./EditableListItem";
 import EditableListItem from "./EditableListItem";
 
 const splitValue = ",";
@@ -99,12 +98,11 @@ const Animations = () => {
               {animations.map((item, i) => (
                 <EditableListItem
                   key={i}
-                  i={i}
-                  onEditClick={(i) => {
+                  onEditClick={() => {
                     setEditedIndex(i);
                     setShowPopup(true);
                   }}
-                  onDeleteClick={(i) => {
+                  onDeleteClick={() => {
                     handleEditOrDeletion(i, true, undefined);
                   }}
                 >

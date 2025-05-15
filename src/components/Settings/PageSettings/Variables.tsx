@@ -1,8 +1,7 @@
 import AddButton from "@/components/AddButton";
 import BottomLine from "@/components/BottomLine";
 import ColorPicker from "@/components/ColorPicker";
-import DeleteButton from "@/components/DeleteButton";
-import EditButton from "@/components/EditButton";
+import Popup from "@/components/Popup";
 import Select from "@/components/Select";
 import TextInput from "@/components/TextInput";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
@@ -15,6 +14,7 @@ import {
 import { fontOptions } from "@/utils/Helpers";
 import { Variable } from "@/utils/Types";
 import { useState } from "react";
+import EditableListItem from "../EditableListItem";
 
 const Variables = () => {
   return (
@@ -39,7 +39,7 @@ const VariablesInner = () => {
         }}
       />
       {showPopup && (
-        <Popup
+        <PopupComp
           onClose={() => {
             setEditedVar(null);
             setShowPopup(false);
@@ -57,7 +57,7 @@ const VariablesInner = () => {
     </div>
   );
 };
-const Popup = ({
+const PopupComp = ({
   onClose,
   editedVar,
 }: {
@@ -72,7 +72,30 @@ const Popup = ({
   const [fontFamily, setFontFamily] = useState(editedVar?.value || "");
   const [name, setName] = useState(editedVar?.name || "");
   return (
-    <div className="absolute z-10 w-full bg-background border border-text rounded p-3 top-5">
+    <Popup
+      editing={!!editedVar}
+      onClose={onClose}
+      onEditOrAdd={() => {
+        if (editedVar) {
+          dispatch(
+            editVariable({
+              ...editedVar,
+              name,
+              value: type === "font-family" ? fontFamily : color,
+            })
+          );
+        } else {
+          dispatch(
+            addVariable({
+              type,
+              name,
+              value: type === "font-family" ? fontFamily : color,
+            })
+          );
+        }
+        onClose();
+      }}
+    >
       {!editedVar && (
         <Select
           title="Pick a variable type"
@@ -108,41 +131,7 @@ const Popup = ({
           onChange={(e) => setFontFamily(e.target.value)}
         />
       )}
-      <div className="flex justify-center gap-2">
-        <button
-          className="p-1 text-background bg-gray rounded cursor-pointer"
-          onClick={onClose}
-        >
-          {" "}
-          Close
-        </button>
-        <button
-          className="p-1 text-background bg-gray rounded cursor-pointer"
-          onClick={() => {
-            if (editedVar) {
-              dispatch(
-                editVariable({
-                  ...editedVar,
-                  name,
-                  value: type === "font-family" ? fontFamily : color,
-                })
-              );
-            } else {
-              dispatch(
-                addVariable({
-                  type,
-                  name,
-                  value: type === "font-family" ? fontFamily : color,
-                })
-              );
-            }
-            onClose();
-          }}
-        >
-          {editedVar ? "Save" : "Add"}
-        </button>
-      </div>
-    </div>
+    </Popup>
   );
 };
 const VariablesList = ({
@@ -155,20 +144,15 @@ const VariablesList = ({
 
   return (
     <div className="mt-2 w-full">
-      {variables.map((variable) => (
-        <div
+      {variables.map((variable, i) => (
+        <EditableListItem
           key={variable.id}
-          className="flex justify-between items-center border border-text p-2 m-2"
+          onEditClick={() => onEditClick(variable)}
+          onDeleteClick={() => dispatch(deleteVariable(variable))}
         >
-          <div className="px-2">
-            <span className="pe-2 border-r-2">{variable.name}</span>
-            <span> {variable.value}</span>
-          </div>
-          <div className="flex gap-1">
-            <EditButton onClick={() => onEditClick(variable)} />
-            <DeleteButton onClick={() => dispatch(deleteVariable(variable))} />
-          </div>
-        </div>
+          <span className="pe-2 border-r-2">{variable.name}</span>
+          <span> {variable.value}</span>
+        </EditableListItem>
       ))}
     </div>
   );
