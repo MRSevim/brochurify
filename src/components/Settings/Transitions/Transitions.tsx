@@ -10,7 +10,7 @@ import {
   setValueFromShorthandStr,
   updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
   changeElementStyle,
   removeElementStyle,
@@ -32,7 +32,30 @@ export const availableTransitions: OptionsObject[] = [
   { title: "Scale", value: "scale" },
   { title: "Background Color", value: "background-color" },
   { title: "Opacity", value: "opacity" },
+  { title: "Top", value: "top" },
+  { title: "Left", value: "left" },
+  { title: "Bottom", value: "bottom" },
+  { title: "Right", value: "right" },
+  { title: "Border Radius", value: "border-radius" },
+  { title: "Padding", value: "padding" },
+  { title: "Margin", value: "margin" },
+  { title: "Width", value: "width" },
+  { title: "Height", value: "height" },
 ];
+
+export const filterForFixed = (option: OptionsObject, activeType: string) => {
+  if (activeType !== "fixed") {
+    if (
+      option.value === "top" ||
+      option.value === "left" ||
+      option.value === "bottom" ||
+      option.value === "right"
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
 
 const Transitions = () => {
   const [showPopup, setShowPopup] = useState(false);
@@ -166,6 +189,7 @@ const PopupComp = ({
   const handleChange = (value: string) => {
     setEditedString(value);
   };
+  const activeType = useAppSelector(selectActive)?.type || "";
 
   if (!editedStr) return;
   const transitionProperty = getValueFromShorthandStr(editedString, 0);
@@ -180,9 +204,11 @@ const PopupComp = ({
     >
       {!editing && (
         <SelectTransition
-          options={availableTransitions.filter(
-            (option) => !transitions.some((t) => t.startsWith(option.value))
-          )}
+          options={availableTransitions
+            .filter(
+              (option) => !transitions.some((t) => t.startsWith(option.value))
+            )
+            .filter((option) => filterForFixed(option, activeType))}
           value={transitionProperty}
           onChange={(value) => {
             handleChange(setValueFromShorthandStr(editedString, 0, value));

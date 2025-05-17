@@ -1,77 +1,94 @@
-import { CONFIG } from "./Helpers";
+import { CONFIG, makeArraySplitFrom, PossibleOuterTypes } from "./Helpers";
 import { Layout, PageWise, Style, Variable } from "./Types";
 
 export const styleDivider = (style: Style) => {
-  const tabletContainerQueryKey =
-    CONFIG.possibleOuterTypes.tabletContainerQuery;
-  const mobileContainerQueryKey =
-    CONFIG.possibleOuterTypes.mobileContainerQuery;
-
-  const {
-    width,
-    height,
-    position,
-    top,
-    left,
-    bottom,
-    right,
-    [tabletContainerQueryKey]: tabletStyles = {},
-    [mobileContainerQueryKey]: mobileStyles = {},
-    ...rest
-  } = style;
-
-  // Extract width & height from tabletStyles, rest goes to restTabletStyles
-  const {
-    width: tabletWidth,
-    height: tabletHeight,
-    ...restTabletStyles
-  } = tabletStyles;
-
-  // Extract width & height from mobileStyles, rest goes to restMobileStyles
-  const {
-    width: mobileWidth,
-    height: mobileHeight,
-    ...restMobileStyles
-  } = mobileStyles;
-
-  const result = [
-    {
-      width,
-      height,
-      position,
-      top,
-      left,
-      bottom,
-      right,
-      ...(tabletWidth || tabletHeight
-        ? {
-            [tabletContainerQueryKey]: {
-              width: tabletWidth,
-              height: tabletHeight,
-            },
-          }
-        : {}),
-      ...(mobileWidth || mobileHeight
-        ? {
-            [mobileContainerQueryKey]: {
-              width: mobileWidth,
-              height: mobileHeight,
-            },
-          }
-        : {}),
-    },
-    {
-      ...rest,
-      ...(Object.keys(restTabletStyles).length
-        ? { [tabletContainerQueryKey]: restTabletStyles }
-        : {}),
-      ...(Object.keys(restMobileStyles).length
-        ? { [mobileContainerQueryKey]: restMobileStyles }
-        : {}),
-    },
+  const layoutKeys = [
+    "width",
+    "height",
+    "top",
+    "left",
+    "bottom",
+    "right",
+    "position",
   ];
 
-  return result;
+  // Extract all known outer types
+  const outerTypeKeys = Object.values(CONFIG.possibleOuterTypes);
+
+  // Destructure outer type style objects from root
+  const outerStyles: Record<string, any> = {};
+  const baseStyle: Record<string, any> = {};
+
+  for (const key in style) {
+    if (outerTypeKeys.includes(key as PossibleOuterTypes)) {
+      outerStyles[key] = style[key];
+    } else {
+      baseStyle[key] = style[key];
+    }
+  }
+
+  // Divide base styles
+  const first: Record<string, any> = {};
+  const second: Record<string, any> = {};
+
+  const assignTransitionParts = (
+    transitionValue: string | undefined,
+    target: Record<string, any>,
+    fallback: Record<string, any>
+  ) => {
+    if (!transitionValue) return;
+
+    const parts = makeArraySplitFrom(transitionValue, ",");
+    const layoutParts: string[] = [];
+    const nonLayoutParts: string[] = [];
+
+    for (const part of parts) {
+      const name = part.trim().split(/\s+/)[0]; // get property name before duration etc.
+      if (layoutKeys.includes(name)) {
+        layoutParts.push(part.trim());
+      } else {
+        nonLayoutParts.push(part.trim());
+      }
+    }
+
+    if (layoutParts.length) target.transition = layoutParts.join(", ");
+    if (nonLayoutParts.length) fallback.transition = nonLayoutParts.join(", ");
+  };
+
+  for (const key in baseStyle) {
+    if (key === "transition") {
+      assignTransitionParts(baseStyle[key], first, second);
+    } else if (layoutKeys.includes(key)) {
+      first[key] = baseStyle[key];
+    } else {
+      second[key] = baseStyle[key];
+    }
+  }
+
+  // Now handle each outer type separately
+  for (const key in outerStyles) {
+    const styles = outerStyles[key];
+    const layoutSubStyles: Record<string, any> = {};
+    const restSubStyles: Record<string, any> = {};
+
+    for (const prop in styles) {
+      if (layoutKeys.includes(prop)) {
+        layoutSubStyles[prop] = styles[prop];
+      } else {
+        restSubStyles[prop] = styles[prop];
+      }
+    }
+
+    if (Object.keys(layoutSubStyles).length > 0) {
+      first[key] = layoutSubStyles;
+    }
+
+    if (Object.keys(restSubStyles).length > 0) {
+      second[key] = restSubStyles;
+    }
+  }
+
+  return [first, second];
 };
 
 export const getRest = (style: Style): string => {

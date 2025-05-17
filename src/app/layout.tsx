@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";
 import Script from "next/script";
 import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
+import { UserModel } from "@/utils/db/schema";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -32,7 +33,13 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const lightMode = cookieStore.get("lightMode")?.value === "true";
+  const getAll = async () => {
+    const allBooks = await UserModel.scan().exec();
+    console.log("first");
+    console.log(allBooks);
+  };
 
+  getAll();
   return (
     <html lang="en" className={roboto_mono.className}>
       <head>

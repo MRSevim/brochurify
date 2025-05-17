@@ -1,6 +1,5 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import Slider from "../Slider";
-import { SizingType } from "@/utils/Types";
 import { CONFIG, getSetting, getUnit } from "@/utils/Helpers";
 import Border from "./Border";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -18,21 +17,6 @@ import BottomLine from "../BottomLine";
 import GroupedRadioButtons from "../GroupedRadioButtons";
 import InfoIcon from "../InfoIcon";
 import ShorthandToggler from "./ShorthandToggler";
-
-const sizingTypeArray: SizingType[] = [
-  {
-    title: "Top",
-  },
-  {
-    title: "Right",
-  },
-  {
-    title: "Bottom",
-  },
-  {
-    title: "Left",
-  },
-];
 
 const SizingAndBorder = () => {
   return (
@@ -53,9 +37,9 @@ const SizingAndBorderInner = () => {
         alt="Margin, border, padding schema"
         className="mb-2 w-full h-auto"
       />
-      <ShorthandToggler sizingTypeArray={sizingTypeArray} type="margin" />
+      <ShorthandToggler type="margin" />
       <Border />
-      <ShorthandToggler sizingTypeArray={sizingTypeArray} type="padding" />
+      <ShorthandToggler type="padding" />
       <WidthAndHeight />
       {isIcon && <Size />}
     </>

@@ -21,8 +21,10 @@ import EditorActions from "./EditorActions";
 export const SideDropOverlay = ({
   item,
   children,
+  ref,
 }: {
   item: Layout;
+  ref: React.RefObject<HTMLDivElement | null>;
   children: React.ReactNode;
 }) => {
   const addLocation = useAppSelector(selectAddLocation);
@@ -66,6 +68,7 @@ export const SideDropOverlay = ({
     <styledElements.styledComponentWrapperDiv
       className={"block " + (notFixed && "relative")}
       styles={item.props.style}
+      ref={ref}
     >
       {notFixed && (
         <div

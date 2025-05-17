@@ -14,24 +14,8 @@ import Select from "../Select";
 import ColorPicker from "../ColorPicker";
 import BottomLine from "../BottomLine";
 import SecondaryTitle from "../SecondaryTitle";
-import { SizingType } from "@/utils/Types";
 import ShorthandToggler from "./ShorthandToggler";
 import ResetButton from "../ResetButton";
-
-const sizingTypeArray: SizingType[] = [
-  {
-    title: "Top Left",
-  },
-  {
-    title: "Top Right",
-  },
-  {
-    title: "Bottom Right",
-  },
-  {
-    title: "Bottom Left",
-  },
-];
 
 const Border = () => {
   const type = "border";
@@ -98,10 +82,7 @@ const Border = () => {
             <ResetButton onClick={() => setToInitial()} />
             <BottomLine />
           </div>
-          <ShorthandToggler
-            sizingTypeArray={sizingTypeArray}
-            type={borderRadiusType}
-          />
+          <ShorthandToggler type={borderRadiusType} />
         </>
       )}
 

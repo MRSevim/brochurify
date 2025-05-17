@@ -8,6 +8,7 @@ import {
 } from "@/redux/slices/editorSlice";
 import GroupedRadioButtons from "../GroupedRadioButtons";
 import NumberInput from "../NumberInput";
+import { StringOrUnd } from "@/utils/Types";
 
 const FixedSettings = () => {
   const positionsArr = ["top", "bottom", "left", "right"];
@@ -32,33 +33,54 @@ const possibleRadioValues = ["px", "%"];
 const NumberController = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
   const variable = getSetting(useAppSelector, type);
-  const initialType = getUnit(variable);
-  const [radioType, setRadioType] = useState(initialType || "px");
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value === "") {
+  const handleInputChange = (newValue: string) => {
+    if (newValue === "") {
       dispatch(removeElementStyle({ type }));
     } else {
-      dispatch(
-        changeElementStyle({ type, newValue: +e.target.value + radioType })
-      );
+      dispatch(changeElementStyle({ type, newValue }));
     }
   };
 
   return (
     <div className="mb-2 flex flex-col items-center">
+      <PositionPicker
+        type={type}
+        variable={variable}
+        onChange={handleInputChange}
+      />
+    </div>
+  );
+};
+
+export const PositionPicker = ({
+  hasAutoOption = false,
+  type,
+  variable,
+  onChange,
+}: {
+  type: string;
+  hasAutoOption?: boolean;
+  variable: StringOrUnd;
+  onChange: (newVal: string) => void;
+}) => {
+  const initialType = getUnit(variable);
+  const [radioType, setRadioType] = useState(initialType || "px");
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    onChange(+e.target.value + radioType);
+  };
+  return (
+    <>
       <GroupedRadioButtons
-        valuesArr={possibleRadioValues}
+        valuesArr={
+          hasAutoOption ? [...possibleRadioValues, "auto"] : possibleRadioValues
+        }
         checked={radioType}
         name={type}
         onChange={(e) => {
           if (variable) {
-            dispatch(
-              changeElementStyle({
-                type,
-                newValue: parseInt(variable, 10) + e.target.value,
-              })
-            );
+            onChange(parseInt(variable, 10) + e.target.value);
           }
           setRadioType(e.target.value);
         }}
@@ -69,7 +91,7 @@ const NumberController = ({ type }: { type: string }) => {
         value={variable || ""}
         onChange={handleInputChange}
       ></NumberInput>
-    </div>
+    </>
   );
 };
 

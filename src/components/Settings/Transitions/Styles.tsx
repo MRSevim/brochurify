@@ -7,7 +7,11 @@ import { triggerReplay } from "@/redux/slices/replaySlice";
 import { TypeSelect } from "../Animations";
 import { TransformItemPicker } from "../Transform";
 import { BackgroundColorPicker } from "../Background/Background";
-import { availableTransitions, SelectTransition } from "./Transitions";
+import {
+  availableTransitions,
+  filterForFixed,
+  SelectTransition,
+} from "./Transitions";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import AddButton from "@/components/AddButton";
@@ -16,6 +20,8 @@ import { findElementById } from "@/utils/EditorHelpers";
 import EditableListItem from "../EditableListItem";
 import Popup from "@/components/Popup";
 import { OpacityPicker } from "../Others";
+import { PositionPicker } from "../FixedSettings";
+import { ShorthandTogglerPicker } from "../ShorthandToggler";
 
 const Styles = () => {
   const [outerType, setOuterType] = useState<string>(
@@ -137,6 +143,7 @@ const PopupComp = ({
   handleAddOrSave: (value: string) => void;
 }) => {
   const [editedString, setEditedString] = useState(editedStr);
+  const activeType = useAppSelector(selectActive)?.type || "";
 
   useEffect(() => {
     let premadeEditedString;
@@ -146,6 +153,12 @@ const PopupComp = ({
       premadeEditedString = "0deg";
     } else if (innerType === "scale" || innerType === "opacity") {
       premadeEditedString = "1";
+    } else if (
+      innerType === "margin" ||
+      innerType === "padding" ||
+      innerType === "border-radius"
+    ) {
+      premadeEditedString = "0px 0px 0px 0px";
     } else {
       premadeEditedString = "";
     }
@@ -166,9 +179,12 @@ const PopupComp = ({
     >
       {!editedStr && (
         <SelectTransition
-          options={availableTransitions.filter(
-            (option) => !activeStylesArr.some((t) => t.startsWith(option.value))
-          )}
+          options={availableTransitions
+            .filter(
+              (option) =>
+                !activeStylesArr.some((t) => t.startsWith(option.value))
+            )
+            .filter((option) => filterForFixed(option, activeType))}
           value={innerType}
           onChange={(value) => {
             setInnerType(value);
@@ -192,6 +208,34 @@ const PopupComp = ({
       )}
       {innerType === "opacity" && (
         <OpacityPicker
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {(innerType === "top" ||
+        innerType === "left" ||
+        innerType === "bottom" ||
+        innerType === "right") &&
+        activeType === "fixed" && (
+          <PositionPicker
+            type={innerType}
+            variable={editedString}
+            onChange={(newVal) => setEditedString(newVal)}
+          />
+        )}
+      {(innerType === "border-radius" ||
+        innerType === "padding" ||
+        innerType === "margin") && (
+        <ShorthandTogglerPicker
+          type={innerType}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {(innerType === "width" || innerType === "height") && (
+        <PositionPicker
+          hasAutoOption={true}
+          type={innerType}
           variable={editedString}
           onChange={(newVal) => setEditedString(newVal)}
         />

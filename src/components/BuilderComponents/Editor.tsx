@@ -135,11 +135,23 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
   });
 
   const ref = useRef<HTMLElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-  useIntersectionObserver([replayTrigger, scrolled, transition], ref);
+  useIntersectionObserver(
+    [replayTrigger, scrolled, transition, wrapperRef],
+    ref
+  );
+  useIntersectionObserver(
+    [replayTrigger, scrolled, transition, wrapperRef],
+    wrapperRef
+  );
 
   return (
-    <SideDropOverlay item={item}>
+    <SideDropOverlay
+      item={item}
+      ref={wrapperRef}
+      key={scrolled + transition + (replayTrigger || "")}
+    >
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
           <Component
