@@ -34,7 +34,7 @@ const Header = () => {
 const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
   const [preview, setPreview] = usePreview();
   return (
-    <div className="flex justify-between items-center py-2">
+    <div className="flex justify-center sm:justify-between items-center py-2 flex-wrap ">
       <Link href="/">
         <p className="font-bold text-lg">Brochurify</p>
       </Link>
@@ -48,6 +48,9 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
             </Link>
             <Link href="/how-to">
               <span>How To</span>
+            </Link>
+            <Link href="/register">
+              <span>Register</span>
             </Link>
           </>
         ) : (

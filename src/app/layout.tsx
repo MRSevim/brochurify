@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";
 import Script from "next/script";
 import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
-import { UserModel } from "@/utils/db/schema";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -33,13 +33,9 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const lightMode = cookieStore.get("lightMode")?.value === "true";
-  const getAll = async () => {
-    const allBooks = await UserModel.scan().exec();
-    console.log("first");
-    console.log(allBooks);
-  };
+  const user = cookieStore.get("user")?.value;
+  const userFromCookie = user ? JSON.parse(user) : undefined;
 
-  getAll();
   return (
     <html lang="en" className={roboto_mono.className}>
       <head>
@@ -68,14 +64,16 @@ export default async function RootLayout({
           true
         )}
       </head>
-      <ClientWrapper lightMode={lightMode}>
-        <body
-          className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
-        >
-          <Header />
-          <ToastContainer />
-          {children}
-        </body>
+      <ClientWrapper lightMode={lightMode} UserFromCookie={userFromCookie}>
+        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID as string}>
+          <body
+            className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
+          >
+            <Header />
+            <ToastContainer />
+            {children}
+          </body>
+        </GoogleOAuthProvider>
       </ClientWrapper>
     </html>
   );

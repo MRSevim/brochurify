@@ -151,3 +151,12 @@ export type AppChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 export type HandleChangeType = (e: AppChangeEvent, i?: number) => void;
 export type SavePopup = "saving" | "saved" | null;
 export type MoveTo = { item: Layout; location: "previous" | "next" };
+
+export type User =
+  | {
+      username: string;
+      email: string;
+      role: string;
+    }
+  | undefined
+  | null;

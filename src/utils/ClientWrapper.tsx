@@ -12,15 +12,19 @@ import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
 import { Provider as PreviewProvider } from "@/contexts/PreviewContext";
 import { Provider as ZoomProvider } from "@/contexts/ZoomContext";
 import { Provider as AddSectionToggleProvider } from "@/contexts/AddSectionToggleContext";
+import { Provider as UserProvider } from "@/contexts/UserContext";
 import { EditorRefProvider } from "@/contexts/EditorRefContext";
 import { StyleSheetManager } from "styled-components";
+import { User } from "./Types";
 
 export default function ClientWrapper({
   children,
   lightMode,
+  UserFromCookie,
 }: {
   children: React.ReactNode;
   lightMode: boolean;
+  UserFromCookie: User;
 }) {
   const storeRef = useRef<AppStore>(undefined);
 
@@ -48,11 +52,13 @@ export default function ClientWrapper({
             <ViewModeProvider>
               <PreviewProvider>
                 <ZoomProvider>
-                  <AddSectionToggleProvider>
-                    <EditorRefProvider>
-                      <Provider store={storeRef.current}>{children}</Provider>
-                    </EditorRefProvider>
-                  </AddSectionToggleProvider>
+                  <UserProvider UserFromCookie={UserFromCookie}>
+                    <AddSectionToggleProvider>
+                      <EditorRefProvider>
+                        <Provider store={storeRef.current}>{children}</Provider>
+                      </EditorRefProvider>
+                    </AddSectionToggleProvider>
+                  </UserProvider>
                 </ZoomProvider>
               </PreviewProvider>
             </ViewModeProvider>
