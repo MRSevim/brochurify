@@ -5,7 +5,7 @@ import { useContext, useState, createContext } from "react";
 
 type UserContext = [User, (user: User, rememberMe: boolean) => void];
 
-const userContext = createContext<UserContext | null>(null);
+const userContext = createContext<UserContext | undefined>(undefined);
 
 export const useUser = (): UserContext => {
   const context = useContext(userContext);
@@ -30,11 +30,14 @@ export const Provider = ({
       setUser(undefined);
       return;
     }
-    const userString = JSON.stringify({
-      username: user.username,
-      email: user.email,
-      role: user.role,
-    });
+    const userString = encodeURIComponent(
+      JSON.stringify({
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        image: user.image,
+      })
+    );
     if (rememberMe) {
       setCookie("user", userString, 30);
     } else {

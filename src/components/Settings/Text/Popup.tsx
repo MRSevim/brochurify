@@ -4,12 +4,8 @@ import LinkInput from "@/components/LinkInput";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import { selectPageWise, useAppSelector } from "@/redux/hooks";
-import {
-  CONFIG,
-  defaultInheritFontOptions,
-  getFontVariables,
-} from "@/utils/Helpers";
-import { Style } from "@/utils/Types";
+import { defaultInheritFontOptions, getFontVariables } from "@/utils/Helpers";
+import { Style, CONFIG } from "@/utils/Types";
 import { Editor } from "@tiptap/react";
 import { useEffect, useState } from "react";
 

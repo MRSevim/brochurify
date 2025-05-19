@@ -369,7 +369,7 @@ const AddSection = () => {
   );
 };
 
-const ToggleButton = ({
+export const ToggleButton = ({
   onClick,
   toggled,
 }: {

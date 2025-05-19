@@ -1,7 +1,7 @@
 import React from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import BottomLine from "../BottomLine";
-import { CONFIG, getSetting } from "@/utils/Helpers";
+import { getSetting } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Checkbox from "../Checkbox";
 import {
@@ -12,7 +12,7 @@ import {
 import Transform from "./Transform";
 import Slider from "../Slider";
 import ResetButton from "../ResetButton";
-import { StringOrUnd } from "@/utils/Types";
+import { StringOrUnd, CONFIG } from "@/utils/Types";
 
 const Others = () => {
   return (

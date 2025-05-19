@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Layout } from "./Types";
 import { getDefaultStyle } from "./Helpers";
 
-export const initialLayout: Layout[] = [
+export const initialSimpleLayout: Layout[] = [
   {
     id: uuidv4(),
     type: "container",

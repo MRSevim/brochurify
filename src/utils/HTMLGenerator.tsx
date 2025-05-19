@@ -223,7 +223,7 @@ const renderLayout = (items: Layout[]): string => {
       const addButtonWrapper = (html: string) => {
         if (type === "button") {
           return `
-          <a class="wAndHFull flex" href="${href || ""}" ${
+          <a class="wAndHFull flex" ${href ? `href=${href}` : ""}" ${
             onclick ? `onclick="${onclick}"` : ""
           } target=${props.newTab ? "_blank" : "_self"}
           rel="noopener noreferrer"

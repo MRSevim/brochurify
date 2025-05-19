@@ -2,7 +2,6 @@ import Select from "@/components/Select";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
 import {
-  CONFIG,
   defaultInheritFontOptions,
   getFontVariables,
   getPageWise,
@@ -12,7 +11,7 @@ import BottomLine from "@/components/BottomLine";
 import InfoIcon from "@/components/InfoIcon";
 import Slider from "@/components/Slider";
 import ResetButton from "@/components/ResetButton";
-import { Style } from "@/utils/Types";
+import { Style, CONFIG } from "@/utils/Types";
 
 const HeadingStyles = () => {
   const outerType = CONFIG.headings;

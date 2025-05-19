@@ -1,15 +1,17 @@
 import { PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 
-const TABLE_NAME = "brochurify";
+const TABLE_NAME = process.env.DB_TABLE_NAME;
 
 export async function createOrUpdateUser({
   email,
   username,
+  image,
   role = "user",
 }: {
   email: string;
   username: string;
+  image: string;
   role?: string;
 }) {
   try {
@@ -18,6 +20,7 @@ export async function createOrUpdateUser({
       id: "profile", // reserved value to distinguish user profiles
       type: "profile",
       username,
+      image,
       email,
       role,
     };

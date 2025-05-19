@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import BottomLine from "../../BottomLine";
-import { CONFIG, getSetting, getValueFromShorthandStr } from "@/utils/Helpers";
+import { getSetting, getValueFromShorthandStr } from "@/utils/Helpers";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ReplayButton from "../../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
@@ -22,6 +22,7 @@ import Popup from "@/components/Popup";
 import { OpacityPicker } from "../Others";
 import { PositionPicker } from "../FixedSettings";
 import { ShorthandTogglerPicker } from "../ShorthandToggler";
+import { CONFIG } from "@/utils/Types";
 
 const Styles = () => {
   const [outerType, setOuterType] = useState<string>(

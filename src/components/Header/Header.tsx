@@ -16,6 +16,7 @@ import Container from "../Container";
 import ViewMode from "./ViewMode";
 import { usePreview } from "@/contexts/PreviewContext";
 import ZoomView from "./ZoomView";
+import UserMenu from "./UserMenu";
 
 const Header = () => {
   const pathname = usePathname();
@@ -49,9 +50,7 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
             <Link href="/how-to">
               <span>How To</span>
             </Link>
-            <Link href="/register">
-              <span>Register</span>
-            </Link>
+            <UserMenu />
           </>
         ) : (
           <>

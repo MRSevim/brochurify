@@ -1,5 +1,5 @@
-import { CONFIG, makeArraySplitFrom, PossibleOuterTypes } from "./Helpers";
-import { Layout, PageWise, Style, Variable } from "./Types";
+import { makeArraySplitFrom, PossibleOuterTypes } from "./Helpers";
+import { Layout, PageWise, Style, Variable, CONFIG } from "./Types";
 
 export const styleDivider = (style: Style) => {
   const layoutKeys = [

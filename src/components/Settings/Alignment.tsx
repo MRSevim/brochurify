@@ -9,8 +9,8 @@ import {
   changeInnerElementStyle,
   removeElementStyle,
 } from "@/redux/slices/editorSlice";
-import { CONFIG, getSetting } from "@/utils/Helpers";
-import { OptionsObject } from "@/utils/Types";
+import { getSetting } from "@/utils/Helpers";
+import { OptionsObject, CONFIG } from "@/utils/Types";
 import React from "react";
 import Checkbox from "../Checkbox";
 

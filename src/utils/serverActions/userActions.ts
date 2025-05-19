@@ -18,23 +18,32 @@ export const loginAction = async (
       audience: CLIENT_ID_GOOGLE,
     });
 
-    const { email, name } = ticket.getPayload() as TokenPayload;
-    if (!email || !name) {
+    const { email, name, picture } = ticket.getPayload() as TokenPayload;
+    if (!email || !name || !picture) {
       throw Error("Invalid Google payload");
     }
+
     const cookieStore = await cookies();
     const user = await createOrUpdateUser({
       email,
       username: name,
+      image: picture,
     });
 
     generateToken(cookieStore, user.userId, rememberMe);
 
     return { user, error: "" };
   } catch (error: any) {
-    console.error("Login failed:", error);
     return { user: undefined, error: error.message };
   }
 };
 
-export const logoutAction = async () => {};
+export const logoutAction = async () => {
+  try {
+    const cookieStore = await cookies();
+    cookieStore.delete("jwt");
+    return { error: "" };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+};

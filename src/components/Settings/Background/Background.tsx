@@ -1,5 +1,4 @@
 import {
-  CONFIG,
   extractUrlValue,
   getSetting,
   getValueFromShorthandStr,
@@ -20,7 +19,7 @@ import Select from "../../Select";
 import ResetButton from "../../ResetButton";
 import Slider from "../../Slider";
 import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
-import { StringOrUnd } from "@/utils/Types";
+import { CONFIG, StringOrUnd } from "@/utils/Types";
 
 const Background = () => {
   return (

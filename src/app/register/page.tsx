@@ -6,11 +6,13 @@ import Checkbox from "@/components/Checkbox";
 import { GoogleLoginComp } from "@/components/googleLoginComp";
 import { toast } from "react-toastify";
 import Container from "@/components/Container";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [, setUser] = useUser();
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleBefore = () => {
     setError("");
@@ -21,6 +23,7 @@ const Register = () => {
       return;
     }
     setUser(user, rememberMe);
+    router.push("/");
   };
 
   useEffect(() => {

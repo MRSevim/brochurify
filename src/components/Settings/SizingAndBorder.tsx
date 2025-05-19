@@ -1,6 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import Slider from "../Slider";
-import { CONFIG, getSetting, getUnit } from "@/utils/Helpers";
+import { getSetting, getUnit } from "@/utils/Helpers";
 import Border from "./Border";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import {
@@ -17,6 +17,7 @@ import BottomLine from "../BottomLine";
 import GroupedRadioButtons from "../GroupedRadioButtons";
 import InfoIcon from "../InfoIcon";
 import ShorthandToggler from "./ShorthandToggler";
+import { CONFIG } from "@/utils/Types";
 
 const SizingAndBorder = () => {
   return (

@@ -1,5 +1,4 @@
 import { ChangeEvent, RefObject } from "react";
-import { CONFIG } from "./Helpers";
 
 export interface Props {
   text?: string;
@@ -156,7 +155,19 @@ export type User =
   | {
       username: string;
       email: string;
+      image: string;
       role: string;
     }
-  | undefined
-  | null;
+  | undefined;
+
+export const CONFIG = {
+  placeholderImgUrl: "/placeholder-image.jpg",
+  headings: "h1,h2,h3,h4,h5,h6",
+  possibleOuterTypes: {
+    active: "&:active",
+    scrolled: "&.scrolled",
+    hover: "&:hover",
+    tabletContainerQuery: "@container (max-width: 768px)",
+    mobileContainerQuery: "@container (max-width: 360px)",
+  },
+} as const;

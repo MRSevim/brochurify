@@ -5,7 +5,6 @@ import BottomLine from "../BottomLine";
 import {
   addToString,
   availableTimingFunctions,
-  CONFIG,
   getSetting,
   getValueFromShorthandStr,
   makeArraySplitFrom,
@@ -16,7 +15,7 @@ import {
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
 import Select from "../Select";
-import { OptionsObject } from "@/utils/Types";
+import { OptionsObject, CONFIG } from "@/utils/Types";
 import NumberInput from "../NumberInput";
 import Checkbox from "../Checkbox";
 import ReplayButton from "../ReplayButton";

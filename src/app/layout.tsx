@@ -34,7 +34,9 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const lightMode = cookieStore.get("lightMode")?.value === "true";
   const user = cookieStore.get("user")?.value;
-  const userFromCookie = user ? JSON.parse(user) : undefined;
+  const userFromCookie = user
+    ? JSON.parse(decodeURIComponent(user))
+    : undefined;
 
   return (
     <html lang="en" className={roboto_mono.className}>

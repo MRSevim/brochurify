@@ -32,7 +32,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
-import { initialLayout as initialLayoutFromFile } from "@/utils/InitialLayout";
+import { initialSimpleLayout as initialLayoutFromFile } from "@/utils/InitialLayout";
 
 let initialLayout = initialLayoutFromFile;
 

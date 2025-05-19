@@ -9,6 +9,7 @@ import {
   StringOrUnd,
   Variable,
   OptionsObject,
+  CONFIG,
 } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
@@ -289,14 +290,19 @@ export const getDefaultElementProps = (type: string): Props => {
   return { style: {} };
 };
 
-export const saveToLocalStorage = (param: EditorState) => {
-  // Convert the state.layout to a JSON string
+export const stripEditorFields = (param: EditorState) => {
   const stripped = {
     layout: param.layout,
     pageWise: param.pageWise,
     variables: param.variables,
     history: param.history,
   };
+  return stripped;
+};
+
+export const saveToLocalStorage = (param: EditorState) => {
+  // Convert the state.layout to a JSON string
+  const stripped = stripEditorFields(param);
   const val = JSON.stringify(stripped);
 
   localStorage.setItem("editor", val);
@@ -504,17 +510,6 @@ export function setCookie(cname: string, cvalue: string, exdays: number) {
   document.cookie = cookieStr;
 }
 
-export const CONFIG = {
-  placeholderImgUrl: "/placeholder-image.jpg",
-  headings: "h1,h2,h3,h4,h5,h6",
-  possibleOuterTypes: {
-    active: "&:active",
-    scrolled: "&.scrolled",
-    hover: "&:hover",
-    tabletContainerQuery: "@container (max-width: 768px)",
-    mobileContainerQuery: "@container (max-width: 360px)",
-  },
-} as const;
 export const possibleOuterTypesArr = [
   ...Object.values(CONFIG.possibleOuterTypes),
 ];
