@@ -7,7 +7,7 @@ import { GoogleLoginComp } from "@/components/googleLoginComp";
 import { toast } from "react-toastify";
 import Container from "@/components/Container";
 
-export const Register = () => {
+const Register = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [, setUser] = useUser();
   const [error, setError] = useState("");
