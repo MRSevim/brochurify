@@ -1,4 +1,4 @@
-This is my single page website builder. Its early version is out. Check it out here: https://brochurify.vercel.app/
+This is my single page website builder. For the beta version, check out: https://brochurify.vercel.app/
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 

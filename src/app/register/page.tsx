@@ -7,7 +7,7 @@ import { GoogleLoginComp } from "@/components/googleLoginComp";
 import { toast } from "react-toastify";
 import Container from "@/components/Container";
 
-export const page = () => {
+export const Register = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [, setUser] = useUser();
   const [error, setError] = useState("");
@@ -44,4 +44,4 @@ export const page = () => {
     </Container>
   );
 };
-export default page;
+export default Register;
