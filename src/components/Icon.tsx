@@ -1,3 +1,5 @@
+import { MouseEvent } from "react";
+
 const Icon = ({
   type,
   size,
@@ -9,7 +11,7 @@ const Icon = ({
   size: string;
   title: string;
   className?: string;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
 }) => {
   return (
     <i

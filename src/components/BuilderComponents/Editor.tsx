@@ -3,7 +3,7 @@ import {
   handleCenterDropCaller,
   handleDragLeaveCaller,
 } from "@/utils/DragAndDropHelpers";
-import { componentList } from "@/utils/Helpers";
+import { componentList } from "@/utils/ComponentsList";
 import {
   LayoutToggleContext,
   SettingsToggleContext,
@@ -21,7 +21,7 @@ import FocusWrapper from "../FocusWrapper";
 import { Layout, Style } from "@/utils/Types";
 import React, { useEffect, useRef, useState } from "react";
 import { useViewMode } from "@/contexts/ViewModeContext";
-import { styledElements } from "@/utils/Helpers";
+import { styledElements } from "@/utils/StyledComponents";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
 import { findElementById } from "@/utils/EditorHelpers";
 import useKeyPresses from "@/utils/hooks/useKeypresses";

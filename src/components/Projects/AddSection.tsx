@@ -13,7 +13,7 @@ import TextInput from "../TextInput";
 import { createAction } from "@/utils/serverActions/projectActions";
 import { toast } from "react-toastify";
 
-export const templateOptions = [
+const templateOptions = [
   {
     label: "Blank",
     value: "blank",
@@ -34,13 +34,16 @@ export const templateOptions = [
 
 const AddSection = () => {
   const [adding, setAdding] = useState(false);
-  const [initialTemplate, setInitialTemplate] = useState("blank");
+  const [templateState, setInitialTemplate] = useState("blank");
   const [previewing, setPreviewing] = useState<string | null>(null);
   const [projectName, setProjectName] = useState("");
-  const selectedTemplate = templateOptions.find((t) => t.value === previewing);
+  const selectedTemplate = templateOptions.find(
+    (t) => t.value === templateState
+  );
+  const previewedTemplate = templateOptions.find((t) => t.value === previewing);
 
   const handleAdd = async () => {
-    /* const { error } = await createAction({
+    const { error } = await createAction({
       title: projectName,
       editor: {
         layout: selectedTemplate?.layout,
@@ -49,12 +52,16 @@ const AddSection = () => {
         history: [],
       },
     });
-    if (error) toast.error(error); */
+    if (error) {
+      toast.error(error);
+    } else {
+      setAdding(false);
+    }
   };
 
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-2">
         <h1 className="font-bold text-2xl">All Projects</h1>
         <AddButton onClick={() => setAdding((prev) => !prev)} colored />
         {adding && (
@@ -68,9 +75,10 @@ const AddSection = () => {
             <div className="grid grid-cols-2 gap-4 mb-2">
               {templateOptions.map((template) => (
                 <div
+                  onClick={() => setInitialTemplate(template.value)}
                   key={template.value}
                   className={`border rounded-lg p-2 cursor-pointer ${
-                    initialTemplate === template.value
+                    templateState === template.value
                       ? "border-text"
                       : "border-gray"
                   }`}
@@ -78,7 +86,6 @@ const AddSection = () => {
                   <Image
                     width={409}
                     height={157}
-                    onClick={() => setInitialTemplate(template.value)}
                     className="rounded w-full h-auto"
                     src={template.image}
                     alt={template.label}
@@ -90,7 +97,10 @@ const AddSection = () => {
                         title="preview"
                         type="eye-fill"
                         size="24px"
-                        onClick={() => setPreviewing(template.value)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewing(template.value);
+                        }}
                       />
                     </span>
                   </div>
@@ -105,16 +115,16 @@ const AddSection = () => {
           </Popup>
         )}
       </div>
-      {previewing && selectedTemplate && (
+      {previewedTemplate && (
         <Modal
           onClose={() => setPreviewing(null)}
-          title={selectedTemplate.label}
+          title={previewedTemplate.label}
         >
           <ShadowContent
             html={generateHTML(
-              selectedTemplate.layout,
-              selectedTemplate.pageWise,
-              selectedTemplate.variables,
+              previewedTemplate.layout,
+              previewedTemplate.pageWise,
+              previewedTemplate.variables,
               true
             )}
           />

@@ -3,7 +3,7 @@ import { useUser } from "@/contexts/UserContext";
 import { useEffect, useState } from "react";
 import { User } from "@/utils/Types";
 import Checkbox from "@/components/Checkbox";
-import { GoogleLoginComp } from "@/components/googleLoginComp";
+import { GoogleLoginComp } from "@/components/GoogleLoginComp";
 import { toast } from "react-toastify";
 import Container from "@/components/Container";
 import { useRouter } from "next/navigation";

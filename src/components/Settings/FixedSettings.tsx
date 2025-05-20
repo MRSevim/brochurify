@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { getSetting, getUnit } from "@/utils/Helpers";
@@ -10,8 +10,9 @@ import GroupedRadioButtons from "../GroupedRadioButtons";
 import NumberInput from "../NumberInput";
 import { StringOrUnd } from "@/utils/Types";
 
+const positionsArr = ["top", "bottom", "left", "right"];
+
 const FixedSettings = () => {
-  const positionsArr = ["top", "bottom", "left", "right"];
   return (
     <ToggleVisibilityWrapper
       title="Fixed Position"

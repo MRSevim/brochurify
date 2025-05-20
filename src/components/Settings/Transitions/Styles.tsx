@@ -11,7 +11,7 @@ import {
   availableTransitions,
   filterForFixed,
   SelectTransition,
-} from "./Transitions";
+} from "./SelectTransition";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import AddButton from "@/components/AddButton";

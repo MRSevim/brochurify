@@ -9,7 +9,7 @@ import {
 import PageSettings from "./Settings/PageSettings/PageSettings";
 import ElementSettings from "./Settings/ElementSettings";
 import SmallText from "./SmallText";
-import { styledElements } from "@/utils/Helpers";
+import { styledElements } from "@/utils/StyledComponents";
 
 const RightPanel = () => {
   const [toggle] = SettingsToggleContext.Use();

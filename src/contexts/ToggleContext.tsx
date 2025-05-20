@@ -9,7 +9,7 @@ import {
 
 type toggleContextType = [boolean, Dispatch<SetStateAction<boolean>>];
 
-export const createToggleContext = () => {
+const createToggleContext = () => {
   const toggleContext = createContext<toggleContextType | null>(null);
 
   const Use = (): toggleContextType => {

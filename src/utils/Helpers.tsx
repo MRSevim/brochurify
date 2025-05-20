@@ -1,40 +1,19 @@
-import Button from "@/components/BuilderComponents/Button";
 import {
   Props,
   Style,
   EditorState,
-  PropsWithId,
   PageWise,
   Layout,
   StringOrUnd,
-  Variable,
   OptionsObject,
   CONFIG,
 } from "./Types";
-import Column from "@/components/BuilderComponents/Column";
-import Text from "@/components/BuilderComponents/Text";
 import { v4 as uuidv4 } from "uuid";
-import Row from "@/components/BuilderComponents/Row";
 import { findElementById } from "./EditorHelpers";
 import { UseSelector } from "react-redux";
-import Image from "@/components/BuilderComponents/Image";
-import Audio from "@/components/BuilderComponents/Audio";
-import Video from "@/components/BuilderComponents/Video";
-import Container from "@/components/BuilderComponents/Container";
-import Divider from "@/components/BuilderComponents/Divider";
-import Icon from "@/components/BuilderComponents/Icon";
 import { selectVariables } from "@/redux/hooks";
-import styled from "styled-components";
-import {
-  getAllKeyFrames,
-  getRest,
-  getStyleResets,
-  getWrapperStyles,
-  styleGenerator,
-  variablesGenerator,
-} from "./StyleGenerators";
-import Fixed from "@/components/BuilderComponents/Fixed";
 import { googleFontOptions } from "./GoogleFonts";
+/* import { JSDOM } from "jsdom"; */
 
 export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
   const observer = new IntersectionObserver((entries, observer) => {
@@ -54,70 +33,6 @@ export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
   }
 
   return observer;
-};
-
-export const styledElements = {
-  styledEditor: styled.div<{ styles: PageWise; variables: Variable[] }>`
-    ${({ styles, variables }) => {
-      const { overflow, ...rest } = styles;
-      const variablesString = variablesGenerator(variables);
-      const styleResets = getStyleResets(styles);
-      const style = styleGenerator(rest);
-      const allKeyframes = getAllKeyFrames();
-      return variablesString + styleResets + style + allKeyframes;
-    }};
-  `,
-  styledComponentWrapperDiv: styled.div<{ styles: Style }>`
-    ${({ styles }) => getWrapperStyles(styles)};
-  `,
-  styledWrapperDivWithVariables: styled.div<{
-    variables: Variable[];
-    pageWise: PageWise;
-  }>`
-    ${({ variables, pageWise }) => {
-      const styleResets = getStyleResets(pageWise);
-      const variablesStyles = variablesGenerator(variables);
-      return variablesStyles + styleResets;
-    }};
-  `,
-  styledDiv: styled.div<{ styles: Style }>`
-    ${({ styles }) => getRest(styles)};
-  `,
-  styledFixed: styled.div<{ styles: Style }>`
-    ${({ styles }) => getRest(styles)};
-  `,
-  styledAudio: styled.audio<{ styles: Style }>`
-    ${({ styles }) => getRest(styles)}
-  `,
-  styledButton: styled.button<{ styles: Style }>`
-    ${({ styles }) => getRest(styles)}
-  `,
-  styledHr: styled.hr<{ styles: Style }>`
-    ${({ styles }) => getRest(styles)}
-  `,
-  styledI: styled.i<{ styles: Style }>`
-    ${({ styles }) => getRest(styles)}
-  `,
-  styledImg: styled.img<{ styles: Style }>`
-    ${({ styles }) => getRest(styles)}
-  `,
-  styledVideo: styled.video<{ styles: Style }>`
-    ${({ styles }) => getRest(styles)}
-  `,
-};
-
-export const componentList = {
-  button: (props: PropsWithId) => <Button {...props} />,
-  column: (props: PropsWithId) => <Column {...props} />,
-  text: (props: PropsWithId) => <Text {...props} />,
-  row: (props: PropsWithId) => <Row {...props} />,
-  image: (props: PropsWithId) => <Image {...props} />,
-  audio: (props: PropsWithId) => <Audio {...props} />,
-  video: (props: PropsWithId) => <Video {...props} />,
-  container: (props: PropsWithId) => <Container {...props} />,
-  divider: (props: PropsWithId) => <Divider {...props} />,
-  icon: (props: PropsWithId) => <Icon {...props} />,
-  fixed: (props: PropsWithId) => <Fixed {...props} />,
 };
 
 export const getPageWise = (): PageWise => {
@@ -558,7 +473,10 @@ export const defaultInheritFontOptions = [
 
 export function getUsedFontsFromHTML(html: string): string[] {
   const fontSet = new Set<string>();
-  const dom = new DOMParser().parseFromString(html, "text/html");
+  /*   const dom = new JSDOM(html);
+  const document = dom.window.document;
+ */
+  const document = new DOMParser().parseFromString(html, "text/html");
 
   // Matches only the first font name (quoted or unquoted)
   const fontRegex = /font-family\s*:\s*(['"][^'"]+['"]|[^,;]+)/gi;
@@ -569,7 +487,7 @@ export function getUsedFontsFromHTML(html: string): string[] {
     fontValue.trim().replace(/^['"]|['"]$/g, ""); // remove surrounding quotes
 
   // 1. Check <style> tags
-  const styleTags = dom.querySelectorAll("style");
+  const styleTags = document.querySelectorAll("style");
   styleTags.forEach((style) => {
     const css = style.textContent || "";
     let match;
@@ -580,7 +498,7 @@ export function getUsedFontsFromHTML(html: string): string[] {
   });
 
   // 2. Check inline style attributes
-  const allElements = dom.querySelectorAll("*[style]");
+  const allElements = document.querySelectorAll("*[style]");
   allElements.forEach((el) => {
     const styleAttr = el.getAttribute("style") || "";
     let match;

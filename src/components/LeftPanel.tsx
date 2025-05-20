@@ -15,7 +15,7 @@ import {
   handleSideDragOverCaller,
   handleSideDropCaller,
 } from "@/utils/DragAndDropHelpers";
-import { componentList } from "@/utils/Helpers";
+import { componentList } from "@/utils/ComponentsList";
 import {
   SetStateAction,
   Dispatch,

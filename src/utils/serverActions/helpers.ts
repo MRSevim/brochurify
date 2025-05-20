@@ -3,6 +3,7 @@ import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adap
 import jwt from "jsonwebtoken";
 import { getUserProfile } from "../db/userHelpers";
 import { StringOrUnd } from "../Types";
+import puppeteer from "puppeteer";
 
 export const generateToken = (
   cookies: ReadonlyRequestCookies,
@@ -45,5 +46,27 @@ export const protect = async (token: StringOrUnd) => {
     }
   } catch (error: any) {
     throw new Error(error);
+  }
+};
+
+export const getScreenSnapshot = async (html: string) => {
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 720 });
+    await page.setContent(html, {
+      waitUntil: "networkidle0",
+    });
+
+    const buffer = await page.screenshot({ type: "png", fullPage: true });
+    return buffer;
+  } catch (error: any) {
+    throw Error(error);
+  } finally {
+    await browser.close();
   }
 };

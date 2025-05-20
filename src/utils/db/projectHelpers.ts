@@ -7,9 +7,10 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 import { v4 as uuidv4 } from "uuid";
-import { protect } from "../serverActions/helpers";
+import { getScreenSnapshot, protect } from "../serverActions/helpers";
 import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
+import { generateHTML } from "../HTMLGenerator";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
@@ -23,6 +24,16 @@ export async function createProject(
   try {
     const user = await protect(token);
 
+    const { layout, pageWise, variables } = project.editor;
+    if (!layout || !pageWise || !variables) {
+      throw Error(
+        "Please pass in layout, pageWise and variables to createProject"
+      );
+    }
+    const buffer = await getScreenSnapshot(
+      generateHTML(layout, pageWise, variables, false)
+    );
+    console.log(buffer);
     const projectItem = {
       userId: user.userId,
       id: uuidv4(),
@@ -49,14 +60,13 @@ export async function getAllProjects(token: StringOrUnd) {
 
     const command = new QueryCommand({
       TableName: TABLE_NAME,
-      KeyConditionExpression: "userId = :userId AND begins_with(id, :prefix)",
+      KeyConditionExpression: "userId = :userId",
       FilterExpression: "#type = :type",
       ExpressionAttributeNames: {
         "#type": "type",
       },
       ExpressionAttributeValues: {
         ":userId": user.userId,
-        ":prefix": "", // if you want to match all IDs
         ":type": "project",
       },
     });

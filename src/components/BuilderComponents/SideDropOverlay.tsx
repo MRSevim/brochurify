@@ -13,7 +13,7 @@ import {
 } from "@/utils/DragAndDropHelpers";
 import { Layout, Where } from "@/utils/Types";
 import { DragEvent, useRef, useState } from "react";
-import { styledElements } from "@/utils/Helpers";
+import { styledElements } from "@/utils/StyledComponents";
 import usePositionListener from "@/utils/hooks/usePositionListener";
 import { useEditorRef } from "@/contexts/EditorRefContext";
 import EditorActions from "./EditorActions";

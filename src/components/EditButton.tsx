@@ -3,7 +3,7 @@ import Icon from "./Icon";
 const EditButton = ({
   onClick,
 }: {
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
     <button className="bg-amberVar p-1 rounded" onClick={onClick}>

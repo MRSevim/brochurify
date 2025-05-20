@@ -32,12 +32,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
-import { initialSimpleLayout as initialLayoutFromFile } from "@/utils/InitialLayout";
-
-let initialLayout = initialLayoutFromFile;
+import { initialSimpleLayout } from "@/utils/InitialLayout";
 
 const initialState: EditorState = {
-  layout: initialLayout,
+  layout: initialSimpleLayout,
   addLocation: null,
   dropHandled: false,
   pageWise: getPageWise(),
