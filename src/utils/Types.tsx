@@ -47,6 +47,7 @@ export interface Layout {
   props: Props;
 }
 export interface EditorState {
+  id?: string;
   active?: LayoutOrUnd;
   hovered?: string;
   history: History;
@@ -148,7 +149,6 @@ export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 export type OptionsObject = { id?: string; title: string; value: string };
 export type AppChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 export type HandleChangeType = (e: AppChangeEvent, i?: number) => void;
-export type SavePopup = "saving" | "saved" | null;
 export type MoveTo = { item: Layout; location: "previous" | "next" };
 
 export type User =

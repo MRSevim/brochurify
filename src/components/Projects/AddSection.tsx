@@ -8,10 +8,10 @@ import { getPageWise } from "@/utils/Helpers";
 import { ShadowContent } from "../ShadowContent";
 import { Modal } from "../Modal";
 import { initialSimpleLayout } from "@/utils/InitialLayout";
-import Image from "next/image";
 import TextInput from "../TextInput";
 import { createAction } from "@/utils/serverActions/projectActions";
 import { toast } from "react-toastify";
+import { ShapshotImage } from "../ShapshotImage";
 
 const templateOptions = [
   {
@@ -34,6 +34,7 @@ const templateOptions = [
 
 const AddSection = () => {
   const [adding, setAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [templateState, setInitialTemplate] = useState("blank");
   const [previewing, setPreviewing] = useState<string | null>(null);
   const [projectName, setProjectName] = useState("");
@@ -43,6 +44,7 @@ const AddSection = () => {
   const previewedTemplate = templateOptions.find((t) => t.value === previewing);
 
   const handleAdd = async () => {
+    setLoading(true);
     const { error } = await createAction({
       title: projectName,
       editor: {
@@ -57,6 +59,7 @@ const AddSection = () => {
     } else {
       setAdding(false);
     }
+    setLoading(false);
   };
 
   return (
@@ -66,6 +69,7 @@ const AddSection = () => {
         <AddButton onClick={() => setAdding((prev) => !prev)} colored />
         {adding && (
           <Popup
+            loading={loading}
             maxWidth="4xl"
             editing={false}
             onClose={() => setAdding(false)}
@@ -83,13 +87,7 @@ const AddSection = () => {
                       : "border-gray"
                   }`}
                 >
-                  <Image
-                    width={409}
-                    height={157}
-                    className="rounded w-full h-auto"
-                    src={template.image}
-                    alt={template.label}
-                  />
+                  <ShapshotImage src={template.image} alt={template.label} />
                   <div className="flex justify-between items-center mt-2">
                     <p className="text-sm">{template.label}</p>
                     <span className="hover:scale-125">

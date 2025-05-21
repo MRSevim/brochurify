@@ -1,17 +1,16 @@
-import { SavePopup } from "@/utils/Types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: { savePopup: SavePopup } = { savePopup: null };
+const initialState: { savePopup: string } = { savePopup: "" };
 
 export const popupSlice = createSlice({
   name: "popup",
   initialState,
   reducers: {
     saving: (state) => {
-      state.savePopup = "saving";
+      state.savePopup = "Saving...";
     },
-    saved: (state) => {
-      state.savePopup = "saved";
+    saved: (state, action: PayloadAction<string | undefined>) => {
+      state.savePopup = "Saved" + (action.payload || "") + "!";
     },
   },
 });

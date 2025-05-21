@@ -35,6 +35,7 @@ import { v4 as uuidv4 } from "uuid";
 import { initialSimpleLayout } from "@/utils/InitialLayout";
 
 const initialState: EditorState = {
+  id: undefined,
   layout: initialSimpleLayout,
   addLocation: null,
   dropHandled: false,
@@ -57,6 +58,7 @@ export const editorSlice = createSlice({
       state.hovered = action.payload;
     },
     hydrate: (state, action: PayloadAction<EditorState>) => {
+      state.id = action.payload.id;
       state.layout = action.payload.layout;
       state.pageWise = action.payload.pageWise;
       state.variables = action.payload.variables;

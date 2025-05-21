@@ -20,7 +20,7 @@ import UserMenu from "./UserMenu";
 
 const Header = () => {
   const pathname = usePathname();
-  const isBuilder = pathname === "/builder";
+  const isBuilder = pathname.startsWith("/builder");
 
   return (
     <header className="w-full bg-background">
@@ -62,9 +62,7 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
                 setPreview((prev) => !prev);
               }}
             />
-            <button className="p-2 rounded bg-amberVar text-white">
-              Publish
-            </button>
+            <button className="p-2 rounded bg-amber text-white">Publish</button>
           </>
         )}
       </div>

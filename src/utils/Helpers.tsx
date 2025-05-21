@@ -13,7 +13,7 @@ import { findElementById } from "./EditorHelpers";
 import { UseSelector } from "react-redux";
 import { selectVariables } from "@/redux/hooks";
 import { googleFontOptions } from "./GoogleFonts";
-/* import { JSDOM } from "jsdom"; */
+import * as cheerio from "cheerio";
 
 export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
   const observer = new IntersectionObserver((entries, observer) => {
@@ -473,10 +473,7 @@ export const defaultInheritFontOptions = [
 
 export function getUsedFontsFromHTML(html: string): string[] {
   const fontSet = new Set<string>();
-  /*   const dom = new JSDOM(html);
-  const document = dom.window.document;
- */
-  const document = new DOMParser().parseFromString(html, "text/html");
+  const $ = cheerio.load(html);
 
   // Matches only the first font name (quoted or unquoted)
   const fontRegex = /font-family\s*:\s*(['"][^'"]+['"]|[^,;]+)/gi;
@@ -487,24 +484,26 @@ export function getUsedFontsFromHTML(html: string): string[] {
     fontValue.trim().replace(/^['"]|['"]$/g, ""); // remove surrounding quotes
 
   // 1. Check <style> tags
-  const styleTags = document.querySelectorAll("style");
-  styleTags.forEach((style) => {
-    const css = style.textContent || "";
+  $("style").each((_, style) => {
+    const css = $(style).text();
     let match;
     while ((match = fontRegex.exec(css)) !== null) {
       const font = cleanFont(match[1]);
-      if (validFontTitles.has(font)) fontSet.add(font);
+      if (validFontTitles.has(font)) {
+        fontSet.add(font);
+      }
     }
   });
 
   // 2. Check inline style attributes
-  const allElements = document.querySelectorAll("*[style]");
-  allElements.forEach((el) => {
-    const styleAttr = el.getAttribute("style") || "";
+  $("[style]").each((_, el) => {
+    const styleAttr = $(el).attr("style") || "";
     let match;
     while ((match = fontRegex.exec(styleAttr)) !== null) {
       const font = cleanFont(match[1]);
-      if (validFontTitles.has(font)) fontSet.add(font);
+      if (validFontTitles.has(font)) {
+        fontSet.add(font);
+      }
     }
   });
 

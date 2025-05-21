@@ -1,32 +1,27 @@
-import { createPortal } from "react-dom";
 import AmberButtonWithLoading from "./AmberButtonWithLoading";
 
-const Popup = ({
+const ConfirmationPopup = ({
   onClose,
   maxWidth = "md",
-  onEditOrAdd,
-  children,
-  loading = false,
-  editing,
+  onConfirm,
+  text,
+  loading,
 }: {
   onClose: () => void;
-  onEditOrAdd: () => void;
-  children: React.ReactNode;
-  editing: boolean;
-  loading?: boolean;
+  onConfirm: () => void;
+  text: string;
+  loading: boolean;
   maxWidth?: string;
 }) => {
   const maxW = maxWidth === "4xl" ? "max-w-4xl" : "max-w-md";
-
-  //creating portal since using fixed naked does not behave correctly
-  return createPortal(
+  return (
     <div
       className={
-        "fixed z-[100] top-[10%] left-1/2 -translate-x-1/2 w-[90%] bg-background border border-text rounded p-3 shadow-md " +
+        "fixed z-[100] top-[10%] left-1/2 -translate-x-1/2 w-[90%] bg-background text-text border border-text rounded p-3 shadow-md " +
         maxW
       }
     >
-      {children}
+      {text}
       <div className="flex justify-center gap-2 mt-2">
         <button
           className="p-1 text-background bg-gray rounded cursor-pointer"
@@ -36,13 +31,12 @@ const Popup = ({
           Close
         </button>
         <AmberButtonWithLoading
-          onClick={onEditOrAdd}
+          onClick={onConfirm}
           loading={loading}
-          text={editing ? "Save" : "Add"}
+          text="Confirm"
         />
       </div>
-    </div>,
-    document.body
+    </div>
   );
 };
-export default Popup;
+export default ConfirmationPopup;

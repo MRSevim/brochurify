@@ -11,8 +11,11 @@ import { getScreenSnapshot, protect } from "../serverActions/helpers";
 import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
+import { uploadToS3 } from "../s3/helpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
+
+const makeSnapshotUrl = (id: string) => `snapshots/${id}.png`;
 
 export async function createProject(
   project: {
@@ -33,13 +36,19 @@ export async function createProject(
     const buffer = await getScreenSnapshot(
       generateHTML(layout, pageWise, variables, false)
     );
-    console.log(buffer);
+    const id = uuidv4();
+    const snapshot = await uploadToS3({
+      buffer,
+      key: makeSnapshotUrl(id),
+      contentType: "image/png",
+    });
     const projectItem = {
       userId: user.userId,
-      id: uuidv4(),
+      id,
       type: "project",
       title: project.title,
       data: project.editor,
+      snapshot,
     };
 
     const command = new PutCommand({
@@ -89,7 +98,7 @@ export async function getProjectById(token: StringOrUnd, id: string) {
 
     const result = await docClient.send(command);
     if (!result.Item || result.Item.type !== "project")
-      throw new Error("Project not found or unauthorized");
+      throw Error("Project not found or unauthorized");
     return result.Item;
   } catch (error: any) {
     throw Error(error);
@@ -104,6 +113,18 @@ export async function updateProject(
   try {
     const user = await protect(token);
 
+    // ✅ 1. Get the project by ID and ensure it belongs to the user
+    const existingProject = await docClient.send(
+      new GetCommand({
+        TableName: TABLE_NAME,
+        Key: { userId: user.userId, id },
+      })
+    );
+
+    if (!existingProject.Item) {
+      throw Error("Project not found or unauthorized");
+    }
+
     const updateExpressions = [];
     const expressionAttributeValues: Record<string, any> = {};
     const expressionAttributeNames: Record<string, string> = {};
@@ -114,12 +135,32 @@ export async function updateProject(
       expressionAttributeValues[":title"] = updates.title;
     }
     if (updates.editor) {
+      const { layout, pageWise, variables } = updates.editor;
+      if (!layout || !pageWise || !variables) {
+        throw Error(
+          "Please pass in layout, pageWise and variables to createProject"
+        );
+      }
+      const buffer = await getScreenSnapshot(
+        generateHTML(layout, pageWise, variables, false)
+      );
+
+      const snapshot = await uploadToS3({
+        buffer,
+        key: makeSnapshotUrl(id),
+        contentType: "image/png",
+      });
+
       updateExpressions.push("#data = :data");
       expressionAttributeNames["#data"] = "data";
       expressionAttributeValues[":data"] = stripEditorFields(updates.editor);
+      // ✅ Add snapshot to update
+      updateExpressions.push("#snapshot = :snapshot");
+      expressionAttributeNames["#snapshot"] = "snapshot";
+      expressionAttributeValues[":snapshot"] = snapshot;
     }
 
-    if (!updateExpressions.length) throw new Error("No updates provided");
+    if (!updateExpressions.length) throw Error("No updates provided");
 
     const command = new UpdateCommand({
       TableName: TABLE_NAME,
@@ -140,6 +181,18 @@ export async function updateProject(
 export async function deleteProject(token: StringOrUnd, id: string) {
   try {
     const user = await protect(token);
+
+    // ✅ 1. Get the project by ID and ensure it belongs to the user
+    const existingProject = await docClient.send(
+      new GetCommand({
+        TableName: TABLE_NAME,
+        Key: { userId: user.userId, id },
+      })
+    );
+
+    if (!existingProject.Item) {
+      throw Error("Project not found or unauthorized");
+    }
 
     const command = new DeleteCommand({
       TableName: TABLE_NAME,

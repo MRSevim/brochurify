@@ -31,13 +31,6 @@ export default function ClientWrapper({
   if (!storeRef.current) {
     // Create the store instance the first time this renders
     storeRef.current = makeStore();
-    if (typeof window !== "undefined") {
-      const editorState = localStorage.getItem("editor");
-      if (editorState) {
-        const editorStateParsed = JSON.parse(editorState);
-        storeRef.current.dispatch(hydrate(editorStateParsed));
-      }
-    }
   }
 
   return (

@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import editorSlice from "./slices/editorSlice";
 import { saveToHistoryMiddleware } from "./middlewares/saveToHistoryMiddleware";
-import { saveToLocalStorageMiddleware } from "./middlewares/saveToLocalStorageMiddleware";
+import { saveToLocalOrDb } from "./middlewares/saveToLocalOrDb";
 import popupSlice from "./slices/popupSlice";
 import replaySlice from "./slices/replaySlice";
 
@@ -15,7 +15,7 @@ export const makeStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ serializableCheck: false }).concat(
         saveToHistoryMiddleware,
-        saveToLocalStorageMiddleware
+        saveToLocalOrDb
       ),
   });
 };

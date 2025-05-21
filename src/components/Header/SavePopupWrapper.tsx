@@ -8,9 +8,7 @@ const SavePopupWrapper = () => {
     <>
       {savePopup && (
         <div className="ms-2">
-          <SuccessAlert
-            text={savePopup === "saving" ? "Saving..." : "Saved locally!"}
-          />
+          <SuccessAlert text={savePopup} />
         </div>
       )}
     </>

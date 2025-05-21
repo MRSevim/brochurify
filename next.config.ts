@@ -3,12 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
+    domains: ["localhost"],
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-        port: "",
-      },
+      new URL("https://lh3.googleusercontent.com/**"),
+      new URL("http://localhost/"),
     ],
   },
 };

@@ -6,9 +6,9 @@ const Bucket = process.env.S3_BUCKET_NAME;
 export const uploadToS3 = async ({
   buffer,
   key,
-  contentType = "image/png",
+  contentType,
 }: {
-  buffer: Buffer;
+  buffer: Uint8Array<ArrayBufferLike>;
   key: string;
   contentType: string;
 }) => {
