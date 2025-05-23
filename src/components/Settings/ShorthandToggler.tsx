@@ -44,7 +44,7 @@ const ShorthandToggler = ({ type }: { type: string }) => {
         onChange={(newValue) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue,
             })
           )
@@ -55,7 +55,7 @@ const ShorthandToggler = ({ type }: { type: string }) => {
           if (!activeType) return;
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue:
                 (getDefaultStyle(activeType)[type] as string) ||
                 "0px 0px 0px 0px ",

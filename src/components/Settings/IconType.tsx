@@ -5,7 +5,6 @@ import BottomLine from "../BottomLine";
 import {
   changeElementProp,
   changeElementStyle,
-  removeElementStyle,
 } from "@/redux/slices/editorSlice";
 import Icon from "../Icon";
 import { useState } from "react";
@@ -53,16 +52,12 @@ const IconColor = () => {
         title="Pick the icon color"
         selected={colorStr || pageWise.color || "#000000"}
         onChange={(newValue) =>
-          dispatch(changeElementStyle({ type, newValue }))
+          dispatch(changeElementStyle({ types: [], newValue }))
         }
       />
       <ResetButton
         onClick={() => {
-          dispatch(
-            removeElementStyle({
-              type,
-            })
-          );
+          dispatch(changeElementStyle({ types: [type], newValue: "" }));
         }}
       />
       <BottomLine />

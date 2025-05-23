@@ -15,7 +15,7 @@ import {
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import AddButton from "@/components/AddButton";
-import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import { findElementById } from "@/utils/EditorHelpers";
 import EditableListItem from "../EditableListItem";
 import Popup from "@/components/Popup";
@@ -54,9 +54,8 @@ const Styles = () => {
     newValue: string | undefined
   ) => {
     dispatch(
-      changeInnerElementStyle({
-        outerType,
-        innerType: innerTypeParam ?? innerType,
+      changeElementStyle({
+        types: [outerType, innerTypeParam ?? innerType],
         newValue: newValue ?? "",
       })
     );

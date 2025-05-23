@@ -6,10 +6,7 @@ import {
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  changeElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Select from "../Select";
 import ColorPicker from "../ColorPicker";
 import BottomLine from "../BottomLine";
@@ -27,7 +24,7 @@ const Border = () => {
   const setToInitial = () =>
     dispatch(
       changeElementStyle({
-        type,
+        types: [type],
         newValue: "2px solid #000000",
       })
     );
@@ -37,20 +34,30 @@ const Border = () => {
       setToInitial();
       dispatch(
         changeElementStyle({
-          type: borderRadiusType,
+          types: [borderRadiusType],
           newValue: "0% 0% 0% 0%",
         })
       );
     } else {
-      dispatch(removeElementStyle({ type }));
-      dispatch(removeElementStyle({ type: borderRadiusType }));
+      dispatch(
+        changeElementStyle({
+          types: [type],
+          newValue: "",
+        })
+      );
+      dispatch(
+        changeElementStyle({
+          types: [borderRadiusType],
+          newValue: "",
+        })
+      );
     }
   };
 
   const handleChange = (e: string, i: number) => {
     dispatch(
       changeElementStyle({
-        type,
+        types: [type],
         newValue: setValueFromShorthandStr(borderStr, i, e),
       })
     );

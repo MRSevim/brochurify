@@ -7,10 +7,7 @@ import {
 import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ColorPicker from "../../ColorPicker";
-import {
-  changeElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import BottomLine from "../../BottomLine";
 import SecondaryTitle from "../../SecondaryTitle";
 import ToggleBtn from "../../ToggleBtn";
@@ -44,7 +41,7 @@ export const BackgroundColor = () => {
         onChange={(newValue) => {
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue,
             })
           );
@@ -52,7 +49,12 @@ export const BackgroundColor = () => {
       />
       <ResetButton
         onClick={() => {
-          dispatch(removeElementStyle({ type }));
+          dispatch(
+            changeElementStyle({
+              types: [type],
+              newValue: "",
+            })
+          );
         }}
       />
       <BottomLine />
@@ -88,7 +90,7 @@ const BackgroundShadow = () => {
   const setToInitial = () =>
     dispatch(
       changeElementStyle({
-        type,
+        types: [type],
         newValue: "5px 5px 5px 2px " + pageWise.color || "#000000",
       })
     );
@@ -96,13 +98,18 @@ const BackgroundShadow = () => {
     if (!toggled) {
       setToInitial();
     } else {
-      dispatch(removeElementStyle({ type }));
+      dispatch(
+        changeElementStyle({
+          types: [type],
+          newValue: "",
+        })
+      );
     }
   };
   const handleChange = (e: string, i: number) => {
     dispatch(
       changeElementStyle({
-        type,
+        types: [type],
         newValue: setValueFromShorthandStr(variable, i, e),
       })
     );
@@ -176,25 +183,25 @@ const BackgroundImage = () => {
   const setToInitial = () => {
     dispatch(
       changeElementStyle({
-        type,
+        types: [type],
         newValue: `url("${CONFIG.placeholderImgUrl}")`,
       })
     );
     dispatch(
       changeElementStyle({
-        type: "background-repeat",
+        types: ["background-repeat"],
         newValue: "no-repeat",
       })
     );
     dispatch(
       changeElementStyle({
-        type: "background-position",
+        types: ["background-position"],
         newValue: "50% 50%",
       })
     );
     dispatch(
       changeElementStyle({
-        type: "background-size",
+        types: ["background-size"],
         newValue: "cover",
       })
     );
@@ -203,10 +210,21 @@ const BackgroundImage = () => {
     if (!toggled) {
       setToInitial();
     } else {
-      dispatch(removeElementStyle({ type }));
-      dispatch(removeElementStyle({ type: "background-position" }));
-      dispatch(removeElementStyle({ type: "background-repeat" }));
-      dispatch(removeElementStyle({ type: "background-size" }));
+      dispatch(
+        changeElementStyle({
+          types: [type],
+          newValue: "",
+        })
+      );
+      dispatch(
+        changeElementStyle({ types: ["background-position"], newValue: "" })
+      );
+      dispatch(
+        changeElementStyle({ types: ["background-repeat"], newValue: "" })
+      );
+      dispatch(
+        changeElementStyle({ types: ["background-size"], newValue: "" })
+      );
     }
   };
 
@@ -240,7 +258,7 @@ const Link = () => {
       onChange={(e) =>
         dispatch(
           changeElementStyle({
-            type,
+            types: [type],
             newValue: `url(${e.target.value})`,
           })
         )
@@ -261,7 +279,7 @@ const BackgroundSize = () => {
       onChange={(e) =>
         dispatch(
           changeElementStyle({
-            type: "background-size",
+            types: ["background-size"],
             newValue: e.target.value,
           })
         )

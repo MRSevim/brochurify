@@ -40,7 +40,7 @@ export async function createProject(
     const snapshot = await uploadToS3({
       buffer,
       key: makeSnapshotUrl(id),
-      contentType: "image/png",
+      contentType: "image/jpeg",
     });
     const projectItem = {
       userId: user.userId,
@@ -49,6 +49,7 @@ export async function createProject(
       title: project.title,
       data: project.editor,
       snapshot,
+      createdAt: new Date().toISOString(),
     };
 
     const command = new PutCommand({
@@ -148,7 +149,7 @@ export async function updateProject(
       const snapshot = await uploadToS3({
         buffer,
         key: makeSnapshotUrl(id),
-        contentType: "image/png",
+        contentType: "image/jpeg",
       });
 
       updateExpressions.push("#data = :data");
@@ -159,6 +160,10 @@ export async function updateProject(
       expressionAttributeNames["#snapshot"] = "snapshot";
       expressionAttributeValues[":snapshot"] = snapshot;
     }
+    // Add updatedAt field
+    updateExpressions.push("#updatedAt = :updatedAt");
+    expressionAttributeNames["#updatedAt"] = "updatedAt";
+    expressionAttributeValues[":updatedAt"] = new Date().toISOString();
 
     if (!updateExpressions.length) throw Error("No updates provided");
 

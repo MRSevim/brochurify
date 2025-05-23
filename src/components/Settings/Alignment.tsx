@@ -4,11 +4,7 @@ import Select from "@/components/Select";
 import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  changeElementStyle,
-  changeInnerElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import { getSetting } from "@/utils/Helpers";
 import { OptionsObject, CONFIG } from "@/utils/Types";
 import React from "react";
@@ -166,9 +162,8 @@ const TabletOrMobile = ({
       checked={checked}
       onChange={() => {
         dispatch(
-          changeInnerElementStyle({
-            outerType,
-            innerType,
+          changeElementStyle({
+            types: [outerType, innerType],
             newValue: checked ? "" : reverse,
           })
         );
@@ -199,13 +194,22 @@ const HorizontalOrVertical = ({
         onChange={(e) => {
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: e.target.value,
             })
           );
         }}
       />
-      <ResetButton onClick={() => dispatch(removeElementStyle({ type }))} />
+      <ResetButton
+        onClick={() =>
+          dispatch(
+            changeElementStyle({
+              types: [type],
+              newValue: "",
+            })
+          )
+        }
+      />
       <BottomLine />
     </div>
   );

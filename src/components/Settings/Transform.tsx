@@ -9,10 +9,7 @@ import {
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  changeElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import NumberInput from "../NumberInput";
 import UnitSelector from "../UnitSelector";
 import ToggleBtn from "../ToggleBtn";
@@ -58,7 +55,7 @@ export const TransformItem = ({
   const changeStyle = (newValue: string) => {
     dispatch(
       changeElementStyle({
-        type,
+        types: [type],
         newValue,
       })
     );
@@ -80,7 +77,12 @@ export const TransformItem = ({
     if (!toggled) {
       setToInitial();
     } else {
-      dispatch(removeElementStyle({ type }));
+      dispatch(
+        changeElementStyle({
+          types: [type],
+          newValue: "",
+        })
+      );
     }
   };
 

@@ -5,7 +5,7 @@ export function ShadowContent({ html }: { html: string }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const shadowRef = useRef<ShadowRoot | null>(null); // Save shadow root separately
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
-
+  console.log(html);
   useEffect(() => {
     if (containerRef.current) {
       if (!shadowRef.current) {

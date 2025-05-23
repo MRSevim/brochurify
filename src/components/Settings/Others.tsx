@@ -4,11 +4,7 @@ import BottomLine from "../BottomLine";
 import { getSetting } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Checkbox from "../Checkbox";
-import {
-  changeElementStyle,
-  changeInnerElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Transform from "./Transform";
 import Slider from "../Slider";
 import ResetButton from "../ResetButton";
@@ -67,9 +63,8 @@ const TabletOrMobile = ({
       checked={checked}
       onChange={() => {
         dispatch(
-          changeInnerElementStyle({
-            outerType,
-            innerType,
+          changeElementStyle({
+            types: [outerType, innerType],
             newValue: checked ? "" : hidden,
           })
         );
@@ -88,10 +83,14 @@ const Opacity = () => {
       <OpacityPicker
         variable={variable}
         onChange={(newValue) =>
-          dispatch(changeElementStyle({ type, newValue }))
+          dispatch(changeElementStyle({ types: [type], newValue }))
         }
       />
-      <ResetButton onClick={() => dispatch(removeElementStyle({ type }))} />
+      <ResetButton
+        onClick={() =>
+          dispatch(changeElementStyle({ types: [type], newValue: "" }))
+        }
+      />
       <BottomLine />
     </div>
   );

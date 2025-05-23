@@ -134,159 +134,77 @@ export const editorSlice = createSlice({
     },
     changeElementStyle: (
       state,
-      action: PayloadAction<{ type: string; newValue: string }>
+      action: PayloadAction<{ types: string[]; newValue: string }>
     ) => {
-      const { type, newValue } = action.payload;
-      const updateStyle = (layout: Layout[]): Layout[] => {
-        return layout.map((item) => {
-          if (item.id === state.active?.id) {
-            return {
-              ...item,
-              props: {
-                ...item.props,
-                style: {
-                  ...item.props.style,
-                  [type]: newValue,
-                },
-              },
-            };
+      const { types, newValue } = action.payload;
+
+      const applyStyle = <T extends Style | PageWise>(style: T): T => {
+        const updatedStyle = { ...style };
+        let current: any = updatedStyle;
+
+        // Traverse all keys except the last one
+        for (let i = 0; i < types.length - 1; i++) {
+          const key = types[i];
+          if (!current[key] || typeof current[key] !== "object") {
+            current[key] = {};
           }
+          current = current[key];
+        }
 
-          if (item.props.child && Array.isArray(item.props.child)) {
-            return {
-              ...item,
-              props: {
-                ...item.props,
-                child: updateStyle(item.props.child),
-              },
-            };
-          }
-
-          return item;
-        });
-      };
-      if (!state.active) {
-        state.pageWise[type] = newValue;
-      } else {
-        state.layout = updateStyle(state.layout);
-      }
-    },
-    changeInnerElementStyle: (
-      state,
-      action: PayloadAction<{
-        outerType: string;
-        innerType: string;
-        newValue: string;
-      }>
-    ) => {
-      const { outerType, innerType, newValue } = action.payload;
-      const updateStyle = (layout: Layout[]): Layout[] => {
-        return layout.map((item) => {
-          if (item.id === state.active?.id) {
-            // Clone existing styles
-            const updatedStyle = { ...item.props.style };
-            const outerStyle = { ...(updatedStyle[outerType] as Style) };
-
-            if (newValue) {
-              // Update the innerType value
-              outerStyle[innerType] = newValue;
-            } else {
-              // Remove innerType if newValue is falsy
-              delete outerStyle[innerType];
-            }
-
-            // Remove outerType if it's now empty
-            if (Object.keys(outerStyle).length === 0) {
-              delete updatedStyle[outerType];
-            } else {
-              updatedStyle[outerType] = outerStyle;
-            }
-
-            return {
-              ...item,
-              props: {
-                ...item.props,
-                style: updatedStyle,
-              },
-            };
-          }
-
-          // Recursively update children
-          if (item.props.child && Array.isArray(item.props.child)) {
-            return {
-              ...item,
-              props: {
-                ...item.props,
-                child: updateStyle(item.props.child),
-              },
-            };
-          }
-
-          return item;
-        });
-      };
-
-      if (!state.active) {
-        const updatedStyle = { ...state.pageWise };
-        const outerStyle = {
-          ...(state.pageWise[outerType] as Style),
-        };
+        const lastKey = types[types.length - 1];
 
         if (newValue) {
-          // Update the innerType value
-          outerStyle[innerType] = newValue;
+          current[lastKey] = newValue;
         } else {
-          // Remove innerType if newValue is falsy
-          delete outerStyle[innerType];
+          delete current[lastKey];
         }
 
-        // Remove outerType if it's now empty
-        if (Object.keys(outerStyle).length === 0) {
-          delete updatedStyle[outerType];
-        } else {
-          updatedStyle[outerType] = outerStyle;
-        }
-        state.pageWise = updatedStyle;
-      } else {
-        state.layout = updateStyle(state.layout);
-      }
-    },
-    removeElementStyle: (state, action: PayloadAction<{ type: string }>) => {
-      const { type } = action.payload;
+        // Recursive cleanup of empty objects
+        const cleanup = (obj: any): any => {
+          Object.keys(obj).forEach((key) => {
+            if (typeof obj[key] === "object") {
+              obj[key] = cleanup(obj[key]);
+              if (Object.keys(obj[key]).length === 0) {
+                delete obj[key];
+              }
+            }
+          });
+          return obj;
+        };
 
-      const removeStyle = (layout: Layout[]): Layout[] => {
+        return cleanup(updatedStyle);
+      };
+
+      const updateLayout = (layout: Layout[]): Layout[] => {
         return layout.map((item) => {
-          // Check if the current item has the active ID
           if (item.id === state.active?.id) {
-            // Remove the style property if it exists
-            const { [type]: _, ...updatedStyle } = item.props.style || {};
             return {
               ...item,
               props: {
                 ...item.props,
-                style: updatedStyle,
+                style: applyStyle(item.props.style),
               },
             };
           }
 
-          // If the item has child elements, apply recursion
-          if (item.props.child && Array.isArray(item.props.child)) {
+          if (Array.isArray(item.props.child)) {
             return {
               ...item,
               props: {
                 ...item.props,
-                child: removeStyle(item.props.child),
+                child: updateLayout(item.props.child),
               },
             };
           }
 
-          return item; // Return the item unchanged if no updates are needed
+          return item;
         });
       };
+
       if (!state.active) {
-        state.pageWise[type] = undefined;
+        state.pageWise = applyStyle(state.pageWise);
       } else {
-        state.layout = removeStyle(state.layout);
+        state.layout = updateLayout(state.layout);
       }
     },
     changeElementProp: (
@@ -489,7 +407,6 @@ export const {
   handleCenterDragOver,
   setDraggedItem,
   changeElementStyle,
-  removeElementStyle,
   changeElementProp,
   addVariable,
   editVariable,
@@ -499,7 +416,6 @@ export const {
   addToHistory,
   setCopied,
   paste,
-  changeInnerElementStyle,
   resetToInitial,
   setHovered,
   moveToNextOrPrevious,

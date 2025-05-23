@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import AmberButtonWithLoading from "./AmberButtonWithLoading";
 
 const Popup = ({
+  positiveActionText = "Add",
   onClose,
   maxWidth = "md",
   onEditOrAdd,
@@ -15,6 +16,7 @@ const Popup = ({
   editing: boolean;
   loading?: boolean;
   maxWidth?: string;
+  positiveActionText?: string;
 }) => {
   const maxW = maxWidth === "4xl" ? "max-w-4xl" : "max-w-md";
 
@@ -38,7 +40,7 @@ const Popup = ({
         <AmberButtonWithLoading
           onClick={onEditOrAdd}
           loading={loading}
-          text={editing ? "Save" : "Add"}
+          text={editing ? "Save" : positiveActionText}
         />
       </div>
     </div>,

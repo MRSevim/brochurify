@@ -233,46 +233,37 @@ export const getUnit = (value: string | undefined) => {
   return match ? match[1] : "";
 };
 
-/*getSetting overloads*/
-export function getSetting(
-  useAppSelector: UseSelector<{ editor: EditorState }>,
-  type: PossibleOuterTypes,
-  innerType: string
-): StringOrUnd;
-
 export function getSetting(
   useAppSelector: UseSelector<{ editor: EditorState }>,
   type: string,
-  innerType?: string
-): StringOrUnd;
-
-export function getSetting(
-  useAppSelector: UseSelector<{ editor: EditorState }>,
-  type: string,
-  innerType?: string
+  ...innerTypes: string[]
 ) {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
     const activeId = state.editor.active?.id;
 
-    if (!activeId) {
-      if (innerType) {
-        return (state.editor.pageWise?.[type] as Style)?.[innerType];
+    const getNestedValue = (obj: any, keys: string[]): any => {
+      let current = obj;
+      for (const key of keys) {
+        if (!current || typeof current !== "object") {
+          return undefined;
+        }
+        current = current[key];
       }
-      return state.editor.pageWise?.[type];
+      return current;
+    };
+
+    // Compose full path as an array: [type, ...innerTypes]
+    const path = [type, ...innerTypes];
+
+    if (!activeId) {
+      return getNestedValue(state.editor.pageWise, path);
     }
 
     const element = findElementById(layout, activeId);
+    const style = element?.props.style;
 
-    const style = element?.props.style as Style;
-    if (possibleOuterTypesArr.includes(type as PossibleOuterTypes)) {
-      if (innerType) {
-        return (style?.[type] as Style)?.[innerType];
-      }
-      return undefined;
-    }
-
-    return style?.[type];
+    return getNestedValue(style, path);
   });
 }
 
@@ -424,6 +415,19 @@ export function setCookie(cname: string, cvalue: string, exdays: number) {
 
   document.cookie = cookieStr;
 }
+
+export const formatTime = (isoString: string) => {
+  const localDate = new Date(isoString);
+  const formatted = localDate.toLocaleString(undefined, {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  return formatted;
+};
 
 export const possibleOuterTypesArr = [
   ...Object.values(CONFIG.possibleOuterTypes),

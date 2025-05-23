@@ -1,5 +1,5 @@
 "use server";
-import { createOrUpdateUser } from "../db/userHelpers";
+import { createOrUpdateUser, deleteUser } from "../db/userHelpers";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { cookies } from "next/headers";
 import { generateToken } from "./helpers";
@@ -42,6 +42,17 @@ export const logoutAction = async () => {
   try {
     const cookieStore = await cookies();
     cookieStore.delete("jwt");
+    return { error: "" };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+};
+
+export const deleteUserAction = async () => {
+  try {
+    const cookieStore = await cookies();
+    const jwt = cookieStore.get("jwt")?.value;
+    await deleteUser(jwt);
     return { error: "" };
   } catch (error: any) {
     return { error: error.message };

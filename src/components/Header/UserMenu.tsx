@@ -65,6 +65,13 @@ const UserMenu = () => {
                 >
                   <span className="hover:underline">My projects</span>
                 </Link>
+                <Link
+                  href="/my-account"
+                  className="text-center"
+                  onClick={() => setExpanded(false)}
+                >
+                  <span className="hover:underline">My account</span>
+                </Link>
                 <button onClick={logout}>
                   {" "}
                   <span className="hover:underline">Logout</span>

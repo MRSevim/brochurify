@@ -35,7 +35,7 @@ export const BackgroundPositionPicker = () => {
 
     dispatch(
       changeElementStyle({
-        type: "background-position",
+        types: ["background-position"],
         newValue: `${regulatedXPercent}% ${regulatedYPercent}%`,
       })
     );
@@ -109,7 +109,7 @@ export const BackgroundPositionPicker = () => {
               onClick={() =>
                 dispatch(
                   changeElementStyle({
-                    type: "background-position",
+                    types: ["background-position"],
                     newValue: "50% 50%",
                   })
                 )
@@ -134,7 +134,7 @@ const Alignment = ({ isCover }: { isCover: boolean }) => {
 
     dispatch(
       changeElementStyle({
-        type,
+        types: [type],
         newValue,
       })
     );

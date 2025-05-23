@@ -43,7 +43,7 @@ const WebsiteTitle = () => {
         onChange={(e) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: e.target.value,
             })
           )
@@ -67,7 +67,7 @@ const WebsiteDescription = () => {
         onChange={(e) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: e.target.value,
             })
           )
@@ -91,7 +91,7 @@ const WebsiteKeywords = () => {
         onChange={(e) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: e.target.value,
             })
           )
@@ -114,7 +114,7 @@ const CanonicalUrl = () => {
         onChange={(e) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: e.target.value,
             })
           )
@@ -137,7 +137,7 @@ const WebsiteImage = () => {
         onChange={(e) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: e.target.value,
             })
           )

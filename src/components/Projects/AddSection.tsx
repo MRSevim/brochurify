@@ -83,8 +83,8 @@ const AddSection = () => {
                   key={template.value}
                   className={`border rounded-lg p-2 cursor-pointer ${
                     templateState === template.value
-                      ? "border-text"
-                      : "border-gray"
+                      ? "border-activeBlue"
+                      : "border-gray hover:border-hoveredBlue"
                   }`}
                 >
                   <ShapshotImage src={template.image} alt={template.label} />

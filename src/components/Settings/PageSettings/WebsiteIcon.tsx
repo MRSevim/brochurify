@@ -17,7 +17,7 @@ const WebsiteIcon = () => {
         onChange={(e) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: e.target.value,
             })
           )

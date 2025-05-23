@@ -3,11 +3,7 @@ import Slider from "../Slider";
 import { getSetting, getUnit } from "@/utils/Helpers";
 import Border from "./Border";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  changeElementStyle,
-  changeInnerElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Image from "next/image";
 import marginBorderPadding from "../../../public/margin-border-padding.webp";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
@@ -145,16 +141,15 @@ const NumberController = ({
   const dispatchChange = (newValue: string): void => {
     if (selectorInnerType) {
       dispatch(
-        changeInnerElementStyle({
-          outerType: selectorOuterType,
-          innerType: selectorInnerType,
+        changeElementStyle({
+          types: [selectorOuterType, selectorInnerType],
           newValue,
         })
       );
     } else {
       dispatch(
         changeElementStyle({
-          type: selectorOuterType,
+          types: [selectorOuterType],
           newValue,
         })
       );
@@ -164,7 +159,12 @@ const NumberController = ({
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
       if (outerType === "base") {
-        dispatch(removeElementStyle({ type }));
+        dispatch(
+          changeElementStyle({
+            types: [type],
+            newValue: "",
+          })
+        );
       } else {
         dispatchChange("");
       }
@@ -190,14 +190,18 @@ const NumberController = ({
             if (variable === "auto") {
               if (selectorInnerType) {
                 dispatch(
-                  changeInnerElementStyle({
-                    outerType: selectorOuterType,
-                    innerType: selectorInnerType,
+                  changeElementStyle({
+                    types: [selectorOuterType, selectorInnerType],
                     newValue: "",
                   })
                 );
               } else {
-                dispatch(removeElementStyle({ type }));
+                dispatch(
+                  changeElementStyle({
+                    types: [type],
+                    newValue: "",
+                  })
+                );
               }
             }
           }
@@ -227,7 +231,7 @@ const Size = () => {
       onChange={(newValue) =>
         dispatch(
           changeElementStyle({
-            type,
+            types: [type],
             newValue,
           })
         )

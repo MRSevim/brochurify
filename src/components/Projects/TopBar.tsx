@@ -42,7 +42,7 @@ const TopBar = ({ project }: { project: Record<string, any> }) => {
   };
 
   return (
-    <>
+    <div className="flex flex-wrap justify-between w-full">
       {isEditing ? (
         <input
           type="text"
@@ -63,7 +63,7 @@ const TopBar = ({ project }: { project: Record<string, any> }) => {
         />
         <DeleteComponent project={project} />
       </div>
-    </>
+    </div>
   );
 };
 

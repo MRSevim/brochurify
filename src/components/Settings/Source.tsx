@@ -5,11 +5,17 @@ import { getProp } from "@/utils/Helpers";
 import LinkInput from "../LinkInput";
 import { changeElementProp } from "@/redux/slices/editorSlice";
 import TextInput from "../TextInput";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import Popup from "../Popup";
-import { getAction } from "@/utils/serverActions/imageActions";
+import {
+  deleteAction,
+  getAction,
+  uploadAction,
+} from "@/utils/serverActions/imageActions";
 import { toast } from "react-toastify";
 import Image from "next/image";
+import MiniLoadingSvg from "../MiniLoadingSvg";
+import DeleteButton from "../DeleteButton";
 
 const Source = () => {
   const activeType = useAppSelector(selectActive)?.type;
@@ -29,17 +35,13 @@ const SourceUrl = () => {
   const dispatch = useAppDispatch();
   const [popup, setPopup] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedImageUrl, setSelectedImageUrl] = useState("");
 
   return (
     <div className="relative pb-2 mb-2">
       <div className="flex flex-col gap-2 items-center">
         {activeType === "image" && (
-          <button
-            onClick={() => setPopup(true)}
-            className="p-2 bg-text text-background"
-          >
-            Upload
-          </button>
+          <UploadButton onClick={() => setPopup(true)} />
         )}
         <p className="font-bold italic">Or</p>
       </div>
@@ -66,17 +68,44 @@ const SourceUrl = () => {
       />
       {popup && (
         <Popup
+          positiveActionText="Use"
           onClose={() => setPopup(false)}
           loading={loading}
           editing={false}
           maxWidth="4xl"
-          onEditOrAdd={() => {}}
+          onEditOrAdd={() => {
+            dispatch(
+              changeElementProp({
+                type,
+                newValue: selectedImageUrl,
+              })
+            );
+            setPopup(false);
+          }}
         >
-          <ImageUploader />
+          <ImageUploader
+            selectedImageUrl={selectedImageUrl}
+            setSelectedImageUrl={setSelectedImageUrl}
+          />
         </Popup>
       )}
       <BottomLine />
     </div>
+  );
+};
+
+const UploadButton = ({
+  onClick,
+  loading = false,
+}: {
+  onClick: () => void;
+  loading?: boolean;
+}) => {
+  return (
+    <button onClick={onClick} className="p-2 bg-text text-background">
+      {!loading && "Upload"}
+      {loading && <MiniLoadingSvg variant="black" />}
+    </button>
   );
 };
 const AltText = () => {
@@ -103,69 +132,23 @@ const AltText = () => {
     </div>
   );
 };
+type Images = { url: string; size: number; createdAt: string }[];
 
-const ImageUploader = () => {
-  const [type, setType] = useState("owned");
-  return (
-    <div className="">
-      <TypeSelect type={type} setType={setType} />
-      <ImagesList type={type} />
-    </div>
-  );
-};
-
-export const TypeSelect = ({
-  setType,
-  type,
+const ImageUploader = ({
+  selectedImageUrl,
+  setSelectedImageUrl,
 }: {
-  setType: Dispatch<SetStateAction<string>>;
-  type: string;
+  selectedImageUrl: string;
+  setSelectedImageUrl: Dispatch<SetStateAction<string>>;
 }) => {
-  return (
-    <div className="flex items-center gap-2 mb-2">
-      {["Owned", "Library"].map((item) => (
-        <TypeItem
-          key={item}
-          globalType={type}
-          item={item}
-          onClick={() => setType(type)}
-        />
-      ))}
-    </div>
-  );
-};
-const TypeItem = ({
-  onClick,
-  item,
-  globalType,
-}: {
-  item: string;
-  onClick: () => void;
-  globalType: string;
-}) => {
-  return (
-    <div
-      className={
-        "text-background  p-2 cursor-pointer " +
-        (item === globalType ? " bg-gray" : "bg-text")
-      }
-      onClick={onClick}
-    >
-      {item}
-    </div>
-  );
-};
-
-const ImagesList = ({ type }: { type: string }) => {
-  const dispatch = useAppDispatch();
-  const [images, setImages] = useState<
-    { url: string; size: number; createdAt: string }[]
-  >([]);
-  const [loading, setLoading] = useState(true);
+  const [images, setImages] = useState<Images>([]);
+  const [fetchLoading, setFetchLoading] = useState(true);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchImages = async () => {
-      setLoading(true);
+      setFetchLoading(true);
       const { images, error } = await getAction();
 
       if (error) {
@@ -174,43 +157,122 @@ const ImagesList = ({ type }: { type: string }) => {
         setImages(images?.images || []);
       }
 
-      setLoading(false);
+      setFetchLoading(false);
     };
 
-    if (type === "owned") fetchImages();
-  }, [type]);
+    fetchImages();
+  }, []);
 
-  const handleSelect = (url: string) => {
-    dispatch(
-      changeElementProp({
-        type: "src",
-        newValue: url,
-      })
-    );
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = reader.result?.toString().split(",")[1];
+      if (!base64) return;
+
+      setUploadLoading(true);
+      const fileType = file.type;
+
+      const { newImage, error } = await uploadAction(base64, fileType);
+      if (error) {
+        toast.error(error);
+      } else if (newImage) {
+        setImages((prev) => [...prev, newImage]);
+      }
+
+      setUploadLoading(false);
+    };
+    reader.readAsDataURL(file);
   };
 
+  return (
+    <div className="">
+      <ImagesList
+        setImages={setImages}
+        selectedImageUrl={selectedImageUrl}
+        setSelectedImageUrl={setSelectedImageUrl}
+        loading={fetchLoading}
+        images={images}
+      />
+      <div className="my-2 flex justify-center">
+        <UploadButton
+          onClick={() => fileInputRef.current?.click()}
+          loading={uploadLoading}
+        />
+      </div>
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+      />
+    </div>
+  );
+};
+
+const ImagesList = ({
+  setImages,
+  selectedImageUrl,
+  setSelectedImageUrl,
+  images,
+  loading,
+}: {
+  setSelectedImageUrl: Dispatch<SetStateAction<string>>;
+  setImages: Dispatch<SetStateAction<Images>>;
+  selectedImageUrl: string;
+  loading: boolean;
+  images: Images;
+}) => {
+  const [deleteLoading, setDeleteLoading] = useState(false);
   if (loading) return <p>Loading...</p>;
 
   if (!images.length) return <p>No images found.</p>;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-auto">
       {images.map((img) => (
         <div
           key={img.url}
-          onClick={() => handleSelect(img.url)}
-          className="cursor-pointer border hover:border-blue-500 rounded p-2"
+          onClick={() => setSelectedImageUrl(img.url)}
+          className={
+            "cursor-pointer border rounded p-2 flex flex-col " +
+            (img.url === selectedImageUrl
+              ? "border-activeBlue"
+              : "border-gray hover:border-hoveredBlue")
+          }
         >
           <Image
             src={img.url}
             alt="User image"
-            width={200}
-            height={200}
-            className="w-full h-auto object-cover"
+            width={187}
+            height={144}
+            className="w-full"
           />
-          <p className="text-xs text-gray-500 mt-1">
-            {Math.round(img.size / 1024)} KB
-          </p>
+
+          <div className="flex justify-between items-center mt-2">
+            <p className="text-xs text-gray-500 mt-1">
+              {Math.round(img.size / 1024)} KB
+            </p>
+            <DeleteButton
+              loading={deleteLoading}
+              onClick={async (e) => {
+                e.stopPropagation();
+                setDeleteLoading(true);
+                const { error } = await deleteAction(img.url);
+                if (error) {
+                  toast.error(error);
+                } else {
+                  setImages((prev) =>
+                    prev.filter((image) => image.url !== img.url)
+                  );
+                }
+                setDeleteLoading(false);
+              }}
+            />
+          </div>
         </div>
       ))}
     </div>

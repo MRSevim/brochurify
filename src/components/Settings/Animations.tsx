@@ -13,7 +13,6 @@ import {
   updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
 import Select from "../Select";
 import { OptionsObject, CONFIG } from "@/utils/Types";
 import NumberInput from "../NumberInput";
@@ -21,6 +20,7 @@ import Checkbox from "../Checkbox";
 import ReplayButton from "../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
 import EditableListItem from "./EditableListItem";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 
 const splitValue = ",";
 
@@ -36,7 +36,13 @@ const Animations = () => {
 
   const handleAddition = (editedStr: string) => {
     const newValue = addToString(animationsString || "", editedStr, splitValue);
-    dispatch(changeInnerElementStyle({ outerType: type, innerType, newValue }));
+
+    dispatch(
+      changeElementStyle({
+        types: [type, innerType],
+        newValue,
+      })
+    );
   };
 
   const handleEditOrDeletion = (
@@ -53,7 +59,12 @@ const Animations = () => {
       splitValue
     );
 
-    dispatch(changeInnerElementStyle({ outerType: type, innerType, newValue }));
+    dispatch(
+      changeElementStyle({
+        types: [type, innerType],
+        newValue,
+      })
+    );
   };
   return (
     <ToggleVisibilityWrapper

@@ -47,7 +47,7 @@ export async function uploadUserImageAndUpdateLibrary({
   const currentImages = Item?.urls ?? [];
 
   if (currentImages.length >= MAX_IMAGE_COUNT) {
-    throw new Error("Image limit (50) reached");
+    throw new Error(`Image limit (${MAX_IMAGE_COUNT}) reached`);
   }
 
   const fileExtension = fileType.split("/")[1];

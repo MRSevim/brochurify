@@ -34,7 +34,10 @@ const MaxWidth = () => {
         value={variable || ""}
         onChange={(e) =>
           dispatch(
-            changeElementStyle({ type, newValue: +e.target.value + "px" })
+            changeElementStyle({
+              types: [type],
+              newValue: +e.target.value + "px",
+            })
           )
         }
       />
@@ -42,7 +45,7 @@ const MaxWidth = () => {
         onClick={() =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue:
                 getDefaultStyle("container")["max-width"] || "1300" + "px",
             })
@@ -68,7 +71,7 @@ const Padding = () => {
         onChange={(e) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: setValueFromShorthandStr(variable, i, e),
             })
           )
@@ -78,7 +81,7 @@ const Padding = () => {
         onClick={() => {
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue:
                 setValueFromShorthandStr(
                   getDefaultStyle("container").padding,

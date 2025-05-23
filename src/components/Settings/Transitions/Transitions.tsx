@@ -11,10 +11,7 @@ import {
   updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  changeElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import { filterForFixed } from "./SelectTransition";
 import NumberInput from "../../NumberInput";
 import { SelectTimingFunction } from "../Animations";
@@ -47,7 +44,7 @@ const Transitions = () => {
       editedStr,
       splitValue
     );
-    dispatch(changeElementStyle({ type, newValue }));
+    dispatch(changeElementStyle({ types: [type], newValue }));
   };
 
   const handleEditOrDeletion = (
@@ -65,9 +62,9 @@ const Transitions = () => {
     );
 
     if (!newValue) {
-      dispatch(removeElementStyle({ type }));
+      dispatch(changeElementStyle({ types: [type], newValue: "" }));
     } else {
-      dispatch(changeElementStyle({ type, newValue }));
+      dispatch(changeElementStyle({ types: [type], newValue }));
     }
   };
   return (

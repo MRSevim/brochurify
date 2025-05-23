@@ -2,10 +2,7 @@ import React, { ChangeEvent, useState } from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { getSetting, getUnit } from "@/utils/Helpers";
-import {
-  changeElementStyle,
-  removeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import GroupedRadioButtons from "../GroupedRadioButtons";
 import NumberInput from "../NumberInput";
 import { StringOrUnd } from "@/utils/Types";
@@ -37,9 +34,9 @@ const NumberController = ({ type }: { type: string }) => {
 
   const handleInputChange = (newValue: string) => {
     if (newValue === "") {
-      dispatch(removeElementStyle({ type }));
+      dispatch(changeElementStyle({ types: [type], newValue: "" }));
     } else {
-      dispatch(changeElementStyle({ type, newValue }));
+      dispatch(changeElementStyle({ types: [type], newValue }));
     }
   };
 

@@ -1,6 +1,6 @@
 import Select from "@/components/Select";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { changeInnerElementStyle } from "@/redux/slices/editorSlice";
+import { changeElementStyle } from "@/redux/slices/editorSlice";
 import {
   defaultInheritFontOptions,
   getFontVariables,
@@ -46,9 +46,8 @@ const FontFamily = ({ outerType }: { outerType: string }) => {
         selected={variable || ""}
         onChange={(e) => {
           dispatch(
-            changeInnerElementStyle({
-              outerType,
-              innerType,
+            changeElementStyle({
+              types: [outerType, innerType],
               newValue: e.target.value,
             })
           );
@@ -73,9 +72,8 @@ const FontSize = ({ outerType }: { outerType: string }) => {
         value={variable || "1"}
         onChange={(newValue) =>
           dispatch(
-            changeInnerElementStyle({
-              outerType,
-              innerType,
+            changeElementStyle({
+              types: [outerType, innerType],
               newValue,
             })
           )
@@ -98,9 +96,8 @@ export const ResetButtonWithOnClick = ({
     <ResetButton
       onClick={() => {
         dispatch(
-          changeInnerElementStyle({
-            outerType,
-            innerType,
+          changeElementStyle({
+            types: [outerType, innerType],
             newValue:
               ((getPageWise()[outerType] as Style)[innerType] as string) || "",
           })

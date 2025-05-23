@@ -1,8 +1,14 @@
 import React from "react";
 
-const MiniLoadingSvg = () => {
+const MiniLoadingSvg = ({ variant = "white" }: { variant?: string }) => {
   return (
-    <svg className="size-5 animate-spin text-white mt-1 " viewBox="0 0 24 24">
+    <svg
+      className={
+        "size-5 animate-spin mt-1 " +
+        (variant === "black" ? "text-black" : "text-white")
+      }
+      viewBox="0 0 24 24"
+    >
       {" "}
       <circle
         className="opacity-25"

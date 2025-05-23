@@ -13,6 +13,9 @@ import {
   getSetting,
 } from "@/utils/Helpers";
 import HeadingStyles from "./HeadingStyles";
+import InfoIcon from "@/components/InfoIcon";
+import ToggleBtn from "@/components/ToggleBtn";
+import { CONFIG } from "@/utils/Types";
 
 const Styles = () => {
   return (
@@ -25,6 +28,7 @@ const Styles = () => {
       <FontSize />
       <FontFamily />
       <LineHeight />
+      <ToggleToBrowserDefaults />
       <HeadingStyles />
     </ToggleVisibilityWrapper>
   );
@@ -43,7 +47,7 @@ const Color = () => {
         onChange={(newValue) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue,
             })
           )
@@ -67,7 +71,7 @@ const BackgroundColor = () => {
         onChange={(newValue) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue,
             })
           )
@@ -93,7 +97,7 @@ const FontSize = () => {
         onChange={(newValue) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue,
             })
           )
@@ -121,7 +125,7 @@ const FontFamily = () => {
         onChange={(e) => {
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue: e.target.value,
             })
           );
@@ -149,13 +153,84 @@ const LineHeight = () => {
         onChange={(newValue) =>
           dispatch(
             changeElementStyle({
-              type,
+              types: [type],
               newValue,
             })
           )
         }
       />
       <ResetButtonWithOnClick type={type} />
+      <BottomLine />
+    </div>
+  );
+};
+
+const ToggleToBrowserDefaults = () => {
+  const initial = "initial";
+  const fontWeigthHeading = getSetting(
+    useAppSelector,
+    CONFIG.headings,
+    "font-weight"
+  );
+  const fontSizeHeading = getSetting(
+    useAppSelector,
+    CONFIG.headings,
+    "font-size"
+  );
+  const linkColor = getSetting(useAppSelector, "a", "color");
+  const linkTextDecoration = getSetting(useAppSelector, "a", "text-decoration");
+  const toggled =
+    fontWeigthHeading === initial &&
+    fontSizeHeading === initial &&
+    linkColor === initial &&
+    linkTextDecoration === initial;
+
+  const dispatch = useAppDispatch();
+  const setTo = (newValue: string) => {
+    dispatch(
+      changeElementStyle({
+        types: [CONFIG.headings, "font-weight"],
+        newValue,
+      })
+    );
+    dispatch(
+      changeElementStyle({
+        types: [CONFIG.headings, "font-size"],
+        newValue,
+      })
+    );
+    dispatch(
+      changeElementStyle({
+        types: ["a", "color"],
+        newValue,
+      })
+    );
+    dispatch(
+      changeElementStyle({
+        types: ["a", "text-decoration"],
+        newValue,
+      })
+    );
+  };
+
+  const handleToggle = () => {
+    if (!toggled) {
+      setTo(initial);
+    } else {
+      setTo("");
+    }
+  };
+
+  return (
+    <div className="relative pb-2 mb-2">
+      <div className="flex justify-between mb-2">
+        <ToggleBtn
+          text="Use browser defaults for link+headings"
+          checked={toggled}
+          onChange={handleToggle}
+        />
+        <InfoIcon text="Toggle to reset link and heading styles to browser defaults" />
+      </div>
       <BottomLine />
     </div>
   );
@@ -169,7 +244,7 @@ export const ResetButtonWithOnClick = ({ type }: { type: string }) => {
       onClick={() => {
         dispatch(
           changeElementStyle({
-            type,
+            types: [type],
             newValue: (getPageWise()[type] as string) || "",
           })
         );

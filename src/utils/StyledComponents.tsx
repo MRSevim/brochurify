@@ -17,6 +17,7 @@ export const styledElements = {
       const styleResets = getStyleResets(styles);
       const style = styleGenerator(rest);
       const allKeyframes = getAllKeyFrames();
+
       return variablesString + styleResets + style + allKeyframes;
     }};
   `,

@@ -14,7 +14,7 @@ export const DeleteComponent = ({
   const [loading, setLoading] = useState(false);
   return (
     <>
-      <DeleteButton onClick={() => setConfirming(true)} />
+      <DeleteButton onClick={() => setConfirming(true)} loading={loading} />
       {confirming && (
         <ConfirmationPopup
           loading={loading}

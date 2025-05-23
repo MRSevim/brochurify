@@ -17,7 +17,7 @@ const ConfirmationPopup = ({
   return (
     <div
       className={
-        "fixed z-[100] top-[10%] left-1/2 -translate-x-1/2 w-[90%] bg-background text-text border border-text rounded p-3 shadow-md " +
+        "fixed text-center z-[100] top-[10%] left-1/2 -translate-x-1/2 w-[90%] bg-background text-text border border-text rounded p-3 shadow-md " +
         maxW
       }
     >
