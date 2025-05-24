@@ -237,7 +237,7 @@ export function getSetting(
   useAppSelector: UseSelector<{ editor: EditorState }>,
   type: string,
   ...innerTypes: string[]
-) {
+):string {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
     const activeId = state.editor.active?.id;
