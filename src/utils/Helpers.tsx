@@ -233,11 +233,11 @@ export const getUnit = (value: string | undefined) => {
   return match ? match[1] : "";
 };
 
-export function getSetting(
+export function getSetting<T = string>(
   useAppSelector: UseSelector<{ editor: EditorState }>,
   type: string | undefined,
   ...innerTypes: (string | undefined)[]
-) {
+): T {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
     const activeId = state.editor.active?.id;

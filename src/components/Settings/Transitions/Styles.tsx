@@ -21,7 +21,7 @@ import Popup from "@/components/Popup";
 import { OpacityPicker } from "../Others";
 import { PositionPicker } from "../FixedSettings";
 import { ShorthandTogglerPicker } from "../ShorthandToggler";
-import { CONFIG } from "@/utils/Types";
+import { CONFIG, Style } from "@/utils/Types";
 import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
 
 const Styles = () => {
@@ -36,7 +36,7 @@ const Styles = () => {
   const activeId = useAppSelector(selectActive)?.id || "";
   const editedStr =
     getSetting(useAppSelector, selectorOuterType, midType, innerType) || "";
-  const styles = getSetting(useAppSelector, selectorOuterType, midType);
+  const styles = getSetting<Style>(useAppSelector, selectorOuterType, midType);
 
   const activeStylesArr =
     styles && typeof styles === "object"
