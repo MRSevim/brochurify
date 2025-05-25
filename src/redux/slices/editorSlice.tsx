@@ -5,7 +5,6 @@ import {
   deleteFromLayout,
   findElementById,
   generateNewIds,
-  handleDragLeaveInner,
   handleDropInner,
   insertElement,
   isInChildren,
@@ -14,7 +13,6 @@ import {
   removeHistoryCurrents,
   setActiveInner,
   setAddLocationInner,
-  setDropHandledInner,
 } from "@/utils/EditorHelpers";
 import { generateLayoutItem, getPageWise } from "@/utils/Helpers";
 import {
@@ -25,6 +23,7 @@ import {
   LayoutOrUnd,
   MoveTo,
   PageWise,
+  StringOrUnd,
   Style,
   Variable,
 } from "@/utils/Types";
@@ -70,38 +69,27 @@ export const editorSlice = createSlice({
     setAddLocation: (state, action: PayloadAction<AddLocation>) => {
       setAddLocationInner(state, action.payload);
     },
-    setDropHandled: (state, action: PayloadAction<boolean>) => {
-      setDropHandledInner(state, action.payload);
-    },
-    handleSideDrop: (state, action: PayloadAction<string>) => {
-      handleDropInner(state, action.payload, state.addLocation);
-    },
-    handleCenterDrop: (state, action: PayloadAction<string>) => {
-      handleDropInner(state, action.payload, null);
-    },
-    handleDragLeave: (state) => {
-      handleDragLeaveInner(state);
-    },
-    handleSideDragOver: (
+    handleDrop: (
       state,
-      action: PayloadAction<{
-        addLocation: AddLocation;
-      }>
+      action: PayloadAction<{ targetId: StringOrUnd; addLocation: AddLocation }>
     ) => {
-      setAddLocationInner(state, action.payload.addLocation);
-    },
-    handleCenterDragOver: (state, action: PayloadAction<LayoutOrUnd>) => {
-      setActiveInner(state, action.payload);
+      handleDropInner(
+        state,
+        action.payload.targetId,
+        action.payload.addLocation
+      );
     },
     addElement: (
       state,
       action: PayloadAction<{ type: string; addLocation: AddLocation }>
     ) => {
       const newElement = generateLayoutItem(action.payload.type);
+      const active = state.active;
       const passed = canElementHaveChild(
         state,
         action.payload.addLocation,
-        newElement
+        newElement,
+        active
       );
       if (passed) {
         state.layout = insertElement(
@@ -109,6 +97,7 @@ export const editorSlice = createSlice({
           state.layout,
           newElement,
           action.payload.addLocation,
+          active?.id,
           true
         );
         adjustRowChildrenWidths(state.layout);
@@ -134,7 +123,7 @@ export const editorSlice = createSlice({
     },
     changeElementStyle: (
       state,
-      action: PayloadAction<{ types: string[]; newValue: string }>
+      action: PayloadAction<{ types: (string | undefined)[]; newValue: string }>
     ) => {
       const { types, newValue } = action.payload;
 
@@ -142,16 +131,18 @@ export const editorSlice = createSlice({
         const updatedStyle = { ...style };
         let current: any = updatedStyle;
 
+        const path = types.filter((k): k is string => k !== undefined);
+
         // Traverse all keys except the last one
-        for (let i = 0; i < types.length - 1; i++) {
-          const key = types[i];
+        for (let i = 0; i < path.length - 1; i++) {
+          const key = path[i];
           if (!current[key] || typeof current[key] !== "object") {
             current[key] = {};
           }
           current = current[key];
         }
 
-        const lastKey = types[types.length - 1];
+        const lastKey = path[path.length - 1];
 
         if (newValue) {
           current[lastKey] = newValue;
@@ -342,8 +333,14 @@ export const editorSlice = createSlice({
         return;
       }
       const newElement = generateNewIds(state.copied);
+      const hovered = findElementById(state.layout, state.hovered || "");
       const addLocation = state.addLocation;
-      const passed = canElementHaveChild(state, addLocation, newElement);
+      const passed = canElementHaveChild(
+        state,
+        addLocation,
+        newElement,
+        hovered
+      );
 
       if (passed) {
         state.layout = insertElement(
@@ -351,7 +348,8 @@ export const editorSlice = createSlice({
           state.layout,
           newElement,
           addLocation,
-          true
+          hovered?.id,
+          false
         );
       }
     },
@@ -399,12 +397,7 @@ export const {
   hydrate,
   moveElement,
   setAddLocation,
-  setDropHandled,
-  handleDragLeave,
-  handleSideDragOver,
-  handleSideDrop,
-  handleCenterDrop,
-  handleCenterDragOver,
+  handleDrop,
   setDraggedItem,
   changeElementStyle,
   changeElementProp,

@@ -1,8 +1,3 @@
-import {
-  handleCenterDragOverCaller,
-  handleCenterDropCaller,
-  handleDragLeaveCaller,
-} from "@/utils/DragAndDropHelpers";
 import { componentList } from "@/utils/ComponentsList";
 import {
   LayoutToggleContext,
@@ -28,6 +23,7 @@ import useKeyPresses from "@/utils/hooks/useKeypresses";
 import { useZoom } from "@/contexts/ZoomContext";
 import { SideDropOverlay } from "./SideDropOverlay";
 import { useEditorRef } from "@/contexts/EditorRefContext";
+import { handleDrop } from "@/redux/slices/editorSlice";
 
 const Editor = () => {
   const [layoutToggle] = LayoutToggleContext.Use();
@@ -63,7 +59,7 @@ const Editor = () => {
   }, [zoom]);
 
   return (
-    <section className={"relative h-full overflow-hidden " + addedString}>
+    <div className={"relative h-full overflow-hidden " + addedString}>
       <div
         className={"overflow-auto mx-auto " + maxWidth}
         style={{
@@ -82,7 +78,7 @@ const Editor = () => {
           })}
         </EditorInner>
       </div>
-    </section>
+    </div>
   );
 };
 
@@ -113,7 +109,7 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
   const replayTrigger = useAppSelector((state) => {
     return state.replay.replayArr.find((item) => item.id === id)?.trigger;
   });
-  const scrolled = JSON.stringify(
+  const styleString = JSON.stringify(
     useAppSelector((state) => {
       const layout = state.editor.layout;
 
@@ -121,41 +117,26 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
 
       const style = element?.props.style as Style;
 
-      return style?.["&.scrolled"];
+      return style;
     })
   );
-  const transition = useAppSelector((state) => {
-    const layout = state.editor.layout;
-
-    const element = findElementById(layout, id);
-
-    const style = element?.props.style as Style;
-
-    return style?.transition;
-  });
 
   const ref = useRef<HTMLElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-  useIntersectionObserver(
-    [replayTrigger, scrolled, transition, wrapperRef],
-    ref
-  );
-  useIntersectionObserver(
-    [replayTrigger, scrolled, transition, wrapperRef],
-    wrapperRef
-  );
+  useIntersectionObserver([replayTrigger, styleString, wrapperRef], ref);
+  useIntersectionObserver([replayTrigger, styleString, wrapperRef], wrapperRef);
 
   return (
     <SideDropOverlay
       item={item}
       ref={wrapperRef}
-      key={scrolled + transition + (replayTrigger || "")}
+      key={styleString + (replayTrigger || "")}
     >
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
           <Component
-            key={scrolled + transition + (replayTrigger || "")}
+            key={styleString + (replayTrigger || "")}
             id={id}
             ref={ref}
             {...item.props}
@@ -179,7 +160,8 @@ const CenterDropOverlay = ({
 }) => {
   const dispatch = useAppDispatch();
   const hovered = useAppSelector(selectHoveredId) === item.id;
-  const active = useAppSelector(selectActive)?.id === item.id;
+  const [draggingOver, setDraggingOver] = useState(false);
+  const active = useAppSelector(selectActive)?.id === item.id || draggingOver;
   return (
     <>
       <div
@@ -190,13 +172,16 @@ const CenterDropOverlay = ({
         }
         onDrop={(e) => {
           e.stopPropagation();
-          handleCenterDropCaller(e, dispatch, item.id);
+          e.preventDefault();
+          setDraggingOver(false);
+          dispatch(handleDrop({ targetId: item.id, addLocation: null }));
         }}
         onDragOver={(e) => {
           e.stopPropagation();
-          handleCenterDragOverCaller(e, item, dispatch);
+          e.preventDefault();
+          setDraggingOver(true);
         }}
-        onDragLeave={() => handleDragLeaveCaller(dispatch)}
+        onDragLeave={() => setDraggingOver(false)}
       >
         {children}
       </div>

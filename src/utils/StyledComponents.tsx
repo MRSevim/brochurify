@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import {
-  getAllKeyFrames,
   getRest,
   getStyleResets,
   getWrapperStyles,
@@ -16,9 +15,8 @@ export const styledElements = {
       const variablesString = variablesGenerator(variables);
       const styleResets = getStyleResets(styles);
       const style = styleGenerator(rest);
-      const allKeyframes = getAllKeyFrames();
 
-      return variablesString + styleResets + style + allKeyframes;
+      return variablesString + styleResets + style;
     }};
   `,
   styledComponentWrapperDiv: styled.div<{ styles: Style }>`

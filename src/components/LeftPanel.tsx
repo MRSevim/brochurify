@@ -8,13 +8,6 @@ import {
   useAppSelector,
 } from "@/redux/hooks";
 import FocusWrapper from "./FocusWrapper";
-import {
-  handleCenterDragOverCaller,
-  handleCenterDropCaller,
-  handleDragLeaveCaller,
-  handleSideDragOverCaller,
-  handleSideDropCaller,
-} from "@/utils/DragAndDropHelpers";
 import { componentList } from "@/utils/ComponentsList";
 import {
   SetStateAction,
@@ -27,6 +20,7 @@ import {
 import {
   addElement,
   deleteElement,
+  handleDrop,
   setActive,
   setAddLocation,
 } from "@/redux/slices/editorSlice";
@@ -105,23 +99,11 @@ const LayoutItem = ({
     });
   };
 
-  const handleDragLeave = () => {
-    handleDragLeaveCaller(dispatch);
-  };
-
   return (
     <>
-      <SideDropWrapper
-        depth={depth}
-        handleDragLeave={handleDragLeave}
-        item={item}
-      >
+      <SideDropWrapper depth={depth} item={item}>
         <FocusWrapper item={item}>
-          <CenterDropWrapper
-            item={item}
-            setVisibilityMap={setVisibilityMap}
-            handleDragLeave={handleDragLeave}
-          >
+          <CenterDropWrapper item={item} setVisibilityMap={setVisibilityMap}>
             <div className="flex items-center">
               {item.props.child && item.props.child.length > 0 && (
                 <ToggleButton toggled={isExpanded} onClick={toggleVisibility} />
@@ -160,10 +142,8 @@ const CenterDropWrapper = ({
   item,
   setVisibilityMap,
   children,
-  handleDragLeave,
 }: {
   item: Layout;
-  handleDragLeave: () => void;
   children: React.ReactNode;
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
 }) => {
@@ -173,6 +153,8 @@ const CenterDropWrapper = ({
   const dispatch = useAppDispatch();
   const layout = useAppSelector(selectLayout);
   const [, setToggle] = useAddSectionToggle();
+  const [draggingOver, setDraggingOver] = useState(false);
+  const active = activeId === id || draggingOver;
 
   useEffect(() => {
     const reveal = (activeId: string | undefined, layout: Layout[]) => {
@@ -212,15 +194,18 @@ const CenterDropWrapper = ({
   return (
     <div
       onDrop={(e) => {
-        handleCenterDropCaller(e, dispatch, id);
+        e.preventDefault();
+        setDraggingOver(false);
+        dispatch(handleDrop({ targetId: id, addLocation: null }));
       }}
       onDragOver={(e) => {
-        handleCenterDragOverCaller(e, item, dispatch);
+        e.preventDefault();
+        setDraggingOver(true);
       }}
-      onDragLeave={handleDragLeave}
+      onDragLeave={() => setDraggingOver(false)}
       className={
         "p-1 border flex items-center justify-between me-1 relative " +
-        (activeId === id ? "border-green-500" : "border-gray")
+        (active ? "border-green-500" : "border-gray")
       }
     >
       {" "}
@@ -243,11 +228,9 @@ const SideDropWrapper = ({
   item,
   depth,
   children,
-  handleDragLeave,
 }: {
   item: Layout;
   depth: number;
-  handleDragLeave: () => void;
   children: React.ReactNode;
 }) => {
   const addLocation = useAppSelector(selectAddLocation);
@@ -258,9 +241,6 @@ const SideDropWrapper = ({
     addLocation?.id === id && addLocation?.where === "before";
   const afterSelected =
     addLocation?.id === id && addLocation?.where === "after";
-  const commonClasses =
-    "cursor-pointer absolute flex justify-center align-center left-0 right-0 ms-2 me-4 h-1 opacity-0 hover:opacity-100 transition-opacity duration-200 ";
-  const selectedClasses = "opacity-100 bg-activeBlue";
 
   const handleAddLocationClick = (where: Where) => {
     if (addLocation && addLocation.id === id && addLocation.where === where) {
@@ -271,53 +251,79 @@ const SideDropWrapper = ({
     }
   };
 
-  const handleSideDrop = (e: DragEvent<HTMLElement>) => {
-    handleSideDropCaller(e, dispatch, id);
-  };
-
-  const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
-    handleSideDragOverCaller({ e, id, where, dispatch });
+  const handleSideDrop = (e: DragEvent<HTMLElement>, where: Where) => {
+    e.preventDefault();
+    dispatch(
+      handleDrop({
+        targetId: undefined,
+        addLocation: {
+          id,
+          where,
+        },
+      })
+    );
   };
 
   const marginLeftStyle = { marginLeft: depth * 8 };
 
+  return (
+    <div className="relative" style={marginLeftStyle}>
+      <SideDropZone
+        extraClass="bottom-full "
+        onClick={() => handleAddLocationClick("before")}
+        onDrop={(e) => handleSideDrop(e, "before")}
+        selected={beforeSelected}
+      />
+      <div className="m-2 min-w-40">{children} </div>
+      <SideDropZone
+        extraClass="top-full "
+        onClick={() => handleAddLocationClick("after")}
+        onDrop={(e) => handleSideDrop(e, "after")}
+        selected={afterSelected}
+      />
+    </div>
+  );
+};
+
+const SideDropZone = ({
+  onDrop,
+  onClick,
+  extraClass,
+  selected,
+}: {
+  onDrop: (e: DragEvent<HTMLElement>) => void;
+  selected: boolean;
+  extraClass: string;
+  onClick: () => void;
+}) => {
+  const [draggingOver, setDraggingOver] = useState(false);
+  const commonClasses =
+    "cursor-pointer absolute flex justify-center align-center left-0 right-0 ms-2 me-4 h-1 opacity-0 hover:opacity-100 transition-opacity duration-200 ";
+  const selectedClasses = "opacity-100 bg-activeBlue";
   const AddSign = () => (
     <div className="z-40 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit">
       +
     </div>
   );
-
   return (
-    <div className="relative" style={marginLeftStyle}>
-      <div
-        onClick={() => handleAddLocationClick("before")}
-        onDrop={handleSideDrop}
-        onDragOver={(e) => handleSideDragOver(e, "before")}
-        onDragLeave={handleDragLeave}
-        className={
-          commonClasses +
-          "bottom-full " +
-          (beforeSelected ? selectedClasses : "bg-hoveredBlue")
-        }
-      >
-        <AddSign />
-      </div>
-      <div className="m-2 min-w-40">{children} </div>
-      <div
-        onClick={() => {
-          handleAddLocationClick("after");
-        }}
-        onDrop={handleSideDrop}
-        onDragOver={(e) => handleSideDragOver(e, "after")}
-        onDragLeave={handleDragLeave}
-        className={
-          commonClasses +
-          "top-full " +
-          (afterSelected ? selectedClasses : "bg-hoveredBlue")
-        }
-      >
-        <AddSign />
-      </div>
+    <div
+      onClick={onClick}
+      onDrop={(e) => {
+        setDraggingOver(false);
+        onDrop(e);
+      }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDraggingOver(true);
+      }}
+      onDragLeave={() => setDraggingOver(false)}
+      className={
+        commonClasses +
+        extraClass +
+        (draggingOver || selected ? selectedClasses : "bg-hoveredBlue")
+      }
+    >
+      <AddSign />
     </div>
   );
 };

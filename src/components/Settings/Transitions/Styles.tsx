@@ -16,32 +16,28 @@ import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import AddButton from "@/components/AddButton";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
-import { findElementById } from "@/utils/EditorHelpers";
 import EditableListItem from "../EditableListItem";
 import Popup from "@/components/Popup";
 import { OpacityPicker } from "../Others";
 import { PositionPicker } from "../FixedSettings";
 import { ShorthandTogglerPicker } from "../ShorthandToggler";
 import { CONFIG } from "@/utils/Types";
+import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
 
 const Styles = () => {
-  const [outerType, setOuterType] = useState<string>(
+  const [outerType, setOuterType] = useState("base");
+  const [midType, setMidType] = useState<string>(
     CONFIG.possibleOuterTypes.scrolled
   );
+  const selectorOuterType = outerType === "base" ? undefined : outerType;
   const [showPopup, setShowPopup] = useState(false);
   const dispatch = useAppDispatch();
   const [innerType, setInnerType] = useState<string>("");
   const activeId = useAppSelector(selectActive)?.id || "";
-  const editedStr = getSetting(useAppSelector, outerType, innerType) || "";
-  const styles = useAppSelector((state) => {
-    const layout = state.editor.layout;
-    const activeId = state.editor.active?.id;
+  const editedStr =
+    getSetting(useAppSelector, selectorOuterType, midType, innerType) || "";
+  const styles = getSetting(useAppSelector, selectorOuterType, midType);
 
-    if (!activeId) return;
-
-    const element = findElementById(layout, activeId);
-    return element?.props.style?.[outerType];
-  });
   const activeStylesArr =
     styles && typeof styles === "object"
       ? Object.entries(styles)
@@ -55,7 +51,7 @@ const Styles = () => {
   ) => {
     dispatch(
       changeElementStyle({
-        types: [outerType, innerTypeParam ?? innerType],
+        types: [selectorOuterType, midType, innerTypeParam ?? innerType],
         newValue: newValue ?? "",
       })
     );
@@ -70,7 +66,8 @@ const Styles = () => {
           dispatch(triggerReplay(activeId));
         }}
       />
-      <TypeSelect type={outerType} setType={setOuterType} />
+      <ResponsiveTypeSelect setType={setOuterType} type={outerType} />
+      <TypeSelect type={midType} setType={setMidType} />
       <AddButton
         onClick={() => {
           const typeNotActiveStyle =
@@ -144,6 +141,7 @@ const PopupComp = ({
 }) => {
   const [editedString, setEditedString] = useState(editedStr);
   const activeType = useAppSelector(selectActive)?.type || "";
+  const editing = !!editedStr;
 
   useEffect(() => {
     let premadeEditedString;
@@ -171,13 +169,13 @@ const PopupComp = ({
 
   return (
     <Popup
-      editing={!!editedStr}
+      editing={editing}
       onClose={onClose}
       onEditOrAdd={() => {
         handleAddOrSave(editedString);
       }}
     >
-      {!editedStr && (
+      {!editing && (
         <SelectTransition
           options={availableTransitions
             .filter(

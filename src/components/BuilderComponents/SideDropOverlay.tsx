@@ -5,12 +5,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "@/redux/hooks";
-import { setAddLocation } from "@/redux/slices/editorSlice";
-import {
-  handleDragLeaveCaller,
-  handleSideDragOverCaller,
-  handleSideDropCaller,
-} from "@/utils/DragAndDropHelpers";
+import { handleDrop, setAddLocation } from "@/redux/slices/editorSlice";
 import { Layout, Where } from "@/utils/Types";
 import { DragEvent, useRef, useState } from "react";
 import { styledElements } from "@/utils/StyledComponents";
@@ -39,10 +34,6 @@ export const SideDropOverlay = ({
   const isColumn = item.type === "column";
   const active = useAppSelector(selectActive)?.id === item.id;
 
-  const commonClasses =
-    "cursor-pointer absolute flex justify-center align-center opacity-0 hover:opacity-100 transition-opacity duration-200 z-[60] ";
-  const selectedClasses = "opacity-100 bg-activeBlue";
-
   const handleAddLocationClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     where: Where
@@ -56,12 +47,17 @@ export const SideDropOverlay = ({
     }
   };
 
-  const handleSideDrop = (e: DragEvent<HTMLElement>) => {
-    handleSideDropCaller(e, dispatch, id);
-  };
-
-  const handleSideDragOver = (e: DragEvent<HTMLElement>, where: Where) => {
-    handleSideDragOverCaller({ e, id, where, dispatch });
+  const handleSideDrop = (e: DragEvent<HTMLElement>, where: Where) => {
+    e.preventDefault();
+    dispatch(
+      handleDrop({
+        targetId: undefined,
+        addLocation: {
+          id,
+          where,
+        },
+      })
+    );
   };
 
   return (
@@ -71,40 +67,68 @@ export const SideDropOverlay = ({
       ref={ref}
     >
       {notFixed && (
-        <div
-          onDrop={handleSideDrop}
-          onDragOver={(e) => handleSideDragOver(e, "before")}
-          onDragLeave={() => handleDragLeaveCaller(dispatch)}
+        <SideDropZone
           onClick={(e) => handleAddLocationClick(e, "before")}
-          className={
-            commonClasses +
-            (isColumn ? "h-full w-1 " : "w-full h-1 ") +
-            (beforeSelected ? selectedClasses : "bg-hoveredBlue")
-          }
+          onDrop={(e) => handleSideDrop(e, "before")}
+          selected={beforeSelected}
+          isColumn={isColumn}
         >
           <AddSign />
-        </div>
+        </SideDropZone>
       )}
       {active && <EditorActions item={item} />}
       {children}
       {notFixed && (
-        <div
-          onDrop={handleSideDrop}
-          onDragOver={(e) => handleSideDragOver(e, "after")}
-          onDragLeave={() => handleDragLeaveCaller(dispatch)}
+        <SideDropZone
           onClick={(e) => handleAddLocationClick(e, "after")}
-          className={
-            commonClasses +
-            "right-0 " +
-            (isColumn ? "h-full w-1 top-0 " : "w-full h-1 bottom-0 ") +
-            (afterSelected ? selectedClasses : "bg-hoveredBlue")
-          }
+          onDrop={(e) => handleSideDrop(e, "after")}
+          selected={afterSelected}
+          isColumn={isColumn}
         >
-          {" "}
           <AddSign />
-        </div>
+        </SideDropZone>
       )}
     </styledElements.styledComponentWrapperDiv>
+  );
+};
+
+const SideDropZone = ({
+  onDrop,
+  onClick,
+  selected,
+  children,
+  isColumn,
+}: {
+  onDrop: (e: DragEvent<HTMLElement>) => void;
+  selected: boolean;
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  children: React.ReactNode;
+  isColumn: boolean;
+}) => {
+  const [draggingOver, setDraggingOver] = useState(false);
+  const commonClasses =
+    "cursor-pointer absolute flex justify-center align-center opacity-0 hover:opacity-100 transition-opacity duration-200 z-[60] ";
+  const selectedClasses = "opacity-100 bg-activeBlue";
+  return (
+    <div
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDraggingOver(true);
+      }}
+      onDragLeave={() => setDraggingOver(false)}
+      onClick={onClick}
+      onDrop={(e) => {
+        setDraggingOver(false);
+        onDrop(e);
+      }}
+      className={
+        commonClasses +
+        (isColumn ? "h-full w-1 " : "w-full h-1 ") +
+        (draggingOver || selected ? selectedClasses : "bg-hoveredBlue")
+      }
+    >
+      {children}
+    </div>
   );
 };
 

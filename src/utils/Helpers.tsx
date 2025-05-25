@@ -235,9 +235,9 @@ export const getUnit = (value: string | undefined) => {
 
 export function getSetting(
   useAppSelector: UseSelector<{ editor: EditorState }>,
-  type: string,
-  ...innerTypes: string[]
-):string {
+  type: string | undefined,
+  ...innerTypes: (string | undefined)[]
+) {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
     const activeId = state.editor.active?.id;
@@ -248,13 +248,16 @@ export function getSetting(
         if (!current || typeof current !== "object") {
           return undefined;
         }
+
         current = current[key];
       }
       return current;
     };
 
     // Compose full path as an array: [type, ...innerTypes]
-    const path = [type, ...innerTypes];
+    const path = [type, ...innerTypes].filter(
+      (k): k is string => k !== undefined
+    );
 
     if (!activeId) {
       return getNestedValue(state.editor.pageWise, path);

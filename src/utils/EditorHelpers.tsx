@@ -6,6 +6,7 @@ import {
   Layout,
   LayoutOrUnd,
   MoveTo,
+  StringOrUnd,
 } from "./Types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -15,19 +16,14 @@ export const setActiveInner = (state: EditorState, payload: LayoutOrUnd) => {
 };
 export const handleDropInner = (
   state: EditorState,
-  targetId: string,
+  targetId: StringOrUnd,
   addLocation: AddLocation
 ) => {
   const id = state.draggedItem;
   const item = findElementById(state.layout, id || "");
-  setDropHandledInner(state, true);
   if (id === targetId) return;
-  moveElementInner(state, { item, addLocation });
-  handleDragLeaveInner(state);
+  moveElementInner(state, { item, targetId, addLocation });
   state.draggedItem = undefined;
-};
-export const setDropHandledInner = (state: EditorState, bool: boolean) => {
-  state.dropHandled = bool;
 };
 export const setAddLocationInner = (
   state: EditorState,
@@ -36,31 +32,28 @@ export const setAddLocationInner = (
   state.active = undefined;
   state.addLocation = addLocation;
 };
-export const handleDragLeaveInner = (state: EditorState) => {
-  state.active = undefined;
-  state.addLocation = null;
-};
 export const moveElementInner = (
   state: EditorState,
   payload: ItemAndLocation
 ) => {
   if (payload.addLocation?.id === payload.item?.id) return;
   const currentElement = payload.item;
-
+  const targetId = payload.targetId;
   if (!currentElement) {
     toast.error("Something went wrong");
     return;
   }
-  if (!state.active && !payload.addLocation) return;
+  if (!targetId && !payload.addLocation) return;
+  const targetElement = findElementById(state.layout, targetId || "");
   const passed = canElementHaveChild(
     state,
     payload.addLocation,
-    currentElement
+    currentElement,
+    targetElement
   );
   if (passed) {
     if (
-      (state.active &&
-        isInChildren(currentElement.props.child, state.active.id)) ||
+      (targetId && isInChildren(currentElement.props.child, targetId)) ||
       (payload.addLocation?.id &&
         isInChildren(currentElement.props.child, payload.addLocation.id))
     ) {
@@ -74,6 +67,7 @@ export const moveElementInner = (
       state.layout,
       currentElement,
       payload.addLocation,
+      targetId,
       false
     );
     adjustRowChildrenWidths(state.layout);
@@ -88,7 +82,8 @@ export const removeHistoryCurrents = (state: EditorState) => {
 export const canElementHaveChild = (
   state: EditorState,
   addLocation: AddLocation,
-  newElement: Layout
+  newElement: Layout,
+  targetElement: Layout | undefined
 ) => {
   const parentElements = ["column", "row", "button", "container", "fixed"];
 
@@ -122,7 +117,7 @@ export const canElementHaveChild = (
 
   if (
     newElement.type === "button" &&
-    isInsideButton(state.layout, addLocation?.id || state.active?.id || "")
+    isInsideButton(state.layout, addLocation?.id || targetElement?.id || "")
   ) {
     toast.error("Cannot add button inside another button");
     return false;
@@ -131,8 +126,8 @@ export const canElementHaveChild = (
   if (addLocation) {
     return true;
   } else {
-    if (state.active) {
-      const found = state.active;
+    if (targetElement) {
+      const found = targetElement;
       if (found && parentElements.includes(found?.type)) {
         return true;
       } else {
@@ -234,13 +229,14 @@ export const insertElement = (
   layout: Layout[],
   newElement: Layout,
   addLocation: AddLocation,
+  targetId: StringOrUnd,
   pushIfNoActive: boolean
 ) => {
   if (!addLocation) {
     // No specific location, add to the active item's child or the main layout
-    if (state.active) {
+    if (targetId) {
       for (let i = 0; i < layout.length; i++) {
-        if (layout[i].id === state.active.id) {
+        if (layout[i].id === targetId) {
           // If the active item has no child array, initialize it
           if (!layout[i].props.child) {
             layout[i].props.child = [];
@@ -258,6 +254,7 @@ export const insertElement = (
             layout[i].props.child as Layout[],
             newElement,
             addLocation,
+            targetId,
             pushIfNoActive
           );
         }
@@ -287,6 +284,7 @@ export const insertElement = (
         layout[i].props.child as Layout[],
         newElement,
         addLocation,
+        targetId,
         pushIfNoActive
       );
     }
@@ -343,7 +341,11 @@ export function adjustRowChildrenWidths(layout: Layout[]): void {
   const traverse = (nodes: Layout[]) => {
     for (const node of nodes) {
       if (node.type === "row" && Array.isArray(node.props.child)) {
-        const children = node.props.child;
+        // Only count children that are NOT of type "fixed"
+        const children = node.props.child.filter(
+          (child) => child.type !== "fixed"
+        );
+
         const count = children.length;
         if (count > 0) {
           const newWidth = `${100 / count}%`;

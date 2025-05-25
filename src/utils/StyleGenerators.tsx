@@ -1,95 +1,82 @@
-import { makeArraySplitFrom, PossibleOuterTypes } from "./Helpers";
-import { Layout, PageWise, Style, Variable, CONFIG } from "./Types";
+import { Layout, PageWise, Style, Variable, StringOrUnd } from "./Types";
 
-export const styleDivider = (style: Style) => {
-  const layoutKeys = [
-    "width",
-    "height",
-    "top",
-    "left",
-    "bottom",
-    "right",
-    "position",
-  ];
+const layoutKeys: (keyof Style)[] = [
+  "width",
+  "height",
+  "top",
+  "left",
+  "bottom",
+  "right",
+  "position",
+];
 
-  // Extract all known outer types
-  const outerTypeKeys = Object.values(CONFIG.possibleOuterTypes);
-
-  // Destructure outer type style objects from root
-  const outerStyles: Record<string, any> = {};
-  const baseStyle: Record<string, any> = {};
+function splitStyleRecursive(style: Style): [Style, Style] {
+  const first: Style = {};
+  const second: Style = {};
 
   for (const key in style) {
-    if (outerTypeKeys.includes(key as PossibleOuterTypes)) {
-      outerStyles[key] = style[key];
-    } else {
-      baseStyle[key] = style[key];
-    }
-  }
-
-  // Divide base styles
-  const first: Record<string, any> = {};
-  const second: Record<string, any> = {};
-
-  const assignTransitionParts = (
-    transitionValue: string | undefined,
-    target: Record<string, any>,
-    fallback: Record<string, any>
-  ) => {
-    if (!transitionValue) return;
-
-    const parts = makeArraySplitFrom(transitionValue, ",");
-    const layoutParts: string[] = [];
-    const nonLayoutParts: string[] = [];
-
-    for (const part of parts) {
-      const name = part.trim().split(/\s+/)[0]; // get property name before duration etc.
-      if (layoutKeys.includes(name)) {
-        layoutParts.push(part.trim());
-      } else {
-        nonLayoutParts.push(part.trim());
-      }
-    }
-
-    if (layoutParts.length) target.transition = layoutParts.join(", ");
-    if (nonLayoutParts.length) fallback.transition = nonLayoutParts.join(", ");
-  };
-
-  for (const key in baseStyle) {
     if (key === "transition") {
-      assignTransitionParts(baseStyle[key], first, second);
-    } else if (layoutKeys.includes(key)) {
-      first[key] = baseStyle[key];
-    } else {
-      second[key] = baseStyle[key];
+      // Skip transition inside nested objects, only split at root
+      second.transition = style.transition;
+      continue;
     }
-  }
 
-  // Now handle each outer type separately
-  for (const key in outerStyles) {
-    const styles = outerStyles[key];
-    const layoutSubStyles: Record<string, any> = {};
-    const restSubStyles: Record<string, any> = {};
-
-    for (const prop in styles) {
-      if (layoutKeys.includes(prop)) {
-        layoutSubStyles[prop] = styles[prop];
-      } else {
-        restSubStyles[prop] = styles[prop];
+    const value = style[key];
+    if (typeof value === "object" && value !== null) {
+      // Nested Style object — recurse
+      const [firstPart, secondPart] = splitStyleRecursive(value as Style);
+      if (Object.keys(firstPart).length > 0) {
+        first[key] = firstPart;
       }
-    }
-
-    if (Object.keys(layoutSubStyles).length > 0) {
-      first[key] = layoutSubStyles;
-    }
-
-    if (Object.keys(restSubStyles).length > 0) {
-      second[key] = restSubStyles;
+      if (Object.keys(secondPart).length > 0) {
+        second[key] = secondPart;
+      }
+    } else {
+      // Primitive string or undefined value
+      if (layoutKeys.includes(key as keyof Style)) {
+        first[key] = value as StringOrUnd;
+      } else {
+        second[key] = value as StringOrUnd;
+      }
     }
   }
 
   return [first, second];
-};
+}
+
+export function styleDivider(style: Style): [Style, Style] {
+  const first: Style = {};
+  const second: Style = {};
+
+  // Handle root-level transition splitting
+  if (style.transition) {
+    const parts = style.transition.split(",");
+    const layoutParts: string[] = [];
+    const otherParts: string[] = [];
+
+    for (const part of parts) {
+      const propName = part.trim().split(/\s+/)[0] as keyof Style;
+      if (layoutKeys.includes(propName)) {
+        layoutParts.push(part.trim());
+      } else {
+        otherParts.push(part.trim());
+      }
+    }
+
+    if (layoutParts.length) first.transition = layoutParts.join(", ");
+    if (otherParts.length) second.transition = otherParts.join(", ");
+  }
+
+  // Exclude transition for recursive splitting
+  const { transition, ...restStyle } = style;
+
+  const [firstPart, secondPart] = splitStyleRecursive(restStyle);
+
+  Object.assign(first, firstPart);
+  Object.assign(second, secondPart);
+
+  return [first, second];
+}
 
 export const getRest = (style: Style): string => {
   const [, rest] = styleDivider(style);
@@ -134,15 +121,31 @@ export const fullStylesWithIdsGenerator = (
       const isContainer = item.type === "container";
       const isFixed = item.type === "fixed";
       const styleStr = rest ? getRest(style) : getWrapperStyles(style);
-      return `#id${rest ? "" : "wrapper"}${item.id} { ${styleStr} ${
+
+      // Additional style logic
+      const additionalStyles =
         rest && !isFixed
           ? `flex-grow:1;max-height:100%;${
               !isContainer ? "max-width:100%;" : ""
             }`
-          : ""
-      } 
-      ${isFixed && rest ? getWrapperStyles(style) : ""}
-      } ${child ? fullStylesWithIdsGenerator(child, rest) : ""}`;
+          : "";
+
+      const fixedStyles = isFixed && rest ? getWrapperStyles(style) : "";
+
+      // Combine all styles for this selector
+      const combinedStyles = [styleStr, additionalStyles, fixedStyles]
+        .filter(Boolean)
+        .join(" ");
+
+      // Skip if combinedStyles is empty
+      if (!combinedStyles.trim()) {
+        return child ? fullStylesWithIdsGenerator(child, rest) : "";
+      }
+
+      // Construct CSS block
+      return `#id${rest ? "" : "wrapper"}${item.id} { ${combinedStyles} } ${
+        child ? fullStylesWithIdsGenerator(child, rest) : ""
+      }`;
     })
     .join("\n");
 };
@@ -153,88 +156,6 @@ export const variablesGenerator = (variables: Variable[]): string => {
     .join("\n");
 
   return cssVariables;
-};
-
-export const keyframeGenerator = (styleStr: string) => {
-  // Append keyframe definitions if used in the styles
-  const usedKeyframes = Object.keys(keyframes)
-    .filter((kf) => styleStr.includes(kf))
-    .map((kf) => keyframes[kf])
-    .join("\n");
-  return usedKeyframes;
-};
-
-export const getAllKeyFrames = () => {
-  return Object.keys(keyframes)
-    .map((kf) => keyframes[kf])
-    .join("\n");
-};
-
-const keyframes: Record<string, string> = {
-  slideInFromLeft: `
-    @keyframes slideInFromLeft {
-      from {
-        transform: translateX(-100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-  `,
-  slideInFromRight: `
-    @keyframes slideInFromRight {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-  `,
-  slideInFromTop: `
-  @keyframes slideInFromTop {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  }`,
-  slideInFromBottom: `
-  @keyframes slideInFromBottom {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }`,
-  scaleUp: `
-  @keyframes scaleUp {
-    0% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(1.1);
-    }
-  }`,
-  scaleDown: `
-  @keyframes scaleDown {
-    0% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(0.9);
-    }
-  }`,
 };
 
 export const getStyleResets = (pageWise: PageWise) => {

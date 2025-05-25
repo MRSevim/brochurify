@@ -141,7 +141,11 @@ export type ElementRefObject = RefObject<HTMLElement | null>;
 export type StringOrUnd = string | undefined;
 export type LayoutOrUnd = Layout | undefined;
 export type Where = "before" | "after";
-export type ItemAndLocation = { item: LayoutOrUnd; addLocation: AddLocation };
+export type ItemAndLocation = {
+  item: LayoutOrUnd;
+  targetId: StringOrUnd;
+  addLocation: AddLocation;
+};
 export type SizingType = {
   title: string;
 };

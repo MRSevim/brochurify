@@ -166,7 +166,7 @@ const LineHeight = () => {
 };
 
 const ToggleToBrowserDefaults = () => {
-  const initial = "initial";
+  const initial = "revert";
   const fontWeigthHeading = getSetting(
     useAppSelector,
     CONFIG.headings,

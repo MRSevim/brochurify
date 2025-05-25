@@ -4,11 +4,11 @@ import { getUsedFontsFromHTML } from "./Helpers";
 import {
   fullStylesWithIdsGenerator,
   getStyleResets,
-  keyframeGenerator,
   styleGenerator,
   variablesGenerator,
 } from "./StyleGenerators";
 import { Layout, PageWise, Variable } from "./Types";
+import { html as beautifyHtml } from "js-beautify";
 
 export const generateHTML = (
   layout: Layout[],
@@ -28,7 +28,6 @@ export const generateHTML = (
     fullStylesWithIdsGenerator(layout, false) +
     fullStylesWithIdsGenerator(layout, true);
   const variablesString = variablesGenerator(variables);
-  const keyframes = keyframeGenerator(fullstylesWithIds);
 
   const baseHTMLHead = `<meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -97,7 +96,6 @@ export const generateHTML = (
         width:100%
       }  
       ${fullstylesWithIds}  
-      ${keyframes}
     </style>`;
 
   const tempHTML = `<!DOCTYPE html>
@@ -127,7 +125,15 @@ export const generateHTML = (
   </body>
   </html>`;
 
-  return finalHTML;
+  return beautifyHtml(finalHTML, {
+    indent_size: 2,
+    indent_char: " ",
+    preserve_newlines: true,
+    max_preserve_newlines: 0,
+    wrap_line_length: 0,
+    inline: [], // prevents collapsing inline tags like <span>, <a>, etc.
+    content_unformatted: [], // don't mess with inline content
+  });
 };
 
 const getCssReset = (pageWise: PageWise) => {
@@ -225,11 +231,9 @@ const renderLayout = (items: Layout[]): string => {
           return `
           <a class="wAndHFull flex" ${href ? `href=${href}` : ""}" ${
             onclick ? `onclick="${onclick}"` : ""
-          } target=${props.newTab ? "_blank" : "_self"}
-          rel="noopener noreferrer"
-          >
-          ${html}
-          </a>`;
+          } target=${
+            props.newTab ? "_blank" : "_self"
+          }rel="noopener noreferrer">${html}</a>`;
         } else {
           return html;
         }
@@ -238,38 +242,30 @@ const renderLayout = (items: Layout[]): string => {
       const addFlexWrapper = (html: string) => {
         return `<div class="block ${isFixed ? "" : "relative"}" id="idwrapper${
           item.id
-        }">
-        <div class="flex wAndHFull" ${
+        }"><div class="flex wAndHFull" ${
           item.props.anchorId ? `id="user-${item.props.anchorId}"` : ""
         }>${html}</div></div>`;
       };
 
       const rendered = `<${renderedType} id="id${item.id}" ${
         isAudioOrVideo ? "controls" : ""
-      }
-      class="element 
-      ${props.iconType ? `bi bi-${props.iconType}` : ""}
-      "
-      ${
+      }class="element ${props.iconType ? `bi bi-${props.iconType}` : ""}
+      "${
         isImage
           ? `src="${props.src || ""}"
             alt="${props.alt || ""}"`
           : ""
-      } 
-      >
+      }>
         ${
           isAudioOrVideo
             ? `
-          <source src="${props.src || ""}">
-          Your browser does not support this tag.
-          `
+          <source src="${
+            props.src || ""
+          }">Your browser does not support this tag.`
             : ""
-        }
-          ${isText ? props.text || "" : ""}
-          ${child ? renderLayout(child) : ""}
-
-        ${!isVoidElement ? `</${renderedType}>` : ""}
-        `;
+        }${isText ? props.text || "" : ""}${child ? renderLayout(child) : ""}${
+        !isVoidElement ? `</${renderedType}>` : ""
+      }`;
 
       const buttonWrapperApplied = addButtonWrapper(rendered);
       const FlexWrapperApplied = addFlexWrapper(buttonWrapperApplied);
