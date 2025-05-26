@@ -56,7 +56,7 @@ const Slider = ({
           type="range"
           min={minNumber}
           max={maxNumber}
-          value={parsed}
+          value={parsed || ""}
           step={stepValue}
           onChange={(e) => onChange(e.target.value + unit)}
           className="w-full h-2 rounded-lg appearance-none cursor-pointer"

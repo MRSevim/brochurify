@@ -115,4 +115,5 @@ export const OpacityPicker = ({
     />
   );
 };
+
 export default Others;

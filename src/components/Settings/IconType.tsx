@@ -1,16 +1,11 @@
-import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { getProp, getSetting } from "@/utils/Helpers";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { getProp } from "@/utils/Helpers";
 import iconList from "bootstrap-icons/font/bootstrap-icons.json";
 import BottomLine from "../BottomLine";
-import {
-  changeElementProp,
-  changeElementStyle,
-} from "@/redux/slices/editorSlice";
+import { changeElementProp } from "@/redux/slices/editorSlice";
 import Icon from "../Icon";
 import { useState } from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
-import ColorPicker from "../ColorPicker";
-import ResetButton from "../ResetButton";
 
 const IconType = () => {
   const [searchString, setSearchString] = useState("");
@@ -36,32 +31,7 @@ const IconType = () => {
 
         <BottomLine />
       </div>
-      <IconColor />
     </ToggleVisibilityWrapper>
-  );
-};
-
-const IconColor = () => {
-  const type = "color";
-  const pageWise = useAppSelector(selectPageWise);
-  const colorStr = getSetting(useAppSelector, type);
-  const dispatch = useAppDispatch();
-  return (
-    <div className="relative mb-2 pb-2">
-      <ColorPicker
-        title="Pick the icon color"
-        selected={colorStr || pageWise.color || "#000000"}
-        onChange={(newValue) =>
-          dispatch(changeElementStyle({ types: [], newValue }))
-        }
-      />
-      <ResetButton
-        onClick={() => {
-          dispatch(changeElementStyle({ types: [type], newValue: "" }));
-        }}
-      />
-      <BottomLine />
-    </div>
   );
 };
 

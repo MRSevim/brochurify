@@ -61,7 +61,7 @@ export interface EditorState {
 }
 export type Variable = {
   id?: string;
-  type: "color" | "font-family";
+  type: string;
   name: string;
   value: string;
 };

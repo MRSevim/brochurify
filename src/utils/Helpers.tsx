@@ -383,6 +383,25 @@ export const getValueFromShorthandStr = (
   return values[i];
 };
 
+export const convertVarIdsToVarNames = (
+  arr: string[],
+  useAppSelector: UseSelector<{
+    editor: EditorState;
+  }>
+): string[] => {
+  const variables = useAppSelector(selectVariables);
+  return arr.map((item) => {
+    if (item.startsWith("var(--")) {
+      const idMatch = item.match(/var\(--(.+?)\)/);
+      const id = idMatch?.[1];
+      const variable = variables.find((variable) => variable.id === id);
+      return variable?.name || item;
+    } else {
+      return item;
+    }
+  });
+};
+
 export const setValueFromShorthandStr = (
   str: string | undefined,
   i: number | undefined,

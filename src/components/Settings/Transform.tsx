@@ -13,6 +13,7 @@ import { changeElementStyle } from "@/redux/slices/editorSlice";
 import NumberInput from "../NumberInput";
 import UnitSelector from "../UnitSelector";
 import ToggleBtn from "../ToggleBtn";
+import VariableSelector from "../VariableSelector";
 
 const availableOptions = [
   { title: "Move", type: "translate" },
@@ -109,12 +110,14 @@ export const TransformItem = ({
 };
 
 export const TransformItemPicker = ({
+  variablesAvailable = true,
   type,
   onChange,
   variableStr,
 }: {
   type: string;
   onChange: (str: string) => void;
+  variablesAvailable?: boolean;
   variableStr: string;
 }) => {
   const handleChange = (e: string, i: number) => {
@@ -157,6 +160,16 @@ export const TransformItemPicker = ({
           handleChange={(e) => handleChange(e, 0)}
         />
       )}
+
+      {variablesAvailable && (
+        <div className="flex justify-center">
+          <VariableSelector
+            selected={variableStr}
+            type={type}
+            onChange={(value) => onChange(value)}
+          />
+        </div>
+      )}
     </>
   );
 };
@@ -173,11 +186,12 @@ const NumberSelector = ({
   handleChange: (e: string) => void;
 }) => {
   const parsed = parseFloat(value); //gets the first full number inside value
-  const unit = getUnit(value);
+
+  const unit = getUnit(value) || "";
   return (
     <NumberInput
       title={title}
-      value={`${parsed}`}
+      value={value}
       onChange={(e) => {
         handleChange(e.target.value + unit);
       }}

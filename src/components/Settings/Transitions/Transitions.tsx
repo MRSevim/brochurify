@@ -4,6 +4,7 @@ import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import BottomLine from "../../BottomLine";
 import {
   addToString,
+  convertVarIdsToVarNames,
   getSetting,
   getValueFromShorthandStr,
   makeArraySplitFrom,
@@ -21,17 +22,51 @@ import Styles from "./Styles";
 import EditableListItem from "../EditableListItem";
 import Popup from "@/components/Popup";
 import { availableTransitions, SelectTransition } from "./SelectTransition";
+import VariableSelector from "@/components/VariableSelector";
 
 const splitValue = ",";
+const type = "transition";
 
 const Transitions = () => {
-  const [showPopup, setShowPopup] = useState(false);
-  const type = "transition";
   const transitionsString = getSetting(useAppSelector, type);
-  const transitions = makeArraySplitFrom(transitionsString, splitValue);
+  const dispatch = useAppDispatch();
+  const onAction = (newValue: string) =>
+    dispatch(changeElementStyle({ types: [type], newValue }));
+
+  return (
+    <ToggleVisibilityWrapper
+      title="Transitions"
+      desc="Manage transitions for this element"
+    >
+      <div className="flex flex-col items-center relative pb-2 mb-2">
+        <SecondaryTitle title="Transition settings">
+          <InfoIcon text="Apply general transition settings here. These apply to all the transitions with specified property." />
+        </SecondaryTitle>
+        <TransitionPropertyAddZone
+          transitionsString={transitionsString}
+          onAction={onAction}
+        />
+        <BottomLine />
+      </div>
+      <Styles />
+    </ToggleVisibilityWrapper>
+  );
+};
+
+export const TransitionPropertyAddZone = ({
+  variablesAvailable = true,
+  transitionsString,
+  onAction,
+}: {
+  transitionsString: string;
+  variablesAvailable?: boolean;
+  onAction: (newVal: string) => void;
+}) => {
   const [editedIndex, setEditedIndex] = useState<number>(0);
   const [editing, setEditing] = useState(false);
-  const dispatch = useAppDispatch();
+  const [showPopup, setShowPopup] = useState(false);
+  const transitionsArray = makeArraySplitFrom(transitionsString, splitValue);
+  const transitions = convertVarIdsToVarNames(transitionsArray, useAppSelector);
 
   const firstValueNotInsideTransitions =
     availableTransitions.find(
@@ -44,7 +79,7 @@ const Transitions = () => {
       editedStr,
       splitValue
     );
-    dispatch(changeElementStyle({ types: [type], newValue }));
+    onAction(newValue);
   };
 
   const handleEditOrDeletion = (
@@ -62,54 +97,57 @@ const Transitions = () => {
     );
 
     if (!newValue) {
-      dispatch(changeElementStyle({ types: [type], newValue: "" }));
+      onAction("");
     } else {
-      dispatch(changeElementStyle({ types: [type], newValue }));
+      onAction(newValue);
     }
   };
   return (
-    <ToggleVisibilityWrapper
-      title="Transitions"
-      desc="Manage transitions for this element"
-    >
-      <div className="flex flex-col items-center relative pb-2 mb-2">
-        <SecondaryTitle title="Transition settings">
-          <InfoIcon text="Apply general transition settings here. These apply to all the transitions with specified property." />
-        </SecondaryTitle>
-        <AddButton
-          onClick={() => {
-            setShowPopup((prev) => !prev);
+    <>
+      <AddButton
+        onClick={() => {
+          setShowPopup((prev) => !prev);
+        }}
+      />
+      {variablesAvailable && (
+        <VariableSelector
+          selected={transitionsString}
+          type={type}
+          onChange={(value) => handleAddition(value)}
+        />
+      )}
+      {showPopup && (
+        <PopupComp
+          transitions={transitions}
+          handleAddOrSave={(value) => {
+            if (!editing) {
+              handleAddition(value);
+            } else {
+              handleEditOrDeletion(editedIndex, false, value);
+              setEditing(false);
+            }
+            setShowPopup(false);
+          }}
+          editing={editing}
+          editedStr={
+            editing
+              ? transitions[editedIndex]
+              : firstValueNotInsideTransitions + " 100ms ease-in 0ms"
+          }
+          onClose={() => {
+            setEditedIndex(0);
+            setEditing(false);
+            setShowPopup(false);
           }}
         />
-        {showPopup && (
-          <PopupComp
-            transitions={transitions}
-            handleAddOrSave={(value) => {
-              if (!editing) {
-                handleAddition(value);
-              } else {
-                handleEditOrDeletion(editedIndex, false, value);
-                setEditing(false);
-              }
-              setShowPopup(false);
-            }}
-            editing={editing}
-            editedStr={
-              editing
-                ? transitions[editedIndex]
-                : firstValueNotInsideTransitions + " 100ms ease-in 0ms"
-            }
-            onClose={() => {
-              setEditedIndex(0);
-              setEditing(false);
-              setShowPopup(false);
-            }}
-          />
-        )}
-        {transitions && (
-          <>
-            <div className="mt-2 w-full">
-              {transitions.map((item, i) => (
+      )}
+      {transitions && (
+        <>
+          <div className="mt-2 w-full">
+            {transitions.map((item, i) => {
+              const isVar = transitionsArray[i].startsWith("var");
+
+              return (
                 <EditableListItem
                   key={i}
                   onEditClick={() => {
@@ -120,22 +158,21 @@ const Transitions = () => {
                   onDeleteClick={() => {
                     handleEditOrDeletion(i, true, undefined);
                   }}
+                  showEditButton={!isVar}
                 >
-                  {
-                    availableTransitions.find(
-                      (transition) =>
-                        transition.value === getValueFromShorthandStr(item, 0)
-                    )?.title
-                  }
+                  {isVar
+                    ? item
+                    : availableTransitions.find(
+                        (transition) =>
+                          transition.value === getValueFromShorthandStr(item, 0)
+                      )?.title}
                 </EditableListItem>
-              ))}
-            </div>
-          </>
-        )}
-        <BottomLine />
-      </div>
-      <Styles />
-    </ToggleVisibilityWrapper>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </>
   );
 };
 

@@ -121,7 +121,7 @@ export const ShorthandTogglerPicker = ({
       {!toggle && (
         <Slider
           units={units}
-          value={getValueFromShorthandStr(variable, 0)}
+          value={getValueFromShorthandStr(variable, 0) || ""}
           title={corner ? "All corners" : "All sides"}
           onChange={(e) => handleInputChange(e, undefined)}
         />

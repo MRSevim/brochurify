@@ -62,7 +62,7 @@ export const BackgroundColor = () => {
   );
 };
 
-export const BackgroundColorPicker = ({
+const BackgroundColorPicker = ({
   variable,
   onChange,
 }: {

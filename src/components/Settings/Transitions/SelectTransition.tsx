@@ -25,6 +25,7 @@ export const availableTransitions: OptionsObject[] = [
   { title: "Rotate", value: "rotate" },
   { title: "Scale", value: "scale" },
   { title: "Background Color", value: "background-color" },
+  { title: "Text Color", value: "color" },
   { title: "Opacity", value: "opacity" },
   { title: "Top", value: "top" },
   { title: "Left", value: "left" },
@@ -35,6 +36,25 @@ export const availableTransitions: OptionsObject[] = [
   { title: "Margin", value: "margin" },
   { title: "Width", value: "width" },
   { title: "Height", value: "height" },
+];
+
+const removedVariableSelectables = [
+  "color",
+  "background-color",
+  "top",
+  "left",
+  "bottom",
+  "right",
+];
+
+export const variableSelectables: OptionsObject[] = [
+  { title: "Color", value: "color" },
+  { title: "Font family", value: "font-family" },
+  { title: "Transition property", value: "transition" },
+  ...availableTransitions.filter(
+    (item) => !removedVariableSelectables.includes(item.value)
+  ),
+  { title: "Distance from top/left/bottom/right", value: "distance" },
 ];
 
 export const filterForFixed = (option: OptionsObject, activeType: string) => {

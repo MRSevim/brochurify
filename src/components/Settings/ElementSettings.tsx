@@ -12,14 +12,13 @@ import FixedSettings from "./FixedSettings";
 import Anchor from "./Anchor";
 import Others from "./Others";
 import Transitions from "./Transitions/Transitions";
+import TextRelated from "./Text/TextRelated";
 
 const ElementSettings = () => {
   const active = useAppSelector(selectActive);
   const activeType = active?.type;
-  const activeId = active?.id;
   const shouldHaveSource =
     activeType === "audio" || activeType === "image" || activeType === "video";
-  const isText = activeType === "text";
   const shouldHaveUrl = activeType === "button";
   const shouldHaveAlignment =
     activeType === "column" ||
@@ -48,8 +47,8 @@ const ElementSettings = () => {
       {isIcon && <IconType />}
       <Anchor />
       <Others />
+      <TextRelated />
       {shouldHaveUrl && <Url />}
-      {isText && <Text key={activeId} />}
     </div>
   );
 };

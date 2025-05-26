@@ -1,7 +1,6 @@
 import { selectVariables, useAppSelector } from "@/redux/hooks";
-import { useState } from "react";
-import SmallText from "./SmallText";
 import Slider from "./Slider";
+import VariableSelector from "./VariableSelector";
 
 type Props = {
   title: string;
@@ -30,7 +29,6 @@ const ColorPicker = ({
   onChange,
 }: Props) => {
   const type = "color";
-  const [varOpen, setVarOpen] = useState(false);
   const colorVariables = useAppSelector(selectVariables).filter(
     (item) => item.type === type
   );
@@ -91,48 +89,7 @@ const ColorPicker = ({
         />
       </div>
       {variableSelect && (
-        <button
-          className="p-2 border border-text rounded"
-          onClick={() => setVarOpen((prev) => !prev)}
-        >
-          Var
-        </button>
-      )}
-      {varOpen && (
-        <div className="absolute w-full z-10 bg-background border border-text rounded p-3 top-5">
-          Select your variable
-          <div className="my-2">
-            {colorVariables.length > 0 && (
-              <div className="flex flex-wrap">
-                {colorVariables.map((color) => (
-                  <div
-                    key={color.id}
-                    className="flex gap-3 justify-center items-center py-2 pe-2 w-1/2 cursor-pointer hover:shadow-sm hover:shadow-text hover:z-50"
-                    onClick={() => {
-                      setVarOpen(false);
-                      onChange(`var(--${color.id})`);
-                    }}
-                  >
-                    {color.name}{" "}
-                    <div
-                      className="size-5"
-                      style={{ backgroundColor: color.value }}
-                    ></div>
-                  </div>
-                ))}
-              </div>
-            )}
-            {colorVariables.length === 0 && (
-              <SmallText>No variables of type {type} is set</SmallText>
-            )}
-          </div>
-          <button
-            className="p-1 text-background bg-gray rounded cursor-pointer"
-            onClick={() => setVarOpen(false)}
-          >
-            Close
-          </button>
-        </div>
+        <VariableSelector selected={selected} type={type} onChange={onChange} />
       )}
     </div>
   );

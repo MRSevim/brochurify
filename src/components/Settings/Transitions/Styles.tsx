@@ -1,12 +1,20 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import BottomLine from "../../BottomLine";
-import { getSetting, getValueFromShorthandStr } from "@/utils/Helpers";
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  convertVarIdsToVarNames,
+  getSetting,
+  getValueFromShorthandStr,
+} from "@/utils/Helpers";
+import {
+  selectActive,
+  selectPageWise,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import ReplayButton from "../../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
 import { TypeSelect } from "../Animations";
 import { TransformItemPicker } from "../Transform";
-import { BackgroundColorPicker } from "../Background/Background";
 import {
   availableTransitions,
   filterForFixed,
@@ -23,6 +31,7 @@ import { PositionPicker } from "../FixedSettings";
 import { ShorthandTogglerPicker } from "../ShorthandToggler";
 import { CONFIG, Style } from "@/utils/Types";
 import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
+import ColorPicker from "@/components/ColorPicker";
 
 const Styles = () => {
   const [outerType, setOuterType] = useState("base");
@@ -30,20 +39,12 @@ const Styles = () => {
     CONFIG.possibleOuterTypes.scrolled
   );
   const selectorOuterType = outerType === "base" ? undefined : outerType;
-  const [showPopup, setShowPopup] = useState(false);
   const dispatch = useAppDispatch();
   const [innerType, setInnerType] = useState<string>("");
   const activeId = useAppSelector(selectActive)?.id || "";
   const editedStr =
     getSetting(useAppSelector, selectorOuterType, midType, innerType) || "";
   const styles = getSetting<Style>(useAppSelector, selectorOuterType, midType);
-
-  const activeStylesArr =
-    styles && typeof styles === "object"
-      ? Object.entries(styles)
-          .filter(([_, value]) => value !== "")
-          .map(([key]) => key)
-      : [];
 
   const handleStyleChange = (
     innerTypeParam: string | undefined,
@@ -68,11 +69,56 @@ const Styles = () => {
       />
       <ResponsiveTypeSelect setType={setOuterType} type={outerType} />
       <TypeSelect type={midType} setType={setMidType} />
+      <TransitionValueAddZone
+        handleChange={handleStyleChange}
+        styles={styles}
+        editedStr={editedStr}
+        innerType={innerType}
+        setInnerType={setInnerType}
+      />
+      <BottomLine />
+    </div>
+  );
+};
+
+const TransitionValueAddZone = ({
+  styles,
+  editedStr,
+  innerType,
+  setInnerType,
+  handleChange,
+}: {
+  styles: Style;
+  editedStr: string;
+  setInnerType: Dispatch<SetStateAction<string>>;
+  innerType: string;
+  handleChange: (
+    innerTypeParam: string | undefined,
+    newValue: string | undefined
+  ) => void;
+}) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const activeStyles =
+    styles && typeof styles === "object"
+      ? Object.entries(styles).filter(([_, value]) => value !== "")
+      : [];
+
+  const activeStyleKeys = activeStyles.map(([key]) => key);
+
+  const activeStylesFiltered = activeStyles.map(([key, value]) =>
+    value && typeof value === "string" && value?.startsWith("var") ? value : key
+  );
+  const activeStylesArr = convertVarIdsToVarNames(
+    activeStylesFiltered,
+    useAppSelector
+  );
+  return (
+    <>
       <AddButton
         onClick={() => {
           const typeNotActiveStyle =
             availableTransitions.find(
-              (option) => !activeStylesArr.includes(option.value)
+              (option) => !activeStyleKeys.includes(option.value)
             )?.value || "transition";
 
           setInnerType(typeNotActiveStyle);
@@ -81,11 +127,11 @@ const Styles = () => {
       />
       {showPopup && (
         <PopupComp
-          activeStylesArr={activeStylesArr}
+          activeStylesArr={activeStyleKeys}
           setInnerType={setInnerType}
           innerType={innerType}
           handleAddOrSave={(value) => {
-            handleStyleChange(undefined, value);
+            handleChange(undefined, value);
             setShowPopup(false);
           }}
           editedStr={editedStr}
@@ -95,32 +141,33 @@ const Styles = () => {
         />
       )}
       {activeStylesArr && (
-        <>
-          <div className="mt-2 w-full">
-            {activeStylesArr.map((item, i) => (
+        <div className="mt-2 w-full">
+          {activeStylesArr.map((item, i) => {
+            const isVar = activeStylesFiltered[i].startsWith("var");
+            return (
               <EditableListItem
                 key={i}
                 onEditClick={() => {
                   setInnerType(activeStylesArr[i]);
                   setShowPopup(true);
                 }}
+                showEditButton={!isVar}
                 onDeleteClick={() => {
-                  handleStyleChange(activeStylesArr[i], undefined);
+                  handleChange(activeStyleKeys[i], undefined);
                 }}
               >
-                {
-                  availableTransitions.find(
-                    (transition) =>
-                      transition.value === getValueFromShorthandStr(item, 0)
-                  )?.title
-                }
+                {isVar
+                  ? item
+                  : availableTransitions.find(
+                      (transition) =>
+                        transition.value === getValueFromShorthandStr(item, 0)
+                    )?.title}
               </EditableListItem>
-            ))}
-          </div>
-        </>
+            );
+          })}
+        </div>
       )}
-      <BottomLine />
-    </div>
+    </>
   );
 };
 
@@ -140,8 +187,89 @@ const PopupComp = ({
   handleAddOrSave: (value: string) => void;
 }) => {
   const [editedString, setEditedString] = useState(editedStr);
-  const activeType = useAppSelector(selectActive)?.type || "";
   const editing = !!editedStr;
+
+  return (
+    <Popup
+      editing={editing}
+      onClose={onClose}
+      onEditOrAdd={() => {
+        handleAddOrSave(editedString);
+      }}
+    >
+      <TransitionValueInner
+        editing={editing}
+        innerType={innerType}
+        setInnerType={setInnerType}
+        activeStylesArr={activeStylesArr}
+      >
+        <TransitionTypeSettings
+          innerType={innerType}
+          editedStr={editedStr}
+          setEditedString={setEditedString}
+          editedString={editedString}
+        />
+      </TransitionValueInner>
+    </Popup>
+  );
+};
+
+const TransitionValueInner = ({
+  innerType,
+  setInnerType,
+  activeStylesArr,
+  editing,
+  children,
+}: {
+  editing: boolean;
+  setInnerType: Dispatch<SetStateAction<string>>;
+  innerType: string;
+  activeStylesArr?: string[];
+  children: React.ReactNode;
+}) => {
+  const activeType = useAppSelector(selectActive)?.type || "";
+
+  return (
+    <>
+      {" "}
+      {!editing && (
+        <SelectTransition
+          options={
+            activeStylesArr
+              ? availableTransitions
+                  .filter(
+                    (option) =>
+                      !activeStylesArr.some((t) => t.startsWith(option.value))
+                  )
+                  .filter((option) => filterForFixed(option, activeType))
+              : availableTransitions
+          }
+          value={innerType}
+          onChange={(value) => {
+            setInnerType(value);
+          }}
+        />
+      )}
+      {children}
+    </>
+  );
+};
+
+export const TransitionTypeSettings = ({
+  innerType,
+  editedString,
+  setEditedString,
+  editedStr,
+  variableCreator = false,
+}: {
+  setEditedString: Dispatch<SetStateAction<string>>;
+  variableCreator?: boolean;
+  innerType: string;
+  editedStr: string;
+  editedString: string;
+}) => {
+  const pageWise = useAppSelector(selectPageWise);
+  const activeType = useAppSelector(selectActive)?.type || "";
 
   useEffect(() => {
     let premadeEditedString;
@@ -166,41 +294,23 @@ const PopupComp = ({
       setEditedString(editedStr);
     }
   }, [innerType, editedStr]);
-
   return (
-    <Popup
-      editing={editing}
-      onClose={onClose}
-      onEditOrAdd={() => {
-        handleAddOrSave(editedString);
-      }}
-    >
-      {!editing && (
-        <SelectTransition
-          options={availableTransitions
-            .filter(
-              (option) =>
-                !activeStylesArr.some((t) => t.startsWith(option.value))
-            )
-            .filter((option) => filterForFixed(option, activeType))}
-          value={innerType}
-          onChange={(value) => {
-            setInnerType(value);
-          }}
-        />
-      )}
+    <>
+      {" "}
       {(innerType === "translate" ||
         innerType === "rotate" ||
         innerType === "scale") && (
         <TransformItemPicker
+          variablesAvailable={!variableCreator}
           type={innerType}
           onChange={(newVal) => setEditedString(newVal)}
           variableStr={editedString}
         />
       )}
-      {innerType === "background-color" && (
-        <BackgroundColorPicker
-          variable={editedString}
+      {(innerType === "background-color" || innerType === "color") && (
+        <ColorPicker
+          title="Select color"
+          selected={editedString || pageWise[innerType] || "#000000"}
           onChange={(newVal) => setEditedString(newVal)}
         />
       )}
@@ -214,7 +324,8 @@ const PopupComp = ({
         innerType === "left" ||
         innerType === "bottom" ||
         innerType === "right") &&
-        activeType === "fixed" && (
+        activeType === "fixed" &&
+        !variableCreator && (
           <PositionPicker
             type={innerType}
             variable={editedString}
@@ -238,7 +349,14 @@ const PopupComp = ({
           onChange={(newVal) => setEditedString(newVal)}
         />
       )}
-    </Popup>
+      {innerType === "distance" && (
+        <PositionPicker
+          type={innerType}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+    </>
   );
 };
 

@@ -1,10 +1,10 @@
 import Checkbox from "@/components/Checkbox";
 import ColorPicker from "@/components/ColorPicker";
+import FontFamilyPicker from "@/components/FontFamilyPicker";
 import LinkInput from "@/components/LinkInput";
-import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import { selectPageWise, useAppSelector } from "@/redux/hooks";
-import { defaultInheritFontOptions, getFontVariables } from "@/utils/Helpers";
+import { getFontVariables } from "@/utils/Helpers";
 import { Style, CONFIG } from "@/utils/Types";
 import { Editor } from "@tiptap/react";
 import { useEffect, useState } from "react";
@@ -66,16 +66,13 @@ const Popup = ({
         />
       )}
       {type === "font-family" && (
-        <Select
-          title="Pick a font"
-          showStyled={true}
-          options={[...fontVariables, ...defaultInheritFontOptions]}
-          selected={finalSelectedFontFamily}
+        <FontFamilyPicker
+          variable={finalSelectedFontFamily}
           onChange={(e) => {
-            if (e.target.value === "inherit") {
+            if (e === "inherit") {
               editor.chain().focus().unsetFontFamily().run();
             } else {
-              editor.chain().focus().setFontFamily(e.target.value).run();
+              editor.chain().focus().setFontFamily(e).run();
             }
           }}
         />

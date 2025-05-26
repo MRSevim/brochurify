@@ -1,5 +1,4 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import Slider from "../Slider";
 import { getSetting, getUnit } from "@/utils/Helpers";
 import Border from "./Border";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -24,8 +23,6 @@ const SizingAndBorder = () => {
 };
 
 const SizingAndBorderInner = () => {
-  const isIcon = useAppSelector(selectActive)?.type === "icon";
-
   return (
     <>
       {" "}
@@ -38,7 +35,6 @@ const SizingAndBorderInner = () => {
       <Border />
       <ShorthandToggler type="padding" />
       <WidthAndHeight />
-      {isIcon && <Size />}
     </>
   );
 };
@@ -216,27 +212,6 @@ const NumberController = ({
         onChange={handleInputChange}
       ></NumberInput>
     </div>
-  );
-};
-
-const Size = () => {
-  const type = "font-size";
-  const dispatch = useAppDispatch();
-  const variable = getSetting(useAppSelector, type);
-  return (
-    <Slider
-      value={variable || "25px"}
-      step={1}
-      title="Size"
-      onChange={(newValue) =>
-        dispatch(
-          changeElementStyle({
-            types: [type],
-            newValue,
-          })
-        )
-      }
-    />
   );
 };
 

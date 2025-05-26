@@ -13,8 +13,11 @@ import {
 } from "@/redux/slices/editorSlice";
 import { fontOptions } from "@/utils/Helpers";
 import { Variable } from "@/utils/Types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditableListItem from "../EditableListItem";
+import { TransitionPropertyAddZone } from "../Transitions/Transitions";
+import { TransitionTypeSettings } from "../Transitions/Styles";
+import { variableSelectables } from "../Transitions/SelectTransition";
 
 const Variables = () => {
   return (
@@ -65,15 +68,22 @@ const PopupComp = ({
   editedVar: Variable | null;
 }) => {
   const dispatch = useAppDispatch();
-  const [type, setType] = useState<"color" | "font-family">(
+  const [type, setType] = useState<Variable["type"]>(
     editedVar?.type || "color"
   );
-  const [color, setColor] = useState(editedVar?.value || "#000000");
-  const [fontFamily, setFontFamily] = useState(editedVar?.value || "");
+  const [value, setValue] = useState(editedVar?.value || "");
   const [name, setName] = useState(editedVar?.name || "");
+  const editing = !!editedVar;
+
+  useEffect(() => {
+    if (!editedVar?.value && type === "transition") {
+      setValue("");
+    }
+  }, [type, editedVar]);
+
   return (
     <Popup
-      editing={!!editedVar}
+      editing={editing}
       onClose={onClose}
       onEditOrAdd={() => {
         if (editedVar) {
@@ -81,7 +91,7 @@ const PopupComp = ({
             editVariable({
               ...editedVar,
               name,
-              value: type === "font-family" ? fontFamily : color,
+              value,
             })
           );
         } else {
@@ -89,7 +99,7 @@ const PopupComp = ({
             addVariable({
               type,
               name,
-              value: type === "font-family" ? fontFamily : color,
+              value,
             })
           );
         }
@@ -100,12 +110,10 @@ const PopupComp = ({
         <Select
           title="Pick a variable type"
           showStyled={false}
-          options={["color", "font-family"]}
+          options={variableSelectables}
           selected={type}
           onChange={(e) => {
-            if (e.target.value !== "font-family" && e.target.value !== "color")
-              return;
-            setType(e.target.value);
+            setType(e.target.value as Variable["type"]);
           }}
         />
       )}
@@ -114,22 +122,39 @@ const PopupComp = ({
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      {type === "color" && (
+      {type === "color" ? (
         <ColorPicker
           variableSelect={false}
           title="Pick a color"
-          selected={color}
-          onChange={(e) => setColor(e)}
+          selected={value || "#000000"}
+          onChange={(e) => setValue(e)}
         />
-      )}
-      {type === "font-family" && (
+      ) : type === "font-family" ? (
         <Select
           title="Pick a font"
           showStyled={true}
           options={fontOptions}
-          selected={fontFamily}
-          onChange={(e) => setFontFamily(e.target.value)}
+          selected={value}
+          onChange={(e) => setValue(e.target.value)}
         />
+      ) : type === "transition" ? (
+        <div className="flex flex-col items-center">
+          <TransitionPropertyAddZone
+            variablesAvailable={false}
+            transitionsString={value}
+            onAction={(newVal: string) => setValue(newVal)}
+          />
+        </div>
+      ) : (
+        <div className="flex flex-col items-center">
+          <TransitionTypeSettings
+            innerType={type}
+            editedStr={editedVar?.value || ""}
+            setEditedString={setValue}
+            editedString={value}
+            variableCreator={true}
+          />
+        </div>
       )}
     </Popup>
   );
@@ -150,8 +175,7 @@ const VariablesList = ({
           onEditClick={() => onEditClick(variable)}
           onDeleteClick={() => dispatch(deleteVariable(variable))}
         >
-          <span className="pe-2 border-r-2">{variable.name}</span>
-          <span> {variable.value}</span>
+          <span>{variable.name}</span>
         </EditableListItem>
       ))}
     </div>

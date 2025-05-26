@@ -13,7 +13,7 @@ const NumberInput = ({
   children?: React.ReactNode;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
-  const parsed = isNaN(parseInt(value, 10)) ? "" : parseInt(value, 10);
+  const parsed = isNaN(parseFloat(value)) ? "" : parseFloat(value);
 
   return (
     <form className="mb-2 flex flex-col justify-between">
@@ -26,6 +26,7 @@ const NumberInput = ({
       <div className="flex gap-1 mx-2">
         <input
           disabled={disabled}
+          step={0.1}
           type="number"
           id={"number-input-" + title}
           value={parsed}
