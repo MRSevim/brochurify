@@ -23,7 +23,8 @@ const Slider = ({
   units = ["px", "em", "%"],
   showManualInput = true,
 }: Props) => {
-  const parsed = parseFloat(value); //gets the first full number inside value
+  const parsed = !Number.isNaN(parseFloat(value)) ? parseFloat(value) : ""; //gets the first full number inside value
+
   const unit = getUnit(value);
   const maxNumber =
     unit === "%"
@@ -56,7 +57,7 @@ const Slider = ({
           type="range"
           min={minNumber}
           max={maxNumber}
-          value={parsed || ""}
+          value={parsed}
           step={stepValue}
           onChange={(e) => onChange(e.target.value + unit)}
           className="w-full h-2 rounded-lg appearance-none cursor-pointer"

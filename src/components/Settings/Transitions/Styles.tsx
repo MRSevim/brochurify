@@ -282,7 +282,8 @@ export const TransitionTypeSettings = ({
     } else if (
       innerType === "margin" ||
       innerType === "padding" ||
-      innerType === "border-radius"
+      innerType === "border-radius" ||
+      innerType === "margin/padding"
     ) {
       premadeEditedString = "0px 0px 0px 0px";
     } else {
@@ -316,41 +317,41 @@ export const TransitionTypeSettings = ({
       )}
       {innerType === "opacity" && (
         <OpacityPicker
+          variablesAvailable={!variableCreator}
           variable={editedString}
           onChange={(newVal) => setEditedString(newVal)}
         />
       )}
-      {(innerType === "top" ||
+      {(((innerType === "top" ||
         innerType === "left" ||
         innerType === "bottom" ||
         innerType === "right") &&
         activeType === "fixed" &&
-        !variableCreator && (
-          <PositionPicker
-            type={innerType}
-            variable={editedString}
-            onChange={(newVal) => setEditedString(newVal)}
-          />
-        )}
+        !variableCreator) ||
+        innerType === "distance") && (
+        <PositionPicker
+          variablesAvailable={!variableCreator}
+          type={innerType}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
       {(innerType === "border-radius" ||
         innerType === "padding" ||
-        innerType === "margin") && (
+        innerType === "margin" ||
+        innerType === "margin/padding") && (
         <ShorthandTogglerPicker
+          variablesAvailable={!variableCreator}
           type={innerType}
           variable={editedString}
           onChange={(newVal) => setEditedString(newVal)}
         />
       )}
-      {(innerType === "width" || innerType === "height") && (
+      {(innerType === "width" ||
+        innerType === "height" ||
+        innerType === "width/height") && (
         <PositionPicker
           hasAutoOption={true}
-          type={innerType}
-          variable={editedString}
-          onChange={(newVal) => setEditedString(newVal)}
-        />
-      )}
-      {innerType === "distance" && (
-        <PositionPicker
           type={innerType}
           variable={editedString}
           onChange={(newVal) => setEditedString(newVal)}

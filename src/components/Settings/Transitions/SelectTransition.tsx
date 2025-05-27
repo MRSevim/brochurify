@@ -20,10 +20,14 @@ export const SelectTransition = ({
     />
   );
 };
-export const availableTransitions: OptionsObject[] = [
+const availableTransforms: OptionsObject[] = [
   { title: "Move", value: "translate" },
   { title: "Rotate", value: "rotate" },
   { title: "Scale", value: "scale" },
+];
+
+export const availableTransitions: OptionsObject[] = [
+  ...availableTransforms,
   { title: "Background Color", value: "background-color" },
   { title: "Text Color", value: "color" },
   { title: "Opacity", value: "opacity" },
@@ -38,22 +42,15 @@ export const availableTransitions: OptionsObject[] = [
   { title: "Height", value: "height" },
 ];
 
-const removedVariableSelectables = [
-  "color",
-  "background-color",
-  "top",
-  "left",
-  "bottom",
-  "right",
-];
-
 export const variableSelectables: OptionsObject[] = [
   { title: "Color", value: "color" },
   { title: "Font family", value: "font-family" },
   { title: "Transition property", value: "transition" },
-  ...availableTransitions.filter(
-    (item) => !removedVariableSelectables.includes(item.value)
-  ),
+  ...availableTransforms,
+  { title: "Opacity", value: "opacity" },
+  { title: "Border Radius", value: "border-radius" },
+  { title: "Margin/Padding", value: "margin/padding" },
+  { title: "Width/Height", value: "width/height" },
   { title: "Distance from top/left/bottom/right", value: "distance" },
 ];
 

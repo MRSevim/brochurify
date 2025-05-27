@@ -7,6 +7,7 @@ import {
   StringOrUnd,
   OptionsObject,
   CONFIG,
+  Variable,
 } from "./Types";
 import { v4 as uuidv4 } from "uuid";
 import { findElementById } from "./EditorHelpers";
@@ -383,6 +384,28 @@ export const getValueFromShorthandStr = (
   return values[i];
 };
 
+const findInVariables = (str: string, variables: Variable[]) => {
+  const idMatch = str.match(/var\(--(.+?)\)/);
+  const id = idMatch?.[1];
+  const variable = variables.find((variable) => variable.id === id);
+  return variable?.name || str;
+};
+
+export const convertVarIdToVarName = (
+  str: string,
+  useAppSelector: UseSelector<{
+    editor: EditorState;
+  }>
+) => {
+  const variables = useAppSelector(selectVariables);
+
+  if (str.startsWith("var(--")) {
+    return findInVariables(str, variables);
+  } else {
+    return str;
+  }
+};
+
 export const convertVarIdsToVarNames = (
   arr: string[],
   useAppSelector: UseSelector<{
@@ -392,10 +415,7 @@ export const convertVarIdsToVarNames = (
   const variables = useAppSelector(selectVariables);
   return arr.map((item) => {
     if (item.startsWith("var(--")) {
-      const idMatch = item.match(/var\(--(.+?)\)/);
-      const id = idMatch?.[1];
-      const variable = variables.find((variable) => variable.id === id);
-      return variable?.name || item;
+      return findInVariables(item, variables);
     } else {
       return item;
     }

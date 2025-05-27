@@ -13,6 +13,7 @@ import GroupedRadioButtons from "../GroupedRadioButtons";
 import InfoIcon from "../InfoIcon";
 import ShorthandToggler from "./ShorthandToggler";
 import { CONFIG } from "@/utils/Types";
+import VariableSelector from "../VariableSelector";
 
 const SizingAndBorder = () => {
   return (
@@ -211,6 +212,12 @@ const NumberController = ({
         value={variable || ""}
         onChange={handleInputChange}
       ></NumberInput>
+
+      <VariableSelector
+        selected={variable}
+        type="width/height"
+        onChange={(value) => dispatchChange(value)}
+      />
     </div>
   );
 };

@@ -5,14 +5,21 @@ import Popup from "./Popup";
 import { selectVariables, useAppSelector } from "@/redux/hooks";
 
 const addVarAtStart = (str: StringOrUnd) => `var(--${str})`;
+const parseSelectedVars = (value: string) =>
+  value
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean);
 
 const VariableSelector = ({
+  variablesBehaveAsArray = false,
   selected,
   type,
   onChange,
 }: {
   type: string;
   selected: string;
+  variablesBehaveAsArray?: boolean;
   onChange: (newVal: string) => void;
 }) => {
   const [varOpen, setVarOpen] = useState(false);
@@ -20,14 +27,17 @@ const VariableSelector = ({
   const availableVars = useAppSelector(selectVariables).filter(
     (item) => item.type === type
   );
+  const selectedVars = parseSelectedVars(value);
   return (
     <>
-      <button
-        className="p-1 mt-2 border border-text rounded"
-        onClick={() => setVarOpen((prev) => !prev)}
-      >
-        Var
-      </button>
+      <div className="flex justify-center">
+        <button
+          className="p-1 my-2 border border-text rounded"
+          onClick={() => setVarOpen((prev) => !prev)}
+        >
+          Var
+        </button>
+      </div>
 
       {varOpen && (
         <Popup
@@ -48,16 +58,24 @@ const VariableSelector = ({
                   <div
                     key={item.id}
                     className={
-                      "flex gap-3 justify-center items-center py-2 pe-2 w-1/3 cursor-pointer hover:shadow-sm hover:shadow-text hover:z-50 " +
-                      (addVarAtStart(item.id) === value &&
+                      "flex gap-3 justify-center items-center p-2 w-1/3 cursor-pointer hover:shadow-sm hover:shadow-text hover:z-50 " +
+                      (selectedVars.includes(addVarAtStart(item.id)) &&
                         "shadow-sm shadow-text z-50 ring-2 ring-text")
                     }
                     onClick={() => {
                       const added = addVarAtStart(item.id);
-                      if (value === added) {
-                        setValue("");
+                      if (variablesBehaveAsArray) {
+                        if (selectedVars.includes(added)) {
+                          setValue(
+                            selectedVars.filter((v) => v !== added).join(",")
+                          );
+                        } else {
+                          setValue([...selectedVars, added].join(","));
+                        }
                       } else {
-                        setValue(added);
+                        if (value === added) {
+                          setValue("");
+                        } else setValue(added);
                       }
                     }}
                   >

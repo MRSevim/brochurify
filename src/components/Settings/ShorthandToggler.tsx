@@ -2,6 +2,7 @@ import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import {
   capitalizeFirstLetter,
+  convertVarIdToVarName,
   getDefaultStyle,
   getSetting,
   getValueFromShorthandStr,
@@ -14,6 +15,7 @@ import Icon from "../Icon";
 import Slider from "../Slider";
 import BottomLine from "../BottomLine";
 import ResetButton from "../ResetButton";
+import VariableSelector from "../VariableSelector";
 
 const units = ["px", "em", "%"];
 const sizingTypeArray: SizingType[] = [
@@ -72,13 +74,17 @@ export const ShorthandTogglerPicker = ({
   type,
   variable,
   onChange,
+  variablesAvailable = true,
 }: {
   type: string;
   variable: StringOrUnd;
   onChange: (newVal: string) => void;
+  variablesAvailable?: boolean;
 }) => {
   const [toggle, setToggle] = useState(false);
   const corner = type === "border-radius";
+  const value = convertVarIdToVarName(variable || "", useAppSelector);
+  const variableType = corner ? type : "margin/padding";
 
   const handleInputChange = (e: string, i: number | undefined) => {
     const dispatchFunc = (newValue: string) => {
@@ -111,7 +117,7 @@ export const ShorthandTogglerPicker = ({
             <Slider
               units={units}
               key={i}
-              value={getValueFromShorthandStr(variable, i)}
+              value={getValueFromShorthandStr(value, i)}
               title={item.title}
               onChange={(e) => handleInputChange(e, i)}
             />
@@ -121,9 +127,16 @@ export const ShorthandTogglerPicker = ({
       {!toggle && (
         <Slider
           units={units}
-          value={getValueFromShorthandStr(variable, 0) || ""}
+          value={getValueFromShorthandStr(value, 0) || ""}
           title={corner ? "All corners" : "All sides"}
           onChange={(e) => handleInputChange(e, undefined)}
+        />
+      )}
+      {variablesAvailable && (
+        <VariableSelector
+          selected={variable || ""}
+          type={variableType}
+          onChange={(value) => onChange(value)}
         />
       )}
     </>

@@ -111,6 +111,7 @@ export const TransitionPropertyAddZone = ({
       />
       {variablesAvailable && (
         <VariableSelector
+          variablesBehaveAsArray={true}
           selected={transitionsString}
           type={type}
           onChange={(value) => handleAddition(value)}

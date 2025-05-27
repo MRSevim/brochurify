@@ -1,7 +1,7 @@
 import React from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import BottomLine from "../BottomLine";
-import { getSetting } from "@/utils/Helpers";
+import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Checkbox from "../Checkbox";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
@@ -9,6 +9,7 @@ import Transform from "./Transform";
 import Slider from "../Slider";
 import ResetButton from "../ResetButton";
 import { StringOrUnd, CONFIG } from "@/utils/Types";
+import VariableSelector from "../VariableSelector";
 
 const Others = () => {
   return (
@@ -73,8 +74,9 @@ const TabletOrMobile = ({
   );
 };
 
+const type = "opacity";
+
 const Opacity = () => {
-  const type = "opacity";
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
 
@@ -98,21 +100,33 @@ const Opacity = () => {
 
 export const OpacityPicker = ({
   variable,
+  variablesAvailable = true,
   onChange,
 }: {
   variable: StringOrUnd;
+  variablesAvailable?: boolean;
   onChange: (e: string) => void;
 }) => {
+  const sliderValue = convertVarIdToVarName(variable || "", useAppSelector);
   return (
-    <Slider
-      value={variable || "1"}
-      units={[""]}
-      title="Opacity"
-      max={1}
-      min={0}
-      step={0.1}
-      onChange={onChange}
-    />
+    <>
+      <Slider
+        value={sliderValue || "1"}
+        units={[""]}
+        title="Opacity"
+        max={1}
+        min={0}
+        step={0.1}
+        onChange={onChange}
+      />
+      {variablesAvailable && (
+        <VariableSelector
+          selected={variable || ""}
+          type={type}
+          onChange={(value) => onChange(value)}
+        />
+      )}
+    </>
   );
 };
 

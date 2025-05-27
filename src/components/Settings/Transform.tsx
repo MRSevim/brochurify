@@ -162,13 +162,11 @@ export const TransformItemPicker = ({
       )}
 
       {variablesAvailable && (
-        <div className="flex justify-center">
-          <VariableSelector
-            selected={variableStr}
-            type={type}
-            onChange={(value) => onChange(value)}
-          />
-        </div>
+        <VariableSelector
+          selected={variableStr}
+          type={type}
+          onChange={(value) => onChange(value)}
+        />
       )}
     </>
   );

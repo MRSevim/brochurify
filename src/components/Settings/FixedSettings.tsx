@@ -6,6 +6,7 @@ import { changeElementStyle } from "@/redux/slices/editorSlice";
 import GroupedRadioButtons from "../GroupedRadioButtons";
 import NumberInput from "../NumberInput";
 import { StringOrUnd } from "@/utils/Types";
+import VariableSelector from "../VariableSelector";
 
 const positionsArr = ["top", "bottom", "left", "right"];
 
@@ -53,11 +54,13 @@ const NumberController = ({ type }: { type: string }) => {
 
 export const PositionPicker = ({
   hasAutoOption = false,
+  variablesAvailable = true,
   type,
   variable,
   onChange,
 }: {
   type: string;
+  variablesAvailable?: boolean;
   hasAutoOption?: boolean;
   variable: StringOrUnd;
   onChange: (newVal: string) => void;
@@ -89,6 +92,14 @@ export const PositionPicker = ({
         value={variable || ""}
         onChange={handleInputChange}
       ></NumberInput>
+
+      {variablesAvailable && (
+        <VariableSelector
+          selected={variable || ""}
+          type="distance"
+          onChange={(value) => onChange(value)}
+        />
+      )}
     </>
   );
 };
