@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
-import BottomLine from "@/components/BottomLine";
 import TextInput from "@/components/TextInput";
 import { getSetting } from "@/utils/Helpers";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import TextareaInput from "@/components/TextareaInput";
 import LinkInput from "@/components/LinkInput";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const Seo = () => {
   return (
@@ -36,7 +36,7 @@ const WebsiteTitle = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <TextInput
         title="Website title"
         value={variable || ""}
@@ -49,8 +49,7 @@ const WebsiteTitle = () => {
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const WebsiteDescription = () => {
@@ -59,7 +58,7 @@ const WebsiteDescription = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <TextareaInput
         rows={5}
         title="Website description"
@@ -73,8 +72,7 @@ const WebsiteDescription = () => {
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const WebsiteKeywords = () => {
@@ -83,7 +81,7 @@ const WebsiteKeywords = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <TextareaInput
         rows={3}
         title="Website keywords (Separated by commas)"
@@ -97,8 +95,7 @@ const WebsiteKeywords = () => {
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const CanonicalUrl = () => {
@@ -107,7 +104,7 @@ const CanonicalUrl = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <LinkInput
         title="Website's main url (canonical)"
         value={variable || ""}
@@ -120,8 +117,7 @@ const CanonicalUrl = () => {
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const WebsiteImage = () => {
@@ -130,7 +126,7 @@ const WebsiteImage = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <LinkInput
         title="Website's main image's url"
         value={variable || ""}
@@ -143,8 +139,7 @@ const WebsiteImage = () => {
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 export default Seo;

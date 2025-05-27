@@ -1,4 +1,3 @@
-import BottomLine from "@/components/BottomLine";
 import ColorPicker from "@/components/ColorPicker";
 import ResetButton from "@/components/ResetButton";
 import Select from "@/components/Select";
@@ -16,6 +15,7 @@ import HeadingStyles from "./HeadingStyles";
 import InfoIcon from "@/components/InfoIcon";
 import ToggleBtn from "@/components/ToggleBtn";
 import { CONFIG } from "@/utils/Types";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const Styles = () => {
   return (
@@ -40,7 +40,7 @@ const Color = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <ColorPicker
         title={"Select pagewise text color"}
         selected={variable || "#000000"}
@@ -54,8 +54,7 @@ const Color = () => {
         }
       />
       <ResetButtonWithOnClick type={type} />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const BackgroundColor = () => {
@@ -64,7 +63,7 @@ const BackgroundColor = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <ColorPicker
         title="Select pagewise background color"
         selected={variable || "#000000"}
@@ -78,8 +77,7 @@ const BackgroundColor = () => {
         }
       />
       <ResetButtonWithOnClick type={type} />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const FontSize = () => {
@@ -88,7 +86,7 @@ const FontSize = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <Slider
         title="Select pagewise font size"
         step={1}
@@ -104,8 +102,7 @@ const FontSize = () => {
         }
       />
       <ResetButtonWithOnClick type={type} />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -116,7 +113,7 @@ const FontFamily = () => {
   const fontVariables = getFontVariables(useAppSelector);
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <Select
         title="Select pagewise font family"
         showStyled={true}
@@ -132,8 +129,7 @@ const FontFamily = () => {
         }}
       />
       <ResetButtonWithOnClick type={type} />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -143,7 +139,7 @@ const LineHeight = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <Slider
         title="Select pagewise line-height"
         max={5}
@@ -160,8 +156,7 @@ const LineHeight = () => {
         }
       />
       <ResetButtonWithOnClick type={type} />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -222,17 +217,14 @@ const ToggleToBrowserDefaults = () => {
   };
 
   return (
-    <div className="relative pb-2 mb-2">
-      <div className="flex justify-between mb-2">
-        <ToggleBtn
-          text="Use browser defaults for link+headings"
-          checked={toggled}
-          onChange={handleToggle}
-        />
-        <InfoIcon text="Toggle to reset link and heading styles to browser defaults" />
-      </div>
-      <BottomLine />
-    </div>
+    <WrapperWithBottomLine flex={true}>
+      <ToggleBtn
+        text="Use browser defaults for link+headings"
+        checked={toggled}
+        onChange={handleToggle}
+      />
+      <InfoIcon text="Toggle to reset link and heading styles to browser defaults" />
+    </WrapperWithBottomLine>
   );
 };
 

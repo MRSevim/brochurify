@@ -3,15 +3,15 @@ import { getProp } from "@/utils/Helpers";
 import React from "react";
 import LinkInput from "../LinkInput";
 import { changeElementProp } from "@/redux/slices/editorSlice";
-import BottomLine from "../BottomLine";
 import Checkbox from "../Checkbox";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const Url = () => {
   const type = "href";
   const variable = getProp<string>(useAppSelector, type);
   const dispatch = useAppDispatch();
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <LinkInput
         title="Target url"
         desc="is the route of your button"
@@ -26,8 +26,7 @@ const Url = () => {
         }
       />
       <NewTab />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const NewTab = () => {

@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import BottomLine from "../../BottomLine";
 import {
   convertVarIdsToVarNames,
   getSetting,
@@ -32,6 +31,7 @@ import { ShorthandTogglerPicker } from "../ShorthandToggler";
 import { CONFIG, Style } from "@/utils/Types";
 import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
 import ColorPicker from "@/components/ColorPicker";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const Styles = () => {
   const [outerType, setOuterType] = useState("base");
@@ -58,7 +58,7 @@ const Styles = () => {
     );
   };
   return (
-    <div className="flex flex-col items-center relative pb-2 mb-2">
+    <WrapperWithBottomLine flex={true}>
       <SecondaryTitle title="Transitioned styles">
         <InfoIcon text="Apply styles for specified classes. You can change transition properties from above." />
       </SecondaryTitle>
@@ -76,8 +76,7 @@ const Styles = () => {
         innerType={innerType}
         setInnerType={setInnerType}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

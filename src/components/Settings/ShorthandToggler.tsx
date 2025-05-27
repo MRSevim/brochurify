@@ -13,9 +13,9 @@ import { useState } from "react";
 import SecondaryTitle from "../SecondaryTitle";
 import Icon from "../Icon";
 import Slider from "../Slider";
-import BottomLine from "../BottomLine";
 import ResetButton from "../ResetButton";
 import VariableSelector from "../VariableSelector";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const units = ["px", "em", "%"];
 const sizingTypeArray: SizingType[] = [
@@ -39,7 +39,7 @@ const ShorthandToggler = ({ type }: { type: string }) => {
   const variable = getSetting(useAppSelector, type);
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <ShorthandTogglerPicker
         type={type}
         variable={variable}
@@ -65,8 +65,7 @@ const ShorthandToggler = ({ type }: { type: string }) => {
           );
         }}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

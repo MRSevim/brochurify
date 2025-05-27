@@ -1,6 +1,5 @@
 import React from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
-import BottomLine from "../BottomLine";
 import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Checkbox from "../Checkbox";
@@ -10,6 +9,7 @@ import Slider from "../Slider";
 import ResetButton from "../ResetButton";
 import { StringOrUnd, CONFIG } from "@/utils/Types";
 import VariableSelector from "../VariableSelector";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const Others = () => {
   return (
@@ -31,7 +31,7 @@ const OthersInner = () => {
 
 const Hide = () => {
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <TabletOrMobile
         title="Hide on tablet and below"
         outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
@@ -40,8 +40,7 @@ const Hide = () => {
         title="Hide on mobile and below"
         outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -81,7 +80,7 @@ const Opacity = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <OpacityPicker
         variable={variable}
         onChange={(newValue) =>
@@ -93,8 +92,7 @@ const Opacity = () => {
           dispatch(changeElementStyle({ types: [type], newValue: "" }))
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

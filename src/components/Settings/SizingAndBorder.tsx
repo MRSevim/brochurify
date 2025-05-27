@@ -8,12 +8,12 @@ import marginBorderPadding from "../../../public/margin-border-padding.webp";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import NumberInput from "../NumberInput";
 import SecondaryTitle from "../SecondaryTitle";
-import BottomLine from "../BottomLine";
 import GroupedRadioButtons from "../GroupedRadioButtons";
 import InfoIcon from "../InfoIcon";
 import ShorthandToggler from "./ShorthandToggler";
 import { CONFIG } from "@/utils/Types";
 import VariableSelector from "../VariableSelector";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const SizingAndBorder = () => {
   return (
@@ -45,7 +45,7 @@ export const WidthAndHeight = () => {
   const [outerType, setOuterType] = useState("base");
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <SecondaryTitle title="Width and Height">
         <InfoIcon
           text="Pixel, percentage based or automatic size settings for the element. Note that base styles will apply to every screen size if mobile and tablet styles are not
@@ -58,9 +58,7 @@ export const WidthAndHeight = () => {
         <NumberController type="width" outerType={outerType} />
         <NumberController type="height" outerType={outerType} />
       </div>
-
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const typeArr = [

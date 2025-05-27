@@ -1,5 +1,4 @@
 import AddButton from "@/components/AddButton";
-import BottomLine from "@/components/BottomLine";
 import ColorPicker from "@/components/ColorPicker";
 import Popup from "@/components/Popup";
 import Select from "@/components/Select";
@@ -18,6 +17,7 @@ import EditableListItem from "../EditableListItem";
 import { TransitionPropertyAddZone } from "../Transitions/Transitions";
 import { TransitionTypeSettings } from "../Transitions/Styles";
 import { variableSelectables } from "../Transitions/SelectTransition";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const Variables = () => {
   return (
@@ -34,7 +34,7 @@ const VariablesInner = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [editedVar, setEditedVar] = useState<Variable | null>(null);
   return (
-    <div className="flex flex-col items-center relative pb-2 mb-2">
+    <WrapperWithBottomLine flex={true}>
       <AddButton
         onClick={() => {
           setEditedVar(null);
@@ -56,8 +56,7 @@ const VariablesInner = () => {
           setShowPopup(true);
         }}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const PopupComp = ({

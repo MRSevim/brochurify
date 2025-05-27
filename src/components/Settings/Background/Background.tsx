@@ -8,7 +8,6 @@ import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import { selectPageWise, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ColorPicker from "../../ColorPicker";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
-import BottomLine from "../../BottomLine";
 import SecondaryTitle from "../../SecondaryTitle";
 import ToggleBtn from "../../ToggleBtn";
 import LinkInput from "../../LinkInput";
@@ -17,6 +16,7 @@ import ResetButton from "../../ResetButton";
 import Slider from "../../Slider";
 import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
 import { CONFIG, StringOrUnd } from "@/utils/Types";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const Background = () => {
   return (
@@ -35,7 +35,7 @@ export const BackgroundColor = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <BackgroundColorPicker
         variable={variable}
         onChange={(newValue) => {
@@ -57,8 +57,7 @@ export const BackgroundColor = () => {
           );
         }}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -115,7 +114,7 @@ const BackgroundShadow = () => {
     );
   };
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <SecondaryTitle title="Background Shadow">
         <ToggleBtn checked={toggled} onChange={handleToggle} />
       </SecondaryTitle>
@@ -149,9 +148,7 @@ const BackgroundShadow = () => {
           <ResetButton onClick={() => setToInitial()} />
         </>
       )}
-
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -229,7 +226,7 @@ const BackgroundImage = () => {
   };
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <SecondaryTitle title="Background Image">
         <ToggleBtn checked={toggled} onChange={handleToggle} />
       </SecondaryTitle>
@@ -241,9 +238,7 @@ const BackgroundImage = () => {
           <ResetButton onClick={() => setToInitial()} />
         </>
       )}
-
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

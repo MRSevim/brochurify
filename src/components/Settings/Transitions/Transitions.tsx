@@ -1,7 +1,6 @@
 import { useState } from "react";
 import AddButton from "../../AddButton";
 import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
-import BottomLine from "../../BottomLine";
 import {
   addToString,
   convertVarIdsToVarNames,
@@ -23,6 +22,7 @@ import EditableListItem from "../EditableListItem";
 import Popup from "@/components/Popup";
 import { availableTransitions, SelectTransition } from "./SelectTransition";
 import VariableSelector from "@/components/VariableSelector";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const splitValue = ",";
 const type = "transition";
@@ -38,7 +38,7 @@ const Transitions = () => {
       title="Transitions"
       desc="Manage transitions for this element"
     >
-      <div className="flex flex-col items-center relative pb-2 mb-2">
+      <WrapperWithBottomLine flex={true}>
         <SecondaryTitle title="Transition settings">
           <InfoIcon text="Apply general transition settings here. These apply to all the transitions with specified property." />
         </SecondaryTitle>
@@ -46,8 +46,7 @@ const Transitions = () => {
           transitionsString={transitionsString}
           onAction={onAction}
         />
-        <BottomLine />
-      </div>
+      </WrapperWithBottomLine>
       <Styles />
     </ToggleVisibilityWrapper>
   );

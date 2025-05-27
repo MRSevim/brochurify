@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import BottomLine from "../../BottomLine";
 import TextAlign from "@tiptap/extension-text-align";
 import TextStyle from "@tiptap/extension-text-style";
 import Link from "@tiptap/extension-link";
@@ -25,6 +24,7 @@ import Popup from "./Popup";
 import { changeElementProp } from "@/redux/slices/editorSlice";
 import sanitizeHtml from "sanitize-html";
 import LetterSpacing from "@/Tiptap/LetterSpacing";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
@@ -134,12 +134,11 @@ const Text = () => {
   }, [content, editor]);
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <SecondaryTitle title="Editable Text" />
       <EditBar editor={editor} />
       <EditorContent editor={editor} />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

@@ -1,4 +1,3 @@
-import BottomLine from "@/components/BottomLine";
 import ResetButton from "@/components/ResetButton";
 import Select from "@/components/Select";
 import SmallText from "@/components/SmallText";
@@ -9,6 +8,7 @@ import { getSetting } from "@/utils/Helpers";
 import { OptionsObject, CONFIG } from "@/utils/Types";
 import React from "react";
 import Checkbox from "../Checkbox";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const justifyContentAlignmentOptionsForRow = [
   {
@@ -128,7 +128,7 @@ const Alignment = () => {
 
 const Reverse = () => {
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <TabletOrMobile
         title="Reverse on tablet and below"
         outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
@@ -138,8 +138,7 @@ const Reverse = () => {
         outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
       />
       <SmallText>Only reverses if items are stacked</SmallText>
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -185,7 +184,7 @@ const HorizontalOrVertical = ({
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <Select
         title={title}
         showStyled={false}
@@ -210,8 +209,7 @@ const HorizontalOrVertical = ({
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

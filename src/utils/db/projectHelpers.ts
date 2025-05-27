@@ -7,15 +7,15 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 import { v4 as uuidv4 } from "uuid";
-import { getScreenSnapshot, protect } from "../serverActions/helpers";
+import { protect } from "../serverActions/helpers";
 import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
-import { uploadToS3 } from "../s3/helpers";
+import { snapshotQueue } from "../lib/workers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
-const makeSnapshotUrl = (id: string) => `snapshots/${id}.png`;
+export const makeSnapshotUrl = (id: string) => `snapshots/${id}.png`;
 
 export async function createProject(
   project: {
@@ -33,22 +33,21 @@ export async function createProject(
         "Please pass in layout, pageWise and variables to createProject"
       );
     }
-    const buffer = await getScreenSnapshot(
-      generateHTML(layout, pageWise, variables, false)
-    );
     const id = uuidv4();
-    const snapshot = await uploadToS3({
-      buffer,
-      key: makeSnapshotUrl(id),
-      contentType: "image/jpeg",
+    const html = generateHTML(layout, pageWise, variables, false);
+    // Add a background job
+    await snapshotQueue.add("create-snapshot", {
+      html,
+      userId: user.userId,
+      id,
     });
+
     const projectItem = {
       userId: user.userId,
       id,
       type: "project",
       title: project.title,
       data: project.editor,
-      snapshot,
       createdAt: new Date().toISOString(),
     };
 
@@ -142,23 +141,15 @@ export async function updateProject(
           "Please pass in layout, pageWise and variables to createProject"
         );
       }
-      const buffer = await getScreenSnapshot(
-        generateHTML(layout, pageWise, variables, false)
-      );
-
-      const snapshot = await uploadToS3({
-        buffer,
-        key: makeSnapshotUrl(id),
-        contentType: "image/jpeg",
+      // Add a background job
+      await snapshotQueue.add("create-snapshot", {
+        html: generateHTML(layout, pageWise, variables, false),
+        userId: user.userId,
+        id,
       });
-
       updateExpressions.push("#data = :data");
       expressionAttributeNames["#data"] = "data";
       expressionAttributeValues[":data"] = stripEditorFields(updates.editor);
-      // ✅ Add snapshot to update
-      updateExpressions.push("#snapshot = :snapshot");
-      expressionAttributeNames["#snapshot"] = "snapshot";
-      expressionAttributeValues[":snapshot"] = snapshot;
     }
     // Add updatedAt field
     updateExpressions.push("#updatedAt = :updatedAt");

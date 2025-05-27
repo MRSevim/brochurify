@@ -1,7 +1,6 @@
 import React from "react";
 import SecondaryTitle from "../SecondaryTitle";
 import InfoIcon from "../InfoIcon";
-import BottomLine from "../BottomLine";
 import {
   getSetting,
   getUnit,
@@ -14,6 +13,7 @@ import NumberInput from "../NumberInput";
 import UnitSelector from "../UnitSelector";
 import ToggleBtn from "../ToggleBtn";
 import VariableSelector from "../VariableSelector";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const availableOptions = [
   { title: "Move", type: "translate" },
@@ -88,24 +88,25 @@ export const TransformItem = ({
   };
 
   return (
-    <div className="relative pb-2 mb-2 w-full text-center">
-      {title ? (
-        <SecondaryTitle title={title}>
+    <WrapperWithBottomLine>
+      <div className="w-full text-center">
+        {title ? (
+          <SecondaryTitle title={title}>
+            <ToggleBtn checked={toggled} onChange={handleToggle} />
+          </SecondaryTitle>
+        ) : (
           <ToggleBtn checked={toggled} onChange={handleToggle} />
-        </SecondaryTitle>
-      ) : (
-        <ToggleBtn checked={toggled} onChange={handleToggle} />
-      )}
+        )}
 
-      {toggled && (
-        <TransformItemPicker
-          type={type}
-          onChange={changeStyle}
-          variableStr={variableStr}
-        />
-      )}
-      <BottomLine />
-    </div>
+        {toggled && (
+          <TransformItemPicker
+            type={type}
+            onChange={changeStyle}
+            variableStr={variableStr}
+          />
+        )}
+      </div>
+    </WrapperWithBottomLine>
   );
 };
 

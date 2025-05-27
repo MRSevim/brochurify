@@ -3,14 +3,14 @@ import { getSetting } from "@/utils/Helpers";
 import React from "react";
 import LinkInput from "@/components/LinkInput";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
-import BottomLine from "@/components/BottomLine";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const WebsiteIcon = () => {
   const type = "iconUrl";
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <LinkInput
         title="Favicon url"
         value={variable || ""}
@@ -23,8 +23,7 @@ const WebsiteIcon = () => {
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 export default WebsiteIcon;

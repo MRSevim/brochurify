@@ -1,18 +1,18 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { getProp } from "@/utils/Helpers";
 import iconList from "bootstrap-icons/font/bootstrap-icons.json";
-import BottomLine from "../BottomLine";
 import { changeElementProp } from "@/redux/slices/editorSlice";
 import Icon from "../Icon";
 import { useState } from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const IconType = () => {
   const [searchString, setSearchString] = useState("");
 
   return (
     <ToggleVisibilityWrapper title="Icon Settings">
-      <div className="relative pb-2 mb-2">
+      <WrapperWithBottomLine>
         <form className="max-w-sm mx-auto mb-2">
           <label className="block mb-2 text-sm font-medium">Icon type</label>
           <input
@@ -28,9 +28,7 @@ const IconType = () => {
             </div>
           </div>
         </form>
-
-        <BottomLine />
-      </div>
+      </WrapperWithBottomLine>
     </ToggleVisibilityWrapper>
   );
 };

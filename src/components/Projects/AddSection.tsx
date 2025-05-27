@@ -11,7 +11,7 @@ import { initialSimpleLayout } from "@/utils/InitialLayout";
 import TextInput from "../TextInput";
 import { createAction } from "@/utils/serverActions/projectActions";
 import { toast } from "react-toastify";
-import { ShapshotImage } from "../ShapshotImage";
+import { SnapshotImage } from "../SnapshotImage";
 
 const templateOptions = [
   {
@@ -76,7 +76,7 @@ const AddSection = () => {
             onEditOrAdd={handleAdd}
           >
             <h2 className="font-bold text-lg mb-2">Choose a Template</h2>
-            <div className="grid grid-cols-2 gap-4 mb-2">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(0,300px))] gap-4 mb-2">
               {templateOptions.map((template) => (
                 <div
                   onClick={() => setInitialTemplate(template.value)}
@@ -87,7 +87,7 @@ const AddSection = () => {
                       : "border-gray hover:border-hoveredBlue"
                   }`}
                 >
-                  <ShapshotImage src={template.image} alt={template.label} />
+                  <SnapshotImage src={template.image} alt={template.label} />
                   <div className="flex justify-between items-center mt-2">
                     <p className="text-sm">{template.label}</p>
                     <span className="hover:scale-125">

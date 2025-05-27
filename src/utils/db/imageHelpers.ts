@@ -6,7 +6,7 @@ import { protect } from "../serverActions/helpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 const MAX_IMAGE_SIZE_MB = 5;
-const MAX_IMAGE_COUNT = 50;
+const MAX_IMAGE_COUNT = 20;
 
 const ALLOWED_IMAGE_TYPES = [
   "image/apng",

@@ -9,10 +9,10 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Select from "../Select";
 import ColorPicker from "../ColorPicker";
-import BottomLine from "../BottomLine";
 import SecondaryTitle from "../SecondaryTitle";
 import ShorthandToggler from "./ShorthandToggler";
 import ResetButton from "../ResetButton";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const Border = () => {
   const type = "border";
@@ -64,13 +64,13 @@ const Border = () => {
   };
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <SecondaryTitle title="Border">
         <ToggleBtn checked={toggled} onChange={handleToggle} />
       </SecondaryTitle>
       {toggled && (
         <>
-          <div className="relative mb-2 pb-2">
+          <WrapperWithBottomLine>
             <Slider
               units={["px", "em"]}
               value={getValueFromShorthandStr(borderStr, 0)}
@@ -87,14 +87,11 @@ const Border = () => {
               value={getValueFromShorthandStr(borderStr, 2)}
             />
             <ResetButton onClick={() => setToInitial()} />
-            <BottomLine />
-          </div>
+          </WrapperWithBottomLine>
           <ShorthandToggler type={borderRadiusType} />
         </>
       )}
-
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

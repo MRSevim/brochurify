@@ -7,12 +7,12 @@ import {
 } from "@/redux/hooks";
 import Text from "./Text";
 import ResetButton from "@/components/ResetButton";
-import BottomLine from "@/components/BottomLine";
 import { getSetting } from "@/utils/Helpers";
 import Slider from "@/components/Slider";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import ColorPicker from "@/components/ColorPicker";
 import FontFamilyPicker from "@/components/FontFamilyPicker";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const TextRelated = () => {
   const active = useAppSelector(selectActive);
@@ -38,7 +38,7 @@ const TextColor = () => {
   const colorStr = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
   return (
-    <div className="relative mb-2 pb-2">
+    <WrapperWithBottomLine>
       <ColorPicker
         title={`Pick ${activeType === "icon" ? "icon" : "text"} color`}
         selected={colorStr || pageWise.color || "#000000"}
@@ -51,8 +51,7 @@ const TextColor = () => {
           dispatch(changeElementStyle({ types: [type], newValue: "" }));
         }}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -62,7 +61,7 @@ const FontFamily = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative mb-2 pb-2">
+    <WrapperWithBottomLine>
       <FontFamilyPicker
         variable={variable}
         onChange={(newValue) => {
@@ -79,8 +78,7 @@ const FontFamily = () => {
           dispatch(changeElementStyle({ types: [type], newValue: "" }));
         }}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -91,7 +89,7 @@ const FontSize = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative mb-2 pb-2">
+    <WrapperWithBottomLine>
       <Slider
         title="Pick a font size"
         step={1}
@@ -110,8 +108,7 @@ const FontSize = () => {
           dispatch(changeElementStyle({ types: [type], newValue: "" }));
         }}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 export default TextRelated;

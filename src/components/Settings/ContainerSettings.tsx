@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
-import BottomLine from "../BottomLine";
 import { WidthAndHeight } from "./SizingAndBorder";
 import NumberInput from "../NumberInput";
 import {
@@ -12,6 +11,7 @@ import {
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Slider from "../Slider";
 import ResetButton from "../ResetButton";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const ContainerSettings = () => {
   return (
@@ -28,7 +28,7 @@ const MaxWidth = () => {
   const dispatch = useAppDispatch();
   const variable = getSetting(useAppSelector, type);
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <NumberInput
         title="Maximum width of the container (in pixels)"
         value={variable || ""}
@@ -52,8 +52,7 @@ const MaxWidth = () => {
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 const Padding = () => {
@@ -63,7 +62,7 @@ const Padding = () => {
   const i = 1;
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <Slider
         key={i}
         value={getValueFromShorthandStr(variable, i)}
@@ -95,8 +94,7 @@ const Padding = () => {
           );
         }}
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

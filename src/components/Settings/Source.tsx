@@ -1,5 +1,4 @@
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
-import BottomLine from "../BottomLine";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { getProp } from "@/utils/Helpers";
 import LinkInput from "../LinkInput";
@@ -16,6 +15,7 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 import MiniLoadingSvg from "../MiniLoadingSvg";
 import DeleteButton from "../DeleteButton";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const Source = () => {
   const activeType = useAppSelector(selectActive)?.type;
@@ -34,11 +34,10 @@ const SourceUrl = () => {
   const variable = getProp<string>(useAppSelector, type);
   const dispatch = useAppDispatch();
   const [popup, setPopup] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <div className="flex flex-col gap-2 items-center">
         {activeType === "image" && (
           <UploadButton onClick={() => setPopup(true)} />
@@ -70,7 +69,6 @@ const SourceUrl = () => {
         <Popup
           positiveActionText="Use"
           onClose={() => setPopup(false)}
-          loading={loading}
           editing={false}
           maxWidth="4xl"
           onEditOrAdd={() => {
@@ -89,8 +87,7 @@ const SourceUrl = () => {
           />
         </Popup>
       )}
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 
@@ -114,7 +111,7 @@ const AltText = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <TextInput
         title="Alternative text (accessibility)"
         desc="Add a text to this image that will be used by screen readers and will be visible if image is not available"
@@ -128,8 +125,7 @@ const AltText = () => {
           )
         }
       />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 type Images = { url: string; size: number; createdAt: string }[];

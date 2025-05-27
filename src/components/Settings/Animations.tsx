@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import AddButton from "../AddButton";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
-import BottomLine from "../BottomLine";
 import {
   addToString,
   availableTimingFunctions,
@@ -21,6 +20,7 @@ import ReplayButton from "../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
 import EditableListItem from "./EditableListItem";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const splitValue = ",";
 
@@ -71,7 +71,7 @@ const Animations = () => {
       title="Animations"
       desc="Manage animations for this element"
     >
-      <div className="flex flex-col items-center relative pb-2 mb-2">
+      <WrapperWithBottomLine flex={true}>
         <ReplayButton
           onClick={() => {
             dispatch(triggerReplay(activeId));
@@ -122,8 +122,7 @@ const Animations = () => {
             </div>
           </>
         )}
-        <BottomLine />
-      </div>
+      </WrapperWithBottomLine>
     </ToggleVisibilityWrapper>
   );
 };

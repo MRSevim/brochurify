@@ -7,17 +7,17 @@ import {
   getPageWise,
   getSetting,
 } from "@/utils/Helpers";
-import BottomLine from "@/components/BottomLine";
 import InfoIcon from "@/components/InfoIcon";
 import Slider from "@/components/Slider";
 import ResetButton from "@/components/ResetButton";
 import { Style, CONFIG } from "@/utils/Types";
+import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const HeadingStyles = () => {
   const outerType = CONFIG.headings;
 
   return (
-    <div className="relative pb-2 mb-2">
+    <WrapperWithBottomLine>
       <div className="flex justify-between mb-2">
         <h3 className="font-medium">Heading styles</h3>
         <InfoIcon text="Applies to all of the headings in your website" />
@@ -26,8 +26,7 @@ const HeadingStyles = () => {
       <FontSize outerType="h1" />
       <FontSize outerType="h2" />
       <FontSize outerType="h3" />
-      <BottomLine />
-    </div>
+    </WrapperWithBottomLine>
   );
 };
 

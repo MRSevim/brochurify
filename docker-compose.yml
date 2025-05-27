@@ -27,7 +27,20 @@ services:
       ENDPOINT: ${AWS_DYNAMODB_URL}
     volumes:
       - dynamodb_data:/home/dynamodblocal/data
+  redis:
+    image: redis:7-alpine # ✅ Use official redis image
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379" # ✅ Expose Redis port if needed locally
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # optional config
+    depends_on:
+      - minio
+      - dynamodb
 
 volumes:
   minio_data: {}
   dynamodb_data: {}
+  redis_data: {}
