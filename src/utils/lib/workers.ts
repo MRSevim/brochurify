@@ -1,4 +1,4 @@
-import { Worker } from "bullmq";
+/* import { Worker } from "bullmq";
 import { connection } from "./redis";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { getScreenSnapshot } from "../serverActions/helpers";
@@ -49,4 +49,4 @@ const snapshotWorker = new Worker(
 );
 snapshotWorker.on("failed", (job, err) => {
   console.error(`Job ${job?.id} failed: ${err.message}`);
-});
+}); */

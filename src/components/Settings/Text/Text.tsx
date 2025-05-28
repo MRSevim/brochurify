@@ -25,6 +25,7 @@ import { changeElementProp } from "@/redux/slices/editorSlice";
 import sanitizeHtml from "sanitize-html";
 import LetterSpacing from "@/Tiptap/LetterSpacing";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
+import { PreventBlurFromToolbar } from "@/Tiptap/PreventBlurFromToolbar";
 
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
@@ -50,6 +51,7 @@ const Text = () => {
       TableRow,
       TableHeader,
       TableCell,
+      PreventBlurFromToolbar,
     ],
     content,
     immediatelyRender: false,
@@ -342,7 +344,6 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
 
   const handlePopupClose = () => {
     setPopup(""); // Close the popup
-    editor.commands.focus(); // Ensure focus is on editor when closing popup
   };
   return (
     <div className="relative flex gap-2 justify-center mb-2 border-b pb-2 flex-wrap">
@@ -359,7 +360,6 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
             <button
               className="p-1 text-background bg-gray rounded cursor-pointer"
               onClick={() => {
-                editor.commands.focus();
                 if (popup === "color") {
                   editor.chain().focus().unsetColor().run();
                 } else if (popup === "font-family") {
@@ -391,7 +391,6 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
               className + (item.active ? " bg-text text-background" : "")
             }
             onClick={() => {
-              editor.commands.focus();
               item.onClick();
             }}
           />

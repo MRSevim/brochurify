@@ -122,20 +122,10 @@ export const fullStylesWithIdsGenerator = (
       const isFixed = item.type === "fixed";
       const styleStr = rest ? getRest(style) : getWrapperStyles(style);
 
-      // Additional style logic
-      const additionalStyles =
-        rest && !isFixed
-          ? `flex-grow:1;max-height:100%;${
-              !isContainer ? "max-width:100%;" : ""
-            }`
-          : "";
-
       const fixedStyles = isFixed && rest ? getWrapperStyles(style) : "";
 
       // Combine all styles for this selector
-      const combinedStyles = [styleStr, additionalStyles, fixedStyles]
-        .filter(Boolean)
-        .join(" ");
+      const combinedStyles = [styleStr, fixedStyles].filter(Boolean).join(" ");
 
       // Skip if combinedStyles is empty
       if (!combinedStyles.trim()) {

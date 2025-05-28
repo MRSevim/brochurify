@@ -11,7 +11,7 @@ import { protect } from "../serverActions/helpers";
 import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
-import { snapshotQueue } from "../lib/workers";
+/* import { snapshotQueue } from "../lib/workers"; */
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
@@ -36,11 +36,11 @@ export async function createProject(
     const id = uuidv4();
     const html = generateHTML(layout, pageWise, variables, false);
     // Add a background job
-    await snapshotQueue.add("create-snapshot", {
+    /*     await snapshotQueue.add("create-snapshot", {
       html,
       userId: user.userId,
       id,
-    });
+    }); */
 
     const projectItem = {
       userId: user.userId,
@@ -142,11 +142,11 @@ export async function updateProject(
         );
       }
       // Add a background job
-      await snapshotQueue.add("create-snapshot", {
+      /*       await snapshotQueue.add("create-snapshot", {
         html: generateHTML(layout, pageWise, variables, false),
         userId: user.userId,
         id,
-      });
+      }); */
       updateExpressions.push("#data = :data");
       expressionAttributeNames["#data"] = "data";
       expressionAttributeValues[":data"] = stripEditorFields(updates.editor);

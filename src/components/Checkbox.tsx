@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 const Checkbox = ({
   checked,
   title,
@@ -5,7 +7,7 @@ const Checkbox = ({
 }: {
   title: string;
   checked: boolean;
-  onChange: () => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
     <form className="mb-2 flex items-center">

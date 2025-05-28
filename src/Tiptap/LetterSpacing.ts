@@ -1,31 +1,26 @@
 import { Extension } from "@tiptap/core";
-
-export interface LetterSpacingOptions {
-  types: string[];
-  defaultSpacing: null;
-}
+import TextStyle from "@tiptap/extension-text-style";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     letterSpacing: {
       /**
-       * Set the line height attribute
+       * Set the letter spacing
        */
-      setLetterSpacing: (spacing: string) => ReturnType;
+      setLetterSpacing: (letterSpacing: string) => ReturnType;
       /**
-       * Unset the line height attribute
+       * Unset the letter spacing
        */
       unsetLetterSpacing: () => ReturnType;
     };
   }
 }
 
-const LetterSpacing = Extension.create<LetterSpacingOptions>({
+const LetterSpacing = Extension.create({
   name: "letterSpacing",
 
   addOptions() {
     return {
-      types: ["heading", "paragraph"],
       defaultSpacing: null,
     };
   },
@@ -33,14 +28,17 @@ const LetterSpacing = Extension.create<LetterSpacingOptions>({
   addGlobalAttributes() {
     return [
       {
-        types: this.options.types,
+        types: ["textStyle"],
         attributes: {
           letterSpacing: {
             default: this.options.defaultSpacing,
             parseHTML: (element) =>
               element.style.letterSpacing || this.options.defaultSpacing,
             renderHTML: (attributes) => {
-              if (!attributes.letterSpacing) {
+              if (
+                !attributes.letterSpacing ||
+                attributes.letterSpacing === this.options.defaultSpacing
+              ) {
                 return {};
               }
 
@@ -56,20 +54,21 @@ const LetterSpacing = Extension.create<LetterSpacingOptions>({
     return {
       setLetterSpacing:
         (letterSpacing: string) =>
-        ({ commands }) => {
-          return this.options.types.every((type) =>
-            commands.updateAttributes(type, { letterSpacing })
-          );
+        ({ chain }) => {
+          return chain().setMark("textStyle", { letterSpacing }).run();
         },
 
       unsetLetterSpacing:
         () =>
-        ({ commands }) => {
-          return this.options.types.every((type) =>
-            commands.resetAttributes(type, "letterSpacing")
-          );
+        ({ chain }) => {
+          return chain().setMark("textStyle", { letterSpacing: null }).run();
         },
     };
   },
+
+  addExtensions() {
+    return [TextStyle]; // Ensure textStyle is registered
+  },
 });
+
 export default LetterSpacing;

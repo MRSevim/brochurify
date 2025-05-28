@@ -1,31 +1,26 @@
 import { Extension } from "@tiptap/core";
-
-export interface LineHeightOptions {
-  types: string[];
-  defaultHeight: string | null;
-}
+import TextStyle from "@tiptap/extension-text-style";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     lineHeight: {
       /**
-       * Set the line height attribute
+       * Set the line height
        */
-      setLineHeight: (height: string) => ReturnType;
+      setLineHeight: (lineHeight: string) => ReturnType;
       /**
-       * Unset the line height attribute
+       * Unset the line height
        */
       unsetLineHeight: () => ReturnType;
     };
   }
 }
 
-const LineHeight = Extension.create<LineHeightOptions>({
+const LineHeight = Extension.create({
   name: "lineHeight",
 
   addOptions() {
     return {
-      types: ["heading", "paragraph"],
       defaultHeight: null,
     };
   },
@@ -33,14 +28,17 @@ const LineHeight = Extension.create<LineHeightOptions>({
   addGlobalAttributes() {
     return [
       {
-        types: this.options.types,
+        types: ["textStyle"],
         attributes: {
           lineHeight: {
             default: this.options.defaultHeight,
             parseHTML: (element) =>
               element.style.lineHeight || this.options.defaultHeight,
             renderHTML: (attributes) => {
-              if (attributes.lineHeight === this.options.defaultHeight) {
+              if (
+                !attributes.lineHeight ||
+                attributes.lineHeight === this.options.defaultHeight
+              ) {
                 return {};
               }
 
@@ -55,21 +53,22 @@ const LineHeight = Extension.create<LineHeightOptions>({
   addCommands() {
     return {
       setLineHeight:
-        (height: string) =>
-        ({ commands }) => {
-          return this.options.types.every((type) =>
-            commands.updateAttributes(type, { lineHeight: height })
-          );
+        (lineHeight: string) =>
+        ({ chain }) => {
+          return chain().setMark("textStyle", { lineHeight }).run();
         },
 
       unsetLineHeight:
         () =>
-        ({ commands }) => {
-          return this.options.types.every((type) =>
-            commands.resetAttributes(type, "lineHeight")
-          );
+        ({ chain }) => {
+          return chain().setMark("textStyle", { lineHeight: null }).run();
         },
     };
   },
+
+  addExtensions() {
+    return [TextStyle]; // Ensure textStyle is registered
+  },
 });
+
 export default LineHeight;

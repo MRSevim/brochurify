@@ -249,7 +249,9 @@ const renderLayout = (items: Layout[]): string => {
 
       const rendered = `<${renderedType} id="id${item.id}" ${
         isAudioOrVideo ? "controls" : ""
-      }class="element ${props.iconType ? `bi bi-${props.iconType}` : ""}
+      }class="element wAndHFull ${
+        props.iconType ? `bi bi-${props.iconType}` : ""
+      }
       "${
         isImage
           ? `src="${props.src || ""}"
