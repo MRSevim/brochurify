@@ -96,6 +96,7 @@ export type PageWise = {
   h2: Style;
   h3: Style;
   iconUrl: string;
+  googleAnalyticsTag: string;
   [key: string]: string | Style | undefined;
 };
 

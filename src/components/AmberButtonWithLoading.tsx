@@ -11,7 +11,7 @@ const AmberButtonWithLoading = ({
 }) => {
   return (
     <button
-      className="p-1 text-background bg-amber rounded cursor-pointer"
+      className="p-1 text-black bg-amber rounded cursor-pointer"
       onClick={onClick}
     >
       {loading ? <MiniLoadingSvg /> : <> {text}</>}

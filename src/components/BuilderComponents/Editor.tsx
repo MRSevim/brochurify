@@ -166,7 +166,7 @@ const CenterDropOverlay = ({
     <>
       <div
         className={
-          "w-full h-full flex items-center" +
+          "w-full h-full flex justify-center items-center " +
           (hovered ? " hovered" : "") +
           (active ? " active" : "")
         }

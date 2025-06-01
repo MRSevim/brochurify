@@ -17,7 +17,7 @@ declare module "@tiptap/core" {
 }
 
 const LetterSpacing = Extension.create({
-  name: "letterSpacing",
+  name: "LetterSpacing",
 
   addOptions() {
     return {

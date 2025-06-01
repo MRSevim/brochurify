@@ -329,7 +329,7 @@ export const editorSlice = createSlice({
     },
     paste: (state) => {
       if (!state.copied) {
-        toast.error("You have not copied anything");
+        toast.error("You have not copied any element!");
         return;
       }
       const newElement = generateNewIds(state.copied);

@@ -17,6 +17,7 @@ import Slider from "../../Slider";
 import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
 import { CONFIG, StringOrUnd } from "@/utils/Types";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
+import UploadWrapper from "../UploadWrapper";
 
 const Background = () => {
   return (
@@ -247,18 +248,29 @@ const Link = () => {
   const variable = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
   return (
-    <LinkInput
-      title="Source url"
-      value={extractUrlValue(variable || "")}
-      onChange={(e) =>
+    <UploadWrapper
+      onEditOrAdd={(newValue) => {
         dispatch(
           changeElementStyle({
             types: [type],
-            newValue: `url(${e.target.value})`,
+            newValue: `url(${newValue})`,
           })
-        )
-      }
-    />
+        );
+      }}
+    >
+      <LinkInput
+        title="Source url"
+        value={extractUrlValue(variable || "")}
+        onChange={(e) =>
+          dispatch(
+            changeElementStyle({
+              types: [type],
+              newValue: `url(${e.target.value})`,
+            })
+          )
+        }
+      />
+    </UploadWrapper>
   );
 };
 

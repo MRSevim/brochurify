@@ -22,6 +22,22 @@ export function separateHexAlpha(hex: string) {
   return { hex: hexPart, alpha };
 }
 
+function rgbStringToHex(input: string): string {
+  const rgbRegex = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d*\.?\d+))?\)$/;
+  const match = input.trim().match(rgbRegex);
+  if (!match) return input;
+
+  const [, r, g, b, a] = match;
+  const toHex = (n: string) => parseInt(n).toString(16).padStart(2, "0");
+  const hex = `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+
+  if (a !== undefined) {
+    const alpha = Math.round(parseFloat(a) * 255);
+    return `${hex}${alpha.toString(16).padStart(2, "0")}`;
+  }
+
+  return hex;
+}
 const ColorPicker = ({
   title,
   variableSelect = true,
@@ -39,7 +55,7 @@ const ColorPicker = ({
 
   const finalSelected = isVariable
     ? colorVariables.find((v) => v.id === variableId)?.value ?? "#ffffff"
-    : selected;
+    : rgbStringToHex(selected);
 
   const { hex, alpha } = separateHexAlpha(finalSelected || "#ffffff");
 

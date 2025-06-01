@@ -80,6 +80,7 @@ export const SideDropOverlay = ({
       {children}
       {notFixed && (
         <SideDropZone
+          right={true}
           onClick={(e) => handleAddLocationClick(e, "after")}
           onDrop={(e) => handleSideDrop(e, "after")}
           selected={afterSelected}
@@ -98,12 +99,14 @@ const SideDropZone = ({
   selected,
   children,
   isColumn,
+  right = false,
 }: {
   onDrop: (e: DragEvent<HTMLElement>) => void;
   selected: boolean;
   onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   children: React.ReactNode;
   isColumn: boolean;
+  right?: boolean;
 }) => {
   const [draggingOver, setDraggingOver] = useState(false);
   const commonClasses =
@@ -123,7 +126,8 @@ const SideDropZone = ({
       }}
       className={
         commonClasses +
-        (isColumn ? "h-full w-1 " : "w-full h-1 ") +
+        (isColumn ? "h-full w-1 top-0 " : "w-full h-1 ") +
+        (right && isColumn ? "right-0 " : "") +
         (draggingOver || selected ? selectedClasses : "bg-hoveredBlue")
       }
     >

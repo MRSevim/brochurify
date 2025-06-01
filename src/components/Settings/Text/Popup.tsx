@@ -6,6 +6,7 @@ import Slider from "@/components/Slider";
 import { selectPageWise, useAppSelector } from "@/redux/hooks";
 import { Style, CONFIG, PageWise } from "@/utils/Types";
 import { Editor } from "@tiptap/react";
+import { Dispatch, useEffect } from "react";
 
 const getFontSize = (editor: Editor, pageWise: PageWise) => {
   const { state } = editor;
@@ -56,10 +57,14 @@ const getLetterSpacing = (editor: Editor) =>
 const Popup = ({
   type,
   editor,
+  state,
+  setState,
   children,
 }: {
   type: string;
   editor: Editor;
+  state: any;
+  setState: Dispatch<any>;
   children: React.ReactNode;
 }) => {
   const pageWise = useAppSelector(selectPageWise);
@@ -70,26 +75,38 @@ const Popup = ({
   const lineHeight = getLineHeight(editor, pageWise);
   const letterSpacing = getLetterSpacing(editor);
 
+  useEffect(() => {
+    if (type === "color") {
+      setState(color);
+    } else if (type === "font-family") {
+      setState(fontFamily);
+    } else if (type === "font-size") {
+      setState(fontSize);
+    } else if (type === "link") {
+      setState(linkAttr);
+    } else if (type === "line-height") {
+      setState(lineHeight);
+    } else if (type === "letter-spacing") {
+      setState(letterSpacing);
+    }
+  }, []);
+
   return (
-    <div className="absolute z-10 bg-background border border-text rounded p-3 top-5">
+    <div className="absolute z-10 bg-background border border-text rounded p-3 top-5 w-full">
       {type === "color" && (
         <ColorPicker
           title="Pick a color"
-          selected={color}
+          selected={state || color}
           onChange={(e) => {
-            editor.chain().focus().setColor(e).run();
+            setState(e);
           }}
         />
       )}
       {type === "font-family" && (
         <FontFamilyPicker
-          variable={fontFamily}
+          variable={state || fontFamily}
           onChange={(e) => {
-            if (e === "inherit") {
-              editor.chain().focus().unsetFontFamily().run();
-            } else {
-              editor.chain().focus().setFontFamily(e).run();
-            }
+            setState(e);
           }}
         />
       )}
@@ -97,20 +114,17 @@ const Popup = ({
         <Slider
           title="Pick font size value"
           step={1}
-          value={fontSize}
+          value={state || fontSize}
           onChange={(e) => {
-            editor.chain().focus().setFontSize(e).run();
+            setState(e);
           }}
         />
       )}
       {type === "link" && (
         <Link
-          linkAttr={linkAttr}
+          linkAttr={state || linkAttr}
           onInputChange={(link: string, newtab: boolean) => {
-            if (!link) {
-              return editor.chain().focus().unsetLink().run();
-            }
-            editor.commands.setLink({
+            setState({
               href: link,
               target: newtab ? "_blank" : "_self",
             });
@@ -124,9 +138,9 @@ const Popup = ({
           min={1}
           max={5}
           step={0.5}
-          value={lineHeight}
+          value={state || lineHeight}
           onChange={(e) => {
-            editor.chain().focus().setLineHeight(e).run();
+            setState(e);
           }}
         />
       )}
@@ -136,9 +150,9 @@ const Popup = ({
           title="Pick letter spacing value"
           units={["px", "em"]}
           step={1}
-          value={letterSpacing}
+          value={state || letterSpacing}
           onChange={(e) => {
-            editor.chain().focus().setLetterSpacing(e).run();
+            setState(e);
           }}
         />
       )}

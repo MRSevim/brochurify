@@ -16,13 +16,20 @@ export const generateHTML = (
   variables: Variable[],
   preview: boolean
 ): string => {
-  const { title, description, keywords, canonical, image, iconUrl, ...rest } =
-    pageWise;
+  const {
+    title,
+    description,
+    keywords,
+    canonical,
+    image,
+    iconUrl,
+    googleAnalyticsTag,
+    ...rest
+  } = pageWise;
 
   if (preview) {
     delete (rest as { overflow?: any }).overflow;
   }
-
   const renderedBody = renderLayout(layout);
   const fullstylesWithIds =
     fullStylesWithIdsGenerator(layout, false) +
@@ -85,6 +92,15 @@ export const generateHTML = (
     });
     });
     </script>`;
+  const googleAnalyticsScript = googleAnalyticsTag
+    ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsTag}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${googleAnalyticsTag}');
+    </script>`
+    : "";
   const additionalStyles = `<style>
     ${getCssReset(pageWise)}
       body {
@@ -103,6 +119,7 @@ export const generateHTML = (
       <head>
       ${baseHTMLHead}
       ${observerScript}
+      ${googleAnalyticsScript}
       ${additionalStyles}
       </head>
       <body>
@@ -118,6 +135,7 @@ export const generateHTML = (
   ${fontLinks}
   ${baseHTMLHead}
   ${observerScript}
+  ${googleAnalyticsScript}
   ${additionalStyles}
   </head>
   <body>
@@ -182,7 +200,11 @@ const getCssReset = (pageWise: PageWise) => {
   }   
   .relative {
     position:relative
-  }   
+  }  
+  .center {
+  justify-content:center;
+  align-items:center;
+  }  
 ${getStyleResets(pageWise)}
   `;
 };
@@ -242,7 +264,7 @@ const renderLayout = (items: Layout[]): string => {
       const addFlexWrapper = (html: string) => {
         return `<div class="block ${isFixed ? "" : "relative"}" id="idwrapper${
           item.id
-        }"><div class="flex wAndHFull" ${
+        }"><div class="flex wAndHFull center" ${
           item.props.anchorId ? `id="user-${item.props.anchorId}"` : ""
         }>${html}</div></div>`;
       };

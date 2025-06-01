@@ -1,3 +1,4 @@
+import Analytics from "./Analytics";
 import Seo from "./Seo";
 import Styles from "./Styles";
 import Variables from "./Variables";
@@ -14,6 +15,7 @@ const PageSettings = () => {
       <Variables />
       <Styles />
       <WebsiteIcon />
+      <Analytics />
     </div>
   );
 };

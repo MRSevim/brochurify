@@ -25,7 +25,6 @@ import { changeElementProp } from "@/redux/slices/editorSlice";
 import sanitizeHtml from "sanitize-html";
 import LetterSpacing from "@/Tiptap/LetterSpacing";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
-import { PreventBlurFromToolbar } from "@/Tiptap/PreventBlurFromToolbar";
 
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
@@ -51,7 +50,6 @@ const Text = () => {
       TableRow,
       TableHeader,
       TableCell,
-      PreventBlurFromToolbar,
     ],
     content,
     immediatelyRender: false,
@@ -154,11 +152,16 @@ type Icon = {
 };
 
 const EditBar = ({ editor }: { editor: Editor | null }) => {
-  if (!editor) return null;
   const [popup, setPopup] = useState("");
   const className = "p-1 border rounded";
   const size = "1.2rem";
   const [tableMode, setTableMode] = useState(false);
+  const [state, setState] = useState<any>(null);
+
+  useEffect(() => {
+    setState(null);
+  }, [popup]);
+  if (!editor) return null;
   const Icons: Icon[] = [
     {
       type: "arrow-counterclockwise",
@@ -345,10 +348,11 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
   const handlePopupClose = () => {
     setPopup(""); // Close the popup
   };
+
   return (
     <div className="relative flex gap-2 justify-center mb-2 border-b pb-2 flex-wrap">
       {popup && (
-        <Popup type={popup} editor={editor}>
+        <Popup type={popup} editor={editor} setState={setState} state={state}>
           <div className="flex justify-center gap-2">
             <button
               className="p-1 text-background bg-gray rounded cursor-pointer"
@@ -373,9 +377,39 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
                 } else if (popup === "letter-spacing") {
                   editor.chain().focus().unsetLetterSpacing().run();
                 }
+                setState(null);
               }}
             >
               Unset
+            </button>
+            <button
+              className="text-black p-1 bg-amber rounded cursor-pointer"
+              onClick={() => {
+                if (!state) return;
+                if (popup === "color") {
+                  editor.chain().focus().setColor(state).run();
+                } else if (popup === "font-family") {
+                  if (state === "inherit") {
+                    editor.chain().focus().unsetFontFamily().run();
+                  } else {
+                    editor.chain().focus().setFontFamily(state).run();
+                  }
+                } else if (popup === "font-size") {
+                  editor.chain().focus().setFontSize(state).run();
+                } else if (popup === "link") {
+                  editor.commands.setLink({
+                    href: state.href,
+                    target: state.target,
+                  });
+                } else if (popup === "line-height") {
+                  editor.chain().focus().setLineHeight(state).run();
+                } else if (popup === "letter-spacing") {
+                  editor.chain().focus().setLetterSpacing(state).run();
+                }
+                handlePopupClose();
+              }}
+            >
+              Save
             </button>
           </div>
         </Popup>

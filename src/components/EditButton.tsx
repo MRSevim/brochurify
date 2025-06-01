@@ -11,7 +11,7 @@ const EditButton = ({
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
-    <button className="bg-amber p-1 rounded" onClick={onClick}>
+    <button className="bg-amber text-black p-1 rounded" onClick={onClick}>
       {loading && <MiniLoadingSvg />}
       {!loading && (
         <>
