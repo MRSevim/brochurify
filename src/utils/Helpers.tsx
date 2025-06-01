@@ -51,6 +51,7 @@ export const getPageWise = (): PageWise => {
     "font-family": "initial",
     "line-height": "1.5",
     iconUrl: "",
+    googleAnalyticsTag: "",
     "container-type": "size",
     h1: { "font-size": "2.5em" },
     h2: { "font-size": "2em" },
