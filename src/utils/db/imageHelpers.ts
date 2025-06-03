@@ -102,7 +102,7 @@ export async function deleteUserImageAndUpdateLibrary({
   const url = new URL(imageUrl);
   const key = url.pathname.replace(/^\/[^/]+\//, ""); // remove "/<bucket>/"
 
-  await deleteFromS3({ key });
+  await deleteFromS3(key);
 
   const getCommand = new GetCommand({
     TableName: process.env.DB_TABLE_NAME!,
