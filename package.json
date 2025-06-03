@@ -44,6 +44,7 @@
     "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-toastify": "^11.0.3",
+    "resend": "^4.5.1",
     "sanitize-html": "^2.14.0",
     "styled-components": "^6.1.15",
     "tiptap-extension-font-size": "^1.2.0",

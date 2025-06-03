@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { getProjectAction } from "@/utils/serverActions/projectActions";
-import Wrapper from "./Wrapper";
+import Wrapper from "../Wrapper";
 
 export default async function Page({
   params,
@@ -8,11 +8,11 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const project = await getProjectAction("project", id);
+  const project = await getProjectAction("template", id);
 
   if (!project) {
     notFound();
   }
 
-  return <Wrapper project={project} />;
+  return <Wrapper project={project} type="template" />;
 }

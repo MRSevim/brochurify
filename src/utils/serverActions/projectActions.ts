@@ -5,14 +5,17 @@ import {
   deleteProject,
   getAllProjects,
   getProjectById,
+  getTemplates,
   updateProject,
 } from "../db/projectHelpers";
 import { EditorState } from "../Types";
 import { cookies } from "next/headers";
 
 export const createAction = async (project: {
+  type: string;
   title: string;
   editor: Partial<EditorState>;
+  snapshot?: string;
 }) => {
   try {
     const cookieStore = await cookies();
@@ -29,6 +32,7 @@ export const createAction = async (project: {
 };
 
 export const updateAction = async (
+  type: string,
   id: string,
   updates: Partial<{ title: string; editor: EditorState }>
 ) => {
@@ -36,7 +40,7 @@ export const updateAction = async (
     const cookieStore = await cookies();
     const jwt = cookieStore.get("jwt")?.value;
 
-    await updateProject(jwt, id, updates);
+    await updateProject(type, jwt, id, updates);
 
     revalidatePath("/my-projects");
 
@@ -46,35 +50,43 @@ export const updateAction = async (
   }
 };
 
-export const getAllAction = async () => {
+export const getAllAction = async (type: string) => {
   try {
     const cookieStore = await cookies();
     const jwt = cookieStore.get("jwt")?.value;
 
-    const projects = await getAllProjects(jwt);
+    const projects = await getAllProjects(type, jwt);
     return { projects, error: "" };
   } catch (error: any) {
     return { error: error.message };
   }
 };
+export const getAllTemplatesAction = async () => {
+  try {
+    const templates = await getTemplates();
+    return { templates, error: "" };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+};
 
-export const getProjectAction = async (id: string) => {
+export const getProjectAction = async (type: string, id: string) => {
   try {
     const cookieStore = await cookies();
     const jwt = cookieStore.get("jwt")?.value;
 
-    const project = await getProjectById(jwt, id);
+    const project = await getProjectById(type, jwt, id);
     return project;
   } catch (error: any) {
     return;
   }
 };
 
-export const deleteAction = async (id: string) => {
+export const deleteAction = async (type: string, id: string) => {
   try {
     const cookieStore = await cookies();
     const jwt = cookieStore.get("jwt")?.value;
-    await deleteProject(jwt, id);
+    await deleteProject(type, jwt, id);
     revalidatePath("/my-projects");
     return "";
   } catch (error: any) {

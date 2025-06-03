@@ -6,14 +6,14 @@ import TopBar from "./TopBar";
 import { formatTime } from "@/utils/Helpers";
 import { SnapshotImage } from "../SnapshotImage";
 
-const ProjectsList = async () => {
-  const { projects } = await getAllAction();
+const ProjectsList = async ({ type }: { type: string }) => {
+  const { projects } = await getAllAction(type);
 
   if (!projects) {
     notFound();
   }
   if (!projects.length) {
-    return <p className="font-bold text-l">No Projects</p>;
+    return <p className="font-bold text-l">No {type}s</p>;
   }
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-2">
@@ -21,11 +21,19 @@ const ProjectsList = async () => {
         <div key={project.id} className="border rounded-lg p-2">
           <SnapshotImage src={project.snapshot} alt={project.title} />
           <div className="flex justify-between items-center mt-2">
-            <TopBar project={project} />
+            <TopBar type={type} project={project} />
           </div>
           <div className="flex flex-col justify-between items-center mt-2">
             <span className="rounded bg-background text-text p-2 hover:scale-110">
-              <Link href={"/builder/" + project.id}>Build</Link>
+              <Link
+                href={
+                  "/builder/" +
+                  project.id +
+                  (type === "template" ? "/template" : "")
+                }
+              >
+                Build
+              </Link>
             </span>
             <div className="flex flex-col text-xs mt-2 w-full">
               <div className="flex justify-between">

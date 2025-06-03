@@ -10,6 +10,7 @@ import {
 import { toast } from "react-toastify";
 import Image from "next/image";
 import DeleteButton from "../DeleteButton";
+import { useUser } from "@/contexts/UserContext";
 
 const UploadWrapper = ({
   onEditOrAdd,
@@ -19,11 +20,13 @@ const UploadWrapper = ({
   onEditOrAdd: (e: string) => void;
 }) => {
   const [popup, setPopup] = useState(false);
+  const [user] = useUser();
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
+  if (!user) return <>{children}</>;
   return (
     <WrapperWithBottomLine>
       <div className="flex flex-col gap-2 items-center">
-        <UploadButton onClick={() => setPopup(true)} />
+        <Button text="Image Library" onClick={() => setPopup(true)} />
         <p className="font-bold italic">Or</p>
       </div>
       {children}
@@ -48,16 +51,18 @@ const UploadWrapper = ({
   );
 };
 
-const UploadButton = ({
+const Button = ({
+  text,
   onClick,
   loading = false,
 }: {
+  text: string;
   onClick: () => void;
   loading?: boolean;
 }) => {
   return (
     <button onClick={onClick} className="p-2 bg-text text-background">
-      {!loading && "Upload"}
+      {!loading && text}
       {loading && <MiniLoadingSvg variant="black" />}
     </button>
   );
@@ -128,7 +133,8 @@ const ImageUploader = ({
         images={images}
       />
       <div className="my-2 flex justify-center">
-        <UploadButton
+        <Button
+          text="Upload"
           onClick={() => fileInputRef.current?.click()}
           loading={uploadLoading}
         />

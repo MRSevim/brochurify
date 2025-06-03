@@ -65,6 +65,15 @@ const UserMenu = () => {
                 >
                   <span className="hover:underline">My projects</span>
                 </Link>
+                {user.role === "admin" && (
+                  <Link
+                    href="/templates"
+                    className="text-center"
+                    onClick={() => setExpanded(false)}
+                  >
+                    <span className="hover:underline">Templates</span>
+                  </Link>
+                )}
                 <Link
                   href="/my-account"
                   className="text-center"

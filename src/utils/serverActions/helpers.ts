@@ -1,11 +1,13 @@
 import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import jwt from "jsonwebtoken";
-import { getUserProfile } from "../db/userHelpers";
 import { StringOrUnd } from "../Types";
 import puppeteer, { Browser } from "puppeteer";
+import { GetCommand } from "@aws-sdk/lib-dynamodb";
+import docClient from "../db/db";
 
 let browser: Browser | null = null;
+const TABLE_NAME = process.env.DB_TABLE_NAME;
 
 export const generateToken = (
   cookies: ReadonlyRequestCookies,
@@ -38,7 +40,17 @@ export const protect = async (token: StringOrUnd) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
         userId: string;
       };
-      const user = await getUserProfile(decoded.userId);
+      const command = new GetCommand({
+        TableName: TABLE_NAME,
+        Key: {
+          userId: decoded.userId,
+          id: "profile",
+        },
+      });
+
+      const response = await docClient.send(command);
+
+      const user = response.Item;
       if (!user) {
         throw new Error("Not authorized, token failed, Login please");
       }
@@ -46,6 +58,17 @@ export const protect = async (token: StringOrUnd) => {
     } else {
       throw new Error("Not authorized, no token, Login please");
     }
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const checkAdmin = async (user: Record<string, any>) => {
+  try {
+    if (user.role !== "admin") {
+      throw new Error("Not authorized, you are not admin");
+    }
+    return;
   } catch (error: any) {
     throw new Error(error);
   }

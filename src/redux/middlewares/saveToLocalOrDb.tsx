@@ -29,13 +29,16 @@ export const saveToLocalOrDb: Middleware = (store) => (next) => (action) => {
   const nextHistory = JSON.stringify(nextState.editor.history);
   const nextPageWise = JSON.stringify(nextState.editor.pageWise);
   const id = store.getState().editor.id;
+  const type = store.getState().editor.type;
 
   const saveTo = async () => {
     if (!id) {
       saveToLocalStorage(store.getState().editor);
       store.dispatch(saved(" locally"));
     } else {
-      const error = await updateAction(id, { editor: store.getState().editor });
+      const error = await updateAction(type, id, {
+        editor: store.getState().editor,
+      });
       if (error) {
         toast.error(error);
       } else {

@@ -6,8 +6,10 @@ import ConfirmationPopup from "../ConfirmationPopup";
 import { toast } from "react-toastify";
 
 export const DeleteComponent = ({
+  type,
   project,
 }: {
+  type: string;
   project: Record<string, any>;
 }) => {
   const [confirming, setConfirming] = useState(false);
@@ -21,7 +23,7 @@ export const DeleteComponent = ({
           onConfirm={async () => {
             setLoading(true);
 
-            const error = await deleteAction(project.id);
+            const error = await deleteAction(type, project.id);
             if (error) {
               toast.error(error);
             } else {
@@ -31,7 +33,7 @@ export const DeleteComponent = ({
             setLoading(false);
           }}
           onClose={() => setConfirming(false)}
-          text={`Are you sure you want to delete project titled "${project.title}"?`}
+          text={`Are you sure you want to delete ${type} titled "${project.title}"?`}
         />
       )}
     </>

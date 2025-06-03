@@ -33,9 +33,8 @@ export const Provider = ({
     const userString = encodeURIComponent(
       JSON.stringify({
         username: user.username,
-        email: user.email,
-        role: user.role,
         image: user.image,
+        role: user.role,
       })
     );
     if (rememberMe) {

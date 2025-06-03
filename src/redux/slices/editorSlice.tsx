@@ -31,11 +31,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
-import { initialSimpleLayout } from "@/utils/InitialLayout";
 
 const initialState: EditorState = {
+  type: "project",
   id: undefined,
-  layout: initialSimpleLayout,
+  layout: [],
   addLocation: null,
   dropHandled: false,
   pageWise: getPageWise(),
@@ -62,6 +62,7 @@ export const editorSlice = createSlice({
       state.pageWise = action.payload.pageWise;
       state.variables = action.payload.variables;
       state.history = action.payload.history;
+      state.type = action.payload.type;
     },
     setDraggedItem: (state, action: PayloadAction<string | undefined>) => {
       state.draggedItem = action.payload;

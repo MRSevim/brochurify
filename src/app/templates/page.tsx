@@ -1,12 +1,12 @@
 import Container from "@/components/Container";
-import AddSection from "@/components/Projects/AddSection";
 import ProjectsList from "@/components/Projects/ProjectsList";
+import AddSection from "@/components/Templates/AddSection";
 
-const page = async () => {
+const page = () => {
   return (
     <Container>
       <AddSection />
-      <ProjectsList type="project" />
+      <ProjectsList type="template" />
     </Container>
   );
 };

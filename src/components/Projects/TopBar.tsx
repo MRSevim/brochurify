@@ -5,7 +5,13 @@ import { DeleteComponent } from "./DeleteComponent";
 import { updateAction } from "@/utils/serverActions/projectActions";
 import { toast } from "react-toastify";
 
-const TopBar = ({ project }: { project: Record<string, any> }) => {
+const TopBar = ({
+  type,
+  project,
+}: {
+  type: string;
+  project: Record<string, any>;
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(project.title);
   const [loading, setLoading] = useState(false);
@@ -13,7 +19,7 @@ const TopBar = ({ project }: { project: Record<string, any> }) => {
   const saveChanges = async () => {
     if (title !== project.title) {
       setLoading(true);
-      const error = await updateAction(project.id, { title });
+      const error = await updateAction(type, project.id, { title });
       if (error) {
         toast.error(error);
       }
@@ -61,7 +67,7 @@ const TopBar = ({ project }: { project: Record<string, any> }) => {
           editing={isEditing}
           loading={loading}
         />
-        <DeleteComponent project={project} />
+        <DeleteComponent type={type} project={project} />
       </div>
     </div>
   );

@@ -34,6 +34,7 @@ export default function ContactForm() {
               type="text"
               name="name"
               placeholder="Your Name"
+              required
               className="w-full p-3 border border-text rounded-md focus:outline"
             />
           </div>

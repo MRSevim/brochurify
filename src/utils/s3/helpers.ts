@@ -28,13 +28,12 @@ export const uploadToS3 = async ({
   }
 };
 
-export const deleteFromS3 = async ({ key }: { key: string }) => {
+export const deleteFromS3 = async (key: string) => {
   try {
     const command = new DeleteObjectCommand({
       Bucket,
       Key: key,
     });
-
     await s3Client.send(command);
   } catch (error: any) {
     throw new Error(error);

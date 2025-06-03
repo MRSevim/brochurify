@@ -22,6 +22,16 @@ export async function createOrUpdateUser({
   role?: string;
 }) {
   try {
+    const getUserCommand = new GetCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        userId: email,
+        id: "profile",
+      },
+    });
+
+    const response = await docClient.send(getUserCommand);
+    const user = response.Item;
     const userItem = {
       userId: email,
       id: "profile", // reserved value to distinguish user profiles
@@ -29,7 +39,7 @@ export async function createOrUpdateUser({
       username,
       image,
       email,
-      role,
+      role: user?.role || role,
     };
 
     const command = new PutCommand({
@@ -44,12 +54,14 @@ export async function createOrUpdateUser({
   }
 }
 
-export async function getUserProfile(email: string) {
+export async function getUserProfile(token: StringOrUnd) {
   try {
+    const user = await protect(token);
+
     const command = new GetCommand({
       TableName: TABLE_NAME,
       Key: {
-        userId: email,
+        userId: user.userId,
         id: "profile",
       },
     });
@@ -62,8 +74,9 @@ export async function getUserProfile(email: string) {
 }
 
 export async function deleteUser(token: StringOrUnd) {
-  const user = await protect(token);
   try {
+    const user = await protect(token);
+
     // Step 1: Query all items with the userId
     const queryCommand = new QueryCommand({
       TableName: TABLE_NAME,

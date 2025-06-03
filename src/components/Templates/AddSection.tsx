@@ -1,47 +1,55 @@
 "use client";
 import { useState } from "react";
 import AddButton from "../AddButton";
-import TemplateViewer from "./TemplateViewer";
+import Popup from "../Popup";
+import { getPageWise } from "@/utils/Helpers";
 import TextInput from "../TextInput";
 import { createAction } from "@/utils/serverActions/projectActions";
 import { toast } from "react-toastify";
 
 const AddSection = () => {
   const [adding, setAdding] = useState(false);
-  const [projectName, setProjectName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [templateName, setTemplateName] = useState("");
 
-  const handleAdd = async (selectedTemplate: Record<string, any>) => {
+  const handleAdd = async () => {
+    setLoading(true);
     const { error } = await createAction({
-      type: "project",
-      title: projectName,
+      type: "template",
+      title: templateName,
       editor: {
-        layout: selectedTemplate?.data.layout,
-        pageWise: selectedTemplate?.data.pageWise,
-        variables: selectedTemplate?.data.variables,
+        layout: [],
+        pageWise: getPageWise(),
+        variables: [],
         history: [],
       },
-      snapshot: selectedTemplate?.snapshot,
     });
     if (error) {
       toast.error(error);
     } else {
       setAdding(false);
     }
+    setLoading(false);
   };
 
   return (
     <>
       <div className="flex justify-between items-center mb-2">
-        <h1 className="font-bold text-2xl">All Projects</h1>
+        <h1 className="font-bold text-2xl">All Templates</h1>
         <AddButton onClick={() => setAdding((prev) => !prev)} colored />
         {adding && (
-          <TemplateViewer setAdding={setAdding} handleSelect={handleAdd}>
+          <Popup
+            loading={loading}
+            editing={false}
+            onClose={() => setAdding(false)}
+            onEditOrAdd={handleAdd}
+          >
             <TextInput
-              title="Project Name"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
+              title="Template Name"
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
             />
-          </TemplateViewer>
+          </Popup>
         )}
       </div>
     </>

@@ -47,6 +47,7 @@ export interface Layout {
   props: Props;
 }
 export interface EditorState {
+  type: string;
   id?: string;
   active?: LayoutOrUnd;
   hovered?: string;

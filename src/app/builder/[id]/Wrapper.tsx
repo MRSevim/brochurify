@@ -4,11 +4,17 @@ import Builder from "../Builder";
 import { useAppDispatch } from "@/redux/hooks";
 import { hydrate } from "@/redux/slices/editorSlice";
 
-const Wrapper = ({ project }: { project: Record<string, any> }) => {
+const Wrapper = ({
+  type = "project",
+  project,
+}: {
+  type?: string;
+  project: Record<string, any>;
+}) => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (project) {
-      dispatch(hydrate({ id: project.id, ...project.data }));
+      dispatch(hydrate({ type, id: project.id, ...project.data }));
     }
   }, [project]);
 
