@@ -1,12 +1,22 @@
 "use client";
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectActive,
+  selectProjectId,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import DarkModeToggle from "../DarkModeToggle";
 import Icon from "../Icon";
 import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
-import { redo, setActive, undo } from "@/redux/slices/editorSlice";
+import {
+  hydrateForcingSave,
+  redo,
+  setActive,
+  undo,
+} from "@/redux/slices/editorSlice";
 import SavePopupWrapper from "./SavePopupWrapper";
 import Link from "next/link";
 import { triggerReplay } from "@/redux/slices/replaySlice";
@@ -17,6 +27,8 @@ import ViewMode from "./ViewMode";
 import { usePreview } from "@/contexts/PreviewContext";
 import ZoomView from "./ZoomView";
 import UserMenu from "./UserMenu";
+import { useUser } from "@/contexts/UserContext";
+import { toast } from "react-toastify";
 
 const Header = () => {
   const pathname = usePathname();
@@ -34,6 +46,9 @@ const Header = () => {
 
 const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
   const [preview, setPreview] = usePreview();
+  const [user] = useUser();
+  const projectId = useAppSelector(selectProjectId);
+  const showPublish = user && projectId;
   return (
     <div className="flex justify-center sm:justify-between items-center py-2 flex-wrap ">
       <Link href="/">
@@ -62,7 +77,11 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
                 setPreview((prev) => !prev);
               }}
             />
-            <button className="p-2 rounded bg-amber text-black">Publish</button>
+            {showPublish && (
+              <button className="p-2 rounded bg-amber text-black">
+                Publish
+              </button>
+            )}
           </>
         )}
       </div>
@@ -132,7 +151,9 @@ const LeftSideActions = () => {
   const dispatch = useAppDispatch();
   const active = useAppSelector(selectActive);
   const [, setSettingsToggle] = SettingsToggleContext.Use();
-
+  const [user] = useUser();
+  const projectId = useAppSelector(selectProjectId);
+  const showImport = user && projectId;
   return (
     <>
       <Icon
@@ -161,6 +182,20 @@ const LeftSideActions = () => {
         }}
       />
       <DownloadWrapper />
+      {showImport && (
+        <Icon
+          title="Import locally saved work"
+          type="floppy"
+          size="24px"
+          onClick={() => {
+            const editorState = localStorage.getItem("editor");
+            if (editorState) {
+              const editorStateParsed = JSON.parse(editorState);
+              dispatch(hydrateForcingSave(editorStateParsed));
+            } else toast.error("You have no local editor state saved");
+          }}
+        />
+      )}
     </>
   );
 };

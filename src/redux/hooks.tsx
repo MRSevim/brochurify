@@ -13,3 +13,4 @@ export const selectActive = (state: RootState) => state.editor.active;
 export const selectHoveredId = (state: RootState) => state.editor.hovered;
 export const selectVariables = (state: RootState) => state.editor.variables;
 export const selectAddLocation = (state: RootState) => state.editor.addLocation;
+export const selectProjectId = (state: RootState) => state.editor.id;

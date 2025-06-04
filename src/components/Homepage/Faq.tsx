@@ -35,6 +35,11 @@ const questions = [
     question: "Can I undo mistakes while editing?",
     body: "Yes, there's an undo button in the editor to revert changes. You can also press ctrl+z to undo last change.",
   },
+  {
+    question:
+      "I tried out the builder without logging in, Can I use that to publish my website?",
+    body: "Yes, there's an import button on the top left of the builder. You can click that and import your local work to your project and publish it.",
+  },
 ];
 
 type ActiveType = number | null;
