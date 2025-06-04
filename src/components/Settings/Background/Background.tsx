@@ -172,7 +172,7 @@ const BackgroundShadowSlider = ({
     />
   );
 };
-const BackgroundImage = () => {
+export const BackgroundImage = () => {
   const type = "background-image";
   const variable = getSetting(useAppSelector, type);
   const toggled = !!variable;

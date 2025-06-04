@@ -16,6 +16,7 @@ import InfoIcon from "@/components/InfoIcon";
 import ToggleBtn from "@/components/ToggleBtn";
 import { CONFIG } from "@/utils/Types";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
+import { BackgroundImage } from "../Background/Background";
 
 const Styles = () => {
   return (
@@ -25,6 +26,7 @@ const Styles = () => {
     >
       <Color />
       <BackgroundColor />
+      <BackgroundImage />
       <FontSize />
       <FontFamily />
       <LineHeight />
@@ -217,13 +219,15 @@ const ToggleToBrowserDefaults = () => {
   };
 
   return (
-    <WrapperWithBottomLine flex={true}>
-      <ToggleBtn
-        text="Use browser defaults for link+headings"
-        checked={toggled}
-        onChange={handleToggle}
-      />
-      <InfoIcon text="Toggle to reset link and heading styles to browser defaults" />
+    <WrapperWithBottomLine>
+      <div className="flex">
+        <ToggleBtn
+          text="Use browser defaults for link+headings"
+          checked={toggled}
+          onChange={handleToggle}
+        />
+        <InfoIcon text="Toggle to reset link and heading styles to browser defaults" />
+      </div>
     </WrapperWithBottomLine>
   );
 };
