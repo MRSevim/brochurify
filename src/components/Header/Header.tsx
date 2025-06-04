@@ -47,8 +47,8 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
             <Link href="/contact">
               <span>Contact</span>
             </Link>
-            <Link href="/how-to">
-              <span>How To</span>
+            <Link href="/about">
+              <span>About</span>
             </Link>
             <UserMenu />
           </>
