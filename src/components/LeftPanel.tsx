@@ -205,7 +205,7 @@ const CenterDropWrapper = ({
       onDragLeave={() => setDraggingOver(false)}
       className={
         "p-1 border flex items-center justify-between me-1 relative " +
-        (active ? "border-green-500" : "border-gray")
+        (active ? "border-positiveGreen" : "border-gray")
       }
     >
       {" "}

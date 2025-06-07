@@ -65,7 +65,7 @@ const UserMenu = () => {
                 >
                   <span className="hover:underline">My projects</span>
                 </Link>
-                {user.role === "admin" && (
+                {user.roles.includes("admin") && (
                   <Link
                     href="/templates"
                     className="text-center"

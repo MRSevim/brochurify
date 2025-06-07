@@ -1,4 +1,9 @@
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  DeleteObjectsCommand,
+  ListObjectsCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import s3Client from "./s3Client";
 
 const Bucket = process.env.S3_BUCKET_NAME;
@@ -37,5 +42,38 @@ export const deleteFromS3 = async (key: string) => {
     await s3Client.send(command);
   } catch (error: any) {
     throw new Error(error);
+  }
+};
+
+export const deleteFolderFromS3 = async (prefix: string) => {
+  try {
+    // List all objects under the prefix
+    const listedObjects = await s3Client.send(
+      new ListObjectsCommand({
+        Bucket,
+        Prefix: prefix,
+      })
+    );
+
+    if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
+      console.log("No objects found under prefix:", prefix);
+      return;
+    }
+
+    // Prepare delete params for multiple objects
+    const deleteParams = {
+      Bucket,
+      Delete: {
+        Objects: listedObjects.Contents.map((obj) => ({ Key: obj.Key! })),
+      },
+    };
+
+    // Delete all listed objects
+    await s3Client.send(new DeleteObjectsCommand(deleteParams));
+
+    console.log(`Deleted all files under prefix: ${prefix}`);
+  } catch (error) {
+    console.error("Failed to delete files from S3:", error);
+    throw error;
   }
 };

@@ -63,14 +63,13 @@ export const protect = async (token: StringOrUnd) => {
   }
 };
 
-export const checkAdmin = async (user: Record<string, any>) => {
+export const checkRole = (user: Record<string, any>, role: string) => {
   try {
-    if (user.role !== "admin") {
-      throw new Error("Not authorized, you are not admin");
+    if (!Array.isArray(user.roles) || !user.roles.includes(role)) {
+      throw new Error(`Not authorized, ${role} role required`);
     }
-    return;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error?.message || `Role check failed for ${role}`);
   }
 };
 

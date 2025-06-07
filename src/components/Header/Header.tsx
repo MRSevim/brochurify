@@ -12,7 +12,7 @@ import {
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
 import {
-  hydrateForcingSave,
+  hydrateLocal,
   redo,
   setActive,
   undo,
@@ -24,11 +24,11 @@ import DownloadWrapper from "./DownloadWrapper";
 import { usePathname } from "next/navigation";
 import Container from "../Container";
 import ViewMode from "./ViewMode";
-import { usePreview } from "@/contexts/PreviewContext";
 import ZoomView from "./ZoomView";
 import UserMenu from "./UserMenu";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "react-toastify";
+import { usePreview } from "@/contexts/PreviewContext";
 
 const Header = () => {
   const pathname = usePathname();
@@ -45,8 +45,8 @@ const Header = () => {
 };
 
 const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
-  const [preview, setPreview] = usePreview();
   const [user] = useUser();
+  const [preview, setPreview] = usePreview();
   const projectId = useAppSelector(selectProjectId);
   const showPublish = user && projectId;
   return (
@@ -54,7 +54,7 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
       <Link href="/">
         <p className="font-bold text-lg">Brochurify</p>
       </Link>
-      {preview && isBuilder && "You are in preview mode"}
+
       <div className="flex gap-4 items-center">
         <DarkModeToggle />
         {!isBuilder ? (
@@ -90,46 +90,45 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
 };
 
 const BuilderHeader = () => {
-  const [preview] = usePreview();
-
   return (
     <div className="flex justify-between items-center">
-      <div className={preview ? "invisible" : ""}>
-        <LeftSide />
-      </div>
+      <LeftSide />
       <Center />
-      <div className={preview ? "invisible" : ""}>
-        <RightSide />
-      </div>
+      <RightSide />
     </div>
   );
 };
 
 const Center = () => {
-  const dispatch = useAppDispatch();
-  const [preview] = usePreview();
-
   return (
     <div className="flex items-center justify-between flex-1 flex-col md:flex-row">
-      <div
-        className={
-          "ms-6 flex items-center gap-2 " + (preview ? "invisible" : "")
-        }
-      >
+      <div className="ms-6 flex items-center gap-2">
         <LeftSideActions />
         <SavePopupWrapper />
       </div>
 
-      <div className="me-8 flex items-center gap-2">
-        <Icon
-          title="Replay"
-          type="play-circle"
-          size="24px"
-          onClick={() => dispatch(triggerReplay())}
-        />
-        <ViewMode />
-        <ZoomView />
+      <div className="me-8">
+        <ViewActions>
+          <ZoomView />
+        </ViewActions>
       </div>
+    </div>
+  );
+};
+
+export const ViewActions = ({ children }: { children?: React.ReactNode }) => {
+  const dispatch = useAppDispatch();
+
+  return (
+    <div className="flex items-center gap-2">
+      <Icon
+        title="Replay"
+        type="play-circle"
+        size="24px"
+        onClick={() => dispatch(triggerReplay())}
+      />
+      <ViewMode />
+      {children && children}
     </div>
   );
 };
@@ -185,13 +184,13 @@ const LeftSideActions = () => {
       {showImport && (
         <Icon
           title="Import locally saved work"
-          type="floppy"
+          type="download"
           size="24px"
           onClick={() => {
             const editorState = localStorage.getItem("editor");
             if (editorState) {
               const editorStateParsed = JSON.parse(editorState);
-              dispatch(hydrateForcingSave(editorStateParsed));
+              dispatch(hydrateLocal(editorStateParsed));
             } else toast.error("You have no local editor state saved");
           }}
         />

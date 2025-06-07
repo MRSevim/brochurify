@@ -1,11 +1,11 @@
 "use client";
-import { usePreview } from "@/contexts/PreviewContext";
 import BuilderComp from "@/components/BuilderComponents/Builder";
 import Preview from "@/components/Preview";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/redux/hooks";
 import { setActive } from "@/redux/slices/editorSlice";
+import { usePreview } from "@/contexts/PreviewContext";
 
 export default function Builder() {
   const [preview, setPreview] = usePreview();

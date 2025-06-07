@@ -3,7 +3,6 @@ import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
-import { hydrate } from "@/redux/slices/editorSlice";
 import { makeStore, AppStore } from "@/redux/store";
 import { useRef } from "react";
 import { Provider } from "react-redux";

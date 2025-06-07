@@ -13,8 +13,7 @@ import { html as beautifyHtml } from "js-beautify";
 export const generateHTML = (
   layout: Layout[],
   pageWise: PageWise,
-  variables: Variable[],
-  preview: boolean
+  variables: Variable[]
 ): string => {
   const {
     title,
@@ -27,9 +26,6 @@ export const generateHTML = (
     ...rest
   } = pageWise;
 
-  if (preview) {
-    delete (rest as { overflow?: any }).overflow;
-  }
   const renderedBody = renderLayout(layout);
   const fullstylesWithIds =
     fullStylesWithIdsGenerator(layout, false) +
@@ -219,16 +215,16 @@ const renderLayout = (items: Layout[]): string => {
         type === "image"
           ? "img"
           : type === "container" ||
-            type === "text" ||
-            type === "row" ||
-            type === "column" ||
-            type === "fixed"
-          ? "div"
-          : type === "divider"
-          ? "hr"
-          : type === "icon"
-          ? "i"
-          : type;
+              type === "text" ||
+              type === "row" ||
+              type === "column" ||
+              type === "fixed"
+            ? "div"
+            : type === "divider"
+              ? "hr"
+              : type === "icon"
+                ? "i"
+                : type;
 
       const isAudioOrVideo = type === "audio" || type === "video";
       const isImage = type === "image";
@@ -288,8 +284,8 @@ const renderLayout = (items: Layout[]): string => {
           }">Your browser does not support this tag.`
             : ""
         }${isText ? props.text || "" : ""}${child ? renderLayout(child) : ""}${
-        !isVoidElement ? `</${renderedType}>` : ""
-      }`;
+          !isVoidElement ? `</${renderedType}>` : ""
+        }`;
 
       const buttonWrapperApplied = addButtonWrapper(rendered);
       const FlexWrapperApplied = addFlexWrapper(buttonWrapperApplied);

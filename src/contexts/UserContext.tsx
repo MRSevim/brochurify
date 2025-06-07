@@ -34,7 +34,7 @@ export const Provider = ({
       JSON.stringify({
         username: user.username,
         image: user.image,
-        role: user.role,
+        roles: user.roles,
       })
     );
     if (rememberMe) {

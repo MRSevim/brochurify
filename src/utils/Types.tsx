@@ -160,9 +160,8 @@ export type MoveTo = { item: Layout; location: "previous" | "next" };
 export type User =
   | {
       username: string;
-      email: string;
       image: string;
-      role: string;
+      roles: string[];
     }
   | undefined;
 

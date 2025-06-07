@@ -7,6 +7,7 @@ import {
 import docClient from "./db";
 import { protect } from "../serverActions/helpers";
 import { StringOrUnd } from "../Types";
+import { deleteFolderFromS3 } from "../s3/helpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
@@ -14,12 +15,12 @@ export async function createOrUpdateUser({
   email,
   username,
   image,
-  role = "user",
+  roles = ["user"],
 }: {
   email: string;
   username: string;
   image: string;
-  role?: string;
+  roles?: string[];
 }) {
   try {
     const getUserCommand = new GetCommand({
@@ -39,7 +40,7 @@ export async function createOrUpdateUser({
       username,
       image,
       email,
-      role: user?.role || role,
+      roles: user?.roles || roles,
     };
 
     const command = new PutCommand({
@@ -106,6 +107,7 @@ export async function deleteUser(token: StringOrUnd) {
       );
     });
 
+    await deleteFolderFromS3(user.userId);
     await Promise.all(deletePromises);
     return true;
   } catch (error: any) {

@@ -8,16 +8,16 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 import { v4 as uuidv4 } from "uuid";
-import { checkAdmin, protect } from "../serverActions/helpers";
+import { checkRole, protect } from "../serverActions/helpers";
 import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
-/* import { snapshotQueue } from "../lib/workers"; */
+import { snapshotQueue } from "../lib/workers";
 import { deleteFromS3 } from "../s3/helpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
-
-export const makeSnapshotUrl = (id: string) => `snapshots/${id}.png`;
+const FREE_ACC_PROJECT_LIMIT = 3;
+const SUB_ACC_PROJECT_LIMIT = 10;
 
 export async function createProject(
   project: {
@@ -31,8 +31,21 @@ export async function createProject(
   try {
     const user = await protect(token);
     const type = project.type;
-    if (type === "template") {
-      await checkAdmin(user);
+    const isTemplate = type === "template";
+    if (isTemplate) {
+      checkRole(user, "admin");
+    }
+    if (type === "project") {
+      const projects = await getAllProjects(type, token);
+      const projectsLength = projects.length;
+
+      if (projectsLength > SUB_ACC_PROJECT_LIMIT) {
+        throw new Error(
+          `You cannot create more than ${SUB_ACC_PROJECT_LIMIT} projects!`
+        );
+      } else if (projectsLength > FREE_ACC_PROJECT_LIMIT) {
+        checkRole(user, "subscriber");
+      }
     }
 
     const { layout, pageWise, variables } = project.editor;
@@ -42,14 +55,15 @@ export async function createProject(
       );
     }
     const id = uuidv4();
-    const html = generateHTML(layout, pageWise, variables, false);
+    const html = generateHTML(layout, pageWise, variables);
     if (type === "template") {
       // Add a background job
-      /*       await snapshotQueue.add("create-snapshot", {
+      await snapshotQueue.add("create-snapshot", {
+        isTemplate,
         html,
         userId: user.userId,
         id,
-      }); */
+      });
     }
 
     const projectItem = {
@@ -78,7 +92,7 @@ export async function getAllProjects(type: string, token: StringOrUnd) {
   try {
     const user = await protect(token);
     if (type === "template") {
-      await checkAdmin(user);
+      checkRole(user, "admin");
     }
 
     const command = new QueryCommand({
@@ -140,7 +154,7 @@ export async function getProjectById(
     const project = result.Item;
 
     if (type === "template" || project.type === "template") {
-      await checkAdmin(user);
+      checkRole(user, "admin");
     }
     return project;
   } catch (error: any) {
@@ -156,8 +170,9 @@ export async function updateProject(
 ) {
   try {
     const user = await protect(token);
-    if (type === "template") {
-      await checkAdmin(user);
+    const isTemplate = type === "template";
+    if (isTemplate) {
+      checkRole(user, "admin");
     }
     // ✅ 1. Get the project by ID and ensure it belongs to the user
     const existingProject = await docClient.send(
@@ -188,11 +203,12 @@ export async function updateProject(
         );
       }
       // Add a background job
-      /*      await snapshotQueue.add("create-snapshot", {
-        html: generateHTML(layout, pageWise, variables, false),
+      await snapshotQueue.add("create-snapshot", {
+        isTemplate,
+        html: generateHTML(layout, pageWise, variables),
         userId: user.userId,
         id,
-      }); */
+      });
       updateExpressions.push("#data = :data");
       expressionAttributeNames["#data"] = "data";
       expressionAttributeValues[":data"] = stripEditorFields(updates.editor);
@@ -227,8 +243,9 @@ export async function deleteProject(
 ) {
   try {
     const user = await protect(token);
-    if (type === "template") {
-      await checkAdmin(user);
+    const isTemplate = type === "template";
+    if (isTemplate) {
+      checkRole(user, "admin");
     }
 
     // ✅ 1. Get the project by ID and ensure it belongs to the user
@@ -243,7 +260,11 @@ export async function deleteProject(
       throw Error("Project not found or unauthorized");
     }
 
-    await deleteFromS3(makeSnapshotUrl(id));
+    await deleteFromS3(
+      isTemplate
+        ? `templateSnapshots/${id}.jpeg`
+        : `${user.userId}/snapshots/${id}.jpeg`
+    );
     const command = new DeleteCommand({
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },

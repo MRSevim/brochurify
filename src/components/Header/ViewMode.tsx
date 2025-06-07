@@ -9,7 +9,7 @@ const ViewModeWrapper = () => {
 };
 
 const Icons = ["desktop", "tablet", "phone"];
-export const ViewMode = ({
+const ViewMode = ({
   selected,
   onSelect,
 }: {

@@ -33,7 +33,7 @@ const DeleteAccount = () => {
       {confirming && (
         <ConfirmationPopup
           loading={loading}
-          text="Please note that all your data (sites, projects, images etc.) will be deleted permanantly!"
+          text="Please note that all your data (sites, projects, images etc.) will be deleted permanently!"
           onClose={() => setConfirming(false)}
           onConfirm={async () => {
             setLoading(true);

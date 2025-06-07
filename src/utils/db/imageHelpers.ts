@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { deleteFromS3, uploadToS3 } from "../s3/helpers";
 import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
-import { protect } from "../serverActions/helpers";
+import { checkRole, protect } from "../serverActions/helpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 const MAX_IMAGE_SIZE_MB = 5;
@@ -27,6 +27,7 @@ export async function uploadUserImageAndUpdateLibrary({
   fileType: string;
 }): Promise<{ url: string; size: number; createdAt: string }> {
   const user = await protect(token);
+  checkRole(user, "subscriber");
   const userId = user.userId;
 
   const buffer = Buffer.from(
@@ -51,7 +52,7 @@ export async function uploadUserImageAndUpdateLibrary({
   }
 
   const fileExtension = fileType.split("/")[1];
-  const fileKey = `images/${userId}/${uuidv4()}.${fileExtension}`;
+  const fileKey = `${userId}/images/${uuidv4()}.${fileExtension}`;
 
   const imageUrl = await uploadToS3({
     buffer,
@@ -97,6 +98,7 @@ export async function deleteUserImageAndUpdateLibrary({
   imageUrl: string;
 }) {
   const user = await protect(token);
+  checkRole(user, "subscriber");
   const userId = user.userId;
 
   const url = new URL(imageUrl);
@@ -146,6 +148,7 @@ export async function getUserImages(token: string): Promise<{
   totalSize: number;
 }> {
   const user = await protect(token);
+  checkRole(user, "subscriber");
   const userId = user.userId;
   const Item = await getImagesInner(userId);
   return {

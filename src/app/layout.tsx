@@ -17,12 +17,13 @@ const roboto_mono = Roboto_Mono({
 export const metadata: Metadata = {
   title: "Brochurify",
   description:
-    "Design single page websites with the builder and get the html file",
-  keywords: "builder,website builder,html generator,html",
+    "Design single page brochurelike websites and host them with out platform or alternatively get the html code.",
+  keywords:
+    "builder,website builder,html generator,html, website hosting, single page website",
   openGraph: {
     title: "Brochurify",
     description:
-      "Design single page websites with the builder and get the html file",
+      "Design single page brochurelike websites and host them with out platform or alternatively get the html code.",
   },
 };
 

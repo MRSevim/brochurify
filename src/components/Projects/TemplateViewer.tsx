@@ -4,10 +4,10 @@ import { toast } from "react-toastify";
 import Popup from "../Popup";
 import { SnapshotImage } from "../SnapshotImage";
 import Icon from "../Icon";
-import { Modal } from "../Modal";
-import { ShadowContent } from "../ShadowContent";
+import { PreviewModal } from "../PreviewModal";
 import { generateHTML } from "@/utils/HTMLGenerator";
 import MiniLoadingSvg from "../MiniLoadingSvg";
+import { usePreview } from "@/contexts/PreviewContext";
 
 const TemplateViewer = ({
   positiveActionText,
@@ -23,6 +23,7 @@ const TemplateViewer = ({
   const [templates, setTemplates] = useState<Record<string, any>[] | null>(
     null
   );
+  const [, setPreview] = usePreview();
   const [getLoading, setGetLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [templateState, setInitialTemplate] = useState("Blank");
@@ -43,6 +44,12 @@ const TemplateViewer = ({
     };
     get();
   }, []);
+
+  useEffect(() => {
+    if (previewedTemplate) {
+      setPreview(true);
+    } else setPreview(false);
+  }, [previewedTemplate]);
   return (
     <>
       <Popup
@@ -98,19 +105,15 @@ const TemplateViewer = ({
         {children}
       </Popup>
       {previewedTemplate && (
-        <Modal
+        <PreviewModal
+          html={generateHTML(
+            previewedTemplate.data.layout,
+            previewedTemplate.data.pageWise,
+            previewedTemplate.data.variables
+          )}
           onClose={() => setPreviewing(null)}
           title={previewedTemplate.title}
-        >
-          <ShadowContent
-            html={generateHTML(
-              previewedTemplate.data.layout,
-              previewedTemplate.data.pageWise,
-              previewedTemplate.data.variables,
-              true
-            )}
-          />
-        </Modal>
+        />
       )}
     </>
   );

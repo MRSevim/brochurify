@@ -24,6 +24,7 @@ export default {
         hoveredBlue: colors.blue[500],
         activeBlue: colors.blue[800],
         deleteRed: colors.red[800],
+        positiveGreen: colors.green[500],
         amber: colors.amber[500],
       },
     },

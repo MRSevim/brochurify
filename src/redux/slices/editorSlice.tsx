@@ -64,11 +64,10 @@ export const editorSlice = createSlice({
       state.history = action.payload.history;
       state.type = action.payload.type;
     },
-    hydrateForcingSave: (state, action: PayloadAction<EditorState>) => {
+    hydrateLocal: (state, action: PayloadAction<EditorState>) => {
       state.layout = action.payload.layout;
       state.pageWise = action.payload.pageWise;
       state.variables = action.payload.variables;
-      state.history = action.payload.history;
     },
     setDraggedItem: (state, action: PayloadAction<string | undefined>) => {
       state.draggedItem = action.payload;
@@ -358,6 +357,7 @@ export const editorSlice = createSlice({
           hovered?.id,
           false
         );
+        adjustRowChildrenWidths(state.layout);
       }
     },
     moveToNextOrPrevious: (state, action: PayloadAction<MoveTo>) => {
@@ -420,7 +420,7 @@ export const {
   setHovered,
   moveToNextOrPrevious,
   duplicate,
-  hydrateForcingSave,
+  hydrateLocal,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

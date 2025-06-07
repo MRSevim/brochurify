@@ -1,9 +1,8 @@
-/* import { Worker } from "bullmq";
+import { Worker } from "bullmq";
 import { connection } from "./redis";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { getScreenSnapshot } from "../serverActions/helpers";
 import { uploadToS3 } from "../s3/helpers";
-import { makeSnapshotUrl } from "../db/projectHelpers";
 import docClient from "../db/db";
 import { Queue } from "bullmq";
 
@@ -16,12 +15,14 @@ const snapshotWorker = new Worker(
   "snapshot-queue",
   async (job) => {
     try {
-      const { html, id, userId } = job.data;
+      const { isTemplate, html, id, userId } = job.data;
 
       const buffer = await getScreenSnapshot(html);
       const snapshot = await uploadToS3({
         buffer,
-        key: makeSnapshotUrl(id),
+        key: isTemplate
+          ? `templateSnapshots/${id}.jpeg`
+          : `${userId}/snapshots/${id}.jpeg`,
         contentType: "image/jpeg",
       });
 
@@ -49,4 +50,4 @@ const snapshotWorker = new Worker(
 );
 snapshotWorker.on("failed", (job, err) => {
   console.error(`Job ${job?.id} failed: ${err.message}`);
-}); */
+});

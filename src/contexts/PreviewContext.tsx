@@ -30,7 +30,8 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     if (preview) {
       setLayoutToggle(false);
       setSettingsToggle(false);
-    }
+      document.body.style.overflow = "hidden";
+    } else document.body.style.overflow = "";
   }, [preview]);
 
   return (
