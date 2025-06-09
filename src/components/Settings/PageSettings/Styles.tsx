@@ -17,6 +17,7 @@ import ToggleBtn from "@/components/ToggleBtn";
 import { CONFIG } from "@/utils/Types";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 import { BackgroundImage } from "../Background/Background";
+import NumberInput from "@/components/NumberInput";
 
 const Styles = () => {
   return (
@@ -32,6 +33,7 @@ const Styles = () => {
       <LineHeight />
       <ToggleToBrowserDefaults />
       <HeadingStyles />
+      <HideOverflowBefore />
     </ToggleVisibilityWrapper>
   );
 };
@@ -228,6 +230,29 @@ const ToggleToBrowserDefaults = () => {
         />
         <InfoIcon text="Toggle to reset link and heading styles to browser defaults" />
       </div>
+    </WrapperWithBottomLine>
+  );
+};
+
+const HideOverflowBefore = () => {
+  const type = "hideOverFlowBefore";
+  const variable = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+  return (
+    <WrapperWithBottomLine>
+      <NumberInput
+        title="Hide Scrollbar Before"
+        desc="Use to hide scrollbar of the page before certain time (in milliseconds)"
+        value={variable || ""}
+        onChange={(e) =>
+          dispatch(
+            changeElementStyle({
+              types: [type],
+              newValue: e.target.value,
+            })
+          )
+        }
+      />
     </WrapperWithBottomLine>
   );
 };

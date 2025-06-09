@@ -84,7 +84,7 @@ export async function createProject(
     await docClient.send(command);
     return projectItem;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -111,7 +111,7 @@ export async function getAllProjects(type: string, token: StringOrUnd) {
     const result = await docClient.send(command);
     return result.Items || [];
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -131,7 +131,7 @@ export async function getTemplates() {
     const result = await docClient.send(command);
     return result.Items || [];
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -158,7 +158,7 @@ export async function getProjectById(
     }
     return project;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -232,7 +232,7 @@ export async function updateProject(
     const result = await docClient.send(command);
     return result.Attributes;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -273,6 +273,6 @@ export async function deleteProject(
     await docClient.send(command);
     return true;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }

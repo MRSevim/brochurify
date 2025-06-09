@@ -32,8 +32,7 @@ const Features = () => {
           </HeaderDiv>
           <p>
             Tweak every part of your website with flexible layouts, style
-            controls and simple transitions — all without writing a line of
-            code.
+            controls and simple transitions.
           </p>
         </FeatureWrapper>
       </div>

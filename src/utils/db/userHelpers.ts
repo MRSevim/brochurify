@@ -3,9 +3,10 @@ import {
   GetCommand,
   QueryCommand,
   DeleteCommand,
+  ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
-import { protect } from "../serverActions/helpers";
+import { getUser, protect } from "../serverActions/helpers";
 import { StringOrUnd } from "../Types";
 import { deleteFolderFromS3 } from "../s3/helpers";
 
@@ -51,7 +52,7 @@ export async function createOrUpdateUser({
     await docClient.send(command);
     return userItem;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -59,18 +60,9 @@ export async function getUserProfile(token: StringOrUnd) {
   try {
     const user = await protect(token);
 
-    const command = new GetCommand({
-      TableName: TABLE_NAME,
-      Key: {
-        userId: user.userId,
-        id: "profile",
-      },
-    });
-
-    const response = await docClient.send(command);
-    return response.Item;
+    return user;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
   }
 }
 
@@ -111,6 +103,78 @@ export async function deleteUser(token: StringOrUnd) {
     await Promise.all(deletePromises);
     return true;
   } catch (error: any) {
-    throw Error(error);
+    throw error;
+  }
+}
+
+export async function subscribe(userId: string, subscriptionId: string) {
+  try {
+    const user = await getUser(userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const roles = new Set(user.roles || []);
+    roles.add("subscriber");
+
+    const updatedUser = {
+      ...user,
+      roles: Array.from(roles),
+      subscriptionId,
+    };
+
+    const putCommand = new PutCommand({
+      TableName: TABLE_NAME,
+      Item: updatedUser,
+    });
+
+    await docClient.send(putCommand);
+    return updatedUser;
+  } catch (error: any) {
+    throw error;
+  }
+}
+
+export async function unsubscribe(subscriptionId: string) {
+  try {
+    // Scan the table to find the user with matching subscriptionId
+    const scanCommand = new ScanCommand({
+      TableName: TABLE_NAME,
+      FilterExpression: "subscriptionId = :subscriptionId",
+      ExpressionAttributeValues: {
+        ":subscriptionId": subscriptionId,
+      },
+      Limit: 1,
+    });
+
+    const result = await docClient.send(scanCommand);
+
+    if (!result.Items || result.Items.length === 0) {
+      throw new Error("User with subscriptionId not found");
+    }
+
+    const user = result.Items[0];
+
+    const roles = new Set(user.roles || []);
+    roles.delete("subscriber");
+
+    // Remove subscriptionId field
+    const { subscriptionId: _, ...rest } = user;
+
+    const updatedUser = {
+      ...rest,
+      roles: Array.from(roles),
+    };
+
+    const putCommand = new PutCommand({
+      TableName: TABLE_NAME,
+      Item: updatedUser,
+    });
+
+    await docClient.send(putCommand);
+    return updatedUser;
+  } catch (error: any) {
+    throw error;
   }
 }

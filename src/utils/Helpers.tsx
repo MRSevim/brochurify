@@ -46,7 +46,7 @@ export const getPageWise = (): PageWise => {
     color: "#000000",
     "background-color": "#ffffff80",
     "font-size": "16px",
-    height: "100vh",
+    height: "100%",
     overflow: "auto",
     "font-family": "initial",
     "line-height": "1.5",

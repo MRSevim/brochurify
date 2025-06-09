@@ -14,7 +14,7 @@ const Account = async () => {
     <div className="mt-2">
       {" "}
       <UserInfo user={user} />
-      <Subscribe />
+      <Subscribe user={user} />
       <DeleteAccount />
     </div>
   );

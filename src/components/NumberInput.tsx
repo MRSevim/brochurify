@@ -1,15 +1,18 @@
 import { ChangeEvent } from "react";
+import InfoIcon from "./InfoIcon";
 
 const NumberInput = ({
   disabled,
   title,
   children,
+  desc,
   value,
   onChange,
 }: {
   title: string;
   value: string;
   disabled?: boolean;
+  desc?: string;
   children?: React.ReactNode;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
@@ -17,12 +20,15 @@ const NumberInput = ({
 
   return (
     <form className="mb-2 flex flex-col justify-between">
-      <label
-        htmlFor={"number-input-" + title}
-        className="block mb-2 text-sm font-medium text-text"
-      >
-        {title}
-      </label>
+      <div className="flex justify-between">
+        <label
+          htmlFor={"number-input-" + title}
+          className="block mb-2 text-sm font-medium text-text"
+        >
+          {title}
+        </label>
+        {desc && <InfoIcon text={desc} />}
+      </div>
       <div className="flex gap-1 mx-2">
         <input
           disabled={disabled}

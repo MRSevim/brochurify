@@ -4,7 +4,9 @@ const PricingComparison = () => {
       <div className="grid grid-cols-3 bg-muted font-medium text-center">
         <div className="p-4 text-left">Feature</div>
         <div className="p-4 text-xl">Free (Requires account)</div>
-        <div className="p-4 text-xl">Subscription</div>
+        <div className="p-4 text-xl">
+          Subscription ({process.env.MONTHLY_SUB_PRICE}$/month)
+        </div>
       </div>
 
       <div className="grid grid-cols-3 border-t text-center">
@@ -17,7 +19,7 @@ const PricingComparison = () => {
           Not available
           <br />
           <span className="text-xs text-muted-foreground">
-            Uses .brochurify.net
+            Uses {process.env.DOMAIN_EXTENSION}
           </span>
         </div>
         <div className="border-t p-4">Available</div>

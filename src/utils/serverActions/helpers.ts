@@ -5,6 +5,10 @@ import { StringOrUnd } from "../Types";
 import puppeteer, { Browser } from "puppeteer";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "../db/db";
+import {
+  getSubscription,
+  lemonSqueezySetup,
+} from "@lemonsqueezy/lemonsqueezy.js";
 
 let browser: Browser | null = null;
 const TABLE_NAME = process.env.DB_TABLE_NAME;
@@ -34,23 +38,29 @@ export const generateToken = (
   return token;
 };
 
+export const getUser = async (userId: string) => {
+  const command = new GetCommand({
+    TableName: TABLE_NAME,
+    Key: {
+      userId,
+      id: "profile",
+    },
+  });
+
+  const response = await docClient.send(command);
+
+  const user = response.Item;
+  return user;
+};
+
 export const protect = async (token: StringOrUnd) => {
   try {
     if (token) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
         userId: string;
       };
-      const command = new GetCommand({
-        TableName: TABLE_NAME,
-        Key: {
-          userId: decoded.userId,
-          id: "profile",
-        },
-      });
 
-      const response = await docClient.send(command);
-
-      const user = response.Item;
+      const user = await getUser(decoded.userId);
       if (!user) {
         throw new Error("Not authorized, token failed, Login please");
       }
@@ -59,7 +69,7 @@ export const protect = async (token: StringOrUnd) => {
       throw new Error("Not authorized, no token, Login please");
     }
   } catch (error: any) {
-    throw new Error(error);
+    throw error;
   }
 };
 
@@ -69,7 +79,7 @@ export const checkRole = (user: Record<string, any>, role: string) => {
       throw new Error(`Not authorized, ${role} role required`);
     }
   } catch (error: any) {
-    throw new Error(error?.message || `Role check failed for ${role}`);
+    throw error;
   }
 };
 
@@ -106,4 +116,10 @@ export const getScreenSnapshot = async (html: string) => {
       await instance.close(); // always close in prod
     }
   }
+};
+
+export const getLemonSqueezyPortalLink = async (subId: string) => {
+  lemonSqueezySetup({ apiKey: process.env.LEMONSQUEEZY_API_KEY });
+  const { data } = await getSubscription(subId);
+  return data?.data.attributes["urls"]["customer_portal"];
 };
