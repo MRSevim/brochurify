@@ -27,7 +27,7 @@ export const uploadToS3 = async ({
 
     await s3Client.send(command);
 
-    return `${process.env.AWS_S3_URL}/${Bucket}/${key}`;
+    return `${process.env.AWS_CLOUDFRONT_URL}/${key}`;
   } catch (error: any) {
     throw new Error(error);
   }

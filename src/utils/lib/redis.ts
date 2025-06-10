@@ -1,9 +1,8 @@
 import { Redis } from "ioredis";
 
-const isProduction = process.env.ENV === "production";
-
 export const connection = new Redis({
-  host: isProduction ? process.env.ELASTICACHE_HOST : "localhost",
-  port: isProduction ? Number(process.env.ELASTICACHE_PORT) || 6379 : 6379,
+  host: process.env.REDIS_HOST,
+  port: Number(process.env.REDIS_PORT) || 6379,
+  password: process.env.REDIS_PASSWORD,
   maxRetriesPerRequest: null,
 });

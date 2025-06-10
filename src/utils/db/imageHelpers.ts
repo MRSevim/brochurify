@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { deleteFromS3, uploadToS3 } from "../s3/helpers";
-import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 import { checkRole, protect } from "../serverActions/helpers";
 
@@ -45,46 +45,33 @@ export async function uploadUserImageAndUpdateLibrary({
       throw new Error("Image exceeds 5MB limit");
     }
 
-    const Item = await getImagesInner(userId);
-    const currentImages = Item?.urls ?? [];
+    const currentImages = (await getImagesInner(userId)) || [];
 
     if (currentImages.length >= MAX_IMAGE_COUNT) {
       throw new Error(`Image limit (${MAX_IMAGE_COUNT}) reached`);
     }
 
     const fileExtension = fileType.split("/")[1];
-    const fileKey = `${userId}/images/${uuidv4()}.${fileExtension}`;
+    const id = uuidv4();
+    const fileKey = `${userId}/images/${id}.${fileExtension}`;
 
-    const imageUrl = await uploadToS3({
+    await uploadToS3({
       buffer,
       key: fileKey,
       contentType: fileType,
     });
 
     const imageObj = {
-      url: imageUrl,
+      userId: userId,
+      id: `image#${id}`,
+      url: `/images/${id}.${fileExtension}`,
       size: sizeInBytes,
       createdAt: new Date().toISOString(),
     };
 
-    const command = new UpdateCommand({
+    const command = new PutCommand({
       TableName: TABLE_NAME,
-      Key: {
-        userId,
-        id: "images",
-      },
-      UpdateExpression:
-        "SET #urls = list_append(if_not_exists(#urls, :empty), :new), #total = if_not_exists(#total, :zero) + :size",
-      ExpressionAttributeNames: {
-        "#urls": "urls",
-        "#total": "totalSize",
-      },
-      ExpressionAttributeValues: {
-        ":empty": [],
-        ":new": [imageObj],
-        ":zero": 0,
-        ":size": sizeInBytes,
-      },
+      Item: imageObj,
     });
 
     await docClient.send(command);
@@ -106,46 +93,32 @@ export async function deleteUserImageAndUpdateLibrary({
     checkRole(user, "subscriber");
     const userId = user.userId;
 
-    const url = new URL(imageUrl);
-    const key = url.pathname.replace(/^\/[^/]+\//, ""); // remove "/<bucket>/"
+    // imageUrl example: "/images/12345.jpeg"
+    // Extract id and extension
+    const match = imageUrl.match(/^\/images\/([^/.]+)\.(.+)$/);
+    if (!match) {
+      throw new Error("Invalid image URL format");
+    }
+    const id = match[1];
+    const extension = match[2];
 
+    // Construct S3 key with userId and image file
+    const key = `${userId}/images/${id}.${extension}`;
     await deleteFromS3(key);
 
-    const getCommand = new GetCommand({
-      TableName: process.env.DB_TABLE_NAME!,
+    // Construct DynamoDB id
+    const dynamoId = `image#${id}`;
+
+    // Delete item from DynamoDB
+    const deleteCommand = new DeleteCommand({
+      TableName: process.env.TABLE_NAME,
       Key: {
         userId,
-        id: "images",
+        id: dynamoId,
       },
     });
 
-    const { Item } = await docClient.send(getCommand);
-    const currentImages = Item?.urls ?? [];
-
-    const filteredImages = currentImages.filter(
-      (img: any) => img.url !== imageUrl
-    );
-    const deletedImage = currentImages.find((img: any) => img.url === imageUrl);
-    const sizeReduction = deletedImage?.size ?? 0;
-
-    const updateCommand = new UpdateCommand({
-      TableName: process.env.DB_TABLE_NAME!,
-      Key: {
-        userId,
-        id: "images",
-      },
-      UpdateExpression: "SET #urls = :urls, #total = :total",
-      ExpressionAttributeNames: {
-        "#urls": "urls",
-        "#total": "totalSize",
-      },
-      ExpressionAttributeValues: {
-        ":urls": filteredImages,
-        ":total": Math.max((Item?.totalSize ?? 0) - sizeReduction, 0),
-      },
-    });
-
-    await docClient.send(updateCommand);
+    await docClient.send(deleteCommand);
   } catch (error) {
     throw error;
   }
@@ -159,10 +132,20 @@ export async function getUserImages(token: string): Promise<{
     const user = await protect(token);
     checkRole(user, "subscriber");
     const userId = user.userId;
-    const Item = await getImagesInner(userId);
+    const items = await getImagesInner(userId);
+
+    // items is an array of image objects
+    const images =
+      items?.map(({ url, size, createdAt }) => ({
+        url,
+        size,
+        createdAt,
+      })) ?? [];
+
+    const totalSize = images.reduce((acc, img) => acc + img.size, 0);
     return {
-      images: Item?.urls ?? [],
-      totalSize: Item?.totalSize ?? 0,
+      images,
+      totalSize,
     };
   } catch (error) {
     throw error;
@@ -171,16 +154,17 @@ export async function getUserImages(token: string): Promise<{
 
 const getImagesInner = async (userId: string) => {
   try {
-    const getCommand = new GetCommand({
+    const queryCommand = new QueryCommand({
       TableName: TABLE_NAME,
-      Key: {
-        userId,
-        id: "images",
+      KeyConditionExpression: "userId = :userId AND begins_with(id, :prefix)",
+      ExpressionAttributeValues: {
+        ":userId": userId,
+        ":prefix": "image",
       },
     });
 
-    const { Item } = await docClient.send(getCommand);
-    return Item;
+    const { Items } = await docClient.send(queryCommand);
+    return Items;
   } catch (error) {
     throw error;
   }
