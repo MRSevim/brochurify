@@ -64,6 +64,7 @@ export async function uploadUserImageAndUpdateLibrary({
     const imageObj = {
       userId: userId,
       id: `image#${id}`,
+      imageId: id,
       url: `/images/${id}.${fileExtension}`,
       size: sizeInBytes,
       createdAt: new Date().toISOString(),
