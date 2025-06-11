@@ -1,5 +1,4 @@
 import {
-  adjustRowChildrenWidths,
   canElementHaveChild,
   deepClone,
   deleteFromLayout,
@@ -56,6 +55,9 @@ export const editorSlice = createSlice({
     setHovered: (state, action: PayloadAction<string | undefined>) => {
       state.hovered = action.payload;
     },
+    updateLayout(state, action: PayloadAction<Layout[]>) {
+      state.layout = action.payload;
+    },
     hydrate: (state, action: PayloadAction<EditorState>) => {
       state.id = action.payload.id;
       state.layout = action.payload.layout;
@@ -106,7 +108,6 @@ export const editorSlice = createSlice({
           active?.id,
           true
         );
-        adjustRowChildrenWidths(state.layout);
       }
     },
     deleteElement: (state, action: PayloadAction<string>) => {
@@ -122,7 +123,6 @@ export const editorSlice = createSlice({
         }
       }
       state.layout = deleteFromLayout(state.layout, action.payload);
-      adjustRowChildrenWidths(state.layout);
     },
     moveElement: (state, action: PayloadAction<ItemAndLocation>) => {
       moveElementInner(state, action.payload);
@@ -357,7 +357,6 @@ export const editorSlice = createSlice({
           hovered?.id,
           false
         );
-        adjustRowChildrenWidths(state.layout);
       }
     },
     moveToNextOrPrevious: (state, action: PayloadAction<MoveTo>) => {
@@ -392,7 +391,6 @@ export const editorSlice = createSlice({
       };
 
       insertDuplicate(state.layout);
-      adjustRowChildrenWidths(state.layout);
     },
   },
 });
@@ -421,6 +419,7 @@ export const {
   moveToNextOrPrevious,
   duplicate,
   hydrateLocal,
+  updateLayout,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

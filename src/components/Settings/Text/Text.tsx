@@ -114,6 +114,7 @@ const Text = () => {
           a: ["href", "target"],
           "*": ["style"], // Allow style attribute for all tags
         },
+        textFilter: (text) => text, // Don't trim or alter text content
       });
 
       dispatch(changeElementProp({ type: "text", newValue: cleanHtml }));

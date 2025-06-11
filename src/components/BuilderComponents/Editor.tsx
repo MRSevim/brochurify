@@ -33,8 +33,21 @@ const Editor = () => {
   const [viewMode] = useViewMode();
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
   const pageWise = useAppSelector(selectPageWise);
+  const hideOverFlowBefore = pageWise.hideOverFlowBefore;
   const ref = useEditorRef();
   const data = useAppSelector(selectLayout);
+  const [showOverflow, setShowOverflow] = useState(false); // ✅ state to control overflow
+  const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
+
+  // ✅ Enable overflow after the delay
+  useEffect(() => {
+    setShowOverflow(false);
+    const timeout = setTimeout(() => {
+      setShowOverflow(true);
+    }, +hideOverFlowBefore || 0); // fallback to 0 if undefined
+
+    return () => clearTimeout(timeout);
+  }, [hideOverFlowBefore, globalTrigger]);
 
   let addedString;
   if (layoutToggle && settingsToggle) {
@@ -61,7 +74,7 @@ const Editor = () => {
   return (
     <div className={"relative h-full overflow-hidden " + addedString}>
       <div
-        className={"overflow-auto mx-auto " + maxWidth}
+        className={`${showOverflow ? "overflow-auto" : "overflow-hidden"} mx-auto ${maxWidth}`}
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "top center",

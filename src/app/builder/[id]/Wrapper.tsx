@@ -16,7 +16,7 @@ const Wrapper = ({
     if (project) {
       dispatch(hydrate({ type, id: project.id, ...project.data }));
     }
-  }, [project]);
+  }, []);
 
   return <Builder />;
 };

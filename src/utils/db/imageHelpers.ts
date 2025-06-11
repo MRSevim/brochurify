@@ -53,9 +53,9 @@ export async function uploadUserImageAndUpdateLibrary({
 
     const fileExtension = fileType.split("/")[1];
     const id = uuidv4();
-    const fileKey = `${userId}/images/${id}.${fileExtension}`;
+    const fileKey = `images/${id}.${fileExtension}`;
 
-    await uploadToS3({
+    const url = await uploadToS3({
       buffer,
       key: fileKey,
       contentType: fileType,
@@ -63,9 +63,8 @@ export async function uploadUserImageAndUpdateLibrary({
 
     const imageObj = {
       userId: userId,
-      id: `image#${id}`,
-      imageId: id,
-      url: `/images/${id}.${fileExtension}`,
+      id: "image#" + id,
+      url,
       size: sizeInBytes,
       createdAt: new Date().toISOString(),
     };
@@ -94,9 +93,8 @@ export async function deleteUserImageAndUpdateLibrary({
     checkRole(user, "subscriber");
     const userId = user.userId;
 
-    // imageUrl example: "/images/12345.jpeg"
     // Extract id and extension
-    const match = imageUrl.match(/^\/images\/([^/.]+)\.(.+)$/);
+    const match = imageUrl.match(/\/images\/([^/.]+)\.([^.\/]+)$/);
     if (!match) {
       throw new Error("Invalid image URL format");
     }
@@ -104,7 +102,7 @@ export async function deleteUserImageAndUpdateLibrary({
     const extension = match[2];
 
     // Construct S3 key with userId and image file
-    const key = `${userId}/images/${id}.${extension}`;
+    const key = `images/${id}.${extension}`;
     await deleteFromS3(key);
 
     // Construct DynamoDB id
@@ -112,7 +110,7 @@ export async function deleteUserImageAndUpdateLibrary({
 
     // Delete item from DynamoDB
     const deleteCommand = new DeleteCommand({
-      TableName: process.env.TABLE_NAME,
+      TableName: process.env.DB_TABLE_NAME,
       Key: {
         userId,
         id: dynamoId,
@@ -157,10 +155,11 @@ const getImagesInner = async (userId: string) => {
   try {
     const queryCommand = new QueryCommand({
       TableName: TABLE_NAME,
-      KeyConditionExpression: "userId = :userId AND begins_with(id, :prefix)",
+      KeyConditionExpression:
+        "userId = :userId AND begins_with(id, :imagePrefix)",
       ExpressionAttributeValues: {
         ":userId": userId,
-        ":prefix": "image",
+        ":imagePrefix": "image#",
       },
     });
 

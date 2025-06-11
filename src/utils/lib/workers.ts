@@ -16,8 +16,10 @@ const snapshotWorker = new Worker(
   async (job) => {
     try {
       const { isTemplate, html, id, userId } = job.data;
-
+      console.log("Received job:", job.id);
       const buffer = await getScreenSnapshot(html);
+      console.log("Snapshot buffer generated.");
+
       const snapshot = await uploadToS3({
         buffer,
         key: isTemplate
@@ -25,6 +27,7 @@ const snapshotWorker = new Worker(
           : `${userId}/snapshots/${id}.jpeg`,
         contentType: "image/jpeg",
       });
+      console.log("Snapshot uploaded to S3:", snapshot);
 
       await docClient.send(
         new UpdateCommand({
@@ -42,6 +45,7 @@ const snapshotWorker = new Worker(
           },
         })
       );
+      console.log("Snapshot URL saved to DynamoDB.");
     } catch (error: any) {
       console.error(`${error.message}`);
     }

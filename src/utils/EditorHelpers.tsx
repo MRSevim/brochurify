@@ -70,7 +70,6 @@ export const moveElementInner = (
       targetId,
       false
     );
-    adjustRowChildrenWidths(state.layout);
   }
 };
 export const removeHistoryCurrents = (state: EditorState) => {
@@ -337,37 +336,6 @@ export const moveToNextOrPreviousInner = (
   return state.layout;
 };
 
-export function adjustRowChildrenWidths(layout: Layout[]): void {
-  const traverse = (nodes: Layout[]) => {
-    for (const node of nodes) {
-      if (node.type === "row" && Array.isArray(node.props.child)) {
-        // Only count children that are NOT of type "fixed"
-        const children = node.props.child.filter(
-          (child) => child.type !== "fixed"
-        );
-
-        const count = children.length;
-        if (count > 0) {
-          const newWidth = `${100 / count}%`;
-
-          for (const child of children) {
-            child.props.style = {
-              ...child.props.style,
-              width: newWidth,
-            };
-          }
-        }
-      }
-
-      // Recursively check nested children
-      if (Array.isArray(node.props.child)) {
-        traverse(node.props.child);
-      }
-    }
-  };
-
-  traverse(layout);
-}
 export function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
 }

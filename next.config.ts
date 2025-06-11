@@ -8,8 +8,10 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    domains: ["localhost"],
-    remotePatterns: [new URL("https://lh3.googleusercontent.com/**")],
+    remotePatterns: [
+      new URL("https://lh3.googleusercontent.com/**"),
+      new URL("https://d23cxyudk0cypl.cloudfront.net/**"),
+    ],
   },
 };
 

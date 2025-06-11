@@ -242,7 +242,7 @@ const HideOverflowBefore = () => {
     <WrapperWithBottomLine>
       <NumberInput
         title="Hide Scrollbar Before"
-        desc="Use to hide scrollbar of the page before certain time (in milliseconds)"
+        desc="Use to hide scrollbar of the page before certain time passes (in milliseconds)"
         value={variable || ""}
         onChange={(e) =>
           dispatch(
