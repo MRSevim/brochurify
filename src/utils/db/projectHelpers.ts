@@ -129,7 +129,7 @@ export async function getTemplates() {
     });
 
     const result = await docClient.send(command);
-    return result.Items || [];
+    return (result.Items || []).map(({ userId, ...rest }) => rest);
   } catch (error: any) {
     throw error;
   }

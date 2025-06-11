@@ -71,8 +71,8 @@ const TemplateViewer = ({
         ) : (
           <>
             <h2 className="font-bold text-lg mb-2">Choose a Template</h2>
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(0,300px))] gap-4 mb-2">
-              {templates?.map((template) => (
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(0,300px))] max-h-100 overflow-auto gap-4 mb-2">
+              {[...(templates || [])].reverse().map((template) => (
                 <div
                   onClick={() => setInitialTemplate(template.title)}
                   key={template.title}
