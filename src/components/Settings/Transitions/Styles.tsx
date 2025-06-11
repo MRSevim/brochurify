@@ -32,6 +32,7 @@ import { CONFIG, Style } from "@/utils/Types";
 import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
 import ColorPicker from "@/components/ColorPicker";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
+import { FontSizePicker } from "../Text/TextRelated";
 
 const Styles = () => {
   const [outerType, setOuterType] = useState("base");
@@ -285,6 +286,8 @@ export const TransitionTypeSettings = ({
       innerType === "margin/padding"
     ) {
       premadeEditedString = "0px 0px 0px 0px";
+    } else if (innerType === "font-size") {
+      premadeEditedString = "16px";
     } else {
       premadeEditedString = "";
     }
@@ -352,6 +355,13 @@ export const TransitionTypeSettings = ({
         <PositionPicker
           hasAutoOption={true}
           type={innerType}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {innerType === "font-size" && (
+        <FontSizePicker
+          variablesAvailable={!variableCreator}
           variable={editedString}
           onChange={(newVal) => setEditedString(newVal)}
         />

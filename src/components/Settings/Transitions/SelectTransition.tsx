@@ -40,6 +40,7 @@ export const availableTransitions: OptionsObject[] = [
   { title: "Margin", value: "margin" },
   { title: "Width", value: "width" },
   { title: "Height", value: "height" },
+  { title: "Font Size", value: "font-size" },
 ];
 
 export const variableSelectables: OptionsObject[] = [
@@ -52,6 +53,7 @@ export const variableSelectables: OptionsObject[] = [
   { title: "Margin/Padding", value: "margin/padding" },
   { title: "Width/Height", value: "width/height" },
   { title: "Distance from top/left/bottom/right", value: "distance" },
+  { title: "Font Size", value: "font-size" },
 ];
 
 export const filterForFixed = (option: OptionsObject, activeType: string) => {

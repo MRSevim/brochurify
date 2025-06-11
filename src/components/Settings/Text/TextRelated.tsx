@@ -7,12 +7,13 @@ import {
 } from "@/redux/hooks";
 import Text from "./Text";
 import ResetButton from "@/components/ResetButton";
-import { getSetting } from "@/utils/Helpers";
+import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
 import Slider from "@/components/Slider";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import ColorPicker from "@/components/ColorPicker";
 import FontFamilyPicker from "@/components/FontFamilyPicker";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
+import VariableSelector from "@/components/VariableSelector";
 
 const TextRelated = () => {
   const active = useAppSelector(selectActive);
@@ -82,18 +83,16 @@ const FontFamily = () => {
   );
 };
 
+const type = "font-size";
 const FontSize = () => {
-  const type = "font-size";
   const variable = getSetting(useAppSelector, type);
   const pageWise = useAppSelector(selectPageWise);
   const dispatch = useAppDispatch();
 
   return (
     <WrapperWithBottomLine>
-      <Slider
-        title="Pick a font size"
-        step={1}
-        value={variable || pageWise[type] || "16px"}
+      <FontSizePicker
+        variable={variable || pageWise[type] || "16px"}
         onChange={(newValue) => {
           dispatch(
             changeElementStyle({
@@ -109,6 +108,35 @@ const FontSize = () => {
         }}
       />
     </WrapperWithBottomLine>
+  );
+};
+
+export const FontSizePicker = ({
+  variable,
+  variablesAvailable = true,
+  onChange,
+}: {
+  variable: string;
+  variablesAvailable?: boolean;
+  onChange: (e: string) => void;
+}) => {
+  const sliderValue = convertVarIdToVarName(variable || "", useAppSelector);
+  return (
+    <>
+      <Slider
+        value={sliderValue}
+        title="Pick a font size"
+        step={1}
+        onChange={onChange}
+      />
+      {variablesAvailable && (
+        <VariableSelector
+          selected={variable || ""}
+          type={type}
+          onChange={(value) => onChange(value)}
+        />
+      )}
+    </>
   );
 };
 export default TextRelated;

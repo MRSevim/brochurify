@@ -25,21 +25,29 @@ const Slider = ({
 }: Props) => {
   const parsed = !Number.isNaN(parseFloat(value)) ? parseFloat(value) : ""; //gets the first full number inside value
 
-  const unit = getUnit(value);
+  const initialUnit = getUnit(value);
+  const unit =
+    initialUnit === "%" ||
+    initialUnit === "px" ||
+    initialUnit === "em" ||
+    initialUnit === "rem" ||
+    initialUnit === ""
+      ? initialUnit
+      : "px";
   const maxNumber =
     unit === "%"
       ? 300
       : unit === "px"
-      ? 80
-      : unit === "em" || unit === "rem"
-      ? 6
-      : max;
+        ? 80
+        : unit === "em" || unit === "rem"
+          ? 6
+          : max;
 
   const minNumber = letterSpacing
     ? -5
     : unit === "em" || unit === "rem" || unit === "%" || unit === "px"
-    ? 0
-    : min;
+      ? 0
+      : min;
   const stepValue = unit === "em" || unit === "rem" ? 0.1 : step;
 
   return (
