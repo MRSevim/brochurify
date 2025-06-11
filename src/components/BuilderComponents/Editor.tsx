@@ -42,9 +42,12 @@ const Editor = () => {
   // ✅ Enable overflow after the delay
   useEffect(() => {
     setShowOverflow(false);
-    const timeout = setTimeout(() => {
-      setShowOverflow(true);
-    }, +hideOverFlowBefore || 0); // fallback to 0 if undefined
+    const timeout = setTimeout(
+      () => {
+        setShowOverflow(true);
+      },
+      hideOverFlowBefore ? +hideOverFlowBefore : 0
+    ); // fallback to 0 if undefined
 
     return () => clearTimeout(timeout);
   }, [hideOverFlowBefore, globalTrigger]);
