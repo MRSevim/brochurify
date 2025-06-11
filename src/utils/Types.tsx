@@ -98,7 +98,7 @@ export type PageWise = {
   h3: Style;
   iconUrl: string;
   googleAnalyticsTag: string;
-  hideOverFlowBefore: string;
+  hideOverFlowBefore?: string;
   [key: string]: string | Style | undefined;
 };
 
