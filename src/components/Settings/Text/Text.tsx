@@ -72,8 +72,7 @@ const Text = () => {
   useEffect(() => {
     if (!editor) return;
 
-    // Listen for editor content updates
-    const updateHandler = () => {
+    const handler = () => {
       const rawHtml = editor.getHTML(); // Get current HTML
       // ✅ Sanitize the HTML (remove unwanted tags)
       const cleanHtml = sanitizeHtml(rawHtml, {
@@ -120,17 +119,21 @@ const Text = () => {
       dispatch(changeElementProp({ type: "text", newValue: cleanHtml }));
     };
 
-    editor.on("update", updateHandler);
+    editor.on("update", handler);
 
     return () => {
-      editor.off("update", updateHandler); // Cleanup event listener
+      editor.off("update", handler); // Cleanup event listener
     };
   }, [editor, dispatch]);
 
   //Listen for content change from outside such as history
   useEffect(() => {
     if (editor && content !== editor.getHTML()) {
-      editor.commands.setContent(content, false); // false = don't emit new update event
+      let { from, to } = editor.state.selection;
+      editor.commands.setContent(content, false, {
+        preserveWhitespace: "full",
+      });
+      editor.commands.setTextSelection({ from, to }); // false = don't emit new update event
     }
   }, [content, editor]);
 

@@ -35,7 +35,7 @@ const UploadWrapper = ({
           positiveActionText="Use"
           onClose={() => setPopup(false)}
           editing={false}
-          maxWidth="4xl"
+          className="max-w-4xl"
           onEditOrAdd={() => {
             onEditOrAdd(selectedImageUrl);
             setPopup(false);

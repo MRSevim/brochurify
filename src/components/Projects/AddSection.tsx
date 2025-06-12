@@ -18,7 +18,6 @@ const AddSection = () => {
         layout: selectedTemplate?.data.layout,
         pageWise: selectedTemplate?.data.pageWise,
         variables: selectedTemplate?.data.variables,
-        history: [],
       },
       snapshot: selectedTemplate?.snapshot,
     });

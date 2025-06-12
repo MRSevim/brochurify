@@ -23,158 +23,138 @@ export async function createOrUpdateUser({
   image: string;
   roles?: string[];
 }) {
-  try {
-    const getUserCommand = new GetCommand({
-      TableName: TABLE_NAME,
-      Key: {
-        userId: email,
-        id: "profile",
-      },
-    });
-
-    const response = await docClient.send(getUserCommand);
-    const user = response.Item;
-    const userItem = {
+  const getUserCommand = new GetCommand({
+    TableName: TABLE_NAME,
+    Key: {
       userId: email,
-      id: "profile", // reserved value to distinguish user profiles
-      type: "profile",
-      username,
-      image,
-      email,
-      roles: user?.roles || roles,
-    };
+      id: "profile",
+    },
+  });
 
-    const command = new PutCommand({
-      TableName: TABLE_NAME,
-      Item: userItem,
-    });
+  const response = await docClient.send(getUserCommand);
+  const user = response.Item;
+  const userItem = {
+    userId: email,
+    id: "profile", // reserved value to distinguish user profiles
+    type: "profile",
+    username,
+    image,
+    email,
+    roles: user?.roles || roles,
+  };
 
-    await docClient.send(command);
-    return userItem;
-  } catch (error: any) {
-    throw error;
-  }
+  const command = new PutCommand({
+    TableName: TABLE_NAME,
+    Item: userItem,
+  });
+
+  await docClient.send(command);
+  return userItem;
 }
 
 export async function getUserProfile(token: StringOrUnd) {
-  try {
-    const user = await protect(token);
+  const user = await protect(token);
 
-    return user;
-  } catch (error: any) {
-    throw error;
-  }
+  return user;
 }
 
 export async function deleteUser(token: StringOrUnd) {
-  try {
-    const user = await protect(token);
+  const user = await protect(token);
 
-    // Step 1: Query all items with the userId
-    const queryCommand = new QueryCommand({
-      TableName: TABLE_NAME,
-      KeyConditionExpression: "userId = :uid",
-      ExpressionAttributeValues: {
-        ":uid": user.userId,
-      },
-    });
+  // Step 1: Query all items with the userId
+  const queryCommand = new QueryCommand({
+    TableName: TABLE_NAME,
+    KeyConditionExpression: "userId = :uid",
+    ExpressionAttributeValues: {
+      ":uid": user.userId,
+    },
+  });
 
-    const result = await docClient.send(queryCommand);
+  const result = await docClient.send(queryCommand);
 
-    // Safety check: ensure items exist
-    if (!result.Items || result.Items.length === 0) {
-      return true;
-    }
-
-    // Step 2: Loop through items and delete each one
-    const deletePromises = result.Items.map((item) => {
-      return docClient.send(
-        new DeleteCommand({
-          TableName: TABLE_NAME,
-          Key: {
-            userId: item.userId,
-            id: item.id,
-          },
-        })
-      );
-    });
-
-    await deleteFolderFromS3(user.userId);
-    await Promise.all(deletePromises);
+  // Safety check: ensure items exist
+  if (!result.Items || result.Items.length === 0) {
     return true;
-  } catch (error: any) {
-    throw error;
   }
+
+  // Step 2: Loop through items and delete each one
+  const deletePromises = result.Items.map((item) => {
+    return docClient.send(
+      new DeleteCommand({
+        TableName: TABLE_NAME,
+        Key: {
+          userId: item.userId,
+          id: item.id,
+        },
+      })
+    );
+  });
+
+  await deleteFolderFromS3(user.userId);
+  await Promise.all(deletePromises);
+  return true;
 }
 
 export async function subscribe(userId: string, subscriptionId: string) {
-  try {
-    const user = await getUser(userId);
+  const user = await getUser(userId);
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const roles = new Set(user.roles || []);
-    roles.add("subscriber");
-
-    const updatedUser = {
-      ...user,
-      roles: Array.from(roles),
-      subscriptionId,
-    };
-
-    const putCommand = new PutCommand({
-      TableName: TABLE_NAME,
-      Item: updatedUser,
-    });
-
-    await docClient.send(putCommand);
-    return updatedUser;
-  } catch (error: any) {
-    throw error;
+  if (!user) {
+    throw new Error("User not found");
   }
+
+  const roles = new Set(user.roles || []);
+  roles.add("subscriber");
+
+  const updatedUser = {
+    ...user,
+    roles: Array.from(roles),
+    subscriptionId,
+  };
+
+  const putCommand = new PutCommand({
+    TableName: TABLE_NAME,
+    Item: updatedUser,
+  });
+
+  await docClient.send(putCommand);
+  return updatedUser;
 }
 
 export async function unsubscribe(subscriptionId: string) {
-  try {
-    // Scan the table to find the user with matching subscriptionId
-    const scanCommand = new ScanCommand({
-      TableName: TABLE_NAME,
-      FilterExpression: "subscriptionId = :subscriptionId",
-      ExpressionAttributeValues: {
-        ":subscriptionId": subscriptionId,
-      },
-      Limit: 1,
-    });
+  // Scan the table to find the user with matching subscriptionId
+  const scanCommand = new ScanCommand({
+    TableName: TABLE_NAME,
+    FilterExpression: "subscriptionId = :subscriptionId",
+    ExpressionAttributeValues: {
+      ":subscriptionId": subscriptionId,
+    },
+    Limit: 1,
+  });
 
-    const result = await docClient.send(scanCommand);
+  const result = await docClient.send(scanCommand);
 
-    if (!result.Items || result.Items.length === 0) {
-      throw new Error("User with subscriptionId not found");
-    }
-
-    const user = result.Items[0];
-
-    const roles = new Set(user.roles || []);
-    roles.delete("subscriber");
-
-    // Remove subscriptionId field
-    const { subscriptionId: _, ...rest } = user;
-
-    const updatedUser = {
-      ...rest,
-      roles: Array.from(roles),
-    };
-
-    const putCommand = new PutCommand({
-      TableName: TABLE_NAME,
-      Item: updatedUser,
-    });
-
-    await docClient.send(putCommand);
-    return updatedUser;
-  } catch (error: any) {
-    throw error;
+  if (!result.Items || result.Items.length === 0) {
+    throw new Error("User with subscriptionId not found");
   }
+
+  const user = result.Items[0];
+
+  const roles = new Set(user.roles || []);
+  roles.delete("subscriber");
+
+  // Remove subscriptionId field
+  const { subscriptionId: _, ...rest } = user;
+
+  const updatedUser = {
+    ...rest,
+    roles: Array.from(roles),
+  };
+
+  const putCommand = new PutCommand({
+    TableName: TABLE_NAME,
+    Item: updatedUser,
+  });
+
+  await docClient.send(putCommand);
+  return updatedUser;
 }

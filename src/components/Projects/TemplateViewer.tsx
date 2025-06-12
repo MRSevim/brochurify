@@ -55,7 +55,7 @@ const TemplateViewer = ({
       <Popup
         positiveActionText={positiveActionText}
         loading={loading}
-        maxWidth="4xl"
+        className="max-w-5xl"
         editing={false}
         onClose={() => setAdding(false)}
         onEditOrAdd={async () => {

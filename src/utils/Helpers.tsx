@@ -207,12 +207,13 @@ export const getDefaultElementProps = (type: string): Props => {
   return { style: {} };
 };
 
-export const stripEditorFields = (param: EditorState) => {
+export const stripEditorFields = (
+  param: EditorState | Partial<EditorState>
+) => {
   const stripped = {
     layout: param.layout,
     pageWise: param.pageWise,
     variables: param.variables,
-    history: param.history,
   };
   return stripped;
 };

@@ -1,10 +1,12 @@
 import {
   DeleteObjectCommand,
   DeleteObjectsCommand,
+  GetObjectCommand,
   ListObjectsCommand,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import s3Client from "./s3Client";
+import { Readable } from "node:stream";
 
 const Bucket = process.env.S3_BUCKET_NAME;
 
@@ -56,7 +58,7 @@ export const deleteFolderFromS3 = async (prefix: string) => {
     );
 
     if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
-      console.log("No objects found under prefix:", prefix);
+      console.warn("No objects found under prefix:", prefix);
       return;
     }
 
@@ -70,10 +72,49 @@ export const deleteFolderFromS3 = async (prefix: string) => {
 
     // Delete all listed objects
     await s3Client.send(new DeleteObjectsCommand(deleteParams));
-
-    console.log(`Deleted all files under prefix: ${prefix}`);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to delete files from S3:", error);
-    throw error;
+    throw new Error(error);
   }
 };
+
+export async function saveProjectDataToS3(
+  id: string,
+  data: Record<string, any>
+) {
+  try {
+    const command = new PutObjectCommand({
+      Bucket,
+      Key: `projects/${id}.json`,
+      Body: JSON.stringify(data),
+      ContentType: "application/json",
+    });
+
+    await s3Client.send(command);
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+export async function getProjectDataFromS3(id: string) {
+  try {
+    const command = new GetObjectCommand({
+      Bucket,
+      Key: `projects/${id}.json`,
+    });
+
+    const response = await s3Client.send(command);
+
+    return JSON.parse(await streamToString(response.Body as Readable));
+  } catch (error: any) {
+    throw new Error(error);
+  }
+}
+
+const streamToString = (stream: Readable): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    stream.on("data", (chunk) => chunks.push(chunk));
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf-8")));
+    stream.on("error", reject);
+  });

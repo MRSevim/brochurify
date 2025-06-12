@@ -21,7 +21,6 @@ const AddSection = () => {
         layout: [],
         pageWise: getPageWise(),
         variables: [],
-        history: [],
       },
     });
     if (error) {

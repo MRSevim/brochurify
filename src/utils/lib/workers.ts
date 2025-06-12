@@ -1,6 +1,6 @@
 import { Worker } from "bullmq";
 import { connection } from "./redis";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { getScreenSnapshot } from "../serverActions/helpers";
 import { uploadToS3 } from "../s3/helpers";
 import docClient from "../db/db";
@@ -17,6 +17,18 @@ const snapshotWorker = new Worker(
     try {
       const { isTemplate, html, id, userId } = job.data;
       console.log("Received job:", job.id);
+      // ✅ 1. Check if project still exists
+      const getResult = await docClient.send(
+        new GetCommand({
+          TableName: TABLE_NAME!,
+          Key: { userId, id },
+        })
+      );
+
+      if (!getResult.Item) {
+        console.warn(`Job ${job.id} skipped: item no longer exists.`);
+        return; // ⛔ Abort the job early
+      }
       const buffer = await getScreenSnapshot(html);
       console.log("Snapshot buffer generated.");
 
