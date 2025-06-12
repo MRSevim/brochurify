@@ -1,11 +1,11 @@
 const PricingComparison = () => {
   return (
-    <div className="max-w-4xl mx-auto my-12 border rounded-lg overflow-hidden text-sm">
-      <div className="grid grid-cols-3 bg-muted font-medium text-center">
+    <div className="max-w-4xl mx-auto my-12 border rounded-lg overflow-hidden text-sm break-words">
+      <div className="grid grid-cols-3 bg-muted font-medium text-center items-center">
         <div className="p-4 text-left">Feature</div>
-        <div className="p-4 text-xl">Free (Requires account)</div>
-        <div className="p-4 text-xl">
-          Subscription ({process.env.MONTHLY_SUB_PRICE}$/month)
+        <div className="p-4 md:text-xl ">Free (Requires account)</div>
+        <div className="p-4 md:text-xl ">
+          Subscription ({process.env.NEXT_PUBLIC_MONTHLY_SUB_PRICE}$/month)
         </div>
       </div>
 
@@ -19,7 +19,7 @@ const PricingComparison = () => {
           Not available
           <br />
           <span className="text-xs text-muted-foreground">
-            Uses {process.env.DOMAIN_EXTENSION}
+            Uses {process.env.NEXT_PUBLIC_DOMAIN_EXTENSION}
           </span>
         </div>
         <div className="border-t p-4">Available</div>

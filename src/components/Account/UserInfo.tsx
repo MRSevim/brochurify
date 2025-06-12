@@ -12,7 +12,7 @@ const UserInfo = ({ user }: { user: Record<string, any> }) => {
         {" "}
         <strong>Email</strong>:{user.userId}
       </li>
-      <li className="flex">
+      <li className="flex items-center">
         <strong>Subscription Status</strong>:
         {user.roles.includes("subscriber") ? (
           <span className="flex items-center text-positiveGreen font-semibold">

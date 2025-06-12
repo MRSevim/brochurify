@@ -4,10 +4,10 @@ import {
   EditorState,
   PageWise,
   Layout,
-  StringOrUnd,
   OptionsObject,
   CONFIG,
   Variable,
+  User,
 } from "./Types";
 import { v4 as uuidv4 } from "uuid";
 import { findElementById } from "./EditorHelpers";
@@ -443,21 +443,42 @@ export const setValueFromShorthandStr = (
   return values.join(" "); // Recombine the values into a shorthand string
 };
 
+export const checkSub = (user: User) => {
+  if (!user) return false;
+  return user?.roles?.includes("subscriber");
+};
+
 export const extractUrlValue = (cssUrl: string): string => {
   const match = cssUrl.match(/url\(["']?(.*?)["']?\)/);
   return match ? match[1] : "";
 };
 
-export function setCookie(cname: string, cvalue: string, exdays: number) {
+export function setCookie(
+  cname: string,
+  cvalue: string,
+  exdays: number,
+  setExpirationDate?: boolean
+) {
   let cookieStr = `${cname}=${cvalue};path=/`;
 
   if (exdays > 0) {
     const d = new Date();
     d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-    cookieStr += `;expires=${d.toUTCString()}`;
+    const expires = d.toUTCString();
+    const encoded = encodeURIComponent(expires);
+    cookieStr += `;expires=${expires}`;
+    if (setExpirationDate) {
+      const expirationStr = `${cname}ExpirationDate=${encoded};path=/;expires=${expires}`;
+      document.cookie = expirationStr;
+    }
   }
 
   document.cookie = cookieStr;
+}
+
+export function getCookie(name: string): string | null {
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
 }
 
 export const formatTime = (isoString: string) => {

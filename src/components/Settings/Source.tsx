@@ -30,10 +30,10 @@ const SourceUrl = () => {
         activeType === "image"
           ? "should be apng, avif, gif, jpeg, png (recommended), svg or webp (recommended)"
           : activeType === "video"
-          ? "should be mp4, webm or ogg"
-          : activeType === "audio"
-          ? "should be mp3, wav or ogg"
-          : ""
+            ? "should be mp4, webm or ogg"
+            : activeType === "audio"
+              ? "should be mp3, wav or ogg"
+              : ""
       }
       title="Source url"
       value={variable || ""}

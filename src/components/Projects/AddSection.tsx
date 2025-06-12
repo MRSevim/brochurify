@@ -15,9 +15,9 @@ const AddSection = () => {
       type: "project",
       title: projectName,
       editor: {
-        layout: selectedTemplate?.data.layout,
-        pageWise: selectedTemplate?.data.pageWise,
-        variables: selectedTemplate?.data.variables,
+        layout: selectedTemplate?.editor.layout,
+        pageWise: selectedTemplate?.editor.pageWise,
+        variables: selectedTemplate?.editor.variables,
       },
       snapshot: selectedTemplate?.snapshot,
     });

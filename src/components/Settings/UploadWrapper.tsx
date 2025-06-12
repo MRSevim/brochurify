@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 import DeleteButton from "../DeleteButton";
 import { useUser } from "@/contexts/UserContext";
+import SubscribeIcon from "../SubscribeIcon";
+import { useSubscribePopup } from "@/contexts/SubscribePopupContext";
 
 const UploadWrapper = ({
   onEditOrAdd,
@@ -60,11 +62,20 @@ const Button = ({
   onClick: () => void;
   loading?: boolean;
 }) => {
+  const [isSubbed] = useSubscribePopup();
+
   return (
-    <button onClick={onClick} className="p-2 bg-text text-background">
-      {!loading && text}
-      {loading && <MiniLoadingSvg variant="black" />}
-    </button>
+    <div className="flex gap-2">
+      <button
+        onClick={onClick}
+        className="p-2 bg-text text-background"
+        disabled={!isSubbed}
+      >
+        {!loading && text}
+        {loading && <MiniLoadingSvg variant="black" />}
+      </button>
+      {!isSubbed && <SubscribeIcon />}
+    </div>
   );
 };
 

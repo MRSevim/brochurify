@@ -5,8 +5,8 @@ const Subscribe = async ({ user }: { user: Record<string, any> }) => {
   const isSubscribed = user.roles.includes("subscriber");
   let link;
   if (isSubscribed) {
-    const portalLink = await getLemonSqueezyPortalLink(user.subscriptionId);
-    link = portalLink;
+    /*   const portalLink = await getLemonSqueezyPortalLink(user.subscriptionId);
+    link = portalLink; */
   } else {
     link =
       "https://brochurify.lemonsqueezy.com/buy/c506f80c-b610-4127-ad25-60911d700002?checkout[custom][user_id]=" +

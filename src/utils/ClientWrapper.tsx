@@ -12,9 +12,11 @@ import { Provider as PreviewProvider } from "@/contexts/PreviewContext";
 import { Provider as ZoomProvider } from "@/contexts/ZoomContext";
 import { Provider as AddSectionToggleProvider } from "@/contexts/AddSectionToggleContext";
 import { Provider as UserProvider } from "@/contexts/UserContext";
+import { Provider as SubscribePopupProvider } from "@/contexts/SubscribePopupContext";
 import { EditorRefProvider } from "@/contexts/EditorRefContext";
 import { StyleSheetManager } from "styled-components";
 import { User } from "./Types";
+import { useSyncUser } from "./hooks/useSyncUser";
 
 export default function ClientWrapper({
   children,
@@ -25,13 +27,6 @@ export default function ClientWrapper({
   lightMode: boolean;
   UserFromCookie: User;
 }) {
-  const storeRef = useRef<AppStore>(undefined);
-
-  if (!storeRef.current) {
-    // Create the store instance the first time this renders
-    storeRef.current = makeStore();
-  }
-
   return (
     <StyleSheetManager
       shouldForwardProp={(prop) =>
@@ -45,11 +40,13 @@ export default function ClientWrapper({
               <PreviewProvider>
                 <ZoomProvider>
                   <UserProvider UserFromCookie={UserFromCookie}>
-                    <AddSectionToggleProvider>
-                      <EditorRefProvider>
-                        <Provider store={storeRef.current}>{children}</Provider>
-                      </EditorRefProvider>
-                    </AddSectionToggleProvider>
+                    <SubscribePopupProvider>
+                      <AddSectionToggleProvider>
+                        <EditorRefProvider>
+                          <InnerWrapper>{children}</InnerWrapper>
+                        </EditorRefProvider>
+                      </AddSectionToggleProvider>
+                    </SubscribePopupProvider>
                   </UserProvider>
                 </ZoomProvider>
               </PreviewProvider>
@@ -60,3 +57,14 @@ export default function ClientWrapper({
     </StyleSheetManager>
   );
 }
+
+const InnerWrapper = ({ children }: { children: React.ReactNode }) => {
+  const storeRef = useRef<AppStore>(undefined);
+
+  if (!storeRef.current) {
+    // Create the store instance the first time this renders
+    storeRef.current = makeStore();
+  }
+  useSyncUser();
+  return <Provider store={storeRef.current}>{children}</Provider>;
+};

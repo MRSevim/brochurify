@@ -8,12 +8,12 @@ const Popup = ({
   onEditOrAdd,
   children,
   loading = false,
-  editing,
+  editing = false,
 }: {
   onClose: () => void;
   onEditOrAdd: () => void;
   children: React.ReactNode;
-  editing: boolean;
+  editing?: boolean;
   loading?: boolean;
   className?: string;
   positiveActionText?: string;

@@ -63,7 +63,6 @@ export const editorSlice = createSlice({
       state.layout = action.payload.layout;
       state.pageWise = action.payload.pageWise;
       state.variables = action.payload.variables;
-      state.history = action.payload.history;
       state.type = action.payload.type;
     },
     hydrateLocal: (state, action: PayloadAction<EditorState>) => {

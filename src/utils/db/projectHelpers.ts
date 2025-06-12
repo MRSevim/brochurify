@@ -31,6 +31,14 @@ const addJobToQueue = async (
 ) => {
   const jobId = `${userId}-${id}`;
   console.log(`🔁 Scheduling snapshot job (${jobId}) to run in 10 minutes...`);
+
+  // 1. Check if job exists
+  const existingJob = await snapshotQueue.getJob(jobId);
+  if (existingJob) {
+    console.log(`🗑 Removing existing job ${jobId} before adding new one.`);
+    await existingJob.remove();
+  }
+
   // Add a background job
   await snapshotQueue.add(
     "create-snapshot",
