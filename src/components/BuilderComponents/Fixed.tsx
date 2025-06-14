@@ -4,7 +4,7 @@ import { styledElements } from "@/utils/StyledComponents";
 import { RefObject } from "react";
 
 const Fixed = ({ id, children, style, ref, anchorId }: PropsWithId) => {
-  const active = useClasses(id, true);
+  const active = useClasses(true);
   return (
     <styledElements.styledFixed
       className={active}

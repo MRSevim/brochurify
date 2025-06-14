@@ -130,6 +130,11 @@ export const getDefaultStyle = (type: string): Style => {
       "flex-direction": "column",
       ...getDefaultStyle(""),
     };
+  } else if (type === "text") {
+    return {
+      "align-content": "center",
+      ...getDefaultStyle(""),
+    };
   }
   return {
     margin: "10px 10px 10px 10px",
@@ -156,7 +161,7 @@ export const getDefaultElementProps = (type: string): Props => {
     };
   } else if (type === "text") {
     return {
-      style: getDefaultStyle(""),
+      style: getDefaultStyle("text"),
       text: "I am a text",
     };
   } else if (type === "column") {

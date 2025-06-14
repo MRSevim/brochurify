@@ -4,7 +4,7 @@ import { styledElements } from "@/utils/StyledComponents";
 import { RefObject } from "react";
 
 const Container = ({ id, children, style, ref, anchorId }: PropsWithId) => {
-  const active = useClasses(id);
+  const active = useClasses();
 
   return (
     <styledElements.styledDiv

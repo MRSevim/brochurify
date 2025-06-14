@@ -47,8 +47,10 @@ const Header = () => {
 const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
   const [user] = useUser();
   const [preview, setPreview] = usePreview();
+  const isTemplate =
+    useAppSelector((state) => state.editor.type) === "template";
   const projectId = useAppSelector(selectProjectId);
-  const showPublish = user && projectId;
+  const showPublish = user && projectId && !isTemplate;
   return (
     <div className="flex justify-center sm:justify-between items-center py-2 flex-wrap ">
       <Link href="/">

@@ -4,7 +4,7 @@ import { styledElements } from "@/utils/StyledComponents";
 import { RefObject } from "react";
 
 const Video = ({ id, style, src, ref, anchorId }: PropsWithId) => {
-  const active = useClasses(id);
+  const active = useClasses();
   return (
     <styledElements.styledVideo
       className={active}

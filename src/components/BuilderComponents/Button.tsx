@@ -4,7 +4,7 @@ import { styledElements } from "@/utils/StyledComponents";
 import { RefObject } from "react";
 
 const Button = ({ id, children, style, ref, anchorId }: PropsWithId) => {
-  const active = useClasses(id);
+  const active = useClasses();
 
   return (
     <styledElements.styledButton

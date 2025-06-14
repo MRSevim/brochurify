@@ -64,11 +64,13 @@ export const editorSlice = createSlice({
       state.pageWise = action.payload.pageWise;
       state.variables = action.payload.variables;
       state.type = action.payload.type;
+      state.history = [];
     },
     hydrateLocal: (state, action: PayloadAction<EditorState>) => {
       state.layout = action.payload.layout;
       state.pageWise = action.payload.pageWise;
       state.variables = action.payload.variables;
+      state.history = [];
     },
     setDraggedItem: (state, action: PayloadAction<string | undefined>) => {
       state.draggedItem = action.payload;
@@ -319,6 +321,13 @@ export const editorSlice = createSlice({
       state,
       action: PayloadAction<{ layout: Layout[]; pageWise: PageWise }>
     ) => {
+      const history = state.history;
+      const currentIndex = history.findIndex((item) => item.current);
+
+      // If current is not at the end, remove all history after it
+      if (currentIndex !== -1 && currentIndex < history.length - 1) {
+        state.history = history.slice(0, currentIndex + 1);
+      }
       removeHistoryCurrents(state);
       state.history.push({
         current: true,
