@@ -1,7 +1,13 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { Layout } from "@/utils/Types";
 import { RootState } from "../store";
-import { hydrate, redo, undo, updateLayout } from "../slices/editorSlice";
+import {
+  hydrate,
+  redo,
+  undo,
+  updateLayout,
+  duplicate,
+} from "../slices/editorSlice";
 
 // Utility to count non-fixed children of row nodes
 const getRowNonFixedCounts = (
@@ -39,7 +45,12 @@ const deepCloneLayout = (nodes: Layout[]): Layout[] => {
 export const rowResizeMiddleware: Middleware =
   (store) => (next) => (action) => {
     // Skip if it's a non-layout-altering action
-    if (undo.match(action) || redo.match(action) || hydrate.match(action)) {
+    if (
+      undo.match(action) ||
+      redo.match(action) ||
+      hydrate.match(action) ||
+      duplicate.match(action)
+    ) {
       return next(action);
     }
 
