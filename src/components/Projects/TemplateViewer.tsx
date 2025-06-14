@@ -72,7 +72,7 @@ const TemplateViewer = ({
           <>
             <h2 className="font-bold text-lg mb-2">Choose a Template</h2>
             <div className="grid grid-cols-[repeat(auto-fit,minmax(0,300px))] max-h-100 overflow-auto gap-4 mb-2">
-              {[...(templates || [])].reverse().map((template) => (
+              {templates?.map((template) => (
                 <div
                   onClick={() => setInitialTemplate(template.title)}
                   key={template.title}
@@ -107,9 +107,9 @@ const TemplateViewer = ({
       {previewedTemplate && (
         <PreviewModal
           html={generateHTML(
-            previewedTemplate.data.layout,
-            previewedTemplate.data.pageWise,
-            previewedTemplate.data.variables
+            previewedTemplate.editor.layout,
+            previewedTemplate.editor.pageWise,
+            previewedTemplate.editor.variables
           )}
           onClose={() => setPreviewing(null)}
           title={previewedTemplate.title}

@@ -40,6 +40,7 @@ const Hide = () => {
         title="Hide on mobile and below"
         outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
       />
+      <OverflowHidden />
     </WrapperWithBottomLine>
   );
 };
@@ -66,6 +67,28 @@ const TabletOrMobile = ({
           changeElementStyle({
             types: [outerType, innerType],
             newValue: checked ? "" : hidden,
+          })
+        );
+      }}
+    />
+  );
+};
+
+const OverflowHidden = () => {
+  const type = "overflow";
+  const variable = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+  const checked = variable === "hidden";
+
+  return (
+    <Checkbox
+      title={"Hide overflow"}
+      checked={checked}
+      onChange={() => {
+        dispatch(
+          changeElementStyle({
+            types: [type],
+            newValue: !checked ? "hidden" : "",
           })
         );
       }}

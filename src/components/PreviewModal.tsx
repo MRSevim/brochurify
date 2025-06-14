@@ -44,7 +44,7 @@ export const PreviewModal = ({
           <ViewActions />
         </div>
         {title && (
-          <h2 className="text-xl font-bold left-3 top-2 absolute bg-[rgb(107,114,128)]/50 rounded z-[120] p-1 backdrop-blur-sm ">
+          <h2 className="text-xl text-white font-bold left-3 top-2 absolute bg-[rgb(107,114,128)]/60 rounded z-[120] p-1 backdrop-blur-sm ">
             {title}
           </h2>
         )}

@@ -151,7 +151,7 @@ export const generateHTML = (
   ${additionalStyles}
   </head>
   <body>
-  ${renderedBody}
+  ${updateInternalLinks(renderedBody)}
   </body>
   </html>`;
 
@@ -247,25 +247,11 @@ const renderLayout = (items: Layout[]): string => {
       const isText = type === "text";
       const isFixed = type === "fixed";
       const isVoidElement = type === "image" || type === "divider";
-      const href = props.href?.startsWith("#")
-        ? `#user-${props.href.slice(1)}`
-        : props.href;
-
-      const formatOnClick = (href?: string) => {
-        if (href?.startsWith("#")) {
-          const targetId = `user-${href.slice(1)}`;
-          return `event.preventDefault(); document.getElementById('${targetId}')?.scrollIntoView({ behavior: 'smooth' });`;
-        }
-        return "";
-      };
-      const onclick = formatOnClick(props.href);
 
       const addButtonWrapper = (html: string) => {
         if (type === "button") {
           return `
-          <a class="wAndHFull flex" ${href ? `href=${href}` : ""}" ${
-            onclick ? `onclick="${onclick}"` : ""
-          } target=${
+          <a class="wAndHFull flex" href=${props.href}  target=${
             props.newTab ? "_blank" : "_self"
           }rel="noopener noreferrer">${html}</a>`;
         } else {
@@ -309,4 +295,16 @@ const renderLayout = (items: Layout[]): string => {
     })
     .join("");
   return layout;
+};
+
+const updateInternalLinks = (html: string): string => {
+  return html.replace(
+    /<a([^>]*?)href=['"]#([^'"]+)['"]([^>]*)>/gi,
+    (match, preAttrs, anchor, postAttrs) => {
+      const targetId = `user-${anchor}`;
+      const newHref = `href="#${targetId}"`;
+      const newOnClick = `onclick="event.preventDefault(); document.getElementById('${targetId}')?.scrollIntoView({ behavior: 'smooth' });"`;
+      return `<a${preAttrs} ${newHref} ${newOnClick} ${postAttrs}>`;
+    }
+  );
 };
