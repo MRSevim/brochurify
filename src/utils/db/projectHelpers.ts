@@ -18,10 +18,9 @@ import {
   getProjectDataFromS3,
   saveProjectDataToS3,
 } from "../s3/helpers";
+import { appConfig } from "../config";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
-const FREE_ACC_PROJECT_LIMIT = 3;
-const SUB_ACC_PROJECT_LIMIT = 10;
 
 const addJobToQueue = async (
   isTemplate: boolean,
@@ -78,11 +77,12 @@ export async function createProject(
     const projects = await getAllProjects(type, token);
     const projectsLength = projects.length;
 
-    if (projectsLength > SUB_ACC_PROJECT_LIMIT) {
-      throw new Error(
-        `You cannot create more than ${SUB_ACC_PROJECT_LIMIT} projects!`
-      );
-    } else if (projectsLength > FREE_ACC_PROJECT_LIMIT) {
+    const subLimit = appConfig.SUB_ACC_PROJECT_LIMIT;
+    const freeLimit = appConfig.FREE_ACC_PROJECT_LIMIT;
+
+    if (projectsLength > subLimit) {
+      throw new Error(`You cannot create more than ${subLimit} projects!`);
+    } else if (projectsLength > freeLimit) {
       checkRole(user, "subscriber");
     }
   }

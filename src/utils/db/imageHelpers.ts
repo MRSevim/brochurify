@@ -3,10 +3,9 @@ import { deleteFromS3, uploadToS3 } from "../s3/helpers";
 import { DeleteCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 import { checkRole, protect } from "../serverActions/helpers";
+import { appConfig } from "../config";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
-const MAX_IMAGE_SIZE_MB = 5;
-const MAX_IMAGE_COUNT = 20;
 
 const ALLOWED_IMAGE_TYPES = [
   "image/apng",
@@ -40,14 +39,16 @@ export async function uploadUserImageAndUpdateLibrary({
     throw new Error("Unsupported image type");
   }
 
-  if (sizeInBytes > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
-    throw new Error("Image exceeds 5MB limit");
+  const maxSize = appConfig.MAX_IMAGE_SIZE_MB;
+  if (sizeInBytes > maxSize * 1024 * 1024) {
+    throw new Error(`Image exceeds ${maxSize}MB limit`);
   }
 
   const currentImages = (await getImagesInner(userId)) || [];
 
-  if (currentImages.length >= MAX_IMAGE_COUNT) {
-    throw new Error(`Image limit (${MAX_IMAGE_COUNT}) reached`);
+  const maxNumber = appConfig.MAX_IMAGE_COUNT;
+  if (currentImages.length >= maxNumber) {
+    throw new Error(`Image limit (${maxNumber}) reached`);
   }
 
   const fileExtension = fileType.split("/")[1];
