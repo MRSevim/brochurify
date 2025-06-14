@@ -7,6 +7,7 @@ import {
 } from "@aws-sdk/client-s3";
 import s3Client from "./s3Client";
 import { Readable } from "node:stream";
+import { appConfig } from "../config";
 
 const Bucket = process.env.S3_BUCKET_NAME;
 
@@ -77,16 +78,24 @@ export const deleteFolderFromS3 = async (prefix: string) => {
     throw new Error(error);
   }
 };
-
+const MAX_PROJECT_SIZE_BYTES = appConfig.MAX_PROJECT_SIZE_MB * 1024 * 1024;
 export async function saveProjectDataToS3(
   id: string,
   data: Record<string, any>
 ) {
   try {
+    const Body = JSON.stringify(data);
+    const sizeInBytes = new TextEncoder().encode(Body).length;
+
+    if (sizeInBytes > MAX_PROJECT_SIZE_BYTES) {
+      throw new Error(
+        `Project data size exceeds the limit of ${appConfig.MAX_PROJECT_SIZE_MB} MB`
+      );
+    }
     const command = new PutObjectCommand({
       Bucket,
       Key: `projects/${id}.json`,
-      Body: JSON.stringify(data),
+      Body,
       ContentType: "application/json",
     });
 

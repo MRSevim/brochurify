@@ -122,7 +122,7 @@ export const TransformItemPicker = ({
   variableStr: string;
 }) => {
   const handleChange = (e: string, i: number) => {
-    onChange(setValueFromShorthandStr(variableStr, i, e));
+    if (e) onChange(setValueFromShorthandStr(variableStr, i, e));
   };
 
   const valueAt = (index: number) =>
