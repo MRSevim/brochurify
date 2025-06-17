@@ -54,13 +54,30 @@ export const WidthAndHeight = () => {
       </SecondaryTitle>
 
       <TypeSelect type={outerType} setType={setOuterType} />
-      <div className="flex gap-2" key={outerType + activeId}>
-        <NumberController type="width" outerType={outerType} />
-        <NumberController type="height" outerType={outerType} />
+      <div key={outerType + activeId}>
+        <ControllersWrapper outerType={outerType} prefix="" />
+        <ControllersWrapper outerType={outerType} prefix="max-" />
+        <ControllersWrapper outerType={outerType} prefix="min-" />
       </div>
     </WrapperWithBottomLine>
   );
 };
+
+const ControllersWrapper = ({
+  prefix,
+  outerType,
+}: {
+  prefix: string;
+  outerType: string;
+}) => {
+  return (
+    <div className="flex gap-2 my-2">
+      <NumberController type={prefix + "width"} outerType={outerType} />
+      <NumberController type={prefix + "height"} outerType={outerType} />
+    </div>
+  );
+};
+
 const typeArr = [
   { text: "Base", type: "base" },
   { text: "Tablet", type: CONFIG.possibleOuterTypes.tabletContainerQuery },

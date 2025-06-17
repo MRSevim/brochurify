@@ -36,7 +36,7 @@ const Header = () => {
 
   return (
     <header className="w-full bg-background">
-      <Container pushedVertically={false}>
+      <Container pushedVertically={false} addBottomMargin={false}>
         <TopHeader isBuilder={isBuilder} />
         {isBuilder && <BuilderHeader />}
       </Container>

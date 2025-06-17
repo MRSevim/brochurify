@@ -3,6 +3,10 @@ import { Layout, PageWise, Style, Variable, StringOrUnd } from "./Types";
 const layoutKeys: (keyof Style)[] = [
   "width",
   "height",
+  "max-width",
+  "max-height",
+  "min-width",
+  "min-height",
   "top",
   "left",
   "bottom",

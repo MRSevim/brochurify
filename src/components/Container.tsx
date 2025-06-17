@@ -1,18 +1,32 @@
 const Container = ({
   children,
+  addBottomMargin = true,
   pushedVertically = true,
 }: {
   children: React.ReactNode;
+  addBottomMargin?: boolean;
   pushedVertically?: boolean;
 }) => {
   if (pushedVertically) {
     return (
       <div className="my-8 text-black ">
-        <div className="mx-auto px-4 max-w-7xl">{children}</div>
+        <div
+          className={
+            "mx-auto px-4 max-w-7xl " + (addBottomMargin ? "mb-3" : "")
+          }
+        >
+          {children}
+        </div>
       </div>
     );
   } else {
-    return <div className="mx-auto px-4 max-w-7xl">{children}</div>;
+    return (
+      <div
+        className={"mx-auto px-4 max-w-7xl " + (addBottomMargin ? "mb-3" : "")}
+      >
+        {children}
+      </div>
+    );
   }
 };
 

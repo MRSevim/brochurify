@@ -11,7 +11,7 @@ const Button = ({ id, children, style, ref, anchorId }: PropsWithId) => {
       id={anchorId}
       className={active}
       styles={style}
-      ref={ref as unknown as RefObject<HTMLButtonElement>}
+      ref={ref as unknown as RefObject<HTMLAnchorElement>}
     >
       {children}
     </styledElements.styledButton>

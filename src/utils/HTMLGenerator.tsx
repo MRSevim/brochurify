@@ -240,24 +240,15 @@ const renderLayout = (items: Layout[]): string => {
               ? "hr"
               : type === "icon"
                 ? "i"
-                : type;
+                : type === "button"
+                  ? "a"
+                  : type;
 
       const isAudioOrVideo = type === "audio" || type === "video";
       const isImage = type === "image";
       const isText = type === "text";
       const isFixed = type === "fixed";
       const isVoidElement = type === "image" || type === "divider";
-
-      const addButtonWrapper = (html: string) => {
-        if (type === "button") {
-          return `
-          <a class="wAndHFull flex" href=${props.href}  target=${
-            props.newTab ? "_blank" : "_self"
-          }rel="noopener noreferrer">${html}</a>`;
-        } else {
-          return html;
-        }
-      };
 
       const addFlexWrapper = (html: string) => {
         return `<div class="block ${isFixed ? "" : "relative"}" id="idwrapper${
@@ -267,7 +258,13 @@ const renderLayout = (items: Layout[]): string => {
         }>${html}</div></div>`;
       };
 
-      const rendered = `<${renderedType} id="id${item.id}" ${
+      const rendered = `<${renderedType} ${
+        renderedType === "a"
+          ? `href="${props.href}" target=${
+              props.newTab ? "_blank" : "_self"
+            } rel="noopener noreferrer"`
+          : ""
+      } id="id${item.id}" ${
         isAudioOrVideo ? "controls" : ""
       }class="element wAndHFull ${
         props.iconType ? `bi bi-${props.iconType}` : ""
@@ -289,8 +286,7 @@ const renderLayout = (items: Layout[]): string => {
           !isVoidElement ? `</${renderedType}>` : ""
         }`;
 
-      const buttonWrapperApplied = addButtonWrapper(rendered);
-      const FlexWrapperApplied = addFlexWrapper(buttonWrapperApplied);
+      const FlexWrapperApplied = addFlexWrapper(rendered);
       return FlexWrapperApplied;
     })
     .join("");
@@ -299,12 +295,16 @@ const renderLayout = (items: Layout[]): string => {
 
 const updateInternalLinks = (html: string): string => {
   return html.replace(
-    /<a([^>]*?)href=['"]#([^'"]+)['"]([^>]*)>/gi,
-    (match, preAttrs, anchor, postAttrs) => {
+    /<a([^>]*?)\s+href=(['"])#([^'"]+)\2([^>]*)>/gi,
+    (match, preAttrs, quote, anchor, postAttrs) => {
       const targetId = `user-${anchor}`;
-      const newHref = `href="#${targetId}"`;
-      const newOnClick = `onclick="event.preventDefault(); document.getElementById('${targetId}')?.scrollIntoView({ behavior: 'smooth' });"`;
-      return `<a${preAttrs} ${newHref} ${newOnClick} ${postAttrs}>`;
+      const hrefAttr = `href=${quote}#${targetId}${quote}`;
+      const onclickAttr = `onclick="event.preventDefault(); document.getElementById('${targetId}')?.scrollIntoView({ behavior: 'smooth' });"`;
+
+      // Avoid duplicating onclick if already exists
+      if (/onclick\s*=/.test(match)) return match;
+
+      return `<a${preAttrs} ${hrefAttr} ${onclickAttr}${postAttrs}>`;
     }
   );
 };

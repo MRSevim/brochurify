@@ -69,7 +69,7 @@ export const PositionPicker = ({
   const [radioType, setRadioType] = useState(initialType || "px");
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange(+e.target.value + radioType);
+    onChange(e.target.value + radioType);
   };
   return (
     <>

@@ -9,6 +9,7 @@ import { OptionsObject, CONFIG } from "@/utils/Types";
 import React from "react";
 import Checkbox from "../Checkbox";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import Slider from "../Slider";
 
 const justifyContentAlignmentOptionsForRow = [
   {
@@ -122,7 +123,43 @@ const Alignment = () => {
       )}
 
       {isRow && <Reverse />}
+      <Gap />
     </ToggleVisibilityWrapper>
+  );
+};
+
+const Gap = () => {
+  const type = "gap";
+  const variable = getSetting(useAppSelector, type);
+  const dispatch = useAppDispatch();
+
+  return (
+    <WrapperWithBottomLine>
+      <Slider
+        title="Set the gap between elements inside this element"
+        step={1}
+        units={["px", "em", "%"]}
+        value={variable || "0px"}
+        onChange={(newValue) =>
+          dispatch(
+            changeElementStyle({
+              types: [type],
+              newValue,
+            })
+          )
+        }
+      />
+      <ResetButton
+        onClick={() => {
+          dispatch(
+            changeElementStyle({
+              types: [type],
+              newValue: "",
+            })
+          );
+        }}
+      />
+    </WrapperWithBottomLine>
   );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Checkbox from "../Checkbox";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Transform from "./Transform";
@@ -32,12 +32,21 @@ const OthersInner = () => {
 const Hide = () => {
   return (
     <WrapperWithBottomLine>
+      <TabletOrMobile title="Hide" />
       <TabletOrMobile
         title="Hide on tablet and below"
         outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
       />
       <TabletOrMobile
         title="Hide on mobile and below"
+        outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
+      />
+      <TabletOrMobileShow
+        title="Show on tablet and below"
+        outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
+      />
+      <TabletOrMobileShow
+        title="Show on mobile and below"
         outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
       />
       <OverflowHidden />
@@ -50,7 +59,7 @@ const TabletOrMobile = ({
   outerType,
 }: {
   title: string;
-  outerType: string;
+  outerType?: string;
 }) => {
   const hidden = "none";
   const innerType = "display";
@@ -67,6 +76,43 @@ const TabletOrMobile = ({
           changeElementStyle({
             types: [outerType, innerType],
             newValue: checked ? "" : hidden,
+          })
+        );
+      }}
+    />
+  );
+};
+const TabletOrMobileShow = ({
+  title,
+  outerType,
+}: {
+  title: string;
+  outerType?: string;
+}) => {
+  const active = useAppSelector(selectActive);
+  const activeType = active?.type;
+
+  const shouldBeFlex =
+    activeType === "column" ||
+    activeType === "container" ||
+    activeType === "fixed" ||
+    activeType === "button" ||
+    activeType === "row";
+  const show = shouldBeFlex ? "flex" : "block";
+  const innerType = "display";
+  const variable = getSetting(useAppSelector, outerType, innerType);
+  const dispatch = useAppDispatch();
+  const checked = variable === show;
+
+  return (
+    <Checkbox
+      title={title}
+      checked={checked}
+      onChange={() => {
+        dispatch(
+          changeElementStyle({
+            types: [outerType, innerType],
+            newValue: checked ? "" : show,
           })
         );
       }}

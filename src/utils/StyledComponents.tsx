@@ -41,7 +41,7 @@ export const styledElements = {
   styledAudio: styled.audio<{ styles: Style }>`
     ${({ styles }) => getRest(styles)}
   `,
-  styledButton: styled.button<{ styles: Style }>`
+  styledButton: styled.a<{ styles: Style }>`
     ${({ styles }) => getRest(styles)}
   `,
   styledHr: styled.hr<{ styles: Style }>`

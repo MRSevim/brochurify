@@ -128,6 +128,8 @@ export const getDefaultStyle = (type: string): Style => {
     return {
       display: "flex",
       "flex-direction": "column",
+      "justify-content": "center",
+      "align-items": "center",
       ...getDefaultStyle(""),
     };
   } else if (type === "text") {

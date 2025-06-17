@@ -45,12 +45,7 @@ const deepCloneLayout = (nodes: Layout[]): Layout[] => {
 export const rowResizeMiddleware: Middleware =
   (store) => (next) => (action) => {
     // Skip if it's a non-layout-altering action
-    if (
-      undo.match(action) ||
-      redo.match(action) ||
-      hydrate.match(action) ||
-      duplicate.match(action)
-    ) {
+    if (undo.match(action) || redo.match(action) || hydrate.match(action)) {
       return next(action);
     }
 

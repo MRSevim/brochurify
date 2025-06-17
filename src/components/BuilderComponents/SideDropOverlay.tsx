@@ -139,24 +139,32 @@ const SideDropZone = ({
 
 const AddSign = () => {
   const [marginTop, setMarginTop] = useState<number>(0);
+  const [marginLeft, setMarginLeft] = useState<number>(0);
   const ref = useRef<HTMLDivElement | null>(null);
   const editorRef = useEditorRef();
 
-  //This code causes headache giving jumps on ui
+  //This code causes headache by causing jumps on ui
   /*   const updateSignPosition = () => {
     requestAnimationFrame(() => {
       if (ref.current && editorRef.current) {
         const signRect = ref.current.getBoundingClientRect();
         const editorRect = editorRef.current.getBoundingClientRect();
 
-        let newMargin = 0;
+        let newMarginTop = 0;
         if (signRect.top <= editorRect.top) {
-          newMargin = 12;
+          newMarginTop = 12;
         } else if (signRect.bottom >= editorRect.bottom) {
-          newMargin = -12;
+          newMarginTop = -12;
         }
 
-        setMarginTop(newMargin);
+        setMarginTop(newMarginTop);
+        let newMarginLeft = 0;
+        if (signRect.left <= editorRect.left) {
+          newMarginLeft = 12;
+        } else if (signRect.right >= editorRect.right) {
+          newMarginLeft = -12;
+        }
+        setMarginLeft(newMarginLeft);
       }
     });
   };
@@ -166,7 +174,7 @@ const AddSign = () => {
   return (
     <div
       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit"
-      style={{ marginTop }}
+      style={{ marginTop, marginLeft }}
       ref={ref}
     >
       +

@@ -113,6 +113,10 @@ export type Style = {
   right?: string;
   left?: string;
   "max-width"?: string;
+  "max-height"?: string;
+  "min-width"?: string;
+  "min-height"?: string;
+  gap?: string;
   "border-radius"?: string;
   "background-color"?: string;
   "background-image"?: string;
