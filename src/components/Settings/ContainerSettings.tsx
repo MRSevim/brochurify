@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { WidthAndHeight } from "./SizingAndBorder";
-import NumberInput from "../NumberInput";
 import {
   getDefaultStyle,
   getSetting,
@@ -17,44 +16,11 @@ const ContainerSettings = () => {
   return (
     <ToggleVisibilityWrapper title="Container Settings">
       <WidthAndHeight />
-      <MaxWidth />
       <Padding />
     </ToggleVisibilityWrapper>
   );
 };
 
-const MaxWidth = () => {
-  const type = "max-width";
-  const dispatch = useAppDispatch();
-  const variable = getSetting(useAppSelector, type);
-  return (
-    <WrapperWithBottomLine>
-      <NumberInput
-        title="Maximum width of the container (in pixels)"
-        value={variable || ""}
-        onChange={(e) =>
-          dispatch(
-            changeElementStyle({
-              types: [type],
-              newValue: +e.target.value + "px",
-            })
-          )
-        }
-      />
-      <ResetButton
-        onClick={() =>
-          dispatch(
-            changeElementStyle({
-              types: [type],
-              newValue:
-                getDefaultStyle("container")["max-width"] || "1300" + "px",
-            })
-          )
-        }
-      />
-    </WrapperWithBottomLine>
-  );
-};
 const Padding = () => {
   const type = "padding";
   const dispatch = useAppDispatch();

@@ -353,6 +353,7 @@ export const TransitionTypeSettings = ({
         innerType === "height" ||
         innerType === "width/height") && (
         <PositionPicker
+          variablesAvailable={!variableCreator}
           hasAutoOption={true}
           type={innerType}
           variable={editedString}

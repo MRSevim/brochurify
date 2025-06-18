@@ -13,11 +13,7 @@ import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
 import { snapshotQueue } from "../lib/workers";
-import {
-  deleteFromS3,
-  getProjectDataFromS3,
-  saveProjectDataToS3,
-} from "../s3/helpers";
+import { deleteFromS3 } from "../s3/helpers";
 import { appConfig } from "../config";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
@@ -103,12 +99,11 @@ export async function createProject(
     userId: user.userId,
     id,
     type,
+    editor: stripEditorFields(project.editor),
     title: project.title,
     createdAt: new Date().toISOString(),
     snapshot: project.snapshot,
   };
-
-  await saveProjectDataToS3(id, stripEditorFields(project.editor));
 
   const command = new PutCommand({
     TableName: TABLE_NAME,
@@ -157,15 +152,7 @@ export async function getTemplates() {
   const result = await docClient.send(command);
   const templates = result.Items || [];
 
-  // Fetch full editor data from S3 for each template in parallel
-  const fullTemplates = await Promise.all(
-    templates.map(async ({ userId, id, ...rest }) => {
-      const editor = await getProjectDataFromS3(id);
-      return { id, ...rest, editor };
-    })
-  );
-
-  return fullTemplates;
+  return templates;
 }
 
 export async function getProjectById(
@@ -188,12 +175,8 @@ export async function getProjectById(
   if (type === "template" || project.type === "template") {
     checkRole(user, "admin");
   }
-  const editor = await getProjectDataFromS3(id);
 
-  return {
-    ...project,
-    editor,
-  };
+  return project;
 }
 
 export async function updateProject(
@@ -242,9 +225,18 @@ export async function updateProject(
       user.userId,
       id
     );
+    const MAX_PROJECT_SIZE_BYTES = appConfig.MAX_PROJECT_SIZE_KB * 1024;
+    const Body = JSON.stringify(stripEditorFields(updates.editor));
+    const sizeInBytes = new TextEncoder().encode(Body).length;
 
-    // ✅ Save full editor data to S3
-    await saveProjectDataToS3(id, stripEditorFields(updates.editor));
+    if (sizeInBytes > MAX_PROJECT_SIZE_BYTES) {
+      throw new Error(
+        `Project data size exceeds the limit of ${appConfig.MAX_PROJECT_SIZE_KB} KB`
+      );
+    }
+    updateExpressions.push("#editor = :editor");
+    expressionAttributeNames["#editor"] = "editor";
+    expressionAttributeValues[":editor"] = stripEditorFields(updates.editor);
   }
   // Add updatedAt field
   updateExpressions.push("#updatedAt = :updatedAt");
@@ -297,7 +289,6 @@ export async function deleteProject(
   );
 
   //editor data deletion
-  await deleteFromS3(`projects/${id}.json`);
   const command = new DeleteCommand({
     TableName: TABLE_NAME,
     Key: { userId: user.userId, id },

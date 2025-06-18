@@ -42,7 +42,7 @@ const PricingComparison = () => {
       </div>
       {/* Disclaimer */}
       <div className="mt-4 px-4 text-xs text-muted-foreground italic max-w-4xl mx-auto">
-        * A single project can have maximum {appConfig.MAX_PROJECT_SIZE_MB}MB
+        * A single project can have maximum {appConfig.MAX_PROJECT_SIZE_KB}KB
         data in it. This is a hard limit to reach but has to be there to prevent
         abuse.
       </div>

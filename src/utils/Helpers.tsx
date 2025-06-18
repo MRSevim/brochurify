@@ -104,7 +104,6 @@ export const getDefaultStyle = (type: string): Style => {
       display: "flex",
       "flex-direction": "column",
       "max-width": "1300px",
-      margin: "0 auto",
       padding: "0 12px",
     };
   } else if (type === "icon") {

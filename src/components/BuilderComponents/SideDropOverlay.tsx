@@ -64,6 +64,7 @@ export const SideDropOverlay = ({
     <styledElements.styledComponentWrapperDiv
       className={"block " + (notFixed && "relative")}
       styles={item.props.style}
+      type={item.type}
       ref={ref}
     >
       {notFixed && (

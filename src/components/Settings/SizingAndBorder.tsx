@@ -8,12 +8,12 @@ import marginBorderPadding from "../../../public/margin-border-padding.webp";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import NumberInput from "../NumberInput";
 import SecondaryTitle from "../SecondaryTitle";
-import GroupedRadioButtons from "../GroupedRadioButtons";
 import InfoIcon from "../InfoIcon";
 import ShorthandToggler from "./ShorthandToggler";
 import { CONFIG } from "@/utils/Types";
 import VariableSelector from "../VariableSelector";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import UnitSelector from "../UnitSelector";
 
 const SizingAndBorder = () => {
   return (
@@ -130,7 +130,7 @@ const TypeItem = ({
   );
 };
 
-const possibleRadioValues = ["px", "%", "auto"];
+const possibleRadioValues = ["px", "%"];
 
 const NumberController = ({
   type,
@@ -151,35 +151,17 @@ const NumberController = ({
   const [radioType, setRadioType] = useState(initialType || "px");
 
   const dispatchChange = (newValue: string): void => {
-    if (selectorInnerType) {
-      dispatch(
-        changeElementStyle({
-          types: [selectorOuterType, selectorInnerType],
-          newValue,
-        })
-      );
-    } else {
-      dispatch(
-        changeElementStyle({
-          types: [selectorOuterType],
-          newValue,
-        })
-      );
-    }
+    dispatch(
+      changeElementStyle({
+        types: [selectorOuterType, selectorInnerType],
+        newValue,
+      })
+    );
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
-      if (outerType === "base") {
-        dispatch(
-          changeElementStyle({
-            types: [type],
-            newValue: "",
-          })
-        );
-      } else {
-        dispatchChange("");
-      }
+      dispatchChange("");
     } else {
       const newValue = +e.target.value + radioType;
 
@@ -187,46 +169,35 @@ const NumberController = ({
     }
   };
 
+  const auto = type !== "max-height" && type !== "max-width" ? ["auto"] : [];
+
   return (
-    <div className="mb-2 flex flex-col items-center">
-      <GroupedRadioButtons
-        valuesArr={possibleRadioValues}
-        checked={radioType}
-        name={type}
-        onChange={(e) => {
-          if (e.target.value === "auto") {
-            dispatchChange("auto");
-          } else if (variable) {
-            dispatchChange(parseInt(variable, 10) + e.target.value);
-
-            if (variable === "auto") {
-              if (selectorInnerType) {
-                dispatch(
-                  changeElementStyle({
-                    types: [selectorOuterType, selectorInnerType],
-                    newValue: "",
-                  })
-                );
-              } else {
-                dispatch(
-                  changeElementStyle({
-                    types: [type],
-                    newValue: "",
-                  })
-                );
-              }
+    <div className="flex flex-col items-center">
+      <div className="flex items-center">
+        <NumberInput
+          disabled={radioType === "auto"}
+          title={type}
+          value={variable || ""}
+          onChange={handleInputChange}
+        ></NumberInput>
+        <UnitSelector
+          title=""
+          units={[
+            ...possibleRadioValues,
+            type.includes("width") ? "vw" : "vh",
+            ...auto,
+          ]}
+          value={radioType}
+          onChange={(e) => {
+            if (e.target.value === "auto") {
+              dispatchChange("auto");
+            } else if (variable) {
+              dispatchChange(parseInt(variable, 10) + e.target.value);
             }
-          }
-          setRadioType(e.target.value);
-        }}
-      />
-
-      <NumberInput
-        disabled={radioType === "auto"}
-        title={type}
-        value={variable || ""}
-        onChange={handleInputChange}
-      ></NumberInput>
+            setRadioType(e.target.value);
+          }}
+        />
+      </div>
 
       <VariableSelector
         selected={variable}

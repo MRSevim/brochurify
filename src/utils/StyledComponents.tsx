@@ -19,8 +19,8 @@ export const styledElements = {
       return variablesString + styleResets + style;
     }};
   `,
-  styledComponentWrapperDiv: styled.div<{ styles: Style }>`
-    ${({ styles }) => getWrapperStyles(styles)};
+  styledComponentWrapperDiv: styled.div<{ styles: Style; type: string }>`
+    ${({ styles, type }) => getWrapperStyles(styles, type)};
   `,
   styledWrapperDivWithVariables: styled.div<{
     variables: Variable[];

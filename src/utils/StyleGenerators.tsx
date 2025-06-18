@@ -87,30 +87,47 @@ export const getRest = (style: Style): string => {
 
   return styleGenerator(rest);
 };
-export const getWrapperStyles = (style: Style): string => {
+export const getWrapperStyles = (style: Style, type: string): string => {
   const [wrapperStyles, rest] = styleDivider(style);
-  return styleGenerator(wrapperStyles);
+  const extraStyles: Partial<Style> =
+    type === "container" ? { margin: "0 auto" } : {};
+  return styleGenerator({ ...wrapperStyles, ...extraStyles });
 };
 
 // Recursive style generator function
 export const styleGenerator = (style: Style): string => {
-  return Object.entries(style || {})
-    .map(([key, value]) => {
-      const bgColor = style["background-color"];
-      if (typeof value === "object") {
-        // Handle nested style objects
-        const nestedStyles = styleGenerator(value);
-        return `${key} { ${nestedStyles} }`;
-      } else {
-        // Handle regular CSS properties
-        if (!value || !key) return "";
-        if (key === "background-image" && bgColor) {
-          return `${key}: linear-gradient(${bgColor}), ${value};`;
-        }
+  const baseEntries: [string, any][] = [];
+  const containerEntries: [string, any][] = [];
 
-        return `${key}: ${value};`;
-      }
-    })
+  for (const [key, value] of Object.entries(style || {})) {
+    if (key.startsWith("@container")) {
+      containerEntries.push([key, value]);
+    } else {
+      baseEntries.push([key, value]);
+    }
+  }
+
+  const generate = (entries: [string, any][]) =>
+    entries
+      .map(([key, value]) => {
+        const bgColor = style["background-color"];
+        if (typeof value === "object") {
+          // Handle nested styles
+          const nested = styleGenerator(value);
+          return `${key} { ${nested} }`;
+        } else {
+          if (!value || !key) return "";
+          if (key === "background-image" && bgColor) {
+            return `${key}: linear-gradient(${bgColor}), ${value};`;
+          }
+          return `${key}: ${value};`;
+        }
+      })
+      .join("\n");
+
+  // Generate base styles first, then container queries last
+  return [generate(baseEntries), generate(containerEntries)]
+    .filter(Boolean)
     .join("\n");
 };
 
@@ -122,11 +139,13 @@ export const fullStylesWithIdsGenerator = (
     .map((item) => {
       const child = item.props.child;
       const style = item.props.style;
-      const isContainer = item.type === "container";
       const isFixed = item.type === "fixed";
-      const styleStr = rest ? getRest(style) : getWrapperStyles(style);
+      const styleStr = rest
+        ? getRest(style)
+        : getWrapperStyles(style, item.type);
 
-      const fixedStyles = isFixed && rest ? getWrapperStyles(style) : "";
+      const fixedStyles =
+        isFixed && rest ? getWrapperStyles(style, item.type) : "";
 
       // Combine all styles for this selector
       const combinedStyles = [styleStr, fixedStyles].filter(Boolean).join(" ");

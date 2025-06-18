@@ -8,6 +8,7 @@ import {
   useEffect,
 } from "react";
 import { LayoutToggleContext, SettingsToggleContext } from "./ToggleContext";
+import { useViewMode } from "./ViewModeContext";
 
 type Preview = [boolean, Dispatch<SetStateAction<boolean>>];
 
@@ -25,6 +26,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [preview, setPreview] = useState(false);
   const [_, setLayoutToggle] = LayoutToggleContext.Use();
   const [__, setSettingsToggle] = SettingsToggleContext.Use();
+  const [___, setViewMode] = useViewMode();
 
   useEffect(() => {
     if (preview) {
@@ -32,6 +34,8 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
       setSettingsToggle(false);
       document.body.style.overflow = "hidden";
     } else document.body.style.overflow = "";
+
+    setViewMode("desktop");
   }, [preview]);
 
   return (
