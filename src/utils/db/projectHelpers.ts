@@ -12,7 +12,7 @@ import { checkRole, protect } from "../serverActions/helpers";
 import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
-import { snapshotQueue } from "../lib/workers";
+import { snapshotQueue } from "../lib/redis";
 import { deleteFromS3 } from "../s3/helpers";
 import { appConfig } from "../config";
 

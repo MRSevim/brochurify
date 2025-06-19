@@ -1,7 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
-export const dbClient = new DynamoDBClient({
+const dbClient = new DynamoDBClient({
   region: process.env.AWS_REGION,
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,

@@ -2,7 +2,6 @@ import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import jwt from "jsonwebtoken";
 import { StringOrUnd } from "../Types";
-import puppeteer, { Browser } from "puppeteer";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "../db/db";
 import {
@@ -79,30 +78,6 @@ export const checkRole = (user: Record<string, any>, role: string) => {
     }
   } catch (error: any) {
     throw error;
-  }
-};
-
-export const getScreenSnapshot = async (html: string) => {
-  try {
-    const instance = await puppeteer.launch({ headless: true });
-    if (!instance) throw Error("Puppeteer instance non existent");
-    const page = await instance.newPage();
-    await page.setViewport({ width: 1280, height: 720 });
-    await page.setContent(html, {
-      waitUntil: "networkidle0",
-    });
-
-    const buffer = await page.screenshot({
-      type: "jpeg",
-      quality: 80,
-      fullPage: true,
-    });
-    await page.close();
-    await instance.close();
-    return buffer;
-  } catch (error: any) {
-    throw Error(error);
-  } finally {
   }
 };
 
