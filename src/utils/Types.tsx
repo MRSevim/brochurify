@@ -59,6 +59,7 @@ export interface EditorState {
   draggedItem?: string;
   variables: Variable[];
   copied?: Layout;
+  published?: boolean;
 }
 export type Variable = {
   id?: string;

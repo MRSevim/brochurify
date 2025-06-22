@@ -29,6 +29,8 @@ import UserMenu from "./UserMenu";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "react-toastify";
 import { usePreview } from "@/contexts/PreviewContext";
+import PublishPopup from "./PublishPopup";
+import { usePublishPopup } from "@/contexts/PublishPopupContext";
 
 const Header = () => {
   const pathname = usePathname();
@@ -51,6 +53,8 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
     useAppSelector((state) => state.editor.type) === "template";
   const projectId = useAppSelector(selectProjectId);
   const showPublish = user && projectId && !isTemplate;
+  const [publishPopup, setPublishPopup] = usePublishPopup();
+  const published = useAppSelector((state) => state.editor.published);
   return (
     <div className="flex justify-center sm:justify-between items-center py-2 flex-wrap ">
       <Link href="/">
@@ -80,9 +84,15 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
               }}
             />
             {showPublish && (
-              <button className="p-2 rounded bg-amber text-black">
-                Publish
-              </button>
+              <>
+                <button
+                  className="p-2 rounded bg-amber text-black"
+                  onClick={() => setPublishPopup(true)}
+                >
+                  {published ? "Unpublish" : "Publish"}
+                </button>
+                {publishPopup && <PublishPopup />}
+              </>
             )}
           </>
         )}

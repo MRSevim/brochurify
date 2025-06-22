@@ -584,3 +584,14 @@ export function getUsedFontsFromHTML(html: string): string[] {
 
   return Array.from(fontSet);
 }
+
+export const addNumberWithDash = (slug: string, length: number) =>
+  slug + (length ? `-${length}` : "");
+
+export function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-") // Replace all non-url-safe characters with "-"
+    .replace(/^-+|-+$/g, ""); // Trim leading/trailing dashes
+}

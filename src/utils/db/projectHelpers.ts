@@ -5,6 +5,7 @@ import {
   QueryCommand,
   UpdateCommand,
   ScanCommand,
+  QueryCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 import { v4 as uuidv4 } from "uuid";
@@ -15,6 +16,7 @@ import { generateHTML } from "../HTMLGenerator";
 import { snapshotQueue } from "../lib/redis";
 import { deleteFromS3 } from "../s3/helpers";
 import { appConfig } from "../config";
+import { addNumberWithDash } from "../Helpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
@@ -154,6 +156,33 @@ export async function getTemplates() {
 
   return templates;
 }
+export async function scanPrefix(prefix: string, token: StringOrUnd) {
+  await protect(token);
+  let items: any[] = [];
+  let lastKey: Record<string, any> | undefined = undefined;
+
+  do {
+    const result: QueryCommandOutput = await docClient.send(
+      new QueryCommand({
+        TableName: TABLE_NAME,
+        IndexName: "prefix-index",
+        KeyConditionExpression: "#prefix = :prefix",
+        ExpressionAttributeNames: {
+          "#prefix": "prefix",
+        },
+        ExpressionAttributeValues: {
+          ":prefix": prefix,
+        },
+        ExclusiveStartKey: lastKey,
+        ProjectionExpression: "prefix", // optional optimization
+      })
+    );
+
+    if (result.Items) items.push(...result.Items);
+    lastKey = result.LastEvaluatedKey;
+  } while (lastKey);
+  return items;
+}
 
 export async function getProjectById(
   type: string,
@@ -183,7 +212,11 @@ export async function updateProject(
   type: string,
   token: StringOrUnd,
   id: string,
-  updates: Partial<{ title: string; editor: EditorState }>
+  updates: Partial<{
+    title: string;
+    editor: EditorState;
+    publish: { prefix?: string; customDomain?: string; published: boolean };
+  }>
 ) {
   const user = await protect(token);
   const isTemplate = type === "template";
@@ -202,12 +235,14 @@ export async function updateProject(
     throw Error("Project not found or unauthorized");
   }
 
-  const updateExpressions = [];
+  let setExpressions: string[] = [];
+  let removeExpressions: string[] = [];
+
   const expressionAttributeValues: Record<string, any> = {};
   const expressionAttributeNames: Record<string, string> = {};
 
   if (updates.title) {
-    updateExpressions.push("#title = :title");
+    setExpressions.push("#title = :title");
     expressionAttributeNames["#title"] = "title";
     expressionAttributeValues[":title"] = updates.title;
   }
@@ -234,24 +269,61 @@ export async function updateProject(
         `Project data size exceeds the limit of ${appConfig.MAX_PROJECT_SIZE_KB} KB`
       );
     }
-    updateExpressions.push("#editor = :editor");
+    setExpressions.push("#editor = :editor");
     expressionAttributeNames["#editor"] = "editor";
     expressionAttributeValues[":editor"] = stripEditorFields(updates.editor);
   }
+  if (updates.publish) {
+    const { prefix, customDomain, published } = updates.publish;
+
+    if (prefix !== undefined && published) {
+      const projects = await scanPrefix(prefix, token);
+      setExpressions.push("#prefix = :prefix");
+      expressionAttributeNames["#prefix"] = "prefix";
+      expressionAttributeValues[":prefix"] = addNumberWithDash(
+        prefix,
+        projects.length
+      );
+    } else if (prefix === undefined && !published) {
+      removeExpressions.push("#prefix");
+      expressionAttributeNames["#prefix"] = "prefix";
+    }
+
+    setExpressions.push("#published = :published");
+    expressionAttributeNames["#published"] = "published";
+    expressionAttributeValues[":published"] = published ? 1 : 0;
+
+    if (customDomain !== undefined) {
+      // Optional: Validate custom domain (if present)
+      if (customDomain && !/^([a-z0-9-]+\.)+[a-z]{2,}$/.test(customDomain)) {
+        throw new Error("Invalid custom domain");
+      }
+      setExpressions.push("#customDomain = :customDomain");
+      expressionAttributeNames["#customDomain"] = "customDomain";
+      expressionAttributeValues[":customDomain"] = customDomain;
+    }
+  }
   // Add updatedAt field
-  updateExpressions.push("#updatedAt = :updatedAt");
+  setExpressions.push("#updatedAt = :updatedAt");
   expressionAttributeNames["#updatedAt"] = "updatedAt";
   expressionAttributeValues[":updatedAt"] = new Date().toISOString();
 
-  if (!updateExpressions.length) throw Error("No updates provided");
+  if (!setExpressions.length && !removeExpressions.length)
+    throw Error("No updates provided");
+
+  // Final UpdateExpression assembly
+  const updateExpressionParts = [];
+  if (setExpressions.length)
+    updateExpressionParts.push("SET " + setExpressions.join(", "));
+  if (removeExpressions.length)
+    updateExpressionParts.push("REMOVE " + removeExpressions.join(", "));
 
   const command = new UpdateCommand({
     TableName: TABLE_NAME,
     Key: { userId: user.userId, id },
-    UpdateExpression: `SET ${updateExpressions.join(", ")}`,
+    UpdateExpression: updateExpressionParts.join(" "),
     ExpressionAttributeNames: expressionAttributeNames,
     ExpressionAttributeValues: expressionAttributeValues,
-    ReturnValues: "ALL_NEW",
   });
 
   const result = await docClient.send(command);

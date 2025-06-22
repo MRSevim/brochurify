@@ -6,6 +6,7 @@ import {
   getAllProjects,
   getProjectById,
   getTemplates,
+  scanPrefix,
   updateProject,
 } from "../db/projectHelpers";
 import { EditorState } from "../Types";
@@ -34,7 +35,11 @@ export const createAction = async (project: {
 export const updateAction = async (
   type: string,
   id: string,
-  updates: Partial<{ title: string; editor: EditorState }>
+  updates: Partial<{
+    title: string;
+    editor: EditorState;
+    publish: { prefix?: string; customDomain?: string; published: boolean };
+  }>
 ) => {
   try {
     const cookieStore = await cookies();
@@ -57,6 +62,17 @@ export const getAllAction = async (type: string) => {
 
     const projects = await getAllProjects(type, jwt);
     return { projects, error: "" };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+};
+export const scanPrefixAction = async (prefix: string) => {
+  try {
+    const cookieStore = await cookies();
+    const jwt = cookieStore.get("jwt")?.value;
+
+    const projects = await scanPrefix(prefix, jwt);
+    return { projects: projects || [], error: "" };
   } catch (error: any) {
     return { error: error.message };
   }

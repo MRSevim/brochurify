@@ -14,6 +14,7 @@ import { Provider as AddSectionToggleProvider } from "@/contexts/AddSectionToggl
 import { Provider as UserProvider } from "@/contexts/UserContext";
 import { Provider as SubscribePopupProvider } from "@/contexts/SubscribePopupContext";
 import { EditorRefProvider } from "@/contexts/EditorRefContext";
+import { Provider as PublishPopupProvider } from "@/contexts/PublishPopupContext";
 import { StyleSheetManager } from "styled-components";
 import { User } from "./Types";
 import { useSyncUser } from "./hooks/useSyncUser";
@@ -35,23 +36,25 @@ export default function ClientWrapper({
     >
       <LayoutToggleContext.Provider>
         <SettingsToggleContext.Provider>
-          <LightModeProvider lightModeFromCookie={lightMode}>
-            <ViewModeProvider>
-              <PreviewProvider>
-                <ZoomProvider>
-                  <UserProvider UserFromCookie={UserFromCookie}>
-                    <SubscribePopupProvider>
-                      <AddSectionToggleProvider>
-                        <EditorRefProvider>
-                          <InnerWrapper>{children}</InnerWrapper>
-                        </EditorRefProvider>
-                      </AddSectionToggleProvider>
-                    </SubscribePopupProvider>
-                  </UserProvider>
-                </ZoomProvider>
-              </PreviewProvider>
-            </ViewModeProvider>
-          </LightModeProvider>
+          <PublishPopupProvider>
+            <LightModeProvider lightModeFromCookie={lightMode}>
+              <ViewModeProvider>
+                <PreviewProvider>
+                  <ZoomProvider>
+                    <UserProvider UserFromCookie={UserFromCookie}>
+                      <SubscribePopupProvider>
+                        <AddSectionToggleProvider>
+                          <EditorRefProvider>
+                            <InnerWrapper>{children}</InnerWrapper>
+                          </EditorRefProvider>
+                        </AddSectionToggleProvider>
+                      </SubscribePopupProvider>
+                    </UserProvider>
+                  </ZoomProvider>
+                </PreviewProvider>
+              </ViewModeProvider>
+            </LightModeProvider>
+          </PublishPopupProvider>
         </SettingsToggleContext.Provider>
       </LayoutToggleContext.Provider>
     </StyleSheetManager>

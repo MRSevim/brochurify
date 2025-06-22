@@ -9,7 +9,6 @@ export default async function Page({
 }) {
   const { id } = await params;
   const project = await getProjectAction("project", id);
-
   if (!project) {
     notFound();
   }

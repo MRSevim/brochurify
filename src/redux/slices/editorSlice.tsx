@@ -55,7 +55,10 @@ export const editorSlice = createSlice({
     setHovered: (state, action: PayloadAction<string | undefined>) => {
       state.hovered = action.payload;
     },
-    updateLayout(state, action: PayloadAction<Layout[]>) {
+    setPublished: (state, action: PayloadAction<boolean>) => {
+      state.published = action.payload;
+    },
+    updateLayout: (state, action: PayloadAction<Layout[]>) => {
       state.layout = action.payload;
     },
     hydrate: (state, action: PayloadAction<EditorState>) => {
@@ -65,6 +68,7 @@ export const editorSlice = createSlice({
       state.variables = action.payload.variables;
       state.type = action.payload.type;
       state.history = [];
+      state.published = action.payload.published;
     },
     hydrateLocal: (state, action: PayloadAction<EditorState>) => {
       state.layout = action.payload.layout;
@@ -403,6 +407,7 @@ export const editorSlice = createSlice({
 });
 
 export const {
+  setPublished,
   setActive,
   addElement,
   deleteElement,

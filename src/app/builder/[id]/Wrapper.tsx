@@ -14,7 +14,14 @@ const Wrapper = ({
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (project) {
-      dispatch(hydrate({ type, id: project.id, ...project.editor }));
+      dispatch(
+        hydrate({
+          type,
+          id: project.id,
+          published: project.published === 1,
+          ...project.editor,
+        })
+      );
     }
   }, []);
 
