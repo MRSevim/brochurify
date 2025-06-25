@@ -38,7 +38,12 @@ export const updateAction = async (
   updates: Partial<{
     title: string;
     editor: EditorState;
-    publish: { prefix?: string; customDomain?: string; published: boolean };
+    publish: {
+      prefix?: string;
+      customDomain?: string;
+      published: boolean;
+      editor?: EditorState;
+    };
   }>
 ) => {
   try {

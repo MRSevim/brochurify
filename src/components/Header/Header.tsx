@@ -89,7 +89,7 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
                   className="p-2 rounded bg-amber text-black"
                   onClick={() => setPublishPopup(true)}
                 >
-                  {published ? "Unpublish" : "Publish"}
+                  {published ? "Republish/Unpublish" : "Publish"}
                 </button>
                 {publishPopup && <PublishPopup />}
               </>

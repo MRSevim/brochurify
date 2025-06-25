@@ -13,6 +13,7 @@ import MiniLoadingSvg from "../MiniLoadingSvg";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setPublished } from "@/redux/slices/editorSlice";
 import { addNumberWithDash, slugify } from "@/utils/Helpers";
+import AmberButtonWithLoading from "../AmberButtonWithLoading";
 
 const PublishPopup = () => {
   const [, setPublishPopup] = usePublishPopup();
@@ -24,6 +25,7 @@ const PublishPopup = () => {
   const type = useAppSelector((state) => state.editor.type);
   const id = useAppSelector((state) => state.editor.id);
   const published = useAppSelector((state) => state.editor.published);
+  const editor = useAppSelector((state) => state.editor);
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!name) return;
@@ -57,13 +59,15 @@ const PublishPopup = () => {
       loading={publishLoading}
       onEditOrAdd={async () => {
         if (!id) return toast.error("Something went wrong");
-        if (!slugify(name)) return toast.error("Prefix cannot be empty");
+        if (!slugify(name) && !published)
+          return toast.error("Prefix cannot be empty");
 
         setPublishLoading(true);
         const error = await updateAction(type, id, {
           publish: {
             prefix: published ? undefined : slugify(name),
             published: !published,
+            editor: published ? undefined : editor,
           },
         });
         if (error) {
@@ -111,10 +115,29 @@ const PublishPopup = () => {
         </>
       )}
       {published && (
-        <p className="p-2">
-          Please note that your current live url will be unpublished and
-          available to others.
-        </p>
+        <div className="flex justify-center items-center m-2 mb-5">
+          <AmberButtonWithLoading
+            onClick={async () => {
+              if (!id) return toast.error("Something went wrong");
+              setPublishLoading(true);
+              const error = await updateAction(type, id, {
+                publish: {
+                  editor,
+                  published: true,
+                },
+              });
+              if (error) {
+                toast.error(error);
+              } else {
+                toast.success("Your project is successfully republished");
+                setPublishPopup(false);
+              }
+              setPublishLoading(false);
+            }}
+            text="Republish Latest Changes"
+            loading={publishLoading}
+          />
+        </div>
       )}
     </Popup>
   );

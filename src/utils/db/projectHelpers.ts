@@ -14,7 +14,7 @@ import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
 import { snapshotQueue } from "../lib/redis";
-import { deleteFromS3 } from "../s3/helpers";
+import { deleteFromS3, uploadToS3 } from "../s3/helpers";
 import { appConfig } from "../config";
 import { addNumberWithDash } from "../Helpers";
 
@@ -215,7 +215,12 @@ export async function updateProject(
   updates: Partial<{
     title: string;
     editor: EditorState;
-    publish: { prefix?: string; customDomain?: string; published: boolean };
+    publish: {
+      prefix?: string;
+      customDomain?: string;
+      published: boolean;
+      editor?: EditorState;
+    };
   }>
 ) {
   const user = await protect(token);
@@ -274,9 +279,12 @@ export async function updateProject(
     expressionAttributeValues[":editor"] = stripEditorFields(updates.editor);
   }
   if (updates.publish) {
-    const { prefix, customDomain, published } = updates.publish;
+    const { prefix, customDomain, published, editor } = updates.publish;
+
+    const key = `${user.userId}/published/${id}.html`;
 
     if (prefix !== undefined && published) {
+      //handle initial publish
       const projects = await scanPrefix(prefix, token);
       setExpressions.push("#prefix = :prefix");
       expressionAttributeNames["#prefix"] = "prefix";
@@ -285,8 +293,27 @@ export async function updateProject(
         projects.length
       );
     } else if (prefix === undefined && !published) {
+      //handle unpublish
       removeExpressions.push("#prefix");
       expressionAttributeNames["#prefix"] = "prefix";
+      await deleteFromS3(key);
+    }
+
+    if (published && editor) {
+      setExpressions.push("#editor = :editor");
+      expressionAttributeNames["#editor"] = "editor";
+      expressionAttributeValues[":editor"] = stripEditorFields(editor);
+      const html = generateHTML(
+        editor.layout,
+        editor.pageWise,
+        editor.variables
+      );
+      const buffer = new TextEncoder().encode(html);
+      await uploadToS3({
+        buffer,
+        key,
+        contentType: "text/html",
+      });
     }
 
     setExpressions.push("#published = :published");
