@@ -90,87 +90,93 @@ const CustomDomain = () => {
 
     setRequestLoading(false);
   };
-  if (getDomainLoading)
-    return (
-      <div className="text-text flex items-center justify-center m-2">
-        <MiniLoadingSvg />
-      </div>
-    );
 
   return (
     <WrapperWithBottomLine>
-      <TextInput
-        title="Custom Domain"
-        desc="Enter your custom domain here and request records to put to your DNS provider"
-        value={domain}
-        onChange={(e) => setDomain(e.target.value)}
-      />
-      <div className="m-2 flex justify-center items-center">
-        <AmberButtonWithLoading
-          onClick={handleRequest}
-          loading={requestLoading}
-          text="Request Records"
-        />
-      </div>
-      {status && (
-        <p className="text-sm text-center font-medium mt-2">
-          Certificate Status: {status}
-        </p>
-      )}
-
-      {error && (
-        <p className="text-sm text-red-500 text-center font-medium mt-2">
-          {error}
-        </p>
-      )}
-      {records.length > 0 && (
-        <div className="mt-4">
-          <h4 className="font-semibold mb-2 text-sm">
-            Add these DNS records to your provider:
-          </h4>
-          <ul className="text-sm text-left space-y-4">
-            {records.map((r, i) => (
-              <li key={i} className="p-3 rounded bg-muted border border-border">
-                <p className="mb-1 text-xs text-muted-foreground">
-                  <strong>Usage:</strong> {r.usage}
-                </p>
-                <div className="flex items-start justify-between gap-2">
-                  <span>
-                    <strong>Type:</strong> {r.type}
-                  </span>
-                  <button
-                    className="text-xs text-blue-500 hover:underline"
-                    onClick={() => copyToClipboard(r.type)}
-                  >
-                    Copy
-                  </button>
-                </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="break-all">
-                    <strong>Name:</strong> {r.name}
-                  </span>
-                  <button
-                    className="text-xs text-blue-500 hover:underline"
-                    onClick={() => copyToClipboard(r.name)}
-                  >
-                    Copy
-                  </button>
-                </div>
-                <div className="flex items-center justify-between gap-2">
-                  <span className="break-all">
-                    <strong>Value:</strong> {r.value}
-                  </span>
-                  <button
-                    className="text-xs text-blue-500 hover:underline"
-                    onClick={() => copyToClipboard(r.value)}
-                  >
-                    Copy
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+      {getDomainLoading && (
+        <div className="text-text flex items-center justify-center m-2">
+          <MiniLoadingSvg />
         </div>
+      )}
+      {!getDomainLoading && (
+        <>
+          <TextInput
+            title="Custom Domain"
+            desc="Enter your custom domain here and request records to put to your DNS provider"
+            value={domain}
+            onChange={(e) => setDomain(e.target.value)}
+          />
+          <div className="m-2 flex justify-center items-center">
+            <AmberButtonWithLoading
+              onClick={handleRequest}
+              loading={requestLoading}
+              text="Request Records"
+            />
+          </div>
+          {status && (
+            <p className="text-sm text-center font-medium mt-2">
+              Certificate Status: {status}
+            </p>
+          )}
+
+          {error && (
+            <p className="text-sm text-red-500 text-center font-medium mt-2">
+              {error}
+            </p>
+          )}
+          {records.length > 0 && (
+            <div className="mt-4">
+              <h4 className="font-semibold mb-2 text-sm">
+                Add these DNS records to your provider:
+              </h4>
+              <ul className="text-sm text-left space-y-4">
+                {records.map((r, i) => (
+                  <li
+                    key={i}
+                    className="p-3 rounded bg-muted border border-border"
+                  >
+                    <p className="mb-1 text-xs text-muted-foreground">
+                      <strong>Usage:</strong> {r.usage}
+                    </p>
+                    <div className="flex items-start justify-between gap-2">
+                      <span>
+                        <strong>Type:</strong> {r.type}
+                      </span>
+                      <button
+                        className="text-xs text-blue-500 hover:underline"
+                        onClick={() => copyToClipboard(r.type)}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="break-all">
+                        <strong>Name:</strong> {r.name}
+                      </span>
+                      <button
+                        className="text-xs text-blue-500 hover:underline"
+                        onClick={() => copyToClipboard(r.name)}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="break-all">
+                        <strong>Value:</strong> {r.value}
+                      </span>
+                      <button
+                        className="text-xs text-blue-500 hover:underline"
+                        onClick={() => copyToClipboard(r.value)}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>
       )}
     </WrapperWithBottomLine>
   );
