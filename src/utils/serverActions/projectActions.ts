@@ -40,7 +40,6 @@ export const updateAction = async (
     editor: EditorState;
     publish: {
       prefix?: string;
-      customDomain?: string;
       published: boolean;
       editor?: EditorState;
     };

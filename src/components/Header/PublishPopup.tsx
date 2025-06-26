@@ -139,6 +139,11 @@ const PublishPopup = () => {
           />
         </div>
       )}
+      {!loading && (
+        <div className="mt-4 px-4 text-xs text-muted-foreground italic max-w-4xl mx-auto">
+          *It can take up to 10 minutes for new changes to apply.
+        </div>
+      )}
     </Popup>
   );
 };

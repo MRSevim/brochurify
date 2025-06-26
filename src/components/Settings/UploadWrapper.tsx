@@ -72,7 +72,7 @@ const Button = ({
         disabled={!isSubbed}
       >
         {!loading && text}
-        {loading && <MiniLoadingSvg variant="black" />}
+        {loading && <MiniLoadingSvg />}
       </button>
       {!isSubbed && <SubscribeIcon />}
     </div>

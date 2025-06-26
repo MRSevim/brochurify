@@ -217,7 +217,6 @@ export async function updateProject(
     editor: EditorState;
     publish: {
       prefix?: string;
-      customDomain?: string;
       published: boolean;
       editor?: EditorState;
     };
@@ -279,7 +278,7 @@ export async function updateProject(
     expressionAttributeValues[":editor"] = stripEditorFields(updates.editor);
   }
   if (updates.publish) {
-    const { prefix, customDomain, published, editor } = updates.publish;
+    const { prefix, published, editor } = updates.publish;
 
     const key = `${user.userId}/published/${id}.html`;
 
@@ -319,16 +318,6 @@ export async function updateProject(
     setExpressions.push("#published = :published");
     expressionAttributeNames["#published"] = "published";
     expressionAttributeValues[":published"] = published ? 1 : 0;
-
-    if (customDomain !== undefined) {
-      // Optional: Validate custom domain (if present)
-      if (customDomain && !/^([a-z0-9-]+\.)+[a-z]{2,}$/.test(customDomain)) {
-        throw new Error("Invalid custom domain");
-      }
-      setExpressions.push("#customDomain = :customDomain");
-      expressionAttributeNames["#customDomain"] = "customDomain";
-      expressionAttributeValues[":customDomain"] = customDomain;
-    }
   }
   // Add updatedAt field
   setExpressions.push("#updatedAt = :updatedAt");
