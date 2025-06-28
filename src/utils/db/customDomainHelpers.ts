@@ -1,5 +1,6 @@
 import {
   ACMClient,
+  DeleteCertificateCommand,
   DescribeCertificateCommand,
   RequestCertificateCommand,
 } from "@aws-sdk/client-acm";
@@ -26,6 +27,27 @@ export async function requestCustomDomainCertificate(
   if (!domainRegex.test(domain.toLowerCase())) {
     throw new Error("Invalid domain format");
   }
+
+  // ✅ Get the current project
+  const { Item: existingProject } = await docClient.send(
+    new GetCommand({
+      TableName: TABLE_NAME,
+      Key: { userId: user.userId, id },
+    })
+  );
+
+  if (!existingProject) {
+    throw new Error("Project not found");
+  }
+
+  // ✅ If domain is already set by the same user/project, return early
+  if (
+    existingProject.customDomain === domain &&
+    existingProject.certificateArn
+  ) {
+    return existingProject.certificateArn;
+  }
+
   // Look for existing project with this domain
   const existingDomain = await docClient.send(
     new QueryCommand({
@@ -54,17 +76,17 @@ export async function requestCustomDomainCertificate(
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },
       UpdateExpression:
-        "SET #customDomain = :domain, #certificateArn = :cert, #certificateStatus = :status, #updatedAt = :updatedAt",
+        "SET #customDomain = :domain, #certificateArn = :cert, #verificationStatus = :status, #updatedAt = :updatedAt",
       ExpressionAttributeNames: {
         "#customDomain": "customDomain",
         "#certificateArn": "certificateArn",
-        "#certificateStatus": "certificateStatus",
+        "#verificationStatus": "verificationStatus",
         "#updatedAt": "updatedAt",
       },
       ExpressionAttributeValues: {
         ":domain": domain,
         ":cert": result.CertificateArn,
-        ":status": "PENDING_VALIDATION",
+        ":status": appConfig.PENDING,
         ":updatedAt": new Date().toISOString(),
       },
     })
@@ -92,26 +114,32 @@ export async function getCertificateValidationRecord(
   if (!certArn) throw new Error("No certificate ARN found on this project");
   if (!domain) throw new Error("No custom domain found on this project");
 
-  const { Certificate } = await acm.send(
-    new DescribeCertificateCommand({
-      CertificateArn: certArn,
-    })
-  );
+  async function waitForValidationRecord(certArn: string, maxRetries = 5) {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      const { Certificate } = await acm.send(
+        new DescribeCertificateCommand({ CertificateArn: certArn })
+      );
+      const option = Certificate?.DomainValidationOptions?.[0];
+      if (option?.ResourceRecord) return option.ResourceRecord;
 
-  const option = Certificate?.DomainValidationOptions?.[0];
-
-  if (!option?.ResourceRecord) throw new Error("No validation record found");
+      await new Promise((res) =>
+        setTimeout(res, Math.min(1000 * (attempt + 1), 5000))
+      ); // Exponential backoff
+    }
+    throw new Error("No validation record found after waiting");
+  }
+  const record = await waitForValidationRecord(certArn);
 
   return [
     {
-      name: option.ResourceRecord.Name as string,
-      type: option.ResourceRecord.Type as string,
-      value: option.ResourceRecord.Value as string,
+      name: record.Name as string,
+      type: record.Type + " or ALIAS/ANAME (for root domains)",
+      value: record.Value as string,
       usage: "SSL Verification (ACM)",
     },
     {
       name: domain,
-      type: "CNAME",
+      type: "CNAME or ALIAS/ANAME (for root domains)",
       value: appConfig.AWS_CLOUDFRONT_URL,
       usage: "Domain Routing (CloudFront)",
     },
@@ -132,11 +160,13 @@ export async function checkCertificateStatus(id: string, token: StringOrUnd) {
   if (!certArn) {
     throw new Error("No certificate ARN found for this project.");
   }
-  const currentCertStatusInDb = existing.Item?.certificateStatus;
+  const currentCertStatusInDb = existing.Item?.verificationStatus;
 
-  // If already ISSUED in DB, skip ACM call and return immediately
-  if (currentCertStatusInDb === "ISSUED") {
-    return "ISSUED";
+  const verified = appConfig.VERIFIED;
+
+  // If already VERIFIED in DB, skip and return immediately
+  if (currentCertStatusInDb === verified) {
+    return verified;
   }
   const { Certificate } = await acm.send(
     new DescribeCertificateCommand({ CertificateArn: certArn })
@@ -145,22 +175,69 @@ export async function checkCertificateStatus(id: string, token: StringOrUnd) {
   if (!status) {
     throw new Error("Unable to retrieve certificate status.");
   }
-  // ✅ If ISSUED, update project status in DB
+  const domain = existing.Item?.customDomain;
+  if (!domain) throw new Error("No custom domain set");
+
+  // ✅ If all checks pass, update project status in DB
   if (status === "ISSUED") {
     await docClient.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { userId: user.userId, id },
-        UpdateExpression: "SET #certificateStatus = :status",
+        UpdateExpression: "SET #verificationStatus = :status",
         ExpressionAttributeNames: {
-          "#certificateStatus": "certificateStatus",
+          "#verificationStatus": "verificationStatus",
         },
         ExpressionAttributeValues: {
-          ":status": "ISSUED",
+          ":status": verified,
         },
       })
     );
+    return verified;
+  } else {
+    return status;
+  }
+}
+
+export async function removeCustomDomain(id: string, token: StringOrUnd) {
+  const user = await protect(token);
+  checkRole(user, "subscriber");
+
+  // Fetch the current item
+  const { Item } = await docClient.send(
+    new GetCommand({
+      TableName: TABLE_NAME,
+      Key: { userId: user.userId, id },
+    })
+  );
+
+  if (!Item) throw new Error("Project not found");
+
+  const certArn = Item.certificateArn;
+
+  // Attempt to delete ACM certificate if exists
+  if (certArn) {
+    try {
+      await acm.send(new DeleteCertificateCommand({ CertificateArn: certArn }));
+    } catch (err) {
+      console.error("Failed to delete ACM certificate:", err);
+      // Optional: allow soft failure to still clean up DB
+    }
   }
 
-  return status;
+  // Remove domain fields from DB
+  await docClient.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { userId: user.userId, id },
+      UpdateExpression: `
+        REMOVE #customDomain, #certificateArn, #verificationStatus
+      `,
+      ExpressionAttributeNames: {
+        "#customDomain": "customDomain",
+        "#certificateArn": "certificateArn",
+        "#verificationStatus": "verificationStatus",
+      },
+    })
+  );
 }

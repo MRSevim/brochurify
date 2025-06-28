@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import {
   checkCertificateStatus,
   getCertificateValidationRecord,
+  removeCustomDomain,
   requestCustomDomainCertificate,
 } from "../db/customDomainHelpers";
 
@@ -38,5 +39,16 @@ export const checkCertificateStatusAction = async (id: string) => {
     return { status, error: "" };
   } catch (error: any) {
     return { error: error.message };
+  }
+};
+export const removeCustomDomainAction = async (id: string) => {
+  try {
+    const cookieStore = await cookies();
+    const jwt = cookieStore.get("jwt")?.value;
+
+    await removeCustomDomain(id, jwt);
+    return "";
+  } catch (error: any) {
+    return error.message;
   }
 };

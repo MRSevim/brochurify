@@ -58,6 +58,15 @@ export const editorSlice = createSlice({
     setPublished: (state, action: PayloadAction<boolean>) => {
       state.published = action.payload;
     },
+    setCustomDomain: (state, action: PayloadAction<string>) => {
+      state.customDomain = action.payload;
+    },
+    setVerificationStatus: (
+      state,
+      action: PayloadAction<string | undefined>
+    ) => {
+      state.verificationStatus = action.payload;
+    },
     updateLayout: (state, action: PayloadAction<Layout[]>) => {
       state.layout = action.payload;
     },
@@ -68,7 +77,9 @@ export const editorSlice = createSlice({
       state.variables = action.payload.variables;
       state.type = action.payload.type;
       state.history = [];
+      state.verificationStatus = action.payload.verificationStatus;
       state.published = action.payload.published;
+      state.customDomain = action.payload.customDomain;
     },
     hydrateLocal: (state, action: PayloadAction<EditorState>) => {
       state.layout = action.payload.layout;
@@ -407,6 +418,7 @@ export const editorSlice = createSlice({
 });
 
 export const {
+  setVerificationStatus,
   setPublished,
   setActive,
   addElement,
@@ -432,6 +444,7 @@ export const {
   duplicate,
   hydrateLocal,
   updateLayout,
+  setCustomDomain,
 } = editorSlice.actions;
 
 export default editorSlice.reducer;

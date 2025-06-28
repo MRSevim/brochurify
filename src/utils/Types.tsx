@@ -60,6 +60,8 @@ export interface EditorState {
   variables: Variable[];
   copied?: Layout;
   published?: boolean;
+  verificationStatus?: string;
+  customDomain?: string;
 }
 export type Variable = {
   id?: string;

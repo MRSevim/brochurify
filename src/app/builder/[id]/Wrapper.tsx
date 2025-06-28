@@ -19,6 +19,8 @@ const Wrapper = ({
           type,
           id: project.id,
           published: project.published === 1,
+          verificationStatus: project.verificationStatus,
+          customDomain: project.customDomain,
           ...project.editor,
         })
       );

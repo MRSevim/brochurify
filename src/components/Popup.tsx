@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import AmberButtonWithLoading from "./AmberButtonWithLoading";
+import ButtonWithLoading from "./ButtonWithLoading";
 
 const Popup = ({
   positiveActionText = "Add",
@@ -35,7 +35,7 @@ const Popup = ({
           {" "}
           Close
         </button>
-        <AmberButtonWithLoading
+        <ButtonWithLoading
           onClick={onEditOrAdd}
           loading={loading}
           text={editing ? "Save" : positiveActionText}

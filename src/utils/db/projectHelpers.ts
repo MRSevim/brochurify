@@ -284,6 +284,12 @@ export async function updateProject(
 
     if (prefix !== undefined && published) {
       //handle initial publish
+      const reserved = ["www", "admin", "app"];
+      if (reserved.includes(prefix.toLowerCase())) {
+        throw Error(
+          `The subdomain "${prefix}" is reserved and cannot be used.`
+        );
+      }
       const projects = await scanPrefix(prefix, token);
       setExpressions.push("#prefix = :prefix");
       expressionAttributeNames["#prefix"] = "prefix";

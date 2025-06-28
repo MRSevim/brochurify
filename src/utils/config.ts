@@ -1,5 +1,7 @@
 export const appConfig = {
   MONTHLY_SUB_PRICE: 5,
+  VERIFIED: "VERIFIED",
+  PENDING: "PENDING_VALIDATION",
   DOMAIN_EXTENSION: ".brochurify.app",
   MAX_IMAGE_SIZE_MB: 5,
   MAX_IMAGE_COUNT: 50,

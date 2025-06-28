@@ -1,4 +1,4 @@
-import AmberButtonWithLoading from "./AmberButtonWithLoading";
+import ButtonWithLoading from "./ButtonWithLoading";
 
 const ConfirmationPopup = ({
   onClose,
@@ -30,7 +30,7 @@ const ConfirmationPopup = ({
           {" "}
           Close
         </button>
-        <AmberButtonWithLoading
+        <ButtonWithLoading
           onClick={onConfirm}
           loading={loading}
           text="Confirm"

@@ -7,7 +7,7 @@ import { updateAction } from "@/utils/serverActions/projectActions";
 import { toast } from "react-toastify";
 
 let variableTimer: NodeJS.Timeout | null = null;
-let layoutHistoryTimer: NodeJS.Timeout | null = null;
+let layoutPagewiseTimer: NodeJS.Timeout | null = null;
 
 export const saveToLocalOrDb: Middleware = (store) => (next) => (action) => {
   // Ignore certain actions
@@ -61,18 +61,18 @@ export const saveToLocalOrDb: Middleware = (store) => (next) => (action) => {
     nextLayout !== prevLayout || nextPageWise !== prevPageWise;
   if (layoutChanged) {
     // Optional: clear any lingering old timer
-    if (layoutHistoryTimer) {
-      clearTimeout(layoutHistoryTimer);
-      layoutHistoryTimer = null;
+    if (layoutPagewiseTimer) {
+      clearTimeout(layoutPagewiseTimer);
+      layoutPagewiseTimer = null;
     }
   }
 
   if (prevHistory !== nextHistory) {
     store.dispatch(saving());
 
-    layoutHistoryTimer = setTimeout(() => {
+    layoutPagewiseTimer = setTimeout(() => {
       saveTo();
-      layoutHistoryTimer = null;
+      layoutPagewiseTimer = null;
     }, 2000); // short debounce after history is in
   }
 

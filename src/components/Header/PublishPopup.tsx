@@ -13,7 +13,7 @@ import MiniLoadingSvg from "../MiniLoadingSvg";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setPublished } from "@/redux/slices/editorSlice";
 import { addNumberWithDash, slugify } from "@/utils/Helpers";
-import AmberButtonWithLoading from "../AmberButtonWithLoading";
+import ButtonWithLoading from "../ButtonWithLoading";
 
 const PublishPopup = () => {
   const [, setPublishPopup] = usePublishPopup();
@@ -116,7 +116,7 @@ const PublishPopup = () => {
       )}
       {published && (
         <div className="flex justify-center items-center m-2 mb-5">
-          <AmberButtonWithLoading
+          <ButtonWithLoading
             onClick={async () => {
               if (!id) return toast.error("Something went wrong");
               setPublishLoading(true);
