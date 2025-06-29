@@ -40,12 +40,21 @@ export async function requestCustomDomainCertificate(
     throw new Error("Project not found");
   }
 
+  if (existingProject.published !== 1) {
+    throw new Error("Please publish your project first");
+  }
   // ✅ If domain is already set by the same user/project, return early
   if (
     existingProject.customDomain === domain &&
     existingProject.certificateArn
   ) {
     return existingProject.certificateArn;
+  } else if (existingProject.certificateArn) {
+    await acm.send(
+      new DeleteCertificateCommand({
+        CertificateArn: existingProject.certificateArn,
+      })
+    );
   }
 
   // Look for existing project with this domain
@@ -113,6 +122,9 @@ export async function getCertificateValidationRecord(
 
   if (!certArn) throw new Error("No certificate ARN found on this project");
   if (!domain) throw new Error("No custom domain found on this project");
+  if (existing.Item?.published !== 1) {
+    throw new Error("Please publish your project first");
+  }
 
   async function waitForValidationRecord(certArn: string, maxRetries = 5) {
     for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -201,7 +213,6 @@ export async function checkCertificateStatus(id: string, token: StringOrUnd) {
 
 export async function removeCustomDomain(id: string, token: StringOrUnd) {
   const user = await protect(token);
-  checkRole(user, "subscriber");
 
   // Fetch the current item
   const { Item } = await docClient.send(

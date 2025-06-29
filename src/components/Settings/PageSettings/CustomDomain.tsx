@@ -62,7 +62,7 @@ const CustomDomain = () => {
     <WrapperWithBottomLine>
       <TextInput
         title="Custom Domain"
-        desc="Enter your custom domain here and request records to put to your DNS provider. If your provider does not support ANAME/ALIAS records for apex domains (eg. mydomain.com), use a domain with subdomain (eg. www.mydomain.com, app.mydomain.com) here and redirect your apex domain to your subdomain"
+        desc="Enter your custom domain here and request records to put to your DNS provider. If your provider does not support ANAME/ALIAS records for apex domains (eg. mydomain.com), use a subdomain (eg. www.mydomain.com, app.mydomain.com) here and redirect your apex domain to your subdomain"
         value={domain}
         onChange={(e) => dispatch(setCustomDomain(e.target.value))}
       />
@@ -104,7 +104,7 @@ const CustomDomain = () => {
                   type="check-circle-fill"
                   size="20px"
                   title="Checkbox"
-                  className="text-positiveGreen"
+                  className="ms-2 text-positiveGreen"
                 />
               )}
             </>
