@@ -7,6 +7,7 @@ import {
   redo,
   undo,
   addToHistory,
+  hydrateLocal,
 } from "../slices/editorSlice";
 
 let debounceTimer: NodeJS.Timeout | null = null; // Timer for debounce
@@ -14,7 +15,12 @@ let debounceTimer: NodeJS.Timeout | null = null; // Timer for debounce
 export const saveToHistoryMiddleware: Middleware =
   (store) => (next) => (action) => {
     // Ignore certain actions
-    if (undo.match(action) || redo.match(action) || hydrate.match(action)) {
+    if (
+      undo.match(action) ||
+      redo.match(action) ||
+      hydrate.match(action) ||
+      hydrateLocal.match(action)
+    ) {
       return next(action);
     }
     const prevState = store.getState() as RootState;

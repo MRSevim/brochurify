@@ -1,7 +1,7 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 import { saveToLocalStorage } from "@/utils/Helpers";
-import { hydrate } from "../slices/editorSlice";
+import { hydrate, hydrateLocal, redo, undo } from "../slices/editorSlice";
 import { saved, saving } from "../slices/popupSlice";
 import { updateAction } from "@/utils/serverActions/projectActions";
 import { toast } from "react-toastify";
@@ -11,7 +11,12 @@ let layoutPagewiseTimer: NodeJS.Timeout | null = null;
 
 export const saveToLocalOrDb: Middleware = (store) => (next) => (action) => {
   // Ignore certain actions
-  if (hydrate.match(action)) {
+  if (
+    undo.match(action) ||
+    redo.match(action) ||
+    hydrate.match(action) ||
+    hydrateLocal.match(action)
+  ) {
     return next(action);
   }
 
@@ -54,12 +59,12 @@ export const saveToLocalOrDb: Middleware = (store) => (next) => (action) => {
     variableTimer = setTimeout(() => {
       saveTo();
       variableTimer = null;
-    }, 1000);
+    }, 4000);
   }
 
-  const layoutChanged =
+  const layoutPagewiseChanged =
     nextLayout !== prevLayout || nextPageWise !== prevPageWise;
-  if (layoutChanged) {
+  if (layoutPagewiseChanged) {
     // Optional: clear any lingering old timer
     if (layoutPagewiseTimer) {
       clearTimeout(layoutPagewiseTimer);
@@ -73,7 +78,7 @@ export const saveToLocalOrDb: Middleware = (store) => (next) => (action) => {
     layoutPagewiseTimer = setTimeout(() => {
       saveTo();
       layoutPagewiseTimer = null;
-    }, 2000); // short debounce after history is in
+    }, 3000); // short debounce after history is in
   }
 
   return result;
