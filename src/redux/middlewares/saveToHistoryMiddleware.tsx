@@ -15,14 +15,11 @@ let debounceTimer: NodeJS.Timeout | null = null; // Timer for debounce
 export const saveToHistoryMiddleware: Middleware =
   (store) => (next) => (action) => {
     // Ignore certain actions
-    if (
-      undo.match(action) ||
-      redo.match(action) ||
-      hydrate.match(action) ||
-      hydrateLocal.match(action)
-    ) {
+    const isUndoOrRedo = undo.match(action) || redo.match(action);
+    if (isUndoOrRedo || hydrate.match(action) || hydrateLocal.match(action)) {
       return next(action);
     }
+
     const prevState = store.getState() as RootState;
     const prevLayout = JSON.stringify(prevState.editor.layout);
     const prevPageWise = JSON.stringify(prevState.editor.pageWise);
@@ -38,13 +35,14 @@ export const saveToHistoryMiddleware: Middleware =
       JSON.stringify(nextState.editor.layout) !== prevLayout ||
       JSON.stringify(nextState.editor.pageWise) !== prevPageWise
     ) {
-      const save = () =>
+      const save = () => {
         store.dispatch(
           addToHistory({
             layout: nextState.editor.layout,
             pageWise: nextState.editor.pageWise,
           })
         );
+      };
       if (propOrStyleChange) {
         // Clear previous debounce timer if exists
         if (debounceTimer) {

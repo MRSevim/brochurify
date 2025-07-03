@@ -17,7 +17,7 @@ import TableRow from "@tiptap/extension-table-row";
 import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import { getProp } from "@/utils/Helpers";
 import Icon from "../../Icon";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HeadingLevel } from "@/utils/Types";
 import SecondaryTitle from "../../SecondaryTitle";
 import Popup from "./Popup";
@@ -68,11 +68,17 @@ const Text = () => {
       );
     }
   }, [editor]);
+  const ignoreUpdateDispatch = useRef(false);
 
   useEffect(() => {
     if (!editor) return;
 
     const handler = () => {
+      if (ignoreUpdateDispatch.current) {
+        // Reset flag and ignore this update event
+        ignoreUpdateDispatch.current = false;
+        return;
+      }
       const rawHtml = editor.getHTML(); // Get current HTML
       // ✅ Sanitize the HTML (remove unwanted tags)
       const cleanHtml = sanitizeHtml(rawHtml, {
@@ -115,7 +121,6 @@ const Text = () => {
         },
         textFilter: (text) => text, // Don't trim or alter text content
       });
-
       dispatch(changeElementProp({ type: "text", newValue: cleanHtml }));
     };
 
@@ -133,7 +138,9 @@ const Text = () => {
       editor.commands.setContent(content, false, {
         preserveWhitespace: "full",
       });
-      editor.commands.setTextSelection({ from, to }); // false = don't emit new update event
+      // Set flag to suspend update dispatch temporarily
+      ignoreUpdateDispatch.current = true;
+      editor.commands.setTextSelection({ from, to });
     }
   }, [content, editor]);
 

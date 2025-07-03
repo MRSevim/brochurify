@@ -41,7 +41,7 @@ export const saveToLocalOrDb: Middleware = (store) => (next) => (action) => {
       saveToLocalStorage(store.getState().editor);
       store.dispatch(saved(" locally"));
     } else {
-      const error = await updateAction(type, id, {
+      const { error } = await updateAction(type, id, {
         editor: store.getState().editor,
       });
       if (error) {

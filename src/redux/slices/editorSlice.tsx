@@ -74,22 +74,26 @@ export const editorSlice = createSlice({
       state.layout = action.payload;
     },
     hydrate: (state, action: PayloadAction<EditorState>) => {
+      const layout = action.payload.layout;
+      const pageWise = action.payload.pageWise;
       state.id = action.payload.id;
-      state.layout = action.payload.layout;
-      state.pageWise = action.payload.pageWise;
+      state.layout = layout;
+      state.pageWise = pageWise;
       state.variables = action.payload.variables;
       state.type = action.payload.type;
-      state.history = [];
+      state.history = [{ current: true, structure: { layout, pageWise } }];
       state.verificationStatus = action.payload.verificationStatus;
       state.published = action.payload.published;
       state.customDomain = action.payload.customDomain;
       state.prefix = action.payload.prefix;
     },
     hydrateLocal: (state, action: PayloadAction<EditorState>) => {
-      state.layout = action.payload.layout;
-      state.pageWise = action.payload.pageWise;
+      const layout = action.payload.layout;
+      const pageWise = action.payload.pageWise;
+      state.layout = layout;
+      state.pageWise = pageWise;
       state.variables = action.payload.variables;
-      state.history = [];
+      state.history = [{ current: true, structure: { layout, pageWise } }];
     },
     setDraggedItem: (state, action: PayloadAction<string | undefined>) => {
       state.draggedItem = action.payload;
