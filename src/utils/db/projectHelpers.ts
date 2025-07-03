@@ -79,9 +79,17 @@ export async function createProject(
     const freeLimit = appConfig.FREE_ACC_PROJECT_LIMIT;
 
     if (projectsLength > subLimit) {
-      throw new Error(`You cannot create more than ${subLimit} projects!`);
+      checkRole(
+        user,
+        "admin",
+        `You cannot create more than ${subLimit} projects!`
+      );
     } else if (projectsLength > freeLimit) {
-      checkRole(user, "subscriber");
+      checkRole(
+        user,
+        "subscriber",
+        `You cannot create more than ${freeLimit} projects!`
+      );
     }
   }
 

@@ -71,10 +71,14 @@ export const protect = async (token: StringOrUnd) => {
   }
 };
 
-export const checkRole = (user: Record<string, any>, role: string) => {
+export const checkRole = (
+  user: Record<string, any>,
+  role: string,
+  customError?: string
+) => {
   try {
     if (!Array.isArray(user.roles) || !user.roles.includes(role)) {
-      throw new Error(`Not authorized, ${role} role required`);
+      throw new Error(customError || `Not authorized, ${role} role required`);
     }
   } catch (error: any) {
     throw error;
