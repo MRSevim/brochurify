@@ -17,14 +17,15 @@ import TableRow from "@tiptap/extension-table-row";
 import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import { getProp } from "@/utils/Helpers";
 import Icon from "../../Icon";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { HeadingLevel } from "@/utils/Types";
 import SecondaryTitle from "../../SecondaryTitle";
 import Popup from "./Popup";
-import { changeElementProp } from "@/redux/slices/editorSlice";
+import { changeElementProp, redo, undo } from "@/redux/slices/editorSlice";
 import sanitizeHtml from "sanitize-html";
 import LetterSpacing from "@/Tiptap/LetterSpacing";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
+import { useDispatch } from "react-redux";
 
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
@@ -32,7 +33,9 @@ const Text = () => {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        history: false,
+      }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       Color,
       TextStyle,
@@ -68,17 +71,11 @@ const Text = () => {
       );
     }
   }, [editor]);
-  const ignoreUpdateDispatch = useRef(false);
 
   useEffect(() => {
     if (!editor) return;
 
     const handler = () => {
-      if (ignoreUpdateDispatch.current) {
-        // Reset flag and ignore this update event
-        ignoreUpdateDispatch.current = false;
-        return;
-      }
       const rawHtml = editor.getHTML(); // Get current HTML
       // ✅ Sanitize the HTML (remove unwanted tags)
       const cleanHtml = sanitizeHtml(rawHtml, {
@@ -133,16 +130,16 @@ const Text = () => {
 
   //Listen for content change from outside such as history
   useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
+    if (!editor) return;
+
+    if (content !== editor.getHTML()) {
       let { from, to } = editor.state.selection;
       editor.commands.setContent(content, false, {
         preserveWhitespace: "full",
       });
-      // Set flag to suspend update dispatch temporarily
-      ignoreUpdateDispatch.current = true;
       editor.commands.setTextSelection({ from, to });
     }
-  }, [content, editor]);
+  }, [content]);
 
   return (
     <WrapperWithBottomLine>
@@ -168,6 +165,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
   const size = "1.2rem";
   const [tableMode, setTableMode] = useState(false);
   const [state, setState] = useState<any>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setState(null);
@@ -176,12 +174,12 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
   const Icons: Icon[] = [
     {
       type: "arrow-counterclockwise",
-      onClick: () => editor.chain().focus().undo().run(),
+      onClick: () => dispatch(undo()),
       title: "Undo",
     },
     {
       type: "arrow-clockwise",
-      onClick: () => editor.chain().focus().redo().run(),
+      onClick: () => dispatch(redo()),
       title: "Redo",
     },
     {
