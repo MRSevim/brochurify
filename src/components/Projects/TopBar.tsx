@@ -19,7 +19,7 @@ const TopBar = ({
   const saveChanges = async () => {
     if (title !== project.title) {
       setLoading(true);
-      const error = await updateAction(type, project.id, { title });
+      const { error } = await updateAction(type, project.id, { title });
       if (error) {
         toast.error(error);
       }
