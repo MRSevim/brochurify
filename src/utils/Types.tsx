@@ -62,6 +62,7 @@ export interface EditorState {
   published?: boolean;
   verificationStatus?: string;
   customDomain?: string;
+  prefix?: string;
 }
 export type Variable = {
   id?: string;

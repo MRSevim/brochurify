@@ -61,6 +61,9 @@ export const editorSlice = createSlice({
     setCustomDomain: (state, action: PayloadAction<string>) => {
       state.customDomain = action.payload;
     },
+    setPrefix: (state, action: PayloadAction<string>) => {
+      state.prefix = action.payload;
+    },
     setVerificationStatus: (
       state,
       action: PayloadAction<string | undefined>
@@ -80,6 +83,7 @@ export const editorSlice = createSlice({
       state.verificationStatus = action.payload.verificationStatus;
       state.published = action.payload.published;
       state.customDomain = action.payload.customDomain;
+      state.prefix = action.payload.prefix;
     },
     hydrateLocal: (state, action: PayloadAction<EditorState>) => {
       state.layout = action.payload.layout;
@@ -419,6 +423,7 @@ export const editorSlice = createSlice({
 
 export const {
   setVerificationStatus,
+  setPrefix,
   setPublished,
   setActive,
   addElement,

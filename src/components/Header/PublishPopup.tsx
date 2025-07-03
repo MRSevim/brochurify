@@ -11,7 +11,7 @@ import {
 } from "@/utils/serverActions/projectActions";
 import MiniLoadingSvg from "../MiniLoadingSvg";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setPublished } from "@/redux/slices/editorSlice";
+import { setPrefix, setPublished } from "@/redux/slices/editorSlice";
 import { addNumberWithDash, slugify } from "@/utils/Helpers";
 import ButtonWithLoading from "../ButtonWithLoading";
 
@@ -26,6 +26,11 @@ const PublishPopup = () => {
   const id = useAppSelector((state) => state.editor.id);
   const published = useAppSelector((state) => state.editor.published);
   const editor = useAppSelector((state) => state.editor);
+  const prefix = useAppSelector((state) => state.editor.prefix);
+  const customDomain = useAppSelector((state) => state.editor.customDomain);
+  const verificationStatus = useAppSelector(
+    (state) => state.editor.verificationStatus
+  );
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!name) return;
@@ -59,22 +64,27 @@ const PublishPopup = () => {
       loading={publishLoading}
       onEditOrAdd={async () => {
         if (!id) return toast.error("Something went wrong");
-        if (!slugify(name) && !published)
+        const slugified = slugify(name);
+        if (!slugified && !published)
           return toast.error("Prefix cannot be empty");
 
         setPublishLoading(true);
-        const error = await updateAction(type, id, {
+        const { error, prefix } = await updateAction(type, id, {
           publish: {
-            prefix: published ? undefined : slugify(name),
+            prefix: published ? undefined : slugified,
             published: !published,
             editor: published ? undefined : editor,
           },
         });
+
         if (error) {
           toast.error(error);
         } else {
           if (!published) {
             toast.success("Your project is successfully published");
+            if (prefix) {
+              dispatch(setPrefix(prefix));
+            }
           } else {
             toast.success("Your project is successfully unpublished");
           }
@@ -120,7 +130,7 @@ const PublishPopup = () => {
             onClick={async () => {
               if (!id) return toast.error("Something went wrong");
               setPublishLoading(true);
-              const error = await updateAction(type, id, {
+              const { error } = await updateAction(type, id, {
                 publish: {
                   editor,
                   published: true,
@@ -140,9 +150,27 @@ const PublishPopup = () => {
         </div>
       )}
       {!loading && (
-        <div className="mt-4 px-4 text-xs text-muted-foreground italic max-w-4xl mx-auto">
-          *It can take up to 10 minutes for new changes to apply.
-        </div>
+        <>
+          <div className="mt-4 px-4 text-xs text-muted-foreground italic max-w-4xl mx-auto">
+            *It can take up to 10 minutes for new changes to apply.
+          </div>
+          {(prefix || customDomain) && published && (
+            <div className="mt-2 text-s p-4">
+              Your website is live at following domains:
+              <ul className="font-bold list-none">
+                {prefix && (
+                  <li>
+                    {prefix}
+                    {appConfig.DOMAIN_EXTENSION}
+                  </li>
+                )}
+                {customDomain && verificationStatus === appConfig.VERIFIED && (
+                  <li>{customDomain}</li>
+                )}
+              </ul>
+            </div>
+          )}
+        </>
       )}
     </Popup>
   );

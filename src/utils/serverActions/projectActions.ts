@@ -49,13 +49,13 @@ export const updateAction = async (
     const cookieStore = await cookies();
     const jwt = cookieStore.get("jwt")?.value;
 
-    await updateProject(type, jwt, id, updates);
+    const updatedProject = await updateProject(type, jwt, id, updates);
 
     revalidatePath("/my-projects");
 
-    return "";
+    return { prefix: updatedProject?.prefix, error: "" };
   } catch (error: any) {
-    return error.message;
+    return { error: error.message };
   }
 };
 

@@ -346,6 +346,7 @@ export async function updateProject(
     UpdateExpression: updateExpressionParts.join(" "),
     ExpressionAttributeNames: expressionAttributeNames,
     ExpressionAttributeValues: expressionAttributeValues,
+    ReturnValues: "ALL_NEW",
   });
 
   const result = await docClient.send(command);
