@@ -18,14 +18,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/register", request.url));
   }
   const url = request.nextUrl;
-  const hostname = request.headers.get("host") || "";
 
-  const isLocalhost =
-    hostname.includes("localhost") || hostname.startsWith("127.0.0.1");
   const path = url.pathname;
+  // This allows local subdomain testing
+  const hostname = request.headers
+    .get("host")!
+    .replace(".localhost:3000", appConfig.DOMAIN_EXTENSION);
 
-  // 🧠 ---  Bypass on localhost
-  if (isLocalhost) return;
+  //if no localhost subdomain, return early
+  if (hostname === "localhost:3000") return;
 
   // 🧠 --- Skip platform root non-tenant paths
   const isPlatformRoot =
@@ -34,16 +35,8 @@ export function middleware(request: NextRequest) {
   const isRootPage = path === "/" || path === "";
   if (isPlatformRoot || !isRootPage) return;
 
-  // 🧭 ---  Rewrite for tenant subdomains (*.brochurify.app)
-
-  if (hostname.endsWith(appConfig.DOMAIN_EXTENSION)) {
-    const subdomain = hostname.replace(appConfig.DOMAIN_EXTENSION, "");
-    url.pathname = `/${subdomain}`;
-    return NextResponse.rewrite(url);
-  }
-
-  // 🧭 ---  Rewrite for custom domains (everything else)
-  if (!isPlatformRoot && !isLocalhost) {
+  // 🧭 ---  Rewrite for everything else
+  if (!isPlatformRoot) {
     const domain = hostname;
     url.pathname = `/${domain}`;
     return NextResponse.rewrite(url);

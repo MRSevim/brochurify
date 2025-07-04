@@ -3,6 +3,7 @@ import docClient from "../db/db";
 
 export const getSite = async (domain: string) => {
   try {
+    console.log("domain: ", domain);
     if (domain.endsWith(".brochurify.app")) {
       const prefix = domain.split(".")[0].toLowerCase();
       console.log("🔍 Detected subdomain prefix:", prefix);

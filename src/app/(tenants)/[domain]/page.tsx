@@ -3,5 +3,5 @@ export default async function SiteHomePage({
 }: {
   params: { domain: string };
 }) {
-  return <>{params.domain}</>;
+  return <>123</>;
 }
