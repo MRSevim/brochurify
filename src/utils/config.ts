@@ -3,6 +3,7 @@ export const appConfig = {
   VERIFIED: "VERIFIED",
   PENDING: "PENDING_VALIDATION",
   DOMAIN_EXTENSION: ".brochurify.app",
+  BASE_DOMAIN: "brochurify.app",
   MAX_IMAGE_SIZE_MB: 5,
   MAX_IMAGE_COUNT: 50,
   MAX_PROJECT_SIZE_KB: 400,

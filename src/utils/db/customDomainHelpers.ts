@@ -1,16 +1,14 @@
-import {
-  ACMClient,
-  DeleteCertificateCommand,
-  DescribeCertificateCommand,
-  RequestCertificateCommand,
-} from "@aws-sdk/client-acm";
 import { checkRole, protect } from "../serverActions/helpers";
 import { StringOrUnd } from "../Types";
 import docClient from "./db";
 import { GetCommand, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { appConfig } from "../config";
+import { Vercel } from "@vercel/sdk";
+import { projectsAddProjectDomain } from "@vercel/sdk/funcs/projectsAddProjectDomain.js";
 
-const acm = new ACMClient({ region: "us-east-1" }); // must be us-east-1 for CloudFront
+const vercel = new Vercel({
+  bearerToken: process.env.VERCEL_API_TOKEN,
+});
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
