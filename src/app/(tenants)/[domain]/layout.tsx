@@ -6,8 +6,8 @@ import { Metadata } from "next";
 export async function generateMetadata({
   params,
 }: {
-  params: { domain: string };
-}): Promise<Metadata | null> {
+  params: Promise<{ domain: string }>;
+}) {
   const { domain } = await params;
   const site = await getSite(domain);
   if (!site || !site.editor) {

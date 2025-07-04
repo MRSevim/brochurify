@@ -1,7 +1,7 @@
 export default async function SiteHomePage({
   params,
 }: {
-  params: { domain: string };
+  params: Promise<{ domain: string }>;
 }) {
   return <>123</>;
 }
