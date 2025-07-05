@@ -78,7 +78,7 @@ export async function requestCustomDomain(
       domain: "www",
       type: "CNAME",
       value: domain,
-      reason: "CNAME to redirect www to apex",
+      reason: "CNAME to redirect www to apex (Optional)",
     },
   ];
   const baseRecords = isSubdomain(domain) ? subdomainRecords : apexRecords;

@@ -50,7 +50,7 @@ const CustomDomain = () => {
     <WrapperWithBottomLine>
       <TextInput
         title="Custom Domain"
-        desc="Enter your custom domain here and request records to put to your DNS provider."
+        desc="Enter your custom domain here and request records to put to your DNS provider. If you want to redirect www version to your root domain (eg. mydomain.com), enter root domain here and apply the given records to your dns provider"
         value={domain}
         onChange={(e) => dispatch(setCustomDomain(e.target.value))}
       />
