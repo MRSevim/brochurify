@@ -60,7 +60,7 @@ export interface EditorState {
   variables: Variable[];
   copied?: Layout;
   published?: boolean;
-  verificationStatus?: string;
+  domainVerified?: boolean;
   customDomain?: string;
   prefix?: string;
 }

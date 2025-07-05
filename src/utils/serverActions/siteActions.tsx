@@ -15,7 +15,7 @@ export const getSite = async (domain: string) => {
 
       const project = await getProjectByPrefix(prefix);
 
-      if (!project || project.published !== 1) {
+      if (!project || project.published) {
         console.log("🚫 No published project found for prefix:", prefix);
         return;
       }
@@ -25,7 +25,12 @@ export const getSite = async (domain: string) => {
       console.log("🌐 Custom domain request:", domain);
       const project = await getProjectByCustomDomain(domain);
 
-      if (!project || project.published !== 1 || !project.customDomain) {
+      if (
+        !project ||
+        !project.published ||
+        !project.customDomain ||
+        !project.domainVerified
+      ) {
         console.log("🚫 No valid project found for domain:", domain);
         return;
       }

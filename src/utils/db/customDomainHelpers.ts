@@ -1,18 +1,18 @@
+import { parse } from "tldts";
 import { checkRole, protect } from "../serverActions/helpers";
 import { StringOrUnd } from "../Types";
 import docClient from "./db";
 import { GetCommand, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { appConfig } from "../config";
 import { Vercel } from "@vercel/sdk";
-import { projectsAddProjectDomain } from "@vercel/sdk/funcs/projectsAddProjectDomain.js";
 
-const vercel = new Vercel({
+export const vercel = new Vercel({
   bearerToken: process.env.VERCEL_API_TOKEN,
 });
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
+const PROJECT_NAME = "brochurify";
 
-export async function requestCustomDomainCertificate(
+export async function requestCustomDomain(
   id: string,
   domain: string,
   token: StringOrUnd
@@ -38,21 +38,8 @@ export async function requestCustomDomainCertificate(
     throw new Error("Project not found");
   }
 
-  if (existingProject.published !== 1) {
+  if (!existingProject.published) {
     throw new Error("Please publish your project first");
-  }
-  // ✅ If domain is already set by the same user/project, return early
-  if (
-    existingProject.customDomain === domain &&
-    existingProject.certificateArn
-  ) {
-    return existingProject.certificateArn;
-  } else if (existingProject.certificateArn) {
-    await acm.send(
-      new DeleteCertificateCommand({
-        CertificateArn: existingProject.certificateArn,
-      })
-    );
   }
 
   // Look for existing project with this domain
@@ -67,95 +54,88 @@ export async function requestCustomDomainCertificate(
     })
   );
 
-  if (existingDomain.Items?.length && existingDomain.Items[0].id !== id) {
-    throw new Error("This domain is already in use");
+  function isSubdomain(domain: string): boolean {
+    const parsed = parse(domain);
+    return !!parsed.subdomain;
   }
-  const command = new RequestCertificateCommand({
-    DomainName: domain,
-    ValidationMethod: "DNS",
-    IdempotencyToken: domain.replace(/\W/g, "").slice(0, 32),
-  });
+  const subdomainRecords = [
+    {
+      domain,
+      type: "CNAME",
+      value: "cname.vercel-dns.com",
+      reason: "CNAME for subdomain",
+    },
+  ];
 
-  const result = await acm.send(command);
+  const apexRecords = [
+    {
+      domain: "@",
+      type: "A",
+      value: "76.76.21.21",
+      reason: "A record for apex domain",
+    },
+    {
+      domain: "www",
+      type: "CNAME",
+      value: domain,
+      reason: "CNAME to redirect www to apex",
+    },
+  ];
+  const baseRecords = isSubdomain(domain) ? subdomainRecords : apexRecords;
+  if (
+    existingDomain.Items?.length &&
+    existingDomain.Items[0].id !== id &&
+    existingDomain.Items[0].domainVerified
+  ) {
+    throw new Error("This domain is already in use");
+  } else if (
+    existingDomain.Items?.length &&
+    existingDomain.Items[0].id === id
+  ) {
+    if (existingDomain.Items[0].domainVerified) {
+      throw new Error(
+        "Domain you entered is already verified. Please wait a little if you do not see your live site"
+      );
+    } else {
+      const result = await vercel.projects.getProjectDomain({
+        idOrName: PROJECT_NAME,
+        domain,
+      });
+
+      return [...baseRecords, ...(result.verification ?? [])];
+    }
+  }
+  const mainDomainResponse = await vercel.projects.addProjectDomain({
+    idOrName: PROJECT_NAME,
+    requestBody: {
+      name: domain,
+    },
+  });
 
   await docClient.send(
     new UpdateCommand({
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },
       UpdateExpression:
-        "SET #customDomain = :domain, #certificateArn = :cert, #verificationStatus = :status, #updatedAt = :updatedAt",
+        "SET #customDomain = :domain, #domainVerified = :status, #updatedAt = :updatedAt",
       ExpressionAttributeNames: {
         "#customDomain": "customDomain",
-        "#certificateArn": "certificateArn",
-        "#verificationStatus": "verificationStatus",
+        "#domainVerified": "domainVerified",
         "#updatedAt": "updatedAt",
       },
       ExpressionAttributeValues: {
         ":domain": domain,
-        ":cert": result.CertificateArn,
-        ":status": appConfig.PENDING,
+        ":status": false,
         ":updatedAt": new Date().toISOString(),
       },
     })
   );
+  const verification = mainDomainResponse.verification;
 
-  return result.CertificateArn;
+  return [...baseRecords, ...(verification ?? [])];
 }
 
-export async function getCertificateValidationRecord(
-  id: string,
-  token: StringOrUnd
-) {
-  const user = await protect(token);
-  checkRole(user, "subscriber");
-  const existing = await docClient.send(
-    new GetCommand({
-      TableName: TABLE_NAME,
-      Key: { userId: user.userId, id },
-    })
-  );
-
-  const certArn = existing.Item?.certificateArn;
-  const domain = existing.Item?.customDomain;
-
-  if (!certArn) throw new Error("No certificate ARN found on this project");
-  if (!domain) throw new Error("No custom domain found on this project");
-  if (existing.Item?.published !== 1) {
-    throw new Error("Please publish your project first");
-  }
-
-  async function waitForValidationRecord(certArn: string, maxRetries = 5) {
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      const { Certificate } = await acm.send(
-        new DescribeCertificateCommand({ CertificateArn: certArn })
-      );
-      const option = Certificate?.DomainValidationOptions?.[0];
-      if (option?.ResourceRecord) return option.ResourceRecord;
-
-      await new Promise((res) =>
-        setTimeout(res, Math.min(1000 * (attempt + 1), 5000))
-      ); // Exponential backoff
-    }
-    throw new Error("No validation record found after waiting");
-  }
-  const record = await waitForValidationRecord(certArn);
-
-  return [
-    {
-      name: record.Name as string,
-      type: record.Type + " or ALIAS/ANAME (for root domains)",
-      value: record.Value as string,
-      usage: "SSL Verification (ACM)",
-    },
-    {
-      name: domain,
-      type: "CNAME or ALIAS/ANAME (for root domains)",
-      value: appConfig.AWS_CLOUDFRONT_URL,
-      usage: "Domain Routing (CloudFront)",
-    },
-  ];
-}
-export async function checkCertificateStatus(id: string, token: StringOrUnd) {
+export async function checkVerificationStatus(id: string, token: StringOrUnd) {
   const user = await protect(token);
   checkRole(user, "subscriber");
 
@@ -166,46 +146,40 @@ export async function checkCertificateStatus(id: string, token: StringOrUnd) {
     })
   );
 
-  const certArn = existing.Item?.certificateArn;
-  if (!certArn) {
-    throw new Error("No certificate ARN found for this project.");
+  // If already verified in DB, skip and return immediately
+  if (existing.Item?.domainVerified) {
+    return true;
   }
-  const currentCertStatusInDb = existing.Item?.verificationStatus;
 
-  const verified = appConfig.VERIFIED;
-
-  // If already VERIFIED in DB, skip and return immediately
-  if (currentCertStatusInDb === verified) {
-    return verified;
-  }
-  const { Certificate } = await acm.send(
-    new DescribeCertificateCommand({ CertificateArn: certArn })
-  );
-  const status = Certificate?.Status;
-  if (!status) {
-    throw new Error("Unable to retrieve certificate status.");
-  }
   const domain = existing.Item?.customDomain;
   if (!domain) throw new Error("No custom domain set");
 
+  const verifyResponse = await vercel.projects.verifyProjectDomain({
+    idOrName: PROJECT_NAME,
+    domain,
+  });
+  const configResponse = await vercel.domains.getDomainConfig({
+    domain,
+  });
+
   // ✅ If all checks pass, update project status in DB
-  if (status === "ISSUED") {
+  if (verifyResponse.verified && !configResponse.misconfigured) {
     await docClient.send(
       new UpdateCommand({
         TableName: TABLE_NAME,
         Key: { userId: user.userId, id },
-        UpdateExpression: "SET #verificationStatus = :status",
+        UpdateExpression: "SET #domainVerified = :status",
         ExpressionAttributeNames: {
-          "#verificationStatus": "verificationStatus",
+          "#domainVerified": "domainVerified",
         },
         ExpressionAttributeValues: {
-          ":status": verified,
+          ":status": true,
         },
       })
     );
-    return verified;
+    return true;
   } else {
-    return status;
+    return false;
   }
 }
 
@@ -221,18 +195,13 @@ export async function removeCustomDomain(id: string, token: StringOrUnd) {
   );
 
   if (!Item) throw new Error("Project not found");
+  if (!Item.customDomain)
+    throw new Error("You have no custom domain associated with the project");
 
-  const certArn = Item.certificateArn;
-
-  // Attempt to delete ACM certificate if exists
-  if (certArn) {
-    try {
-      await acm.send(new DeleteCertificateCommand({ CertificateArn: certArn }));
-    } catch (err) {
-      console.error("Failed to delete ACM certificate:", err);
-      // Optional: allow soft failure to still clean up DB
-    }
-  }
+  await vercel.projects.removeProjectDomain({
+    idOrName: PROJECT_NAME,
+    domain: Item.customDomain,
+  });
 
   // Remove domain fields from DB
   await docClient.send(
@@ -240,12 +209,11 @@ export async function removeCustomDomain(id: string, token: StringOrUnd) {
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },
       UpdateExpression: `
-        REMOVE #customDomain, #certificateArn, #verificationStatus
+        REMOVE #customDomain, #domainVerified
       `,
       ExpressionAttributeNames: {
         "#customDomain": "customDomain",
-        "#certificateArn": "certificateArn",
-        "#verificationStatus": "verificationStatus",
+        "#domainVerified": "domainVerified",
       },
     })
   );

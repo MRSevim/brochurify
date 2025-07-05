@@ -11,9 +11,14 @@ import {
 } from "@/utils/serverActions/projectActions";
 import MiniLoadingSvg from "../MiniLoadingSvg";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { setPrefix, setPublished } from "@/redux/slices/editorSlice";
+import {
+  setDomainVerified,
+  setPrefix,
+  setPublished,
+} from "@/redux/slices/editorSlice";
 import { addNumberWithDash, slugify } from "@/utils/Helpers";
 import ButtonWithLoading from "../ButtonWithLoading";
+import Link from "next/link";
 
 const PublishPopup = () => {
   const [, setPublishPopup] = usePublishPopup();
@@ -28,9 +33,7 @@ const PublishPopup = () => {
   const editor = useAppSelector((state) => state.editor);
   const prefix = useAppSelector((state) => state.editor.prefix);
   const customDomain = useAppSelector((state) => state.editor.customDomain);
-  const verificationStatus = useAppSelector(
-    (state) => state.editor.verificationStatus
-  );
+  const domainVerified = useAppSelector((state) => state.editor.domainVerified);
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!name) return;
@@ -87,6 +90,7 @@ const PublishPopup = () => {
             }
           } else {
             toast.success("Your project is successfully unpublished");
+            dispatch(setDomainVerified(undefined));
           }
           dispatch(setPublished(!published));
           setPublishPopup(false);
@@ -160,12 +164,21 @@ const PublishPopup = () => {
               <ul className="font-bold list-none">
                 {prefix && (
                   <li>
-                    {prefix}
-                    {appConfig.DOMAIN_EXTENSION}
+                    <Link
+                      href={"https://" + prefix + appConfig.DOMAIN_EXTENSION}
+                      target="_blank"
+                    >
+                      {prefix}
+                      {appConfig.DOMAIN_EXTENSION}
+                    </Link>
                   </li>
                 )}
-                {customDomain && verificationStatus === appConfig.VERIFIED && (
-                  <li>{customDomain}</li>
+                {customDomain && domainVerified && (
+                  <li>
+                    <Link href={"https://" + customDomain} target="_blank">
+                      {customDomain}
+                    </Link>
+                  </li>
                 )}
               </ul>
             </div>

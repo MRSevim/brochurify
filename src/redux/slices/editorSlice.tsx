@@ -64,11 +64,8 @@ export const editorSlice = createSlice({
     setPrefix: (state, action: PayloadAction<string>) => {
       state.prefix = action.payload;
     },
-    setVerificationStatus: (
-      state,
-      action: PayloadAction<string | undefined>
-    ) => {
-      state.verificationStatus = action.payload;
+    setDomainVerified: (state, action: PayloadAction<boolean | undefined>) => {
+      state.domainVerified = action.payload;
     },
     updateLayout: (state, action: PayloadAction<Layout[]>) => {
       state.layout = action.payload;
@@ -82,7 +79,7 @@ export const editorSlice = createSlice({
       state.variables = action.payload.variables;
       state.type = action.payload.type;
       state.history = [{ current: true, structure: { layout, pageWise } }];
-      state.verificationStatus = action.payload.verificationStatus;
+      state.domainVerified = action.payload.domainVerified;
       state.published = action.payload.published;
       state.customDomain = action.payload.customDomain;
       state.prefix = action.payload.prefix;
@@ -426,7 +423,7 @@ export const editorSlice = createSlice({
 });
 
 export const {
-  setVerificationStatus,
+  setDomainVerified,
   setPrefix,
   setPublished,
   setActive,

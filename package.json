@@ -49,6 +49,7 @@
     "sanitize-html": "^2.14.0",
     "styled-components": "^6.1.15",
     "tiptap-extension-font-size": "^1.2.0",
+    "tldts": "^7.0.10",
     "uuid": "^11.0.5"
   },
   "devDependencies": {

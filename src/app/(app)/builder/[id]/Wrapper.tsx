@@ -18,8 +18,8 @@ const Wrapper = ({
         hydrate({
           type,
           id: project.id,
-          published: project.published === 1,
-          verificationStatus: project.verificationStatus,
+          published: project.published,
+          domainVerified: project.domainVerified,
           customDomain: project.customDomain,
           prefix: project.prefix,
           ...project.editor,

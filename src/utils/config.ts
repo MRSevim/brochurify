@@ -1,7 +1,5 @@
 export const appConfig = {
   MONTHLY_SUB_PRICE: 5,
-  VERIFIED: "VERIFIED",
-  PENDING: "PENDING_VALIDATION",
   DOMAIN_EXTENSION: ".brochurify.app",
   BASE_DOMAIN: "brochurify.app",
   MAX_IMAGE_SIZE_MB: 5,
@@ -9,5 +7,4 @@ export const appConfig = {
   MAX_PROJECT_SIZE_KB: 400,
   FREE_ACC_PROJECT_LIMIT: 3,
   SUB_ACC_PROJECT_LIMIT: 7,
-  AWS_CLOUDFRONT_URL: "d23cxyudk0cypl.cloudfront.net",
 };

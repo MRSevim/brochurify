@@ -4,16 +4,11 @@ import MiniLoadingSvg from "@/components/MiniLoadingSvg";
 import TextInput from "@/components/TextInput";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { setCustomDomain, setDomainVerified } from "@/redux/slices/editorSlice";
 import {
-  setCustomDomain,
-  setVerificationStatus,
-} from "@/redux/slices/editorSlice";
-import { appConfig } from "@/utils/config";
-import {
-  checkCertificateStatusAction,
-  getCertificateValidationRecordAction,
+  checkVerificationStatusAction,
+  requestCustomDomainAction,
   removeCustomDomainAction,
-  requestCertificateAction,
 } from "@/utils/serverActions/customDomainActions";
 import { useState } from "react";
 
@@ -24,15 +19,15 @@ const CustomDomain = () => {
   const [removeLoading, setRemoveLoading] = useState(false);
   const [records, setRecords] = useState<
     {
-      name: string;
+      domain: string;
       type: string;
       value: string;
-      usage: string;
+      reason: string;
     }[]
   >([]);
   const [error, setError] = useState("");
   const id = useAppSelector((state) => state.editor.id);
-  const status = useAppSelector((state) => state.editor.verificationStatus);
+  const status = useAppSelector((state) => state.editor.domainVerified);
   const dispatch = useAppDispatch();
 
   const handleRequest = async () => {
@@ -41,20 +36,13 @@ const CustomDomain = () => {
     setError("");
     setRecords([]);
 
-    const requestError = await requestCertificateAction(id, domain);
-    if (requestError) {
-      setRequestLoading(false);
-      return setError(requestError);
-    }
-
-    const { records, error } = await getCertificateValidationRecordAction(id);
+    const { records, error } = await requestCustomDomainAction(id, domain);
     if (error) {
       setError(error);
     } else if (records) {
       setRecords(records);
-      dispatch(setVerificationStatus(appConfig.PENDING));
+      dispatch(setDomainVerified(false));
     }
-
     setRequestLoading(false);
   };
 
@@ -62,7 +50,7 @@ const CustomDomain = () => {
     <WrapperWithBottomLine>
       <TextInput
         title="Custom Domain"
-        desc="Enter your custom domain here and request records to put to your DNS provider. If your provider does not support ANAME/ALIAS records for apex domains (eg. mydomain.com), use a subdomain (eg. www.mydomain.com, app.mydomain.com) here and redirect your apex domain to your subdomain"
+        desc="Enter your custom domain here and request records to put to your DNS provider."
         value={domain}
         onChange={(e) => dispatch(setCustomDomain(e.target.value))}
       />
@@ -83,7 +71,7 @@ const CustomDomain = () => {
             if (error) {
               setError(error);
             } else {
-              dispatch(setVerificationStatus(undefined));
+              dispatch(setDomainVerified(undefined));
               dispatch(setCustomDomain(""));
               setRecords([]);
             }
@@ -94,12 +82,12 @@ const CustomDomain = () => {
           text="Remove Domain"
         />
       </div>
-      {status && (
+      {status !== undefined && (
         <div className="flex justify-center items-center m-2 gap-4">
           <p className="text-sm text-center font-medium">
             <>
-              Verification Status: {status}
-              {status === appConfig.VERIFIED && (
+              Verification Status: {status ? "Verified" : "Pending"}
+              {status === true && (
                 <Icon
                   type="check-circle-fill"
                   size="20px"
@@ -107,9 +95,17 @@ const CustomDomain = () => {
                   className="ms-2 text-positiveGreen"
                 />
               )}
+              {status === false && (
+                <Icon
+                  type="x-lg"
+                  size="20px"
+                  title="Checkbox"
+                  className="ms-2 text-deleteRed"
+                />
+              )}
             </>
           </p>
-          {status !== appConfig.VERIFIED && (
+          {status === false && (
             <>
               {refreshLoading ? (
                 <MiniLoadingSvg />
@@ -124,11 +120,11 @@ const CustomDomain = () => {
                     setError("");
 
                     const { status, error } =
-                      await checkCertificateStatusAction(id);
+                      await checkVerificationStatusAction(id);
                     if (error) {
                       setError(error);
                     } else if (status) {
-                      dispatch(setVerificationStatus(status));
+                      dispatch(setDomainVerified(status));
                     }
 
                     setRefreshLoading(false);
@@ -155,7 +151,7 @@ const CustomDomain = () => {
             {records.map((r, i) => (
               <li key={i} className="p-3 rounded bg-muted border border-border">
                 <p className="mb-1 text-xs text-muted-foreground">
-                  <strong>Usage:</strong> {r.usage}
+                  <strong>Reason:</strong> {r.reason}
                 </p>
                 <div className="flex items-start justify-between gap-2">
                   <span>
@@ -164,11 +160,11 @@ const CustomDomain = () => {
                 </div>
                 <div className="flex items-start justify-between gap-2">
                   <span className="break-all">
-                    <strong>Name:</strong> {r.name}
+                    <strong>Name:</strong> {r.domain}
                   </span>
                   <button
                     className="text-xs text-blue-500 hover:underline"
-                    onClick={() => copyToClipboard(r.name)}
+                    onClick={() => copyToClipboard(r.domain)}
                   >
                     Copy
                   </button>

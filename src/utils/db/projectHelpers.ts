@@ -14,9 +14,10 @@ import { EditorState, StringOrUnd } from "../Types";
 import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
 import { snapshotQueue } from "../lib/redis";
-import { deleteFromS3, uploadToS3 } from "../s3/helpers";
+import { deleteFromS3 } from "../s3/helpers";
 import { appConfig } from "../config";
 import { addNumberWithDash } from "../Helpers";
+import { vercel } from "./customDomainHelpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
@@ -288,8 +289,6 @@ export async function updateProject(
   if (updates.publish) {
     const { prefix, published, editor } = updates.publish;
 
-    const key = `${user.userId}/published/${id}.html`;
-
     if (prefix !== undefined && published) {
       //handle initial publish
       const reserved = ["www", "admin", "app"];
@@ -307,31 +306,28 @@ export async function updateProject(
       );
     } else if (prefix === undefined && !published) {
       //handle unpublish
-      removeExpressions.push("#prefix");
+      removeExpressions.push("#prefix, #customDomain, #domainVerified");
       expressionAttributeNames["#prefix"] = "prefix";
-      await deleteFromS3(key);
+      expressionAttributeNames["#customDomain"] = "customDomain";
+      expressionAttributeNames["#domainVerified"] = "domainVerified";
+      const customDomain = existingProject.Item.customDomain;
+      if (customDomain) {
+        await vercel.projects.removeProjectDomain({
+          idOrName: "brochurify",
+          domain: customDomain,
+        });
+      }
     }
 
     if (published && editor) {
       setExpressions.push("#editor = :editor");
       expressionAttributeNames["#editor"] = "editor";
       expressionAttributeValues[":editor"] = stripEditorFields(editor);
-      const html = generateHTML(
-        editor.layout,
-        editor.pageWise,
-        editor.variables
-      );
-      const buffer = new TextEncoder().encode(html);
-      await uploadToS3({
-        buffer,
-        key,
-        contentType: "text/html",
-      });
     }
 
     setExpressions.push("#published = :published");
     expressionAttributeNames["#published"] = "published";
-    expressionAttributeValues[":published"] = published ? 1 : 0;
+    expressionAttributeValues[":published"] = published;
   }
   // Add updatedAt field
   setExpressions.push("#updatedAt = :updatedAt");
