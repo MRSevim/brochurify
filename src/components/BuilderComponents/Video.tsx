@@ -11,7 +11,7 @@ const Video = ({ id, style, src, ref, anchorId }: PropsWithId) => {
       key={src}
       id={anchorId}
       controls
-      styles={style}
+      $styles={style}
       ref={ref as unknown as RefObject<HTMLVideoElement>}
     >
       <source src={src || undefined}></source>

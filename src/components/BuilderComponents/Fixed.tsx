@@ -9,7 +9,7 @@ const Fixed = ({ id, children, style, ref, anchorId }: PropsWithId) => {
     <styledElements.styledFixed
       className={active}
       id={anchorId}
-      styles={style}
+      $styles={style}
       ref={ref as unknown as RefObject<HTMLDivElement>}
     >
       {children}

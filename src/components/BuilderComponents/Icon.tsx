@@ -10,7 +10,7 @@ const Container = ({ id, style, iconType, ref, anchorId }: PropsWithId) => {
     <styledElements.styledI
       className={active + ` bi bi-${iconType}`}
       id={anchorId}
-      styles={style}
+      $styles={style}
       ref={ref as unknown as RefObject<HTMLLIElement>}
     />
   );

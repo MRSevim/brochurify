@@ -24,7 +24,6 @@ const SeoInner = () => {
       <WebsiteTitle />
       <WebsiteDescription />
       <WebsiteKeywords />
-      <CanonicalUrl />
       <WebsiteImage />
     </>
   );
@@ -85,28 +84,6 @@ const WebsiteKeywords = () => {
       <TextareaInput
         rows={3}
         title="Website keywords (Separated by commas)"
-        value={variable || ""}
-        onChange={(e) =>
-          dispatch(
-            changeElementStyle({
-              types: [type],
-              newValue: e.target.value,
-            })
-          )
-        }
-      />
-    </WrapperWithBottomLine>
-  );
-};
-const CanonicalUrl = () => {
-  const type = "canonical";
-  const variable = getSetting(useAppSelector, type);
-  const dispatch = useAppDispatch();
-
-  return (
-    <WrapperWithBottomLine>
-      <LinkInput
-        title="Website's main url (canonical)"
         value={variable || ""}
         onChange={(e) =>
           dispatch(

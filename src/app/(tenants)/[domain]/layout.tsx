@@ -1,7 +1,19 @@
 import { ReactNode } from "react";
 import { appConfig } from "@/utils/config";
 import { getSite } from "@/utils/serverActions/siteActions";
-import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { hasType } from "@/utils/EditorHelpers";
+import Script from "next/script";
+import {
+  fullStylesWithIdsGenerator,
+  styleGenerator,
+  variablesGenerator,
+} from "@/utils/StyleGenerators";
+import { getCssReset } from "@/utils/StyleGenerators";
+import { Layout, PropsWithId } from "@/utils/Types";
+import Effects from "./Effects";
+import { mapOverFonts } from "@/utils/GoogleFonts";
+import { getUsedFonts } from "@/utils/getUsedFonts";
 
 export async function generateMetadata({
   params,
@@ -14,15 +26,7 @@ export async function generateMetadata({
     return null;
   }
   const pageWise = site.editor.pageWise;
-  const {
-    title,
-    description,
-    keywords,
-    image,
-    iconUrl,
-    googleAnalyticsTag,
-    hideOverFlowBefore,
-  } = pageWise;
+  const { title, description, keywords, image, iconUrl } = pageWise;
 
   const url = `https://${site.customDomain || site.prefix + appConfig.DOMAIN_EXTENSION}`;
 
@@ -51,13 +55,185 @@ export async function generateMetadata({
 }
 
 export default async function SiteLayout({
-  children,
+  params,
 }: {
-  children: ReactNode;
+  params: Promise<{ domain: string }>;
 }) {
+  const { domain } = await params;
+
+  const site = await getSite(domain);
+
+  if (!site || !site.editor) {
+    return notFound();
+  }
+  const pageWise = site.editor.pageWise;
+  const layout = site.editor.layout;
+  const variables = site.editor.variables;
+  const {
+    title,
+    description,
+    keywords,
+    canonical,
+    image,
+    iconUrl,
+    hideOverFlowBefore,
+    googleAnalyticsTag,
+    ...rest
+  } = pageWise;
+  const fullstylesWithIds =
+    fullStylesWithIdsGenerator(layout, false) +
+    fullStylesWithIdsGenerator(layout, true);
+  const variablesString = variablesGenerator(variables);
+  const styles = (
+    <style>{`
+        ${getCssReset(pageWise)}
+          body {
+          ${variablesString}
+          ${styleGenerator(rest)}
+          }
+          html {
+            height:100%;
+            width:100%
+          }  
+          ${fullstylesWithIds}  
+        `}</style>
+  );
+
+  const googleAnalyticsScript = googleAnalyticsTag ? (
+    <>
+      <Script
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsTag}`}
+      ></Script>
+      <Script>
+        {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${googleAnalyticsTag}');
+       `}
+      </Script>
+    </>
+  ) : (
+    <></>
+  );
+  const fonts = getUsedFonts(layout, pageWise);
+  const fontLinks = mapOverFonts(fonts, true);
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html>
+      <head>
+        {hasType(layout, "icon") && (
+          <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          />
+        )}
+        {googleAnalyticsScript}
+        {styles}
+        {fontLinks}
+      </head>
+
+      <body>
+        <Effects hideOverFlowBefore={hideOverFlowBefore} />
+        {layout.map((item: Layout) => {
+          return <RenderedComponent key={item.id} item={item} />;
+        })}
+      </body>
     </html>
   );
 }
+
+const RenderedComponent = ({ item }: { item: Layout }) => {
+  const { type } = item;
+  const isFixed = type === "fixed";
+  const Component = componentList[item.type as keyof typeof componentList];
+  const id = item.id;
+
+  return (
+    <div
+      className={`block ${isFixed ? "" : "relative"}`}
+      id={`idwrapper${item.id}`}
+    >
+      <div
+        className="flex wAndHFull center"
+        {...(item.props.anchorId ? { id: `user-${item.props.anchorId}` } : {})}
+      >
+        <Component id={"id" + id} {...item.props}>
+          {item.props.child?.map((childItem) => (
+            <RenderedComponent key={childItem.id} item={childItem} />
+          ))}
+        </Component>
+      </div>
+    </div>
+  );
+};
+
+export const componentList = {
+  button: (props: PropsWithId) => (
+    <a
+      id={props.id}
+      href={props.href}
+      target={props.newTab ? "_blank" : "_self"}
+      rel="noopener noreferrer"
+      className="element wAndHFull"
+    >
+      {props.children}
+    </a>
+  ),
+  column: (props: PropsWithId) => (
+    <div id={props.id} className="element wAndHFull">
+      {props.children}
+    </div>
+  ),
+  text: (props: PropsWithId) => (
+    <div
+      id={props.id}
+      className="element wAndHFull"
+      dangerouslySetInnerHTML={{ __html: props.text || "" }}
+    ></div>
+  ),
+  row: (props: PropsWithId) => (
+    <div className="element wAndHFull" id={props.id}>
+      {props.children}
+    </div>
+  ),
+  image: (props: PropsWithId) => (
+    <img
+      className="element wAndHFull"
+      id={props.id}
+      src={props.src || undefined}
+      alt={props.alt || ""}
+    />
+  ),
+  audio: (props: PropsWithId) => (
+    <audio className="element wAndHFull" id={props.id} controls>
+      <source src={props.src || undefined}></source>
+      Your browser does not support the audio tag.
+    </audio>
+  ),
+  video: (props: PropsWithId) => (
+    <video className="element wAndHFull" id={props.id} controls>
+      <source src={props.src || undefined}></source>
+      Your browser does not support the video tag.
+    </video>
+  ),
+  container: (props: PropsWithId) => (
+    <div className="element wAndHFull" id={props.id}>
+      {props.children}
+    </div>
+  ),
+  divider: (props: PropsWithId) => (
+    <hr className="element wAndHFull" id={props.id} />
+  ),
+  icon: (props: PropsWithId) => (
+    <i
+      id={props.id}
+      className={`element wAndHFull ${props.iconType ? `bi bi-${props.iconType}` : ""}`}
+    />
+  ),
+  fixed: (props: PropsWithId) => (
+    <div className="element wAndHFull" id={props.id}>
+      {props.children}
+    </div>
+  ),
+};

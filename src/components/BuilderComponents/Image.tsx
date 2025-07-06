@@ -12,7 +12,7 @@ const Image = ({ id, style, src, alt, ref, anchorId }: PropsWithId) => {
       id={anchorId}
       src={src || undefined}
       alt={alt}
-      styles={style}
+      $styles={style}
       ref={ref as unknown as RefObject<HTMLImageElement>}
     />
   );

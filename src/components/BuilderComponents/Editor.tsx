@@ -106,8 +106,8 @@ const EditorInner = ({ children }: { children: React.ReactNode }) => {
   useKeyPresses();
   return (
     <styledElements.styledEditor
-      styles={pageWise}
-      variables={variables}
+      $styles={pageWise}
+      $variables={variables}
       className="editor relative"
       key={globalTrigger}
     >

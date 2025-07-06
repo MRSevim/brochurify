@@ -4,7 +4,7 @@ import {
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
 import { makeStore, AppStore } from "@/redux/store";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Provider } from "react-redux";
 import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
@@ -15,9 +15,10 @@ import { Provider as UserProvider } from "@/contexts/UserContext";
 import { Provider as SubscribePopupProvider } from "@/contexts/SubscribePopupContext";
 import { EditorRefProvider } from "@/contexts/EditorRefContext";
 import { Provider as PublishPopupProvider } from "@/contexts/PublishPopupContext";
-import { StyleSheetManager } from "styled-components";
+import { ServerStyleSheet, StyleSheetManager } from "styled-components";
 import { User } from "./Types";
 import { useSyncUser } from "./hooks/useSyncUser";
+import { useServerInsertedHTML } from "next/navigation";
 
 export default function ClientWrapper({
   children,
@@ -29,35 +30,29 @@ export default function ClientWrapper({
   UserFromCookie: User;
 }) {
   return (
-    <StyleSheetManager
-      shouldForwardProp={(prop) =>
-        prop !== "styles" && prop !== "variables" && prop !== "pageWise"
-      }
-    >
-      <LayoutToggleContext.Provider>
-        <SettingsToggleContext.Provider>
-          <PublishPopupProvider>
-            <LightModeProvider lightModeFromCookie={lightMode}>
-              <ViewModeProvider>
-                <PreviewProvider>
-                  <ZoomProvider>
-                    <UserProvider UserFromCookie={UserFromCookie}>
-                      <SubscribePopupProvider>
-                        <AddSectionToggleProvider>
-                          <EditorRefProvider>
-                            <InnerWrapper>{children}</InnerWrapper>
-                          </EditorRefProvider>
-                        </AddSectionToggleProvider>
-                      </SubscribePopupProvider>
-                    </UserProvider>
-                  </ZoomProvider>
-                </PreviewProvider>
-              </ViewModeProvider>
-            </LightModeProvider>
-          </PublishPopupProvider>
-        </SettingsToggleContext.Provider>
-      </LayoutToggleContext.Provider>
-    </StyleSheetManager>
+    <LayoutToggleContext.Provider>
+      <SettingsToggleContext.Provider>
+        <PublishPopupProvider>
+          <LightModeProvider lightModeFromCookie={lightMode}>
+            <ViewModeProvider>
+              <PreviewProvider>
+                <ZoomProvider>
+                  <UserProvider UserFromCookie={UserFromCookie}>
+                    <SubscribePopupProvider>
+                      <AddSectionToggleProvider>
+                        <EditorRefProvider>
+                          <InnerWrapper>{children}</InnerWrapper>
+                        </EditorRefProvider>
+                      </AddSectionToggleProvider>
+                    </SubscribePopupProvider>
+                  </UserProvider>
+                </ZoomProvider>
+              </PreviewProvider>
+            </ViewModeProvider>
+          </LightModeProvider>
+        </PublishPopupProvider>
+      </SettingsToggleContext.Provider>
+    </LayoutToggleContext.Provider>
   );
 }
 
@@ -71,3 +66,27 @@ const InnerWrapper = ({ children }: { children: React.ReactNode }) => {
   useSyncUser();
   return <Provider store={storeRef.current}>{children}</Provider>;
 };
+
+export function StyledComponentsRegistry({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // Only create stylesheet once with lazy initial state
+  // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
+  const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
+
+  useServerInsertedHTML(() => {
+    const styles = styledComponentsStyleSheet.getStyleElement();
+    styledComponentsStyleSheet.instance.clearTag();
+    return <>{styles}</>;
+  });
+
+  if (typeof window !== "undefined") return <>{children}</>;
+
+  return (
+    <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
+      {children}
+    </StyleSheetManager>
+  );
+}

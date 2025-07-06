@@ -1,9 +1,9 @@
 import { hasType } from "./EditorHelpers";
+import { getUsedFonts } from "./getUsedFonts";
 import { mapOverFonts } from "./GoogleFonts";
-import { getUsedFontsFromHTML } from "./Helpers";
 import {
   fullStylesWithIdsGenerator,
-  getStyleResets,
+  getCssReset,
   styleGenerator,
   variablesGenerator,
 } from "./StyleGenerators";
@@ -123,10 +123,13 @@ export const generateHTML = (
       }  
       ${fullstylesWithIds}  
     </style>`;
+  const fonts = getUsedFonts(layout, pageWise);
+  const fontLinks = mapOverFonts(fonts);
 
-  const tempHTML = `<!DOCTYPE html>
+  const finalHTML = `<!DOCTYPE html>
       <html lang="en">
       <head>
+        ${fontLinks}
       ${baseHTMLHead}
       ${observerScript}
       ${overflowControlScript}
@@ -134,26 +137,9 @@ export const generateHTML = (
       ${additionalStyles}
       </head>
       <body>
-      ${renderedBody}
+      ${updateInternalLinks(renderedBody)}
       </body>
       </html>`;
-
-  const fonts = getUsedFontsFromHTML(tempHTML);
-  const fontLinks = mapOverFonts(fonts);
-  const finalHTML = `<!DOCTYPE html>
-  <html lang="en">
-  <head>
-  ${fontLinks}
-  ${baseHTMLHead}
-  ${observerScript}
-  ${overflowControlScript}
-  ${googleAnalyticsScript}
-  ${additionalStyles}
-  </head>
-  <body>
-  ${updateInternalLinks(renderedBody)}
-  </body>
-  </html>`;
 
   return beautifyHtml(finalHTML, {
     indent_size: 2,
@@ -164,61 +150,6 @@ export const generateHTML = (
     inline: [], // prevents collapsing inline tags like <span>, <a>, etc.
     content_unformatted: [], // don't mess with inline content
   });
-};
-
-const getCssReset = (pageWise: PageWise) => {
-  return `*,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    border: 0 solid;
-  }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-size: inherit;
-    font-weight: inherit;
-  }
-  button {
-    cursor: pointer;
-    color: inherit;
-    font-family: inherit;
-    font-size: inherit;
-    background-color: inherit;
-  }
-  a {
-    color: inherit;
-    text-decoration: inherit;
-  }
-  i {
-    cursor:pointer
-  }
-  .flex {
-    display:flex;
-  }  
-  .block {
-    display:block;
-  }
-  .wAndHFull {
-    width:100%;
-    height:100%;
-  }   
-  .relative {
-    position:relative
-  }  
-  .center {
-  justify-content:center;
-  align-items:center;
-  }  
-${getStyleResets(pageWise)}
-  `;
 };
 
 // Convert layout array to HTML

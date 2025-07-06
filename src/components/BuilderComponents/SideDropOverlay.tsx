@@ -9,7 +9,6 @@ import { handleDrop, setAddLocation } from "@/redux/slices/editorSlice";
 import { Layout, Where } from "@/utils/Types";
 import { DragEvent, useRef, useState } from "react";
 import { styledElements } from "@/utils/StyledComponents";
-import usePositionListener from "@/utils/hooks/usePositionListener";
 import { useEditorRef } from "@/contexts/EditorRefContext";
 import EditorActions from "./EditorActions";
 
@@ -63,8 +62,8 @@ export const SideDropOverlay = ({
   return (
     <styledElements.styledComponentWrapperDiv
       className={"block " + (notFixed && "relative")}
-      styles={item.props.style}
-      type={item.type}
+      $styles={item.props.style}
+      $type={item.type}
       ref={ref}
     >
       {notFixed && (

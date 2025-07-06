@@ -3,7 +3,7 @@ import "./globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Roboto_Mono } from "next/font/google";
 import Header from "@/components/Header/Header";
-import ClientWrapper from "@/utils/ClientWrapper";
+import ClientWrapper, { StyledComponentsRegistry } from "@/utils/ClientWrapper";
 import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";
 import Script from "next/script";
@@ -67,17 +67,21 @@ export default async function AppLayout({
           true
         )}
       </head>
-      <ClientWrapper lightMode={lightMode} UserFromCookie={userFromCookie}>
-        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID as string}>
-          <body
-            className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
+      <StyledComponentsRegistry>
+        <ClientWrapper lightMode={lightMode} UserFromCookie={userFromCookie}>
+          <GoogleOAuthProvider
+            clientId={process.env.GOOGLE_CLIENT_ID as string}
           >
-            <Header />
-            <ToastContainer />
-            {children}
-          </body>
-        </GoogleOAuthProvider>
-      </ClientWrapper>
+            <body
+              className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
+            >
+              <Header />
+              <ToastContainer />
+              {children}
+            </body>
+          </GoogleOAuthProvider>
+        </ClientWrapper>
+      </StyledComponentsRegistry>
     </html>
   );
 }

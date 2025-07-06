@@ -208,3 +208,57 @@ export const getStyleResets = (pageWise: PageWise) => {
     padding: 5px;
   }`;
 };
+export const getCssReset = (pageWise: PageWise) => {
+  return `*,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: 0 solid;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  button {
+    cursor: pointer;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    background-color: inherit;
+  }
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+  i {
+    cursor:pointer
+  }
+  .flex {
+    display:flex;
+  }  
+  .block {
+    display:block;
+  }
+  .wAndHFull {
+    width:100%;
+    height:100%;
+  }   
+  .relative {
+    position:relative
+  }  
+  .center {
+  justify-content:center;
+  align-items:center;
+  }  
+${getStyleResets(pageWise)}
+  `;
+};

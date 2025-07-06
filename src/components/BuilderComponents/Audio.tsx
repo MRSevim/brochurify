@@ -8,7 +8,7 @@ const Audio = ({ id, style, src, ref, anchorId }: PropsWithId) => {
   return (
     <styledElements.styledAudio
       className={active}
-      styles={style}
+      $styles={style}
       id={anchorId}
       key={src}
       ref={ref as unknown as RefObject<HTMLAudioElement>}

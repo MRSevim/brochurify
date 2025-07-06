@@ -29,8 +29,8 @@ const RightPanelInner = () => {
 
   return (
     <styledElements.styledWrapperDivWithVariables
-      variables={variables}
-      pageWise={pageWise}
+      $variables={variables}
+      $pageWise={pageWise}
       className="overflow-y-auto p-2 min-h-full gutter-stable"
     >
       {draggedItem ? (

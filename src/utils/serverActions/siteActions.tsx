@@ -15,7 +15,7 @@ export const getSite = async (domain: string) => {
 
       const project = await getProjectByPrefix(prefix);
 
-      if (!project || project.published) {
+      if (!project || !project.published) {
         console.log("🚫 No published project found for prefix:", prefix);
         return;
       }

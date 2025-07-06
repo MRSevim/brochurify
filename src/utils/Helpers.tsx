@@ -14,7 +14,6 @@ import { findElementById } from "./EditorHelpers";
 import { UseSelector } from "react-redux";
 import { selectVariables } from "@/redux/hooks";
 import { googleFontOptions } from "./GoogleFonts";
-import * as cheerio from "cheerio";
 
 export const runIntersectionObserver = (elem: HTMLElement | undefined) => {
   const observer = new IntersectionObserver((entries, observer) => {
@@ -545,45 +544,6 @@ export const defaultInheritFontOptions = [
   }),
   ...googleFontOptions,
 ];
-
-export function getUsedFontsFromHTML(html: string): string[] {
-  const fontSet = new Set<string>();
-  const $ = cheerio.load(html);
-
-  // Matches only the first font name (quoted or unquoted)
-  const fontRegex = /font-family\s*:\s*(['"][^'"]+['"]|[^,;]+)/gi;
-
-  const validFontTitles = new Set(googleFontOptions.map((f) => f.title));
-
-  const cleanFont = (fontValue: string) =>
-    fontValue.trim().replace(/^['"]|['"]$/g, ""); // remove surrounding quotes
-
-  // 1. Check <style> tags
-  $("style").each((_, style) => {
-    const css = $(style).text();
-    let match;
-    while ((match = fontRegex.exec(css)) !== null) {
-      const font = cleanFont(match[1]);
-      if (validFontTitles.has(font)) {
-        fontSet.add(font);
-      }
-    }
-  });
-
-  // 2. Check inline style attributes
-  $("[style]").each((_, el) => {
-    const styleAttr = $(el).attr("style") || "";
-    let match;
-    while ((match = fontRegex.exec(styleAttr)) !== null) {
-      const font = cleanFont(match[1]);
-      if (validFontTitles.has(font)) {
-        fontSet.add(font);
-      }
-    }
-  });
-
-  return Array.from(fontSet);
-}
 
 export const addNumberWithDash = (slug: string, length: number) =>
   slug + (length ? `-${length}` : "");

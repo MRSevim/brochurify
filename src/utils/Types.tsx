@@ -86,7 +86,6 @@ export type PageWise = {
   title: string;
   description: string;
   keywords: string;
-  canonical: string;
   image: string;
   color: string;
   "background-color": string;

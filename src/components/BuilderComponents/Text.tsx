@@ -11,7 +11,7 @@ const Text = ({ id, text, style, ref, anchorId }: PropsWithId) => {
       ref={ref as unknown as RefObject<HTMLDivElement>}
       className={active}
       id={anchorId}
-      styles={style}
+      $styles={style}
       dangerouslySetInnerHTML={{ __html: text || "" }}
     ></styledElements.styledDiv>
   );

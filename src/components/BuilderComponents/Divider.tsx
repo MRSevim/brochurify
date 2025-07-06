@@ -10,7 +10,7 @@ const Container = ({ id, style, ref, anchorId }: PropsWithId) => {
     <styledElements.styledHr
       className={active}
       id={anchorId}
-      styles={style}
+      $styles={style}
       ref={ref as unknown as RefObject<HTMLHRElement>}
     />
   );
