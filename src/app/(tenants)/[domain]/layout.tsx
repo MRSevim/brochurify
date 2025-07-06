@@ -168,7 +168,7 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
   );
 };
 
-export const componentList = {
+const componentList = {
   button: (props: PropsWithId) => (
     <a
       id={props.id}
