@@ -53,12 +53,6 @@ export async function createOrUpdateUser({
   return userItem;
 }
 
-export async function getUserProfile(token: StringOrUnd) {
-  const user = await protect(token);
-
-  return user;
-}
-
 export async function deleteUser(token: StringOrUnd) {
   const user = await protect(token);
 
