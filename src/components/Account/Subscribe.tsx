@@ -1,17 +1,28 @@
 import { getLemonSqueezyPortalLink } from "@/utils/serverActions/helpers";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-const Subscribe = async ({ user }: { user: Record<string, any> }) => {
+const Subscribe = ({ user }: { user: Record<string, any> }) => {
   const isSubscribed = user.roles.includes("subscriber");
-  let link;
-  if (isSubscribed) {
-    const portalLink = await getLemonSqueezyPortalLink(user.subscriptionId);
-    link = portalLink;
-  } else {
-    link =
-      "https://brochurify.lemonsqueezy.com/buy/c506f80c-b610-4127-ad25-60911d700002?checkout[custom][user_id]=" +
-      user.userId;
-  }
+  const [link, setLink] = useState("");
+
+  useEffect(() => {
+    const get = async () => {
+      if (isSubscribed) {
+        const portalLink = await getLemonSqueezyPortalLink(user.subscriptionId);
+        if (portalLink) {
+          setLink(portalLink);
+        }
+      } else {
+        setLink(
+          "https://brochurify.lemonsqueezy.com/buy/c506f80c-b610-4127-ad25-60911d700002?checkout[custom][user_id]=" +
+            user.userId
+        );
+      }
+    };
+    get();
+  }, [isSubscribed]);
+
   if (!link) return;
 
   return (

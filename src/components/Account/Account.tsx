@@ -5,7 +5,7 @@ import Subscribe from "./Subscribe";
 import { useUser } from "@/contexts/UserContext";
 import MiniLoadingSvg from "../MiniLoadingSvg";
 
-const Account = async () => {
+const Account = () => {
   const [user] = useUser();
 
   return (
