@@ -300,7 +300,7 @@ export async function updateProject(
 
     if (prefix !== undefined && published) {
       //handle initial publish
-      const reserved = ["www", "admin", "app"];
+      const reserved = ["www", "admin", "app", "send"];
       if (reserved.includes(prefix.toLowerCase())) {
         throw Error(
           `The subdomain "${prefix}" is reserved and cannot be used.`
