@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
     const data = JSON.parse(rawBody);
     const event = data?.meta?.event_name;
-    const userId = data?.data?.attributes?.custom_data?.user_id;
+    const userId = data?.meta?.custom_data?.user_id;
     const lemonsqueezySubscriptionId = data?.data?.id;
 
     if (!event || !lemonsqueezySubscriptionId) {

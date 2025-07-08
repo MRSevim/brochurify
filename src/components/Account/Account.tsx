@@ -1,21 +1,24 @@
-import { notFound } from "next/navigation";
+"use client";
 import DeleteAccount from "./DeleteAccount";
-import { getUserAction } from "@/utils/serverActions/userActions";
 import UserInfo from "./UserInfo";
 import Subscribe from "./Subscribe";
+import { useUser } from "@/contexts/UserContext";
+import MiniLoadingSvg from "../MiniLoadingSvg";
 
 const Account = async () => {
-  const { user } = await getUserAction();
+  const [user] = useUser();
 
-  if (!user) {
-    notFound();
-  }
   return (
     <div className="mt-2">
       {" "}
-      <UserInfo user={user} />
-      <Subscribe user={user} />
-      <DeleteAccount />
+      {!user && <MiniLoadingSvg />}
+      {user && (
+        <>
+          <UserInfo user={user} />
+          <Subscribe user={user} />
+          <DeleteAccount />
+        </>
+      )}
     </div>
   );
 };
