@@ -27,7 +27,7 @@ async function getSiteCached(domain: string) {
   if (!res.ok) return undefined;
   return await res.json();
 }
-export const get = cache(async (domain: string) => {
+const get = cache(async (domain: string) => {
   const site = await getSiteCached(domain);
   return site;
 });
