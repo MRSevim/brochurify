@@ -1,5 +1,4 @@
 import { appConfig } from "@/utils/config";
-import { getSite } from "@/utils/serverActions/siteActions";
 import { notFound } from "next/navigation";
 import { hasType } from "@/utils/EditorHelpers";
 import Script from "next/script";
@@ -44,9 +43,7 @@ export async function generateMetadata({
   }
   const pageWise = site.editor.pageWise;
   const { title, description, keywords, image, iconUrl } = pageWise;
-
   const url = `https://${site.customDomain || site.prefix + appConfig.DOMAIN_EXTENSION}`;
-
   return {
     title,
     description,
