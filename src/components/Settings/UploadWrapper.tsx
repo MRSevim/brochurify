@@ -13,12 +13,18 @@ import DeleteButton from "../DeleteButton";
 import { useUser } from "@/contexts/UserContext";
 import SubscribeIcon from "../SubscribeIcon";
 import { useSubscribePopup } from "@/contexts/SubscribePopupContext";
+import {
+  ALLOWED_ICON_TYPES,
+  ALLOWED_IMAGE_TYPES,
+} from "@/utils/db/imageHelpers";
 
 const UploadWrapper = ({
+  icon = false,
   onEditOrAdd,
   children,
 }: {
   children: React.ReactNode;
+  icon?: boolean;
   onEditOrAdd: (e: string) => void;
 }) => {
   const [popup, setPopup] = useState(false);
@@ -44,6 +50,7 @@ const UploadWrapper = ({
           }}
         >
           <ImageUploader
+            icon={icon}
             selectedImageUrl={selectedImageUrl}
             setSelectedImageUrl={setSelectedImageUrl}
           />
@@ -82,9 +89,11 @@ const Button = ({
 type Images = { url: string; size: number; createdAt: string }[];
 
 const ImageUploader = ({
+  icon,
   selectedImageUrl,
   setSelectedImageUrl,
 }: {
+  icon: boolean;
   selectedImageUrl: string;
   setSelectedImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }) => {
@@ -101,7 +110,21 @@ const ImageUploader = ({
       if (error) {
         toast.error(error);
       } else {
-        setImages(images?.images || []);
+        const allImages = images?.images || [];
+
+        const getExtsFromMimeTypes = (types: string[]) =>
+          types.map((type) => "." + type.split("/")[1]);
+
+        const allowedExts = icon
+          ? getExtsFromMimeTypes(ALLOWED_ICON_TYPES)
+          : getExtsFromMimeTypes(ALLOWED_IMAGE_TYPES);
+
+        const filtered = allImages.filter((img) => {
+          const url = img.url || ""; // assuming each image has a `url` or `name`
+          return allowedExts.some((ext) => url.toLowerCase().endsWith(ext));
+        });
+
+        setImages(filtered);
       }
 
       setFetchLoading(false);
@@ -122,7 +145,7 @@ const ImageUploader = ({
       setUploadLoading(true);
       const fileType = file.type;
 
-      const { newImage, error } = await uploadAction(base64, fileType);
+      const { newImage, error } = await uploadAction(base64, fileType, icon);
       if (error) {
         toast.error(error);
       } else if (newImage) {

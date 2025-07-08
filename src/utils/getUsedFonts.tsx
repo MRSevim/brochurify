@@ -38,7 +38,6 @@ function extractFontsFromTextHTML(html: string, fontSet: Set<string>) {
         const fontFamily = el.style?.fontFamily;
         if (fontFamily) {
           const font = cleanFont(fontFamily);
-          console.log(font);
           if (validFontTitles.has(font)) {
             fontSet.add(font);
           }

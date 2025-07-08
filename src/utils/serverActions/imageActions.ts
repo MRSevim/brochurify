@@ -6,7 +6,11 @@ import {
   uploadUserImageAndUpdateLibrary,
 } from "../db/imageHelpers";
 
-export const uploadAction = async (base64: string, fileType: string) => {
+export const uploadAction = async (
+  base64: string,
+  fileType: string,
+  isIcon: boolean
+) => {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("jwt")?.value || "";
@@ -14,6 +18,7 @@ export const uploadAction = async (base64: string, fileType: string) => {
       token,
       base64,
       fileType,
+      isIcon,
     });
     return { newImage, error: "" };
   } catch (error: any) {

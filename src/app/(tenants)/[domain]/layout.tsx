@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { appConfig } from "@/utils/config";
 import { getSite } from "@/utils/serverActions/siteActions";
 import { notFound } from "next/navigation";
@@ -14,16 +13,34 @@ import { Layout, PropsWithId } from "@/utils/Types";
 import Effects from "./Effects";
 import { mapOverFonts } from "@/utils/GoogleFonts";
 import { getUsedFonts } from "@/utils/getUsedFonts";
+import { cache } from "react";
+import { Metadata } from "next";
+
+async function getSiteCached(domain: string) {
+  const res = await fetch(
+    `${process.env.APP_URL}/api/getSite?domain=${domain}`,
+    {
+      next: { revalidate: 600 }, // 10 minutes
+    }
+  );
+
+  if (!res.ok) return undefined;
+  return await res.json();
+}
+export const get = cache(async (domain: string) => {
+  const site = await getSiteCached(domain);
+  return site;
+});
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ domain: string }>;
-}) {
+}): Promise<Metadata> {
   const { domain } = await params;
-  const site = await getSite(domain);
+  const site = await get(domain);
   if (!site || !site.editor) {
-    return null;
+    return {};
   }
   const pageWise = site.editor.pageWise;
   const { title, description, keywords, image, iconUrl } = pageWise;
@@ -61,7 +78,7 @@ export default async function SiteLayout({
 }) {
   const { domain } = await params;
 
-  const site = await getSite(domain);
+  const site = await get(domain);
 
   if (!site || !site.editor) {
     return notFound();

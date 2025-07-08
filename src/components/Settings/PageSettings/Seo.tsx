@@ -6,6 +6,7 @@ import { changeElementStyle } from "@/redux/slices/editorSlice";
 import TextareaInput from "@/components/TextareaInput";
 import LinkInput from "@/components/LinkInput";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
+import UploadWrapper from "../UploadWrapper";
 
 const Seo = () => {
   return (
@@ -103,20 +104,32 @@ const WebsiteImage = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <WrapperWithBottomLine>
-      <LinkInput
-        title="Website's main image's url"
-        value={variable || ""}
-        onChange={(e) =>
+    <>
+      <p className="mb-2 font-bold">Website's main image</p>
+      <UploadWrapper
+        onEditOrAdd={(newValue) => {
           dispatch(
             changeElementStyle({
               types: [type],
-              newValue: e.target.value,
+              newValue,
             })
-          )
-        }
-      />
-    </WrapperWithBottomLine>
+          );
+        }}
+      >
+        <LinkInput
+          title="Website's main image's url"
+          value={variable || ""}
+          onChange={(e) =>
+            dispatch(
+              changeElementStyle({
+                types: [type],
+                newValue: e.target.value,
+              })
+            )
+          }
+        />
+      </UploadWrapper>
+    </>
   );
 };
 export default Seo;

@@ -7,23 +7,34 @@ import { appConfig } from "../config";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
-const ALLOWED_IMAGE_TYPES = [
+export const ALLOWED_IMAGE_TYPES = [
   "image/apng",
   "image/avif",
   "image/gif",
   "image/jpeg",
+  "image/jpg",
   "image/png",
   "image/svg+xml",
   "image/webp",
+];
+export const ALLOWED_ICON_TYPES = [
+  "image/ico",
+  "image/png",
+  "image/gif",
+  "image/jpeg",
+  "image/jpg",
+  "image/svg",
 ];
 export async function uploadUserImageAndUpdateLibrary({
   token,
   base64,
   fileType,
+  isIcon,
 }: {
   token: string;
   base64: string;
   fileType: string;
+  isIcon: boolean;
 }): Promise<{ url: string; size: number; createdAt: string }> {
   const user = await protect(token);
   checkRole(user, "subscriber");
@@ -35,7 +46,9 @@ export async function uploadUserImageAndUpdateLibrary({
   );
   const sizeInBytes = buffer.length;
 
-  if (!ALLOWED_IMAGE_TYPES.includes(fileType)) {
+  const allowed = isIcon ? ALLOWED_ICON_TYPES : ALLOWED_IMAGE_TYPES;
+
+  if (!allowed.includes(fileType)) {
     throw new Error("Unsupported image type");
   }
 
