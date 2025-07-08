@@ -3,7 +3,7 @@ import docClient from "../db/db";
 
 export const getSite = async (domain: string) => {
   try {
-    console.log("domain: ", domain);
+    console.log("getting tenant site from domain: ", domain);
     if (domain.endsWith(".brochurify.app")) {
       const prefix = domain.split(".")[0].toLowerCase();
       console.log("🔍 Detected subdomain prefix:", prefix);
@@ -39,7 +39,7 @@ export const getSite = async (domain: string) => {
       console.log("👤 User reached:", user?.username);
 
       if (!user?.roles?.includes("subscriber")) {
-        console.log("🚫 User does not have 'subscriber' role.");
+        console.log("🚫 Site cannot be server at the time.");
         return;
       }
       return project;

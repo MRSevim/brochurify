@@ -198,6 +198,13 @@ export async function removeCustomDomain(id: string, token: StringOrUnd) {
   if (!Item.customDomain)
     throw new Error("You have no custom domain associated with the project");
 
+  removeCustomDomainInner(Item, user);
+}
+
+export const removeCustomDomainInner = async (
+  Item: Record<string, any>,
+  user: Record<string, any>
+) => {
   await vercel.projects.removeProjectDomain({
     idOrName: PROJECT_NAME,
     domain: Item.customDomain,
@@ -207,7 +214,7 @@ export async function removeCustomDomain(id: string, token: StringOrUnd) {
   await docClient.send(
     new UpdateCommand({
       TableName: TABLE_NAME,
-      Key: { userId: user.userId, id },
+      Key: { userId: user.userId, id: Item.id },
       UpdateExpression: `
         REMOVE #customDomain, #domainVerified
       `,
@@ -217,4 +224,4 @@ export async function removeCustomDomain(id: string, token: StringOrUnd) {
       },
     })
   );
-}
+};

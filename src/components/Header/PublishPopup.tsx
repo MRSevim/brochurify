@@ -34,6 +34,7 @@ const PublishPopup = () => {
   const prefix = useAppSelector((state) => state.editor.prefix);
   const customDomain = useAppSelector((state) => state.editor.customDomain);
   const domainVerified = useAppSelector((state) => state.editor.domainVerified);
+  const slugified = addNumberWithDash(slugify(name), length);
   useEffect(() => {
     const timeout = setTimeout(() => {
       if (!name) return;
@@ -67,7 +68,7 @@ const PublishPopup = () => {
       loading={publishLoading}
       onEditOrAdd={async () => {
         if (!id) return toast.error("Something went wrong");
-        const slugified = slugify(name);
+
         if (!slugified && !published)
           return toast.error("Prefix cannot be empty");
 
@@ -115,11 +116,11 @@ const PublishPopup = () => {
               <MiniLoadingSvg />
             </div>
           )}
-          {name && !loading && (
+          {slugified && !loading && (
             <p className="text-center">
               Site will go live at{" "}
-              <strong>
-                {addNumberWithDash(slugify(name), length)}
+              <strong className="text-wrap break-all">
+                {slugified}
                 {appConfig.DOMAIN_EXTENSION}
               </strong>
               . You can also set custom domain in addition to this url from

@@ -545,8 +545,15 @@ export const defaultInheritFontOptions = [
   ...googleFontOptions,
 ];
 
-export const addNumberWithDash = (slug: string, length: number) =>
-  slug + (length ? `-${length}` : "");
+const MAX_LABEL_LENGTH = 63;
+
+export const addNumberWithDash = (slug: string, length: number) => {
+  const suffix = length ? `-${length}` : "";
+  const maxSlugLength = MAX_LABEL_LENGTH - suffix.length;
+
+  const trimmedSlug = slug.slice(0, maxSlugLength);
+  return trimmedSlug + suffix;
+};
 
 export function slugify(input: string): string {
   return input

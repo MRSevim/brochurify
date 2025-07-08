@@ -9,6 +9,7 @@ import docClient from "./db";
 import { getUser, protect } from "../serverActions/helpers";
 import { StringOrUnd } from "../Types";
 import { deleteFolderFromS3 } from "../s3/helpers";
+import { removeCustomDomainInner } from "./customDomainHelpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
@@ -77,8 +78,17 @@ export async function deleteUser(token: StringOrUnd) {
     return true;
   }
 
-  // Step 2: Loop through items and delete each one
-  const deletePromises = result.Items.map((item) => {
+  const items = result.Items;
+
+  // Step 2: Remove custom domains if present
+  const removeDomainPromises = items
+    .filter((item) => item.customDomain)
+    .map((item) => removeCustomDomainInner(item, user));
+
+  await Promise.all(removeDomainPromises);
+
+  // Step 3: Loop through items and delete each one
+  const deletePromises = items.map((item) => {
     return docClient.send(
       new DeleteCommand({
         TableName: TABLE_NAME,

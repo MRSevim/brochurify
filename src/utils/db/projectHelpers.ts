@@ -16,8 +16,7 @@ import { generateHTML } from "../HTMLGenerator";
 import { snapshotQueue } from "../lib/redis";
 import { deleteFromS3 } from "../s3/helpers";
 import { appConfig } from "../config";
-import { addNumberWithDash } from "../Helpers";
-import { vercel } from "./customDomainHelpers";
+import { removeCustomDomainInner, vercel } from "./customDomainHelpers";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
@@ -168,28 +167,38 @@ export async function getTemplates() {
 export async function scanPrefix(prefix: string, token: StringOrUnd) {
   await protect(token);
   let items: any[] = [];
-  let lastKey: Record<string, any> | undefined = undefined;
+  let index = 0;
+  let consecutiveMisses = 0;
 
-  do {
-    const result: QueryCommandOutput = await docClient.send(
+  while (true) {
+    const currentPrefix = index === 0 ? prefix : `${prefix}-${index}`;
+    const result = await docClient.send(
       new QueryCommand({
         TableName: TABLE_NAME,
         IndexName: "prefix-index",
-        KeyConditionExpression: "#prefix = :prefix",
+        KeyConditionExpression: "#prefix = :prefixVal",
         ExpressionAttributeNames: {
           "#prefix": "prefix",
         },
         ExpressionAttributeValues: {
-          ":prefix": prefix,
+          ":prefixVal": currentPrefix,
         },
-        ExclusiveStartKey: lastKey,
-        ProjectionExpression: "prefix", // optional optimization
+        ProjectionExpression: "prefix", // optional
       })
     );
 
-    if (result.Items) items.push(...result.Items);
-    lastKey = result.LastEvaluatedKey;
-  } while (lastKey);
+    if (result.Items && result.Items.length > 0) {
+      items.push(...result.Items);
+      consecutiveMisses = 0;
+    } else {
+      // Stop if no more matching prefixes found
+      consecutiveMisses++;
+      if (consecutiveMisses >= 1) break; // You can increase this to allow gaps like "text, text-1, text-3"
+    }
+
+    index++;
+  }
+
   return items;
 }
 
@@ -297,13 +306,9 @@ export async function updateProject(
           `The subdomain "${prefix}" is reserved and cannot be used.`
         );
       }
-      const projects = await scanPrefix(prefix, token);
       setExpressions.push("#prefix = :prefix");
       expressionAttributeNames["#prefix"] = "prefix";
-      expressionAttributeValues[":prefix"] = addNumberWithDash(
-        prefix,
-        projects.length
-      );
+      expressionAttributeValues[":prefix"] = prefix;
     } else if (prefix === undefined && !published) {
       //handle unpublish
       removeExpressions.push("#prefix, #customDomain, #domainVerified");
@@ -376,8 +381,13 @@ export async function deleteProject(
     })
   );
 
-  if (!existingProject.Item) {
+  const Item = existingProject.Item;
+
+  if (!Item) {
     throw Error("Project not found or unauthorized");
+  }
+  if (Item.customDomain) {
+    await removeCustomDomainInner(Item, user);
   }
 
   //snapshot deletion

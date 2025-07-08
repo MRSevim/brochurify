@@ -138,7 +138,7 @@ const CustomDomain = () => {
       )}
 
       {error && (
-        <p className="text-sm text-red-500 text-center font-medium mt-2">
+        <p className="text-sm text-red-500 text-center font-medium mt-2 text-wrap break-all">
           {error}
         </p>
       )}
