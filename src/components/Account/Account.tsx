@@ -1,24 +1,20 @@
-"use client";
 import DeleteAccount from "./DeleteAccount";
 import UserInfo from "./UserInfo";
 import Subscribe from "./Subscribe";
-import { useUser } from "@/contexts/UserContext";
-import MiniLoadingSvg from "../MiniLoadingSvg";
+import { getUserAction } from "../../utils/serverActions/userActions";
+import { notFound } from "next/navigation";
 
-const Account = () => {
-  const [user] = useUser();
+const Account = async () => {
+  const { user } = await getUserAction();
+  if (!user) {
+    notFound();
+  }
 
   return (
     <div className="mt-2">
-      {" "}
-      {!user && <MiniLoadingSvg />}
-      {user && (
-        <>
-          <UserInfo user={user} />
-          <Subscribe user={user} />
-          <DeleteAccount />
-        </>
-      )}
+      <UserInfo user={user} />
+      <Subscribe user={user} />
+      <DeleteAccount />
     </div>
   );
 };

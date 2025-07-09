@@ -1,8 +1,16 @@
 "use server";
-import { createOrUpdateUser, deleteUser } from "../db/userHelpers";
+import {
+  createOrUpdateUser,
+  deleteUser,
+  getUserProfile,
+} from "../db/userHelpers";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { cookies } from "next/headers";
 import { generateToken } from "./helpers";
+import {
+  getSubscription,
+  lemonSqueezySetup,
+} from "@lemonsqueezy/lemonsqueezy.js";
 
 export const loginAction = async (
   googleCredential: any,
@@ -54,6 +62,29 @@ export const deleteUserAction = async () => {
     const jwt = cookieStore.get("jwt")?.value;
     await deleteUser(jwt);
     return { error: "" };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+};
+
+export const getUserAction = async () => {
+  try {
+    const cookieStore = await cookies();
+    const jwt = cookieStore.get("jwt")?.value;
+    const user = await getUserProfile(jwt);
+    return { user, error: "" };
+  } catch (error: any) {
+    return { error: error.message };
+  }
+};
+
+export const getLemonSqueezyPortalLink = async (subId: string) => {
+  try {
+    lemonSqueezySetup({ apiKey: process.env.LEMONSQUEEZY_API_KEY });
+    const { data, error } = await getSubscription(subId);
+
+    if (error) throw error;
+    return { portalLink: data?.data.attributes["urls"]["customer_portal"] };
   } catch (error: any) {
     return { error: error.message };
   }

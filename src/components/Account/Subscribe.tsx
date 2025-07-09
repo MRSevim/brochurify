@@ -1,16 +1,39 @@
-import { getLemonSqueezyPortalLink } from "@/utils/serverActions/helpers";
+"use client";
+import { useUser } from "@/contexts/UserContext";
+import { getLemonSqueezyPortalLink } from "@/utils/serverActions/userActions";
+import { getUserAction } from "@/utils/serverActions/userActions";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import MiniLoadingSvg from "../MiniLoadingSvg";
 
 const Subscribe = ({ user }: { user: Record<string, any> }) => {
-  const isSubscribed = user.roles.includes("subscriber");
+  const [userInContext] = useUser();
+
+  if (!userInContext)
+    return (
+      <p className="m-2 text-deleteRed">Could not get user in context...</p>
+    );
+  const isSubscribed = userInContext.roles.includes("subscriber");
   const [link, setLink] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const get = async () => {
+      setLoading(true);
       if (isSubscribed) {
-        const portalLink = await getLemonSqueezyPortalLink(user.subscriptionId);
-        if (portalLink) {
+        const { user: userFetched } = await getUserAction();
+        if (!userFetched) {
+          setLoading(false);
+          return toast.error("Could not fetch subscriber info...");
+        }
+
+        const { portalLink, error } = await getLemonSqueezyPortalLink(
+          userFetched.subscriptionId
+        );
+        if (error) {
+          toast.error(error);
+        } else if (portalLink) {
           setLink(portalLink);
         }
       } else {
@@ -19,11 +42,23 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
             user.userId
         );
       }
+      setLoading(false);
     };
+
     get();
   }, [isSubscribed]);
 
-  if (!link) return;
+  if (loading) {
+    return (
+      <p className="ms-4 ">
+        <MiniLoadingSvg />
+      </p>
+    );
+  }
+
+  if (!link) {
+    return <p className="ms-4 text-deleteRed">Could not get link...</p>;
+  }
 
   return (
     <div className="mb-2">

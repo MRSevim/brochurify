@@ -4,10 +4,6 @@ import jwt from "jsonwebtoken";
 import { StringOrUnd } from "../Types";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "../db/db";
-import {
-  getSubscription,
-  lemonSqueezySetup,
-} from "@lemonsqueezy/lemonsqueezy.js";
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
@@ -83,10 +79,4 @@ export const checkRole = (
   } catch (error: any) {
     throw error;
   }
-};
-
-export const getLemonSqueezyPortalLink = async (subId: string) => {
-  lemonSqueezySetup({ apiKey: process.env.LEMONSQUEEZY_API_KEY });
-  const { data } = await getSubscription(subId);
-  return data?.data.attributes["urls"]["customer_portal"];
 };

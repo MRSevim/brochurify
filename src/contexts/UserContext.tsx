@@ -56,6 +56,7 @@ export const Provider = ({
     if (!user) {
       return unsetUser();
     }
+
     const userString = getUserString(user);
     if (rememberMe) {
       setCookie("user", userString, 30, true);

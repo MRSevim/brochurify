@@ -41,6 +41,7 @@ export async function generateMetadata({
   if (!site || !site.editor) {
     return {};
   }
+
   const pageWise = site.editor.pageWise;
   const { title, description, keywords, image, iconUrl } = pageWise;
   const url = `https://${site.customDomain || site.prefix + appConfig.DOMAIN_EXTENSION}`;

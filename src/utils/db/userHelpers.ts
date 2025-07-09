@@ -99,6 +99,12 @@ export async function deleteUser(token: StringOrUnd) {
   return true;
 }
 
+export async function getUserProfile(token: StringOrUnd) {
+  const user = await protect(token);
+
+  return user;
+}
+
 export async function subscribe(userId: string, subscriptionId: string) {
   const user = await getUser(userId);
 
@@ -132,9 +138,8 @@ export async function unsubscribe(subscriptionId: string) {
     ExpressionAttributeValues: {
       ":subscriptionId": subscriptionId,
     },
-    Limit: 1,
   });
-
+  console.log(typeof subscriptionId, subscriptionId);
   const result = await docClient.send(scanCommand);
 
   if (!result.Items || result.Items.length === 0) {
