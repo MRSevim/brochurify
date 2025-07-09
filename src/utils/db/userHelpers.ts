@@ -139,7 +139,6 @@ export async function unsubscribe(subscriptionId: string) {
       ":subscriptionId": subscriptionId,
     },
   });
-  console.log(typeof subscriptionId, subscriptionId);
   const result = await docClient.send(scanCommand);
 
   if (!result.Items || result.Items.length === 0) {
