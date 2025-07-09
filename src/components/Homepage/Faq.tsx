@@ -16,10 +16,6 @@ const questions = [
     body: "Yes. Use the download button on the top-left corner to get the HTML of your website.",
   },
   {
-    question: "What happens if I reach my project limit?",
-    body: "You won’t be able to create new projects unless you delete existing ones or upgrade your plan.",
-  },
-  {
     question: "Can I use my own fonts or images?",
     body: "You can upload images, but only if you have a subscription. Custom fonts are not yet supported.",
   },
@@ -32,8 +28,8 @@ const questions = [
     body: "Yes, you can preview your website live at any time while editing without needing to publish it.",
   },
   {
-    question: "Can I undo mistakes while editing?",
-    body: "Yes, there's an undo button in the editor to revert changes. You can also press ctrl+z to undo last change.",
+    question: "Can I use keyboard shortcuts to do certain actions?",
+    body: "Yes, You can use following keypresses in the builder: ctrl+c (copy), ctrl+v (paste), ctrl+z (undo), ctrl+y (redo), delete key (delete element)",
   },
   {
     question:

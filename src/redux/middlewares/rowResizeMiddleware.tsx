@@ -6,7 +6,7 @@ import {
   redo,
   undo,
   updateLayout,
-  duplicate,
+  hydrateLocal,
 } from "../slices/editorSlice";
 
 // Utility to count non-fixed children of row nodes
@@ -45,7 +45,12 @@ const deepCloneLayout = (nodes: Layout[]): Layout[] => {
 export const rowResizeMiddleware: Middleware =
   (store) => (next) => (action) => {
     // Skip if it's a non-layout-altering action
-    if (undo.match(action) || redo.match(action) || hydrate.match(action)) {
+    if (
+      undo.match(action) ||
+      redo.match(action) ||
+      hydrate.match(action) ||
+      hydrateLocal.match(action)
+    ) {
       return next(action);
     }
 

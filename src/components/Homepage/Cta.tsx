@@ -44,7 +44,7 @@ const Cta = () => {
         <TemplateViewer
           setAdding={setAdding}
           handleSelect={async (selectedTemplate: Record<string, any>) => {
-            saveToLocalStorage({ ...selectedTemplate.data });
+            saveToLocalStorage({ ...selectedTemplate.editor });
             router.push("/builder");
           }}
           positiveActionText="Use"

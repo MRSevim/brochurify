@@ -9,13 +9,13 @@ const page = () => {
       <p className="mt-2">
         Hello everyone, first of all, thanks for visiting the website. I am the
         developer of this website, My name is Muhammed Raşid Sevim and I am
-        based in Turkey. I have been building this website for a while now. I am
-        aware there is always more to add and improvements to be made but I also
-        wanted to release a version and see how people will like it. Feel free
-        to use the contact form for any comments/suggestions. You can read more
-        about the website below. To learn more about me, you can check my{" "}
-        <Link href="https://mrsevim.github.io/Portfolio/" className="underline">
-          portfolio
+        based in Turkey. This is my single page website builder.I am aware there
+        is always more to add and improvements to be made but I also wanted to
+        release a version and see how people will like it. Feel free to use the
+        contact form for any comments/suggestions. You can read more about the
+        website below. To learn more about me, you can check my{" "}
+        <Link href="https://github.com/MRSevim" className="underline">
+          github page
         </Link>
         .
       </p>
@@ -28,11 +28,11 @@ const page = () => {
         Squarespace. This app, in addition to being a website builder, is
         designed to build <strong>single-page websites</strong>. That means you
         cannot create more than one page and link them to each other. That makes
-        it similar to <strong>Carrd</strong>, although it can simulate multiple
-        pages as well. Carrd was the direct inspiration for this project and
-        continue to be. With this app, you can build your website and publish it
-        with brochurify's own infrastructure or get your build's html code if
-        you wish.
+        it similar to <strong>Carrd</strong>, although Carrd can simulate
+        multiple pages as well. Carrd was the direct inspiration for this
+        project and continue to be. With this app, you can build your website
+        and publish it with brochurify's own tools or get your build's html code
+        if you wish.
       </p>
       <h3 className="font-bold text-l mt-2">About the Builder</h3>
       <p className="mt-2">

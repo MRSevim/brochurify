@@ -31,8 +31,8 @@ const Features = () => {
             <HeaderSpan>Customization</HeaderSpan>
           </HeaderDiv>
           <p>
-            Tweak every part of your website with flexible layouts, style
-            controls and simple transitions.
+            Tweak parts of your website with content editing, seo related
+            configurations and style edits.
           </p>
         </FeatureWrapper>
       </div>
