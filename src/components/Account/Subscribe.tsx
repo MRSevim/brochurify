@@ -45,6 +45,13 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
         initializePaddle({
           environment: process.env.NEXT_PUBLIC_PADDLE_ENV as PaddleEnv,
           token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN!,
+          ...(process.env.NEXT_PUBLIC_PADDLE_ENV === "production"
+            ? {
+                pwCustomer: {
+                  email: user.userId,
+                },
+              }
+            : {}),
         }).then((paddle) => setPaddle(paddle));
       }
       setLoading(false);
