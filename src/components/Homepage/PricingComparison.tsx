@@ -3,7 +3,10 @@ import { appConfig } from "@/utils/config";
 const PricingComparison = () => {
   return (
     <>
-      <div className="max-w-4xl mx-auto my-12 mb-0 border rounded-lg overflow-hidden text-sm break-words">
+      <div
+        className="max-w-4xl mx-auto my-12 mb-0 border rounded-lg overflow-hidden text-sm break-words"
+        id="pricing"
+      >
         <div className="grid grid-cols-3 bg-muted font-medium text-center items-center">
           <div className="p-4 text-left">Feature</div>
           <div className="p-4 md:text-xl ">Free (Requires account)</div>

@@ -9,6 +9,7 @@ import { cookies } from "next/headers";
 import Script from "next/script";
 import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Footer from "@/components/Footer/Footer";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -73,11 +74,17 @@ export default async function AppLayout({
             clientId={process.env.GOOGLE_CLIENT_ID as string}
           >
             <body
-              className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
+              className={
+                "flex flex-col h-screen justify-between " +
+                (!lightMode ? "dark" : "")
+              }
             >
-              <Header />
-              <ToastContainer />
-              {children}
+              <div>
+                <Header />
+                <ToastContainer />
+                {children}
+              </div>
+              <Footer />
             </body>
           </GoogleOAuthProvider>
         </ClientWrapper>

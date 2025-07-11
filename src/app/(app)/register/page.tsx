@@ -7,6 +7,7 @@ import { GoogleLoginComp } from "@/components/GoogleLoginComp";
 import { toast } from "react-toastify";
 import Container from "@/components/Container";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Register = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -43,6 +44,16 @@ const Register = () => {
           checked={rememberMe}
           onChange={() => setRememberMe((prev) => !prev)}
         />
+        <div className="mt-4 px-4 text-xs text-muted-foreground italic  mx-auto">
+          By registering, you agree to out{" "}
+          <Link
+            href="/terms"
+            className="text-muted-foreground mt-2 sm:mt-0 underline"
+          >
+            Terms of service
+          </Link>
+          .
+        </div>
       </div>
     </Container>
   );
