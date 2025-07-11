@@ -74,16 +74,11 @@ export default async function AppLayout({
             clientId={process.env.GOOGLE_CLIENT_ID as string}
           >
             <body
-              className={
-                "flex flex-col h-screen justify-between " +
-                (!lightMode ? "dark" : "")
-              }
+              className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
             >
-              <div>
-                <Header />
-                <ToastContainer />
-                {children}
-              </div>
+              <Header />
+              <ToastContainer />
+              {children}
               <Footer />
             </body>
           </GoogleOAuthProvider>

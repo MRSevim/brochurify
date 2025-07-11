@@ -11,12 +11,7 @@ let layoutPagewiseTimer: NodeJS.Timeout | null = null;
 
 export const saveToLocalOrDb: Middleware = (store) => (next) => (action) => {
   // Ignore certain actions
-  if (
-    undo.match(action) ||
-    redo.match(action) ||
-    hydrate.match(action) ||
-    hydrateLocal.match(action)
-  ) {
+  if (hydrate.match(action) || hydrateLocal.match(action)) {
     return next(action);
   }
 

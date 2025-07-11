@@ -7,6 +7,7 @@ import {
   undo,
   updateLayout,
   hydrateLocal,
+  setFromLocal,
 } from "../slices/editorSlice";
 
 // Utility to count non-fixed children of row nodes
@@ -49,7 +50,8 @@ export const rowResizeMiddleware: Middleware =
       undo.match(action) ||
       redo.match(action) ||
       hydrate.match(action) ||
-      hydrateLocal.match(action)
+      hydrateLocal.match(action) ||
+      setFromLocal.match(action)
     ) {
       return next(action);
     }

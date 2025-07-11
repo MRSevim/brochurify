@@ -1,13 +1,11 @@
 import { selectActive, useAppSelector } from "@/redux/hooks";
 import SizingAndBorder from "./SizingAndBorder";
 import Source from "./Source";
-import Text from "./Text/Text";
 import Url from "./Url";
 import Background from "./Background/Background";
 import Alignment from "./Alignment";
 import ContainerSettings from "./ContainerSettings";
 import IconType from "./IconType";
-import Animations from "./Animations";
 import FixedSettings from "./FixedSettings";
 import Anchor from "./Anchor";
 import Others from "./Others";

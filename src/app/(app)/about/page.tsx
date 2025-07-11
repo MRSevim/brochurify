@@ -9,11 +9,12 @@ const page = () => {
       <p className="mt-2">
         Hello everyone, first of all, thanks for visiting the website. I am the
         developer of this website, My name is Muhammed Raşid Sevim and I am
-        based in Turkey. This is my single page website builder.I am aware there
-        is always more to add and improvements to be made but I also wanted to
-        release a version and see how people will like it. Feel free to use the
-        contact form for any comments/suggestions. You can read more about the
-        website below. To learn more about me, you can check my{" "}
+        based in Turkey. This is my single page website builder. I tried to make
+        something useful. I am aware there is more to add and improvements to be
+        made but I also wanted to release a version and see how people will like
+        it. Feel free to use the contact form for any comments/suggestions. You
+        can read more about the website below. To learn more about me, you can
+        check my{" "}
         <Link href="https://github.com/MRSevim" className="underline">
           github page
         </Link>

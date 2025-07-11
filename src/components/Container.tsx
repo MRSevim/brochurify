@@ -9,7 +9,7 @@ const Container = ({
 }) => {
   if (pushedVertically) {
     return (
-      <div className="my-8 text-black ">
+      <div className="my-8 text-black flex-1">
         <div
           className={
             "mx-auto px-4 max-w-7xl " + (addBottomMargin ? "mb-3" : "")
@@ -22,7 +22,9 @@ const Container = ({
   } else {
     return (
       <div
-        className={"mx-auto px-4 max-w-7xl " + (addBottomMargin ? "mb-3" : "")}
+        className={
+          "mx-auto flex-1 px-4 max-w-7xl " + (addBottomMargin ? "mb-3" : "")
+        }
       >
         {children}
       </div>

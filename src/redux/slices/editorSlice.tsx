@@ -92,6 +92,11 @@ export const editorSlice = createSlice({
       state.variables = action.payload.variables;
       state.history = [{ current: true, structure: { layout, pageWise } }];
     },
+    setFromLocal: (state, action: PayloadAction<EditorState>) => {
+      state.layout = action.payload.layout;
+      state.pageWise = action.payload.pageWise;
+      state.variables = action.payload.variables;
+    },
     setDraggedItem: (state, action: PayloadAction<string | undefined>) => {
       state.draggedItem = action.payload;
     },
@@ -424,6 +429,7 @@ export const editorSlice = createSlice({
 
 export const {
   setDomainVerified,
+  setFromLocal,
   setPrefix,
   setPublished,
   setActive,

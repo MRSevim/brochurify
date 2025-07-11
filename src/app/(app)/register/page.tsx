@@ -45,12 +45,12 @@ const Register = () => {
           onChange={() => setRememberMe((prev) => !prev)}
         />
         <div className="mt-4 px-4 text-xs text-muted-foreground italic  mx-auto">
-          By registering, you agree to out{" "}
+          By registering, you agree to our{" "}
           <Link
             href="/terms"
             className="text-muted-foreground mt-2 sm:mt-0 underline"
           >
-            Terms of service
+            Terms of Service
           </Link>
           .
         </div>

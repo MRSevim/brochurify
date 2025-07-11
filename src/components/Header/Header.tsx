@@ -12,9 +12,9 @@ import {
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
 import {
-  hydrateLocal,
   redo,
   setActive,
+  setFromLocal,
   undo,
 } from "@/redux/slices/editorSlice";
 import SavePopupWrapper from "./SavePopupWrapper";
@@ -202,7 +202,7 @@ const LeftSideActions = () => {
             const editorState = localStorage.getItem("editor");
             if (editorState) {
               const editorStateParsed = JSON.parse(editorState);
-              dispatch(hydrateLocal(editorStateParsed));
+              dispatch(setFromLocal(editorStateParsed));
             } else toast.error("You have no local editor state saved");
           }}
         />
