@@ -33,7 +33,7 @@ const questions = [
   },
   {
     question:
-      "I tried out the builder without logging in, can I use that to publish my website?",
+      "I tried out the builder without logging in. Can I use that to publish my website?",
     body: "Yes, there's an import button on the top left of the builder. You can click that and import your local work to your project and publish it.",
   },
 ];
