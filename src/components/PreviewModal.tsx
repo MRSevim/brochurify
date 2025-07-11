@@ -20,8 +20,8 @@ export const PreviewModal = ({
     viewMode === "desktop"
       ? "max-w-full"
       : viewMode === "tablet"
-        ? "max-w-[768]"
-        : "max-w-[360]";
+        ? "max-w-[768px]"
+        : "max-w-[360px]";
 
   return (
     <div className="fixed inset-0 bg-white flex justify-center items-center z-[110] ">
