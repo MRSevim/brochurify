@@ -184,3 +184,5 @@ export const CONFIG = {
     mobileContainerQuery: "@container (max-width: 360px)",
   },
 } as const;
+
+export type PaddleEnv = "sandbox" | "production";

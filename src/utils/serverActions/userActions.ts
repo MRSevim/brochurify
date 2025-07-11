@@ -7,10 +7,8 @@ import {
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { cookies } from "next/headers";
 import { generateToken } from "./helpers";
-import {
-  getSubscription,
-  lemonSqueezySetup,
-} from "@lemonsqueezy/lemonsqueezy.js";
+
+import { Environment, Paddle } from "@paddle/paddle-node-sdk";
 
 export const loginAction = async (
   googleCredential: any,
@@ -78,13 +76,24 @@ export const getUserAction = async () => {
   }
 };
 
-export const getLemonSqueezyPortalLink = async (subId: string) => {
+const paddle = new Paddle(process.env.PADDLE_API_KEY!, {
+  environment:
+    process.env.NEXT_PUBLIC_PADDLE_ENV === "sandbox"
+      ? Environment.sandbox
+      : Environment.production,
+});
+export const getPortalLink = async (custId: string) => {
   try {
-    lemonSqueezySetup({ apiKey: process.env.LEMONSQUEEZY_API_KEY });
-    const { data, error } = await getSubscription(subId);
+    const subscriptionCollection = paddle.subscriptions.list({
+      customerId: [custId],
+    });
 
-    if (error) throw error;
-    return { portalLink: data?.data.attributes["urls"]["customer_portal"] };
+    const subs = await subscriptionCollection.next();
+    const subIds = subs.map((item) => item.id);
+
+    const session = await paddle.customerPortalSessions.create(custId, subIds);
+
+    return { portalLink: session.urls.general.overview };
   } catch (error: any) {
     return { error: error.message };
   }

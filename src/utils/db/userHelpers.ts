@@ -105,7 +105,7 @@ export async function getUserProfile(token: StringOrUnd) {
   return user;
 }
 
-export async function subscribe(userId: string, subscriptionId: string) {
+export async function subscribe(userId: string, paddleCustomerId: string) {
   const user = await getUser(userId);
 
   if (!user) {
@@ -118,7 +118,7 @@ export async function subscribe(userId: string, subscriptionId: string) {
   const updatedUser = {
     ...user,
     roles: Array.from(roles),
-    subscriptionId,
+    paddleCustomerId,
   };
 
   const putCommand = new PutCommand({
@@ -130,19 +130,19 @@ export async function subscribe(userId: string, subscriptionId: string) {
   return updatedUser;
 }
 
-export async function unsubscribe(subscriptionId: string) {
+export async function unsubscribe(paddleCustomerId: string) {
   // Scan the table to find the user with matching subscriptionId
   const scanCommand = new ScanCommand({
     TableName: TABLE_NAME,
-    FilterExpression: "subscriptionId = :subscriptionId",
+    FilterExpression: "paddleCustomerId = :paddleCustomerId",
     ExpressionAttributeValues: {
-      ":subscriptionId": subscriptionId,
+      ":paddleCustomerId": paddleCustomerId,
     },
   });
   const result = await docClient.send(scanCommand);
 
   if (!result.Items || result.Items.length === 0) {
-    throw new Error("User with subscriptionId not found");
+    throw new Error("User with paddleCustomerId not found");
   }
 
   const user = result.Items[0];
@@ -151,7 +151,7 @@ export async function unsubscribe(subscriptionId: string) {
   roles.delete("subscriber");
 
   // Remove subscriptionId field
-  const { subscriptionId: _, ...rest } = user;
+  const { paddleCustomerId: _, ...rest } = user;
 
   const updatedUser = {
     ...rest,

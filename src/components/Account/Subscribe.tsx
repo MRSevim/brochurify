@@ -1,11 +1,15 @@
 "use client";
 import { useUser } from "@/contexts/UserContext";
-import { getLemonSqueezyPortalLink } from "@/utils/serverActions/userActions";
-import { getUserAction } from "@/utils/serverActions/userActions";
+import {
+  getPortalLink,
+  getUserAction,
+} from "@/utils/serverActions/userActions";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import MiniLoadingSvg from "../MiniLoadingSvg";
+import { PaddleEnv } from "@/utils/Types";
 
 const Subscribe = ({ user }: { user: Record<string, any> }) => {
   const [userInContext] = useUser();
@@ -15,6 +19,7 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
       <p className="m-2 text-deleteRed">Could not get user in context...</p>
     );
   const isSubscribed = userInContext.roles.includes("subscriber");
+  const [paddle, setPaddle] = useState<Paddle>();
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -28,8 +33,8 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
           return toast.error("Could not fetch subscriber info...");
         }
 
-        const { portalLink, error } = await getLemonSqueezyPortalLink(
-          userFetched.subscriptionId
+        const { portalLink, error } = await getPortalLink(
+          userFetched.paddleCustomerId
         );
         if (error) {
           toast.error(error);
@@ -37,10 +42,10 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
           setLink(portalLink);
         }
       } else {
-        setLink(
-          "https://brochurify.lemonsqueezy.com/buy/c506f80c-b610-4127-ad25-60911d700002?checkout[custom][user_id]=" +
-            user.userId
-        );
+        initializePaddle({
+          environment: process.env.NEXT_PUBLIC_PADDLE_ENV as PaddleEnv,
+          token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN!,
+        }).then((paddle) => setPaddle(paddle));
       }
       setLoading(false);
     };
@@ -56,20 +61,41 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
     );
   }
 
-  if (!link) {
-    return <p className="ms-4 text-deleteRed">Could not get link...</p>;
-  }
-
   return (
     <div className="mb-2">
       <Link
         target="_blank"
         href={link}
-        className="lemonsqueezy-button p-1 text-black bg-amber rounded cursor-pointer"
+        onClick={(e) => {
+          if (!isSubscribed) {
+            e.preventDefault();
+            if (!paddle) return alert("Paddle not initialized");
+
+            paddle.Checkout.open({
+              items: [
+                {
+                  priceId: process.env.NEXT_PUBLIC_PADDLE_SUB_PRICE_ID!,
+                  quantity: 1,
+                },
+              ],
+              settings: {
+                displayMode: "overlay",
+              },
+              customer: {
+                email: user.userId,
+              },
+              customData: { userId: user.userId },
+            });
+          }
+        }}
+        className="p-1 text-black bg-amber rounded cursor-pointer"
       >
         {isSubscribed ? "Manage Subscription" : "Subscribe"}
       </Link>
-      <script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+      <div className="m-4 text-xs text-muted-foreground italic ">
+        * Wait up to 15 seconds for your sub status to change after payment
+        changes.
+      </div>
     </div>
   );
 };
