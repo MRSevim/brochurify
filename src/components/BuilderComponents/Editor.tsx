@@ -65,8 +65,8 @@ const Editor = () => {
     viewMode === "desktop"
       ? "max-w-full"
       : viewMode === "tablet"
-        ? "max-w-[768]"
-        : "max-w-[360]";
+        ? "max-w-[768px]"
+        : "max-w-[360px]";
 
   useEffect(() => {
     if (ref.current) {
