@@ -57,10 +57,10 @@ export default function TermsPage() {
           5. Privacy Policy
         </h2>
         <p>
-          We collect only essential information: email, payment data, and
-          content you create. We do not sell or share your personal data.
-          Whenever you wish to remove your data permanently, you can delete your
-          account and all your saved data will be deleted.
+          We collect only essential information: email, username and content you
+          create or upload. We do not sell or share your personal data. Whenever
+          you wish to remove your data permanently, you can delete your account
+          and all your saved data will be deleted.
         </p>
       </section>
 
