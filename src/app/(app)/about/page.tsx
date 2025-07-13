@@ -32,7 +32,7 @@ const page = () => {
         it similar to <strong>Carrd</strong>, although Carrd can simulate
         multiple pages as well. Carrd was the direct inspiration for this
         project and continue to be. With this app, you can build your website
-        and publish it with brochurify's own tools or get your build's html code
+        and publish it with Brochurify's own tools or get your build's html code
         if you wish.
       </p>
       <h3 className="font-bold text-l mt-2">About the Builder</h3>
