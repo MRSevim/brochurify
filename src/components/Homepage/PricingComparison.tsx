@@ -11,7 +11,7 @@ const PricingComparison = () => {
           <div className="p-4 text-left">Feature</div>
           <div className="p-4 md:text-xl ">Free (Requires account)</div>
           <div className="p-4 md:text-xl ">
-            Subscription ({appConfig.MONTHLY_SUB_PRICE}$/month)
+            Subscription (${appConfig.MONTHLY_SUB_PRICE}/month)
           </div>
         </div>
 
