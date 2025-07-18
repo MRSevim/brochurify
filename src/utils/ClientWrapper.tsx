@@ -4,7 +4,7 @@ import {
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
 import { makeStore, AppStore } from "@/redux/store";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Provider } from "react-redux";
 import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
@@ -16,9 +16,10 @@ import { Provider as SubscribePopupProvider } from "@/contexts/SubscribePopupCon
 import { EditorRefProvider } from "@/contexts/EditorRefContext";
 import { Provider as PublishPopupProvider } from "@/contexts/PublishPopupContext";
 import { ServerStyleSheet, StyleSheetManager } from "styled-components";
-import { User } from "./Types";
+import { PaddleEnv, User } from "./Types";
 import { useSyncUser } from "./hooks/useSyncUser";
 import { useServerInsertedHTML } from "next/navigation";
+import { initializePaddle } from "@paddle/paddle-js";
 
 export default function ClientWrapper({
   children,
@@ -58,6 +59,17 @@ export default function ClientWrapper({
 
 const InnerWrapper = ({ children }: { children: React.ReactNode }) => {
   const storeRef = useRef<AppStore>(undefined);
+  useEffect(() => {
+    initializePaddle({
+      environment: process.env.NEXT_PUBLIC_PADDLE_ENV as PaddleEnv,
+      token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN!,
+      ...(process.env.NEXT_PUBLIC_PADDLE_ENV === "production"
+        ? {
+            pwCustomer: {},
+          }
+        : {}),
+    });
+  }, []);
 
   if (!storeRef.current) {
     // Create the store instance the first time this renders
