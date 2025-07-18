@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { appConfig } from "./utils/config";
 
-const authenticatedRoutes = ["/my-projects"];
+const authenticatedRoutes = ["/my-projects", "/my-account"];
 
 export function middleware(request: NextRequest) {
   const user = request.cookies.get("user")?.value;

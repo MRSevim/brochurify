@@ -13,11 +13,7 @@ import MiniLoadingSvg from "../MiniLoadingSvg";
 const Subscribe = ({ user }: { user: Record<string, any> }) => {
   const [userInContext] = useUser();
   const [paddle, setPaddle] = useState<Paddle>();
-  if (!userInContext)
-    return (
-      <p className="m-2 text-deleteRed">Could not get user in context...</p>
-    );
-  const isSubscribed = userInContext.roles.includes("subscriber");
+  const isSubscribed = userInContext?.roles?.includes("subscriber");
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -98,6 +94,11 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
       console.log("retain id updated");
     }
   };
+
+  if (!userInContext)
+    return (
+      <p className="m-2 text-deleteRed">Could not get user in context...</p>
+    );
 
   if (loading) {
     return (
