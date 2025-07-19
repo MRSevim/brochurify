@@ -15,11 +15,11 @@ import { Provider as UserProvider } from "@/contexts/UserContext";
 import { Provider as SubscribePopupProvider } from "@/contexts/SubscribePopupContext";
 import { EditorRefProvider } from "@/contexts/EditorRefContext";
 import { Provider as PublishPopupProvider } from "@/contexts/PublishPopupContext";
+import { Provider as PaddleContextProvider } from "@/contexts/PaddleContext";
 import { ServerStyleSheet, StyleSheetManager } from "styled-components";
-import { PaddleEnv, User } from "./Types";
+import { User } from "./Types";
 import { useSyncUser } from "./hooks/useSyncUser";
 import { useServerInsertedHTML } from "next/navigation";
-import { initializePaddle } from "@paddle/paddle-js";
 
 export default function ClientWrapper({
   children,
@@ -39,13 +39,15 @@ export default function ClientWrapper({
               <PreviewProvider>
                 <ZoomProvider>
                   <UserProvider UserFromCookie={UserFromCookie}>
-                    <SubscribePopupProvider>
-                      <AddSectionToggleProvider>
-                        <EditorRefProvider>
-                          <InnerWrapper>{children}</InnerWrapper>
-                        </EditorRefProvider>
-                      </AddSectionToggleProvider>
-                    </SubscribePopupProvider>
+                    <PaddleContextProvider>
+                      <SubscribePopupProvider>
+                        <AddSectionToggleProvider>
+                          <EditorRefProvider>
+                            <InnerWrapper>{children}</InnerWrapper>
+                          </EditorRefProvider>
+                        </AddSectionToggleProvider>
+                      </SubscribePopupProvider>
+                    </PaddleContextProvider>
                   </UserProvider>
                 </ZoomProvider>
               </PreviewProvider>
@@ -59,17 +61,6 @@ export default function ClientWrapper({
 
 const InnerWrapper = ({ children }: { children: React.ReactNode }) => {
   const storeRef = useRef<AppStore>(undefined);
-  useEffect(() => {
-    initializePaddle({
-      environment: process.env.NEXT_PUBLIC_PADDLE_ENV as PaddleEnv,
-      token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN!,
-      ...(process.env.NEXT_PUBLIC_PADDLE_ENV === "production"
-        ? {
-            pwCustomer: {},
-          }
-        : {}),
-    });
-  }, []);
 
   if (!storeRef.current) {
     // Create the store instance the first time this renders

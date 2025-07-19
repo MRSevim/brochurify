@@ -7,45 +7,15 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Paddle } from "@paddle/paddle-js";
 import MiniLoadingSvg from "../MiniLoadingSvg";
+import { usePaddle } from "@/contexts/PaddleContext";
 
 const Subscribe = ({ user }: { user: Record<string, any> }) => {
   const [userInContext] = useUser();
-  const [paddle, setPaddle] = useState<Paddle>();
+  const [paddle] = usePaddle();
   const isSubscribed = userInContext?.roles?.includes("subscriber");
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
-
-  //paddle is not immediately initialized so we wait for it to initialize here
-  useEffect(() => {
-    let cancelled = false;
-
-    const waitForPaddle = async (timeoutMs = 3000) => {
-      const interval = 100; // check every 100ms
-      const maxAttempts = Math.ceil(timeoutMs / interval);
-      let attempts = 0;
-
-      while (!cancelled && attempts < maxAttempts) {
-        if (window.Paddle) {
-          setPaddle(window.Paddle);
-          return;
-        }
-        await new Promise((res) => setTimeout(res, interval));
-        attempts++;
-      }
-
-      if (!cancelled) {
-        console.warn("Paddle failed to load within timeout");
-      }
-    };
-
-    waitForPaddle();
-
-    return () => {
-      cancelled = true; // cleanup if component unmounts
-    };
-  }, []);
 
   useEffect(() => {
     const get = async () => {
@@ -60,7 +30,6 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
         const { portalLink, error } = await getPortalLink(
           userFetched.paddleCustomerId
         );
-        updatePaddleRetainId(userFetched.paddleCustomerId);
 
         if (error) {
           toast.error(error);
@@ -68,7 +37,7 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
           setLink(portalLink);
         }
       } else {
-        updatePaddleRetainId("");
+        setLink("");
       }
       setLoading(false);
     };
@@ -76,24 +45,6 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
     if (!paddle) return;
     get();
   }, [isSubscribed, paddle]);
-
-  const updatePaddleRetainId = (id: string) => {
-    if (process.env.NEXT_PUBLIC_PADDLE_ENV === "production") {
-      if (!paddle) return console.warn("Paddle not initialized");
-      if (id) {
-        paddle.Update({
-          pwCustomer: {
-            id,
-          },
-        });
-      } else {
-        paddle.Update({
-          pwCustomer: {},
-        });
-      }
-      console.log("retain id updated");
-    }
-  };
 
   if (!userInContext)
     return (
