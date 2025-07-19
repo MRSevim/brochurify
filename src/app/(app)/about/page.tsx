@@ -1,6 +1,19 @@
 import Container from "@/components/Container";
+import { Metadata } from "next";
 import Link from "next/link";
 
+const description =
+  "About Brochurify. Related to its maker and the builder itself";
+const title = "About";
+export const metadata: Metadata = {
+  title,
+  description,
+  keywords: "about brochurify, about website builder",
+  openGraph: {
+    title,
+    description,
+  },
+};
 const page = () => {
   return (
     <Container>

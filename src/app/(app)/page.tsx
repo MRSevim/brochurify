@@ -12,7 +12,7 @@ export default function Home() {
         <div className="flex flex-col gap-2 mb-3">
           <h1 className="font-bold text-4xl"> Create your online brochure</h1>
           <h2 className="text-2xl">
-            Create online presence in minutes and make it live
+            Create online presence in minutes and make it live.
           </h2>
           <Cta />
         </div>

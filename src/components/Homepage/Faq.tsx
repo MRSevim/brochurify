@@ -36,6 +36,10 @@ const questions = [
       "I tried out the builder without logging in. Can I use that to publish my website?",
     body: "Yes, there's an import button on the top left of the builder. You can click that and import your local work to your project and publish it.",
   },
+  {
+    question: "Who are your target customers?",
+    body: "Anyone who needs to create single/multiple live one page website/websites is my potential customer. That includes small businesses, people that want portfolio or people who maintain multiple single page websites for their own customers. ",
+  },
 ];
 
 type ActiveType = number | null;

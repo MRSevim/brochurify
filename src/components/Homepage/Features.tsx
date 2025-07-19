@@ -11,8 +11,8 @@ const Features = () => {
             <HeaderSpan>Speed</HeaderSpan>
           </HeaderDiv>
           <p>
-            Design your website with premade templates, through the drag and
-            drop editor and responsive builder.
+            Design your one page website with premade templates, through the
+            drag and drop editor and responsive builder and go live for free.
           </p>
         </FeatureWrapper>
         <FeatureWrapper>

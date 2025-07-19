@@ -1,4 +1,19 @@
+import { Metadata } from "next";
 import Link from "next/link";
+
+const description =
+  "Terms of Service of Brochurify. Please read our Terms of Service to understand the conditions for using Brochurify. ";
+const title = "Terms of Service";
+export const metadata: Metadata = {
+  title,
+  description,
+  keywords:
+    "terms of service of Brochurify, terms of service for website builder",
+  openGraph: {
+    title,
+    description,
+  },
+};
 
 export default function TermsPage() {
   return (

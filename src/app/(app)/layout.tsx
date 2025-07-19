@@ -10,21 +10,38 @@ import Script from "next/script";
 import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Footer from "@/components/Footer/Footer";
+import { appConfig } from "@/utils/config";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
 });
 
+const title = "Brochurify";
+const description =
+  "Design single page brochurelike websites and host them with out platform for free or get your build's html code.";
+
 export const metadata: Metadata = {
-  title: "Brochurify",
-  description:
-    "Design single page brochurelike websites and host them with out platform or alternatively get the html code.",
+  title: {
+    template: "%s | Brochurify",
+    default: title,
+  },
+  description,
   keywords:
-    "builder,website builder,html generator,html, website hosting, single page website",
+    "free website builder,create website free, make a one page website, website builder for small business,no code website builder,portfolio website builder,brochure website builder",
   openGraph: {
-    title: "Brochurify",
-    description:
-      "Design single page brochurelike websites and host them with out platform or alternatively get the html code.",
+    title,
+    description,
+    url: "https://www" + appConfig.DOMAIN_EXTENSION,
+    siteName: title,
+    type: "website",
+    images: [
+      {
+        url: `https://www${appConfig.DOMAIN_EXTENSION}/hero.png`,
+        width: 1200,
+        height: 630,
+        alt: "Brochurify - One Page Website Builder",
+      },
+    ],
   },
 };
 
