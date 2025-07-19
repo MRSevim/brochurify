@@ -27,7 +27,7 @@ const PricingComparison = () => {
             Not available
             <br />
             <span className="text-xs text-muted-foreground">
-              Uses {appConfig.DOMAIN_EXTENSION}
+              Only uses {appConfig.DOMAIN_EXTENSION}
             </span>
           </div>
           <div className="border-t p-4">Available</div>

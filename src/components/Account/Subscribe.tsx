@@ -9,11 +9,12 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import MiniLoadingSvg from "../MiniLoadingSvg";
 import { usePaddle } from "@/contexts/PaddleContext";
+import { checkSub } from "@/utils/Helpers";
 
 const Subscribe = ({ user }: { user: Record<string, any> }) => {
   const [userInContext] = useUser();
   const [paddle] = usePaddle();
-  const isSubscribed = userInContext?.roles?.includes("subscriber");
+  const isSubscribed = checkSub(userInContext);
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
 

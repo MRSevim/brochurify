@@ -46,9 +46,8 @@ export default function TermsPage() {
           4. Refund Policy
         </h2>
         <p>
-          <strong>Monthly plans:</strong> No refunds for past months. Cancel
-          anytime to stop future billing. <br />
-          No refunds for accounts suspended due to abuse or policy violations.
+          <strong>Monthly plans:</strong> No refunds for past months. You can
+          cancel anytime to stop future billing. <br />
         </p>
       </section>
 

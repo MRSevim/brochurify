@@ -25,11 +25,11 @@ const questions = [
   },
   {
     question: "Can I preview my website before publishing?",
-    body: "Yes, you can preview your website live at any time while editing without needing to publish it.",
+    body: "Yes, you can preview your website at any time while editing with the eye icon on top right corner without needing to publish it",
   },
   {
     question: "Can I use keyboard shortcuts to do certain actions?",
-    body: "Yes, You can use following keypresses in the builder: ctrl+c (copy), ctrl+v (paste), ctrl+z (undo), ctrl+y (redo), delete key (delete element)",
+    body: "Yes, You can use following keypresses in the builder: ctrl+c (copy), ctrl+v (paste), ctrl+z (undo), ctrl+y (redo), delete key (delete element). Use command key instead of ctrl in Mac.",
   },
   {
     question:

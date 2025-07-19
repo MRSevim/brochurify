@@ -4,6 +4,7 @@ import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { PaddleEnv } from "@/utils/Types";
 import { useUser } from "./UserContext";
 import { getUserAction } from "@/utils/serverActions/userActions";
+import { checkSub } from "@/utils/Helpers";
 
 type PaddleContext = [Paddle | undefined];
 
@@ -20,7 +21,7 @@ export const usePaddle = (): PaddleContext => {
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [paddle, setPaddle] = useState<Paddle>();
   const [userInContext] = useUser();
-  const isSubscribed = userInContext?.roles?.includes("subscriber");
+  const isSubscribed = checkSub(userInContext);
 
   useEffect(() => {
     initializePaddle({
