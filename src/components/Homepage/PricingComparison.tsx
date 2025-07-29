@@ -2,9 +2,9 @@ import { appConfig } from "@/utils/config";
 
 const PricingComparison = () => {
   return (
-    <>
+    <div className="my-20">
       <div
-        className="max-w-4xl mx-auto my-12 mb-0 border rounded-lg overflow-hidden text-sm break-words"
+        className="max-w-4xl mx-auto mb-0 border rounded-lg overflow-hidden text-sm break-words"
         id="pricing"
       >
         <div className="grid grid-cols-3 bg-muted font-medium text-center items-center">
@@ -49,7 +49,7 @@ const PricingComparison = () => {
         data in it. This is a hard limit to reach but has to be there to comply
         with database limitations.
       </div>
-    </>
+    </div>
   );
 };
 

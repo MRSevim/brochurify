@@ -56,15 +56,15 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
   const [publishPopup, setPublishPopup] = usePublishPopup();
   const published = useAppSelector((state) => state.editor.published);
   return (
-    <div className="flex justify-center sm:justify-between items-center py-2 flex-wrap ">
+    <div className="flex flex-col justify-center md:justify-between md:flex-row items-center py-2 flex-wrap ">
       <Link href="/">
         <p className="font-bold text-lg">Brochurify</p>
       </Link>
 
-      <div className="flex gap-4 items-center">
+      <div className="flex flex-col sm:flex-row gap-4 items-center">
         <DarkModeToggle />
         {!isBuilder ? (
-          <>
+          <div className="flex gap-4 items-center">
             <Link href="/contact">
               <span>Contact</span>
             </Link>
@@ -72,9 +72,9 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
               <span>About</span>
             </Link>
             <UserMenu />
-          </>
+          </div>
         ) : (
-          <>
+          <div className="flex gap-4 items-center">
             <Icon
               title={preview ? "Back to builder" : "Preview the page"}
               type={preview ? "backspace-fill" : "eye-fill"}
@@ -94,7 +94,7 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
                 {publishPopup && <PublishPopup />}
               </>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>

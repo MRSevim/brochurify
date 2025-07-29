@@ -46,8 +46,8 @@ type ActiveType = number | null;
 const Faq = () => {
   const [active, setActive] = useState<ActiveType>(null);
   return (
-    <div className="my-25">
-      <div className="w-full bg-slate p-4">
+    <div className="my-20">
+      <div className="w-full bg-slate">
         <h3 className="font-semibold text-xl text-center mb-2">
           Some Questions You Might Ask
         </h3>

@@ -21,7 +21,7 @@ export default function Home() {
           width={640}
           height={360}
           priority
-          className="rounded max-w-full"
+          className="rounded max-w-full h-auto"
           alt="Screenshot of the builder"
         />
       </div>

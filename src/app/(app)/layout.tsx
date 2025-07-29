@@ -19,11 +19,15 @@ const roboto_mono = Roboto_Mono({
 const title = "Brochurify";
 const description =
   "Design single page brochurelike websites and host them with out platform for free or get your build's html code.";
+const url = "https://www" + appConfig.DOMAIN_EXTENSION;
 
 export const metadata: Metadata = {
   title: {
     template: "%s | Brochurify",
     default: title,
+  },
+  alternates: {
+    canonical: url,
   },
   description,
   keywords:
@@ -31,12 +35,12 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description,
-    url: "https://www" + appConfig.DOMAIN_EXTENSION,
+    url,
     siteName: title,
     type: "website",
     images: [
       {
-        url: `https://www${appConfig.DOMAIN_EXTENSION}/hero.png`,
+        url: `${url}/hero.png`,
         width: 1200,
         height: 630,
         alt: "Brochurify - One Page Website Builder",

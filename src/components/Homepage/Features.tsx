@@ -2,41 +2,38 @@ import Icon from "../Icon";
 
 const Features = () => {
   return (
-    <>
-      {" "}
-      <div className="flex flex-col lg:flex-row justify-center items-center gap-8 my-20">
-        <FeatureWrapper>
-          <HeaderDiv>
-            <IconComp type="ev-front" />
-            <HeaderSpan>Speed</HeaderSpan>
-          </HeaderDiv>
-          <p>
-            Design your one page website with premade templates, through the
-            drag and drop editor and responsive builder and go live for free.
-          </p>
-        </FeatureWrapper>
-        <FeatureWrapper>
-          <HeaderDiv>
-            <IconComp type="ui-radios-grid" />
-            <HeaderSpan>Ease of Use</HeaderSpan>
-          </HeaderDiv>
-          <p>
-            No coding required. Easily build professional-looking, responsive
-            websites with intuitive interface and numerous customization tools.
-          </p>
-        </FeatureWrapper>
-        <FeatureWrapper>
-          <HeaderDiv>
-            <IconComp type="sliders" />
-            <HeaderSpan>Customization</HeaderSpan>
-          </HeaderDiv>
-          <p>
-            Tweak parts of your website with content editing, seo related
-            configurations and style edits.
-          </p>
-        </FeatureWrapper>
-      </div>
-    </>
+    <div className="flex flex-col lg:flex-row justify-center items-center gap-8 my-20">
+      <FeatureWrapper>
+        <HeaderDiv>
+          <IconComp type="ev-front" />
+          <HeaderSpan>Speed</HeaderSpan>
+        </HeaderDiv>
+        <p>
+          Design your one page website with premade templates, through the drag
+          and drop editor and responsive builder and go live for free.
+        </p>
+      </FeatureWrapper>
+      <FeatureWrapper>
+        <HeaderDiv>
+          <IconComp type="ui-radios-grid" />
+          <HeaderSpan>Ease of Use</HeaderSpan>
+        </HeaderDiv>
+        <p>
+          No coding required. Easily build professional-looking, responsive
+          websites with intuitive interface and numerous customization tools.
+        </p>
+      </FeatureWrapper>
+      <FeatureWrapper>
+        <HeaderDiv>
+          <IconComp type="sliders" />
+          <HeaderSpan>Customization</HeaderSpan>
+        </HeaderDiv>
+        <p>
+          Tweak parts of your website with content editing, seo related
+          configurations and style edits.
+        </p>
+      </FeatureWrapper>
+    </div>
   );
 };
 
