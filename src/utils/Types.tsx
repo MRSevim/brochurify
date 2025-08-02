@@ -1,7 +1,6 @@
 import { ChangeEvent, RefObject } from "react";
 
 export interface Props {
-  id?: string;
   text?: string;
   style: Style;
   child?: Layout[];
@@ -12,17 +11,15 @@ export interface Props {
   anchorId?: string;
   iconType?: string;
   children?: React.ReactNode;
-  ref?: ElementRefObject;
   [key: string]:
     | string
     | boolean
     | Style
     | Layout[]
     | React.ReactNode
-    | undefined
-    | ElementRefObject;
+    | undefined;
 }
-/* export interface PropsWithId {
+export interface PropsWithId {
   id: string;
   text?: string;
   style: Style;
@@ -43,7 +40,7 @@ export interface Props {
     | React.ReactNode
     | undefined
     | ElementRefObject;
-} */
+}
 export interface Layout {
   id: string;
   type: string;

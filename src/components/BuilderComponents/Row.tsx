@@ -1,9 +1,9 @@
 import useClasses from "@/utils/hooks/useClasses";
-import { Props } from "@/utils/Types";
+import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
 import { RefObject } from "react";
 
-const Row = ({ children, style, ref }: Props) => {
+const Row = ({ children, style, ref }: PropsWithId) => {
   const active = useClasses();
 
   return (

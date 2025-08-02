@@ -1,8 +1,8 @@
 import useClasses from "@/utils/hooks/useClasses";
-import { Props } from "@/utils/Types";
+import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
 import { RefObject } from "react";
-const Audio = ({ style, src, ref }: Props) => {
+const Audio = ({ style, src, ref }: PropsWithId) => {
   const active = useClasses();
 
   return (

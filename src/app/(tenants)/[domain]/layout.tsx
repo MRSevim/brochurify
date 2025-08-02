@@ -8,7 +8,7 @@ import {
   variablesGenerator,
 } from "@/utils/StyleGenerators";
 import { getCssReset } from "@/utils/StyleGenerators";
-import { Layout, Props } from "@/utils/Types";
+import { Layout, PropsWithId } from "@/utils/Types";
 import Effects from "./Effects";
 import { mapOverFonts } from "@/utils/GoogleFonts";
 import { getUsedFonts } from "@/utils/getUsedFonts";
@@ -183,7 +183,7 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
 };
 
 const componentList = {
-  button: (props: Props) => (
+  button: (props: PropsWithId) => (
     <a
       id={props.id}
       href={props.href}
@@ -194,24 +194,24 @@ const componentList = {
       {props.children}
     </a>
   ),
-  column: (props: Props) => (
+  column: (props: PropsWithId) => (
     <div id={props.id} className="element wAndHFull">
       {props.children}
     </div>
   ),
-  text: (props: Props) => (
+  text: (props: PropsWithId) => (
     <div
       id={props.id}
       className="element wAndHFull"
       dangerouslySetInnerHTML={{ __html: props.text || "" }}
     ></div>
   ),
-  row: (props: Props) => (
+  row: (props: PropsWithId) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>
   ),
-  image: (props: Props) => (
+  image: (props: PropsWithId) => (
     <img
       className="element wAndHFull"
       id={props.id}
@@ -219,31 +219,33 @@ const componentList = {
       alt={props.alt || ""}
     />
   ),
-  audio: (props: Props) => (
+  audio: (props: PropsWithId) => (
     <audio className="element wAndHFull" id={props.id} controls>
       <source src={props.src || undefined}></source>
       Your browser does not support the audio tag.
     </audio>
   ),
-  video: (props: Props) => (
+  video: (props: PropsWithId) => (
     <video className="element wAndHFull" id={props.id} controls>
       <source src={props.src || undefined}></source>
       Your browser does not support the video tag.
     </video>
   ),
-  container: (props: Props) => (
+  container: (props: PropsWithId) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>
   ),
-  divider: (props: Props) => <hr className="element wAndHFull" id={props.id} />,
-  icon: (props: Props) => (
+  divider: (props: PropsWithId) => (
+    <hr className="element wAndHFull" id={props.id} />
+  ),
+  icon: (props: PropsWithId) => (
     <i
       id={props.id}
       className={`element wAndHFull ${props.iconType ? `bi bi-${props.iconType}` : ""}`}
     />
   ),
-  fixed: (props: Props) => (
+  fixed: (props: PropsWithId) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>

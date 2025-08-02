@@ -23,7 +23,6 @@ export const generateHTML = (
     image,
     iconUrl,
     googleAnalyticsTag,
-    hideOverFlowBefore,
     ...rest
   } = pageWise;
 
@@ -89,19 +88,6 @@ export const generateHTML = (
     });
     });
     </script>`;
-  const overflowControlScript = hideOverFlowBefore
-    ? `<script>
-      document.addEventListener("DOMContentLoaded", () => {
-        document.documentElement.style.overflow = "hidden";
-        document.body.style.overflow = "hidden";
-
-        setTimeout(() => {
-          document.documentElement.style.overflow = "auto";
-          document.body.style.overflow = "auto";
-        }, ${hideOverFlowBefore});
-      });
-    </script>`
-    : "";
   const googleAnalyticsScript = googleAnalyticsTag
     ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsTag}"></script>
     <script>
@@ -132,7 +118,6 @@ export const generateHTML = (
         ${fontLinks}
       ${baseHTMLHead}
       ${observerScript}
-      ${overflowControlScript}
       ${googleAnalyticsScript}
       ${additionalStyles}
       </head>

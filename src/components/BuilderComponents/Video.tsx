@@ -1,9 +1,9 @@
 import useClasses from "@/utils/hooks/useClasses";
-import { Props } from "@/utils/Types";
+import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
 import { RefObject } from "react";
 
-const Video = ({ style, src, ref, anchorId }: Props) => {
+const Video = ({ style, src, ref }: PropsWithId) => {
   const active = useClasses();
   return (
     <styledElements.styledVideo

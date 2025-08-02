@@ -45,6 +45,7 @@ const RenderedComponent = memo(({ item }: { item: Layout }) => {
       <FocusWrapper item={item}>
         <CenterDropOverlay item={item}>
           <Component
+            id={item.id}
             key={styleString + replayTrigger || ""}
             ref={ref}
             {...item.props}
