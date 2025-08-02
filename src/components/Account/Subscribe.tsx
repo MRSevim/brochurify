@@ -43,9 +43,8 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
       setLoading(false);
     };
 
-    if (!paddle) return;
     get();
-  }, [isSubscribed, paddle]);
+  }, [isSubscribed]);
 
   if (!userInContext)
     return (
@@ -69,7 +68,7 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
           if (!isSubscribed) {
             e.preventDefault();
 
-            if (!paddle) return console.warn("Paddle not initialized");
+            if (!paddle) return toast.error("Paddle not initialized");
 
             paddle.Checkout.open({
               items: [

@@ -7,30 +7,38 @@ import {
   SetStateAction,
 } from "react";
 
-type toggleContextType = [boolean, Dispatch<SetStateAction<boolean>>];
-
 const createToggleContext = () => {
-  const toggleContext = createContext<toggleContextType | null>(null);
+  const ToggleStateContext = createContext<boolean | undefined>(undefined);
+  const ToggleSetterContext = createContext<
+    React.Dispatch<SetStateAction<boolean>> | undefined
+  >(undefined);
 
-  const Use = (): toggleContextType => {
-    const context = useContext(toggleContext);
-    if (!context) {
-      throw new Error("Use must be used within a toggleContextProvider");
-    }
-    return context;
+  const useToggle = () => {
+    const value = useContext(ToggleStateContext);
+    if (value === undefined)
+      throw new Error("useToggle must be used inside provider");
+    return value;
+  };
+
+  const useSetToggle = () => {
+    const setter = useContext(ToggleSetterContext);
+    if (!setter) throw new Error("useSetToggle Must be used inside provider");
+    return setter;
   };
 
   const Provider = ({ children }: { children: React.ReactNode }) => {
     const [toggle, setToggle] = useState(false);
 
     return (
-      <toggleContext.Provider value={[toggle, setToggle]}>
-        {children}
-      </toggleContext.Provider>
+      <ToggleStateContext.Provider value={toggle}>
+        <ToggleSetterContext.Provider value={setToggle}>
+          {children}
+        </ToggleSetterContext.Provider>
+      </ToggleStateContext.Provider>
     );
   };
 
-  return { Use, Provider };
+  return { useToggle, useSetToggle, Provider };
 };
 
 export const LayoutToggleContext = createToggleContext();

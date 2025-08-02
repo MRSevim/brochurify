@@ -1,56 +1,41 @@
-import { componentList } from "@/utils/ComponentsList";
 import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
 import {
-  selectActive,
-  selectHoveredId,
   selectLayout,
   selectPageWise,
   selectVariables,
-  useAppDispatch,
   useAppSelector,
 } from "@/redux/hooks";
-import FocusWrapper from "../FocusWrapper";
-import { Layout, Style } from "@/utils/Types";
-import React, { useEffect, useRef, useState } from "react";
-import { useViewMode } from "@/contexts/ViewModeContext";
+import React, { useEffect, useState } from "react";
+import { useViewModeState } from "@/contexts/ViewModeContext";
 import { styledElements } from "@/utils/StyledComponents";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
-import { findElementById } from "@/utils/EditorHelpers";
 import useKeyPresses from "@/utils/hooks/useKeypresses";
 import { useZoom } from "@/contexts/ZoomContext";
-import { SideDropOverlay } from "./SideDropOverlay";
 import { useEditorRef } from "@/contexts/EditorRefContext";
-import { handleDrop } from "@/redux/slices/editorSlice";
+import RenderedComponent from "./RenderedComponent/RenderedComponent";
 
 const Editor = () => {
-  const [layoutToggle] = LayoutToggleContext.Use();
-  const [settingsToggle] = SettingsToggleContext.Use();
+  return (
+    <EditorWrapper>
+      <EditorInner>
+        <EditorComponents />
+      </EditorInner>
+    </EditorWrapper>
+  );
+};
+
+const EditorWrapper = ({ children }: { children: React.ReactNode }) => {
+  const layoutToggle = LayoutToggleContext.useToggle();
+  const settingsToggle = SettingsToggleContext.useToggle();
   const [zoom] = useZoom();
   const scale = 1 - zoom / 100;
-  const [viewMode] = useViewMode();
+  const viewMode = useViewModeState();
   const [maxHeight, setMaxHeight] = useState<number | undefined>(undefined);
   const pageWise = useAppSelector(selectPageWise);
-  const hideOverFlowBefore = pageWise.hideOverFlowBefore;
   const ref = useEditorRef();
-  const data = useAppSelector(selectLayout);
-  const [showOverflow, setShowOverflow] = useState(false); // ✅ state to control overflow
-  const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
-
-  // ✅ Enable overflow after the delay
-  useEffect(() => {
-    setShowOverflow(false);
-    const timeout = setTimeout(
-      () => {
-        setShowOverflow(true);
-      },
-      hideOverFlowBefore ? +hideOverFlowBefore : 0
-    ); // fallback to 0 if undefined
-
-    return () => clearTimeout(timeout);
-  }, [hideOverFlowBefore, globalTrigger]);
 
   let addedString;
   if (layoutToggle && settingsToggle) {
@@ -77,7 +62,7 @@ const Editor = () => {
   return (
     <div className={"relative h-full overflow-hidden " + addedString}>
       <div
-        className={`${showOverflow ? "overflow-auto" : "overflow-hidden"} mx-auto ${maxWidth}`}
+        className={`overflow-auto mx-auto ${maxWidth}`}
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "top center",
@@ -88,11 +73,7 @@ const Editor = () => {
         }}
         ref={ref}
       >
-        <EditorInner>
-          {data.map((item) => {
-            return <RenderedComponent key={item.id} item={item} />;
-          })}
-        </EditorInner>
+        {children}
       </div>
     </div>
   );
@@ -104,6 +85,7 @@ const EditorInner = ({ children }: { children: React.ReactNode }) => {
   const variables = useAppSelector(selectVariables);
   useIntersectionObserver([globalTrigger], undefined);
   useKeyPresses();
+
   return (
     <styledElements.styledEditor
       $styles={pageWise}
@@ -117,90 +99,16 @@ const EditorInner = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default Editor;
-
-const RenderedComponent = ({ item }: { item: Layout }) => {
-  const Component = componentList[item.type as keyof typeof componentList];
-  const id = item.id;
-  const replayTrigger = useAppSelector((state) => {
-    return state.replay.replayArr.find((item) => item.id === id)?.trigger;
-  });
-  const styleString = JSON.stringify(
-    useAppSelector((state) => {
-      const layout = state.editor.layout;
-
-      const element = findElementById(layout, id);
-
-      const style = element?.props.style as Style;
-
-      return style;
-    })
-  );
-
-  const ref = useRef<HTMLElement | null>(null);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-
-  useIntersectionObserver([replayTrigger, styleString, wrapperRef], ref);
-  useIntersectionObserver([replayTrigger, styleString, wrapperRef], wrapperRef);
-
-  return (
-    <SideDropOverlay
-      item={item}
-      ref={wrapperRef}
-      key={styleString + (replayTrigger || "")}
-    >
-      <FocusWrapper item={item}>
-        <CenterDropOverlay item={item}>
-          <Component
-            key={styleString + (replayTrigger || "")}
-            id={id}
-            ref={ref}
-            {...item.props}
-            anchorId={item.props.anchorId && "user-" + item.props.anchorId}
-          >
-            {item.props.child?.map((childItem) => (
-              <RenderedComponent key={childItem.id} item={childItem} />
-            ))}
-          </Component>
-        </CenterDropOverlay>
-      </FocusWrapper>
-    </SideDropOverlay>
-  );
-};
-const CenterDropOverlay = ({
-  children,
-  item,
-}: {
-  item: Layout;
-  children: React.ReactNode;
-}) => {
-  const dispatch = useAppDispatch();
-  const hovered = useAppSelector(selectHoveredId) === item.id;
-  const [draggingOver, setDraggingOver] = useState(false);
-  const active = useAppSelector(selectActive)?.id === item.id || draggingOver;
+const EditorComponents = () => {
+  const data = useAppSelector(selectLayout);
+  console.log("editor renders");
   return (
     <>
-      <div
-        className={
-          "w-full h-full flex justify-center items-center " +
-          (hovered ? " hovered" : "") +
-          (active ? " active" : "")
-        }
-        onDrop={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          setDraggingOver(false);
-          dispatch(handleDrop({ targetId: item.id, addLocation: null }));
-        }}
-        onDragOver={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          setDraggingOver(true);
-        }}
-        onDragLeave={() => setDraggingOver(false)}
-      >
-        {children}
-      </div>
+      {data.map((item) => {
+        return <RenderedComponent key={item.id} item={item} />;
+      })}
     </>
   );
 };
+
+export default Editor;

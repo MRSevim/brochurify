@@ -12,7 +12,7 @@ import SmallText from "./SmallText";
 import { styledElements } from "@/utils/StyledComponents";
 
 const RightPanel = () => {
-  const [toggle] = SettingsToggleContext.Use();
+  const toggle = SettingsToggleContext.useToggle();
 
   return (
     <PanelWrapper toggle={toggle} from="right" zIndex="20">

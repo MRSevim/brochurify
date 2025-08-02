@@ -2,26 +2,10 @@
 import { runIntersectionObserver } from "@/utils/Helpers";
 import { useEffect } from "react";
 
-export default function Effects({
-  hideOverFlowBefore,
-}: {
-  hideOverFlowBefore: number;
-}) {
+export default function Effects() {
   useEffect(() => {
     runIntersectionObserver(undefined);
   }, []);
-
-  useEffect(() => {
-    if (!hideOverFlowBefore) return;
-
-    document.documentElement.style.overflow = "hidden";
-    document.body.style.overflow = "hidden";
-
-    setTimeout(() => {
-      document.documentElement.style.overflow = "auto";
-      document.body.style.overflow = "auto";
-    }, hideOverFlowBefore);
-  }, [hideOverFlowBefore]);
 
   useEffect(() => {
     const anchors = document.querySelectorAll(

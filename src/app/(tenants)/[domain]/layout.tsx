@@ -8,7 +8,7 @@ import {
   variablesGenerator,
 } from "@/utils/StyleGenerators";
 import { getCssReset } from "@/utils/StyleGenerators";
-import { Layout, PropsWithId } from "@/utils/Types";
+import { Layout, Props } from "@/utils/Types";
 import Effects from "./Effects";
 import { mapOverFonts } from "@/utils/GoogleFonts";
 import { getUsedFonts } from "@/utils/getUsedFonts";
@@ -91,7 +91,6 @@ export default async function SiteLayout({
     canonical,
     image,
     iconUrl,
-    hideOverFlowBefore,
     googleAnalyticsTag,
     ...rest
   } = pageWise;
@@ -149,7 +148,7 @@ export default async function SiteLayout({
       </head>
 
       <body>
-        <Effects hideOverFlowBefore={hideOverFlowBefore} />
+        <Effects />
         {layout.map((item: Layout) => {
           return <RenderedComponent key={item.id} item={item} />;
         })}
@@ -184,7 +183,7 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
 };
 
 const componentList = {
-  button: (props: PropsWithId) => (
+  button: (props: Props) => (
     <a
       id={props.id}
       href={props.href}
@@ -195,24 +194,24 @@ const componentList = {
       {props.children}
     </a>
   ),
-  column: (props: PropsWithId) => (
+  column: (props: Props) => (
     <div id={props.id} className="element wAndHFull">
       {props.children}
     </div>
   ),
-  text: (props: PropsWithId) => (
+  text: (props: Props) => (
     <div
       id={props.id}
       className="element wAndHFull"
       dangerouslySetInnerHTML={{ __html: props.text || "" }}
     ></div>
   ),
-  row: (props: PropsWithId) => (
+  row: (props: Props) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>
   ),
-  image: (props: PropsWithId) => (
+  image: (props: Props) => (
     <img
       className="element wAndHFull"
       id={props.id}
@@ -220,33 +219,31 @@ const componentList = {
       alt={props.alt || ""}
     />
   ),
-  audio: (props: PropsWithId) => (
+  audio: (props: Props) => (
     <audio className="element wAndHFull" id={props.id} controls>
       <source src={props.src || undefined}></source>
       Your browser does not support the audio tag.
     </audio>
   ),
-  video: (props: PropsWithId) => (
+  video: (props: Props) => (
     <video className="element wAndHFull" id={props.id} controls>
       <source src={props.src || undefined}></source>
       Your browser does not support the video tag.
     </video>
   ),
-  container: (props: PropsWithId) => (
+  container: (props: Props) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>
   ),
-  divider: (props: PropsWithId) => (
-    <hr className="element wAndHFull" id={props.id} />
-  ),
-  icon: (props: PropsWithId) => (
+  divider: (props: Props) => <hr className="element wAndHFull" id={props.id} />,
+  icon: (props: Props) => (
     <i
       id={props.id}
       className={`element wAndHFull ${props.iconType ? `bi bi-${props.iconType}` : ""}`}
     />
   ),
-  fixed: (props: PropsWithId) => (
+  fixed: (props: Props) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>

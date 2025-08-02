@@ -4,7 +4,7 @@ import {
   SettingsToggleContext,
 } from "@/contexts/ToggleContext";
 import { makeStore, AppStore } from "@/redux/store";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Provider } from "react-redux";
 import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
@@ -67,6 +67,7 @@ const InnerWrapper = ({ children }: { children: React.ReactNode }) => {
     storeRef.current = makeStore();
   }
   useSyncUser();
+
   return <Provider store={storeRef.current}>{children}</Provider>;
 };
 

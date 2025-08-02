@@ -1,10 +1,14 @@
-import { useViewMode } from "@/contexts/ViewModeContext";
+import {
+  useViewModeSetter,
+  useViewModeState,
+} from "@/contexts/ViewModeContext";
 import Icon from "../Icon";
 import { FaDesktop } from "react-icons/fa";
 import { capitalizeFirstLetter } from "@/utils/Helpers";
 
 const ViewModeWrapper = () => {
-  const [viewMode, setViewMode] = useViewMode();
+  const viewMode = useViewModeState();
+  const setViewMode = useViewModeSetter();
   return <ViewMode selected={viewMode} onSelect={(i) => setViewMode(i)} />;
 };
 

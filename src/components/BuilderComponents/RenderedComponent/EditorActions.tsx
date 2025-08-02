@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@/redux/hooks";
 import { Layout } from "@/utils/Types";
 import React, { useRef, useState } from "react";
-import Icon from "../Icon";
+import Icon from "@/components/Icon";
 import {
   deleteElement,
   duplicate,

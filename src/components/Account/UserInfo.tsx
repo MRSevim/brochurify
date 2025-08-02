@@ -3,6 +3,7 @@ import React from "react";
 import Icon from "../Icon";
 import { FaTimes } from "react-icons/fa";
 import { useUser } from "@/contexts/UserContext";
+import { checkSub } from "@/utils/Helpers";
 
 const UserInfo = ({ user }: { user: Record<string, any> }) => {
   const [userInContext] = useUser();
@@ -17,7 +18,7 @@ const UserInfo = ({ user }: { user: Record<string, any> }) => {
       </li>
       <li className="flex items-center">
         <strong>Subscription Status</strong>:
-        {userInContext?.roles.includes("subscriber") ? (
+        {checkSub(userInContext) ? (
           <span className="flex items-center text-positiveGreen font-semibold">
             <Icon type="check2" size="24px" title="Checkbox" className="mx-1" />{" "}
             Subscribed

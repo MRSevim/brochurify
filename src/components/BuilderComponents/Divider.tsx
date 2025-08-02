@@ -1,17 +1,16 @@
 import useClasses from "@/utils/hooks/useClasses";
-import { PropsWithId } from "@/utils/Types";
+import { Props } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
 import { RefObject } from "react";
 
-const Container = ({ id, style, ref, anchorId }: PropsWithId) => {
+const Container = ({ style, ref }: Props) => {
   const active = useClasses();
 
   return (
     <styledElements.styledHr
       className={active}
-      id={anchorId}
       $styles={style}
-      ref={ref as unknown as RefObject<HTMLHRElement>}
+      ref={ref as RefObject<HTMLHRElement>}
     />
   );
 };

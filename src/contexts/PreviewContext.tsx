@@ -8,7 +8,7 @@ import {
   useEffect,
 } from "react";
 import { LayoutToggleContext, SettingsToggleContext } from "./ToggleContext";
-import { useViewMode } from "./ViewModeContext";
+import { useViewModeSetter } from "./ViewModeContext";
 
 type Preview = [boolean, Dispatch<SetStateAction<boolean>>];
 
@@ -24,9 +24,9 @@ export const usePreview = (): Preview => {
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [preview, setPreview] = useState(false);
-  const [_, setLayoutToggle] = LayoutToggleContext.Use();
-  const [__, setSettingsToggle] = SettingsToggleContext.Use();
-  const [___, setViewMode] = useViewMode();
+  const setLayoutToggle = LayoutToggleContext.useSetToggle();
+  const setSettingsToggle = SettingsToggleContext.useSetToggle();
+  const setViewMode = useViewModeSetter();
 
   useEffect(() => {
     if (preview) {

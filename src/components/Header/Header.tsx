@@ -146,7 +146,7 @@ export const ViewActions = ({ children }: { children?: React.ReactNode }) => {
 };
 
 const LeftSide = () => {
-  const [, setLayoutToggle] = LayoutToggleContext.Use();
+  const setLayoutToggle = LayoutToggleContext.useSetToggle();
 
   return (
     <Icon
@@ -161,7 +161,7 @@ const LeftSide = () => {
 const LeftSideActions = () => {
   const dispatch = useAppDispatch();
   const active = useAppSelector(selectActive);
-  const [, setSettingsToggle] = SettingsToggleContext.Use();
+  const setSettingsToggle = SettingsToggleContext.useSetToggle();
   const [user] = useUser();
   const projectId = useAppSelector(selectProjectId);
   const showImport = user && projectId;
@@ -212,7 +212,7 @@ const LeftSideActions = () => {
 };
 
 const RightSide = () => {
-  const [, setSettingsToggle] = SettingsToggleContext.Use();
+  const setSettingsToggle = SettingsToggleContext.useSetToggle();
   return (
     <Icon
       title="Settings"

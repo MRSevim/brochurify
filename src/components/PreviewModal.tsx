@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/redux/hooks";
 import { ViewActions } from "./Header/Header";
-import { useViewMode } from "@/contexts/ViewModeContext";
+import { useViewModeState } from "@/contexts/ViewModeContext";
 import { usePreview } from "@/contexts/PreviewContext";
 
 export const PreviewModal = ({
@@ -12,7 +12,7 @@ export const PreviewModal = ({
   html: string;
   title?: string;
 }) => {
-  const [viewMode] = useViewMode();
+  const viewMode = useViewModeState();
   const [, setPreview] = usePreview();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
 

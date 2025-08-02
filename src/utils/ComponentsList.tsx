@@ -1,5 +1,5 @@
 import Button from "@/components/BuilderComponents/Button";
-import { PropsWithId } from "./Types";
+import { Props } from "./Types";
 import Column from "@/components/BuilderComponents/Column";
 import Text from "@/components/BuilderComponents/Text";
 import Row from "@/components/BuilderComponents/Row";
@@ -12,15 +12,15 @@ import Icon from "@/components/BuilderComponents/Icon";
 import Fixed from "@/components/BuilderComponents/Fixed";
 
 export const componentList = {
-  button: (props: PropsWithId) => <Button {...props} />,
-  column: (props: PropsWithId) => <Column {...props} />,
-  text: (props: PropsWithId) => <Text {...props} />,
-  row: (props: PropsWithId) => <Row {...props} />,
-  image: (props: PropsWithId) => <Image {...props} />,
-  audio: (props: PropsWithId) => <Audio {...props} />,
-  video: (props: PropsWithId) => <Video {...props} />,
-  container: (props: PropsWithId) => <Container {...props} />,
-  divider: (props: PropsWithId) => <Divider {...props} />,
-  icon: (props: PropsWithId) => <Icon {...props} />,
-  fixed: (props: PropsWithId) => <Fixed {...props} />,
+  button: (props: Props) => <Button {...props} />,
+  column: (props: Props) => <Column {...props} />,
+  text: (props: Props) => <Text {...props} />,
+  row: (props: Props) => <Row {...props} />,
+  image: (props: Props) => <Image {...props} />,
+  audio: (props: Props) => <Audio {...props} />,
+  video: (props: Props) => <Video {...props} />,
+  container: (props: Props) => <Container {...props} />,
+  divider: (props: Props) => <Divider {...props} />,
+  icon: (props: Props) => <Icon {...props} />,
+  fixed: (props: Props) => <Fixed {...props} />,
 };

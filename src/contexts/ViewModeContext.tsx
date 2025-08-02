@@ -7,14 +7,23 @@ import {
   createContext,
 } from "react";
 
-type ViewMode = [string, Dispatch<SetStateAction<string>>];
+const VieModeStateContext = createContext<string | undefined>(undefined);
+const VieModeSetterContext = createContext<
+  React.Dispatch<SetStateAction<string>> | undefined
+>(undefined);
 
-const viewModeContext = createContext<ViewMode | null>(null);
-
-export const useViewMode = (): ViewMode => {
-  const context = useContext(viewModeContext);
+export const useViewModeState = () => {
+  const context = useContext(VieModeStateContext);
   if (!context) {
-    throw new Error("useViewMode must be used within a viewModeProvider");
+    throw new Error("useViewModeState must be used within a viewModeProvider");
+  }
+  return context;
+};
+
+export const useViewModeSetter = () => {
+  const context = useContext(VieModeSetterContext);
+  if (!context) {
+    throw new Error("useViewModeSetter must be used within a viewModeProvider");
   }
   return context;
 };
@@ -23,8 +32,10 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [viewMode, setViewMode] = useState("desktop");
 
   return (
-    <viewModeContext.Provider value={[viewMode, setViewMode]}>
-      {children}
-    </viewModeContext.Provider>
+    <VieModeStateContext.Provider value={viewMode}>
+      <VieModeSetterContext.Provider value={setViewMode}>
+        {children}
+      </VieModeSetterContext.Provider>
+    </VieModeStateContext.Provider>
   );
 };

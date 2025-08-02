@@ -33,7 +33,7 @@ import { useAddSectionToggle } from "@/contexts/AddSectionToggleContext";
 type VisibilityMap = Map<string, boolean>;
 
 const LeftPanel = () => {
-  const [toggle] = LayoutToggleContext.Use();
+  const toggle = LayoutToggleContext.useToggle();
 
   return (
     <PanelWrapper toggle={toggle} from="left" zIndex="10">

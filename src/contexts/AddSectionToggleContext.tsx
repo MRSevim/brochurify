@@ -25,7 +25,8 @@ export const useAddSectionToggle = (): AddSectionToggle => {
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [toggle, setToggle] = useState(false);
-  const [layoutToggle, setLayoutToggle] = LayoutToggleContext.Use();
+  const setLayoutToggle = LayoutToggleContext.useSetToggle();
+  const layoutToggle = LayoutToggleContext.useToggle();
 
   useEffect(() => {
     if (toggle && !layoutToggle) setLayoutToggle(true);
