@@ -239,31 +239,42 @@ export const editorSlice = createSlice({
     ) => {
       const { type, newValue } = action.payload;
       const changeProp = (layout: Layout[]): Layout[] => {
-        return layout.map((item) => {
-          // Check if the current item has the active ID
+        let changed = false;
+
+        const newLayout = layout.map((item) => {
+          let updatedItem = item;
+
+          // Check if this is the active item
           if (item.id === state.active?.id) {
-            return {
+            updatedItem = {
               ...item,
               props: {
                 ...item.props,
                 [type]: newValue,
               },
             };
+            changed = true;
           }
 
-          // If the item has child elements, apply recursion
+          // Recurse into children
           if (item.props.child && Array.isArray(item.props.child)) {
-            return {
-              ...item,
-              props: {
-                ...item.props,
-                child: changeProp(item.props.child),
-              },
-            };
+            const newChild = changeProp(item.props.child);
+            if (newChild !== item.props.child) {
+              updatedItem = {
+                ...updatedItem,
+                props: {
+                  ...updatedItem.props,
+                  child: newChild,
+                },
+              };
+              changed = true;
+            }
           }
 
-          return item; // Return the item unchanged if no updates are needed
+          return updatedItem;
         });
+
+        return changed ? newLayout : layout;
       };
 
       state.layout = changeProp(state.layout); // Update the state layout with the modified structure

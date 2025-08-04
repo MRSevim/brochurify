@@ -152,26 +152,41 @@ export const isInChildren = (
   return false;
 };
 
-// Update the layout by filtering out the target element
 export const deleteFromLayout = (
   layout: Layout[],
   targetId: string
 ): Layout[] => {
-  return layout.reduce((result, item) => {
+  let changed = false;
+
+  const newLayout = layout.map((item) => {
     if (item.id === targetId) {
-      // Skip this item to delete it
-      return result;
+      changed = true;
+      return null; // Mark for deletion
     }
 
-    // If the item has children, apply the function recursively
-    if (item.props?.child) {
-      item.props.child = deleteFromLayout(item.props.child, targetId);
+    let updatedItem = item;
+
+    if (item.props?.child && Array.isArray(item.props.child)) {
+      const newChild = deleteFromLayout(item.props.child, targetId);
+      if (newChild !== item.props.child) {
+        changed = true;
+        updatedItem = {
+          ...item,
+          props: {
+            ...item.props,
+            child: newChild,
+          },
+        };
+      }
     }
 
-    // Push the current item to the result
-    result.push(item);
-    return result;
-  }, [] as Layout[]);
+    return updatedItem;
+  });
+
+  if (!changed) return layout;
+
+  // Filter out the deleted (null) items
+  return newLayout.filter(Boolean) as Layout[];
 };
 
 export const findElementById = (

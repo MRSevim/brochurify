@@ -29,23 +29,94 @@ const getRowNonFixedCounts = (
   return acc;
 };
 
-// Deep clone the layout (to safely mutate style)
-const deepCloneLayout = (nodes: Layout[]): Layout[] => {
-  return nodes.map((node) => ({
-    ...node,
-    props: {
-      ...node.props,
-      style: { ...node.props.style },
-      child: Array.isArray(node.props.child)
-        ? deepCloneLayout(node.props.child)
-        : undefined,
-    },
-  }));
+// Recursive update that preserves references unless changes are made
+const updateWidths = (
+  nodes: Layout[],
+  prevCounts: Record<string, number>
+): [Layout[], boolean] => {
+  let changed = false;
+
+  const updatedNodes = nodes.map((node) => {
+    let updatedNode = node;
+
+    if (node.type === "row" && Array.isArray(node.props.child)) {
+      const prevCount = prevCounts[node.id] ?? 0;
+      const nonFixedChildren = node.props.child.filter(
+        (c) => c.type !== "fixed"
+      );
+      const currCount = nonFixedChildren.length;
+
+      let childChanged = false;
+      let newChildArray = node.props.child;
+
+      // If non-fixed count changed, update widths
+      if (prevCount !== currCount && currCount > 0) {
+        const newWidth = `${100 / currCount}%`;
+        const updatedChildren = node.props.child.map((child) => {
+          if (child.type === "fixed") return child;
+
+          const currentWidth = child.props.style?.width ?? "";
+          if (currentWidth === newWidth) return child;
+
+          childChanged = true;
+          return {
+            ...child,
+            props: {
+              ...child.props,
+              style: {
+                ...child.props.style,
+                width: newWidth,
+              },
+            },
+          };
+        });
+
+        if (childChanged) {
+          newChildArray = updatedChildren;
+        }
+      }
+      // Recurse into children
+      const [recursedChild, childRecursedChanged] = updateWidths(
+        newChildArray,
+        prevCounts
+      );
+
+      if (childChanged || childRecursedChanged) {
+        updatedNode = {
+          ...node,
+          props: {
+            ...node.props,
+            child: recursedChild,
+          },
+        };
+        changed = true;
+      }
+    } else if (Array.isArray(node.props.child)) {
+      // Recurse into non-row nodes
+      const [recursedChild, childChanged] = updateWidths(
+        node.props.child,
+        prevCounts
+      );
+      if (childChanged) {
+        updatedNode = {
+          ...node,
+          props: {
+            ...node.props,
+            child: recursedChild,
+          },
+        };
+        changed = true;
+      }
+    }
+
+    return updatedNode;
+  });
+
+  return [changed ? updatedNodes : nodes, changed];
 };
 
 export const rowResizeMiddleware: Middleware =
   (store) => (next) => (action) => {
-    // Skip if it's a non-layout-altering action
     if (
       undo.match(action) ||
       redo.match(action) ||
@@ -59,47 +130,15 @@ export const rowResizeMiddleware: Middleware =
     const prevLayout = (store.getState() as RootState).editor.layout;
     const prevCounts = getRowNonFixedCounts(prevLayout);
 
-    const result = next(action); // Let reducers run first
+    const result = next(action); // Let reducers update layout
 
     const nextState = store.getState() as RootState;
     const currentLayout = nextState.editor.layout;
 
-    let layoutChanged = false;
-    const clonedLayout = deepCloneLayout(currentLayout);
-
-    const adjustWidthsIfNeeded = (nodes: Layout[]) => {
-      for (const node of nodes) {
-        if (node.type === "row" && Array.isArray(node.props.child)) {
-          const prevCount = prevCounts[node.id] ?? 0;
-          const currNonFixedChildren = node.props.child.filter(
-            (c) => c.type !== "fixed"
-          );
-          const currCount = currNonFixedChildren.length;
-
-          if (prevCount !== currCount && currCount > 0) {
-            const newWidth = `${100 / currCount}%`;
-
-            for (const child of currNonFixedChildren) {
-              child.props.style = {
-                ...child.props.style,
-                width: newWidth,
-              };
-            }
-
-            layoutChanged = true;
-          }
-        }
-
-        if (Array.isArray(node.props.child)) {
-          adjustWidthsIfNeeded(node.props.child);
-        }
-      }
-    };
-
-    adjustWidthsIfNeeded(clonedLayout);
+    const [newLayout, layoutChanged] = updateWidths(currentLayout, prevCounts);
 
     if (layoutChanged) {
-      store.dispatch(updateLayout(clonedLayout));
+      store.dispatch(updateLayout(newLayout));
     }
 
     return result;

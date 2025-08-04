@@ -33,8 +33,6 @@ export const SideDropOverlay = ({
   const isColumn = item.type === "column";
   const active = useAppSelector(selectActive)?.id === item.id;
 
-  console.log("side drop", item.type);
-
   const handleAddLocationClick = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     where: Where

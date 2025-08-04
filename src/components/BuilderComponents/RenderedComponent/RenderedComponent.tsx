@@ -30,7 +30,7 @@ const RenderedComponent = memo(({ item }: { item: Layout }) => {
       return style;
     })
   );
-
+  console.log(item.type);
   const ref = useRef<HTMLElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
