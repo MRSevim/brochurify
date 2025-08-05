@@ -41,7 +41,7 @@ const SizingAndBorderInner = () => {
 };
 
 export const WidthAndHeight = () => {
-  const activeId = useAppSelector(selectActive)?.id;
+  const activeId = useAppSelector(selectActive);
   const [outerType, setOuterType] = useState("base");
 
   return (

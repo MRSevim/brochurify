@@ -1,4 +1,8 @@
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectActiveType,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import {
   capitalizeFirstLetter,
@@ -35,7 +39,7 @@ const sizingTypeArray: SizingType[] = [
 
 const ShorthandToggler = ({ type }: { type: string }) => {
   const dispatch = useAppDispatch();
-  const activeType = useAppSelector(selectActive)?.type;
+  const activeType = useAppSelector(selectActiveType);
   const variable = getSetting(useAppSelector, type);
 
   return (

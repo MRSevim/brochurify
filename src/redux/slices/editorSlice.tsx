@@ -4,14 +4,10 @@ import {
   deleteFromLayout,
   findElementById,
   generateNewIds,
-  handleDropInner,
   insertElement,
   isInChildren,
   moveElementInner,
-  moveToNextOrPreviousInner,
   removeHistoryCurrents,
-  setActiveInner,
-  setAddLocationInner,
 } from "@/utils/EditorHelpers";
 import { generateLayoutItem, getPageWise } from "@/utils/Helpers";
 import {
@@ -19,7 +15,6 @@ import {
   EditorState,
   ItemAndLocation,
   Layout,
-  LayoutOrUnd,
   MoveTo,
   PageWise,
   StringOrUnd,
@@ -49,8 +44,9 @@ export const editorSlice = createSlice({
     resetToInitial: () => {
       return initialState;
     },
-    setActive: (state, action: PayloadAction<LayoutOrUnd>) => {
-      setActiveInner(state, action.payload);
+    setActive: (state, action: PayloadAction<string | undefined>) => {
+      state.addLocation = null;
+      state.active = action.payload;
     },
     setHovered: (state, action: PayloadAction<string | undefined>) => {
       state.hovered = action.payload;
@@ -101,24 +97,27 @@ export const editorSlice = createSlice({
       state.draggedItem = action.payload;
     },
     setAddLocation: (state, action: PayloadAction<AddLocation>) => {
-      setAddLocationInner(state, action.payload);
+      state.active = undefined;
+      state.addLocation = action.payload;
     },
     handleDrop: (
       state,
       action: PayloadAction<{ targetId: StringOrUnd; addLocation: AddLocation }>
     ) => {
-      handleDropInner(
-        state,
-        action.payload.targetId,
-        action.payload.addLocation
-      );
+      const addLocation = action.payload.addLocation;
+      const targetId = action.payload.targetId;
+      const id = state.draggedItem;
+      const item = findElementById(state.layout, id || "");
+      if (id === targetId) return;
+      moveElementInner(state, { item, targetId, addLocation });
+      state.draggedItem = undefined;
     },
     addElement: (
       state,
       action: PayloadAction<{ type: string; addLocation: AddLocation }>
     ) => {
       const newElement = generateLayoutItem(action.payload.type);
-      const active = state.active;
+      const active = findElementById(state.layout, state.active);
       const passed = canElementHaveChild(
         state,
         action.payload.addLocation,
@@ -126,8 +125,7 @@ export const editorSlice = createSlice({
         active
       );
       if (passed) {
-        state.layout = insertElement(
-          state,
+        insertElement(
           state.layout,
           newElement,
           action.payload.addLocation,
@@ -138,17 +136,17 @@ export const editorSlice = createSlice({
     },
     deleteElement: (state, action: PayloadAction<string>) => {
       if (state.active) {
-        const found = findElementById(state.layout, state.active.id);
+        const found = findElementById(state.layout, state.active);
         if (
           found &&
-          (action.payload === state.active.id ||
+          (action.payload === state.active ||
             isInChildren(found.props.child, action.payload))
         ) {
           //if deleted element is active or deleted elements descendant is active
           state.active = undefined;
         }
       }
-      state.layout = deleteFromLayout(state.layout, action.payload);
+      deleteFromLayout(state.layout, action.payload);
     },
     moveElement: (state, action: PayloadAction<ItemAndLocation>) => {
       moveElementInner(state, action.payload);
@@ -159,11 +157,11 @@ export const editorSlice = createSlice({
     ) => {
       const { types, newValue } = action.payload;
 
-      const applyStyle = <T extends Style | PageWise>(style: T): T => {
-        const updatedStyle = { ...style };
-        let current: any = updatedStyle;
+      const applyStyle = <T extends Style | PageWise>(style: T) => {
+        let current: any = style;
 
         const path = types.filter((k): k is string => k !== undefined);
+        if (path.length === 0) return;
 
         // Traverse all keys except the last one
         for (let i = 0; i < path.length - 1; i++) {
@@ -183,51 +181,46 @@ export const editorSlice = createSlice({
         }
 
         // Recursive cleanup of empty objects
-        const cleanup = (obj: any): any => {
-          Object.keys(obj).forEach((key) => {
-            if (typeof obj[key] === "object") {
-              obj[key] = cleanup(obj[key]);
-              if (Object.keys(obj[key]).length === 0) {
-                delete obj[key];
-              }
+        const cleanup = (obj: any) => {
+          if (typeof obj !== "object" || obj === null) return;
+
+          for (const key of Object.keys(obj)) {
+            cleanup(obj[key]);
+            if (
+              typeof obj[key] === "object" &&
+              obj[key] !== null &&
+              Object.keys(obj[key]).length === 0
+            ) {
+              delete obj[key];
             }
-          });
-          return obj;
+          }
         };
 
-        return cleanup(updatedStyle);
-      };
-
-      const updateLayout = (layout: Layout[]): Layout[] => {
-        return layout.map((item) => {
-          if (item.id === state.active?.id) {
-            return {
-              ...item,
-              props: {
-                ...item.props,
-                style: applyStyle(item.props.style),
-              },
-            };
-          }
-
-          if (Array.isArray(item.props.child)) {
-            return {
-              ...item,
-              props: {
-                ...item.props,
-                child: updateLayout(item.props.child),
-              },
-            };
-          }
-
-          return item;
-        });
+        return cleanup(style);
       };
 
       if (!state.active) {
-        state.pageWise = applyStyle(state.pageWise);
+        applyStyle(state.pageWise);
       } else {
-        state.layout = updateLayout(state.layout);
+        // Walk through layout to find active item and mutate its style
+        const updateLayout = (layout: Layout[]) => {
+          for (const item of layout) {
+            if (item.id === state.active) {
+              if (!item.props.style) item.props.style = {};
+              applyStyle(item.props.style);
+
+              return true; // found and updated
+            }
+
+            if (Array.isArray(item.props.child)) {
+              const found = updateLayout(item.props.child as Layout[]);
+              if (found) return true;
+            }
+          }
+          return false;
+        };
+
+        updateLayout(state.layout);
       }
     },
     changeElementProp: (
@@ -238,46 +231,27 @@ export const editorSlice = createSlice({
       }>
     ) => {
       const { type, newValue } = action.payload;
-      const changeProp = (layout: Layout[]): Layout[] => {
+
+      const changeProp = (layout: Layout[]): boolean => {
         let changed = false;
 
-        const newLayout = layout.map((item) => {
-          let updatedItem = item;
-
-          // Check if this is the active item
-          if (item.id === state.active?.id) {
-            updatedItem = {
-              ...item,
-              props: {
-                ...item.props,
-                [type]: newValue,
-              },
-            };
+        for (const item of layout) {
+          if (item.id === state.active) {
+            // Directly mutate the prop on the draft
+            item.props[type] = newValue;
             changed = true;
           }
 
-          // Recurse into children
           if (item.props.child && Array.isArray(item.props.child)) {
-            const newChild = changeProp(item.props.child);
-            if (newChild !== item.props.child) {
-              updatedItem = {
-                ...updatedItem,
-                props: {
-                  ...updatedItem.props,
-                  child: newChild,
-                },
-              };
-              changed = true;
-            }
+            const childChanged = changeProp(item.props.child);
+            if (childChanged) changed = true;
           }
+        }
 
-          return updatedItem;
-        });
-
-        return changed ? newLayout : layout;
+        return changed;
       };
 
-      state.layout = changeProp(state.layout); // Update the state layout with the modified structure
+      changeProp(state.layout);
     },
     addVariable: (state, action: PayloadAction<Variable>) => {
       const newVariable = { id: uuidv4(), ...action.payload };
@@ -285,29 +259,28 @@ export const editorSlice = createSlice({
     },
     editVariable: (state, action: PayloadAction<Variable>) => {
       const newVariable = action.payload;
-      const found = state.variables.find((item) => item.id === newVariable.id);
-      if (!found) {
+      const foundIndex = state.variables.findIndex(
+        (item) => item.id === newVariable.id
+      );
+
+      if (foundIndex === -1) {
         toast.error("Something went wrong");
         return;
       }
-      state.variables = state.variables.map((item) => {
-        if (item.id === newVariable.id) {
-          return newVariable;
-        } else return item;
-      });
+
+      // Directly mutate the variable object in the draft array
+      state.variables[foundIndex] = newVariable;
     },
     deleteVariable: (state, action: PayloadAction<Variable>) => {
       const variableToDel = action.payload;
-      const found = state.variables.find(
+      const index = state.variables.findIndex(
         (item) => item.id === variableToDel.id
       );
-      if (!found) {
+      if (index === -1) {
         toast.error("Something went wrong");
         return;
       }
-      state.variables = state.variables.filter(
-        (item) => item.id !== variableToDel.id
-      );
+      state.variables.splice(index, 1);
     },
     undo: (state) => {
       const history = state.history;
@@ -362,7 +335,7 @@ export const editorSlice = createSlice({
 
       // If current is not at the end, remove all history after it
       if (currentIndex !== -1 && currentIndex < history.length - 1) {
-        state.history = history.slice(0, currentIndex + 1);
+        history.splice(currentIndex + 1);
       }
       removeHistoryCurrents(state);
       state.history.push({
@@ -392,8 +365,7 @@ export const editorSlice = createSlice({
       );
 
       if (passed) {
-        state.layout = insertElement(
-          state,
+        insertElement(
           state.layout,
           newElement,
           addLocation,
@@ -403,16 +375,52 @@ export const editorSlice = createSlice({
       }
     },
     moveToNextOrPrevious: (state, action: PayloadAction<MoveTo>) => {
-      const currentElement = action.payload.item;
+      const currentElementId = action.payload.id;
 
-      if (!currentElement) {
+      if (!currentElementId) {
         toast.error("Something went wrong");
         return;
       }
-      state.layout = moveToNextOrPreviousInner(state, action.payload);
+
+      const location = action.payload.location;
+
+      const moveInArray = (arr: Layout[]): boolean => {
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i].id === currentElementId) {
+            if (location === "previous") {
+              if (i === 0) {
+                // Can't move, already first
+                toast.error(
+                  "This element is the first element in its parent and can't be moved further"
+                );
+                return true;
+              }
+              [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+            } else if (location === "next") {
+              if (i === arr.length - 1) {
+                // Can't move, already last
+                toast.error(
+                  "This element is the last element in its parent and can't be moved further"
+                );
+                return true;
+              }
+              [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+            }
+            return true; // Move complete
+          }
+
+          if (Array.isArray(arr[i].props.child)) {
+            const moved = moveInArray(arr[i].props.child!);
+            if (moved) return true;
+          }
+        }
+        return false;
+      };
+
+      moveInArray(state.layout);
     },
-    duplicate: (state, action: PayloadAction<Layout>) => {
-      const targetId = action.payload.id;
+    duplicate: (state, action: PayloadAction<string>) => {
+      const targetId = action.payload;
 
       const insertDuplicate = (layout: Layout[]): boolean => {
         for (let i = 0; i < layout.length; i++) {

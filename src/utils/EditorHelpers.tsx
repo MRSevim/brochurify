@@ -1,37 +1,7 @@
 import { toast } from "react-toastify";
-import {
-  AddLocation,
-  EditorState,
-  ItemAndLocation,
-  Layout,
-  LayoutOrUnd,
-  MoveTo,
-  StringOrUnd,
-} from "./Types";
+import { AddLocation, EditorState, ItemAndLocation, Layout } from "./Types";
 import { v4 as uuidv4 } from "uuid";
 
-export const setActiveInner = (state: EditorState, payload: LayoutOrUnd) => {
-  state.addLocation = null;
-  state.active = payload;
-};
-export const handleDropInner = (
-  state: EditorState,
-  targetId: StringOrUnd,
-  addLocation: AddLocation
-) => {
-  const id = state.draggedItem;
-  const item = findElementById(state.layout, id || "");
-  if (id === targetId) return;
-  moveElementInner(state, { item, targetId, addLocation });
-  state.draggedItem = undefined;
-};
-export const setAddLocationInner = (
-  state: EditorState,
-  addLocation: AddLocation
-) => {
-  state.active = undefined;
-  state.addLocation = addLocation;
-};
 export const moveElementInner = (
   state: EditorState,
   payload: ItemAndLocation
@@ -60,10 +30,9 @@ export const moveElementInner = (
       toast.error("You cannot insert an element into its own children");
       return;
     }
-    state.layout = deleteFromLayout(state.layout, currentElement.id);
+    deleteFromLayout(state.layout, currentElement.id);
     // Add the element to its new location
-    state.layout = insertElement(
-      state,
+    insertElement(
       state.layout,
       currentElement,
       payload.addLocation,
@@ -73,10 +42,9 @@ export const moveElementInner = (
   }
 };
 export const removeHistoryCurrents = (state: EditorState) => {
-  state.history = state.history.map((item) => {
+  for (const item of state.history) {
     item.current = false;
-    return item;
-  });
+  }
 };
 export const canElementHaveChild = (
   state: EditorState,
@@ -155,43 +123,32 @@ export const isInChildren = (
 export const deleteFromLayout = (
   layout: Layout[],
   targetId: string
-): Layout[] => {
-  let changed = false;
+): boolean => {
+  let deleted = false;
 
-  const newLayout = layout.map((item) => {
+  for (let i = layout.length - 1; i >= 0; i--) {
+    const item = layout[i];
+
     if (item.id === targetId) {
-      changed = true;
-      return null; // Mark for deletion
+      layout.splice(i, 1);
+      deleted = true;
+      continue;
     }
-
-    let updatedItem = item;
 
     if (item.props?.child && Array.isArray(item.props.child)) {
-      const newChild = deleteFromLayout(item.props.child, targetId);
-      if (newChild !== item.props.child) {
-        changed = true;
-        updatedItem = {
-          ...item,
-          props: {
-            ...item.props,
-            child: newChild,
-          },
-        };
+      const childDeleted = deleteFromLayout(item.props.child, targetId);
+      if (childDeleted) {
+        deleted = true;
       }
     }
+  }
 
-    return updatedItem;
-  });
-
-  if (!changed) return layout;
-
-  // Filter out the deleted (null) items
-  return newLayout.filter(Boolean) as Layout[];
+  return deleted;
 };
 
 export const findElementById = (
   layout: Layout[],
-  targetId: string
+  targetId: string | undefined
 ): Layout | undefined => {
   for (const item of layout) {
     if (item.id === targetId) {
@@ -239,32 +196,25 @@ export const hasType = (layout: Layout[], type: string): boolean => {
 };
 
 export const insertElement = (
-  state: EditorState,
   layout: Layout[],
   newElement: Layout,
-  addLocation: AddLocation,
-  targetId: StringOrUnd,
+  addLocation: AddLocation | undefined,
+  targetId: string | undefined,
   pushIfNoActive: boolean
-) => {
+): void => {
   if (!addLocation) {
-    // No specific location, add to the active item's child or the main layout
     if (targetId) {
       for (let i = 0; i < layout.length; i++) {
         if (layout[i].id === targetId) {
-          // If the active item has no child array, initialize it
           if (!layout[i].props.child) {
             layout[i].props.child = [];
           }
-
-          layout[i].props.child!.push(newElement); // Add to the active item's children
-
-          return layout;
+          layout[i].props.child!.push(newElement);
+          return;
         }
 
-        // If the current item has children, search recursively
         if (layout[i].props.child) {
-          layout[i].props.child = insertElement(
-            state,
+          insertElement(
             layout[i].props.child as Layout[],
             newElement,
             addLocation,
@@ -273,28 +223,24 @@ export const insertElement = (
           );
         }
       }
-    } else {
-      // No active ID, add to the end of the main layout
-      if (pushIfNoActive) layout.push(newElement);
+    } else if (pushIfNoActive) {
+      layout.push(newElement);
     }
-    return layout;
+    return;
   }
 
-  // Find the index of the item with the given ID
   for (let i = 0; i < layout.length; i++) {
     if (layout[i].id === addLocation.id) {
       if (addLocation.where === "before") {
-        layout.splice(i, 0, newElement); // Insert before
+        layout.splice(i, 0, newElement);
       } else if (addLocation.where === "after") {
-        layout.splice(i + 1, 0, newElement); // Insert after
+        layout.splice(i + 1, 0, newElement);
       }
-      return layout; // Stop searching once inserted
+      return;
     }
 
-    // If the current item has children, search recursively
     if (layout[i].props.child) {
-      layout[i].props.child = insertElement(
-        state,
+      insertElement(
         layout[i].props.child as Layout[],
         newElement,
         addLocation,
@@ -303,54 +249,23 @@ export const insertElement = (
       );
     }
   }
-
-  return layout;
 };
-
-export const moveToNextOrPreviousInner = (
-  state: EditorState,
-  payload: MoveTo
-) => {
-  const item = payload.item;
-  const location = payload.location;
-
-  const moveInArray = (arr: Layout[]): boolean => {
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i].id === item.id) {
-        if (location === "previous") {
-          if (i === 0) {
-            // Can't move, already first
-            toast.error(
-              "This element is the first element in its parent and can't be moved further"
-            );
-            return true;
-          }
-          [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
-        } else if (location === "next") {
-          if (i === arr.length - 1) {
-            // Can't move, already last
-            toast.error(
-              "This element is the last element in its parent and can't be moved further"
-            );
-            return true;
-          }
-          [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-        }
-        return true; // Move complete
-      }
-
-      if (Array.isArray(arr[i].props.child)) {
-        const moved = moveInArray(arr[i].props.child!);
-        if (moved) return true;
-      }
-    }
-    return false;
-  };
-
-  moveInArray(state.layout);
-  return state.layout;
-};
-
 export function deepClone<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj));
+  if (typeof obj !== "object") {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map((item) => deepClone(item)) as T;
+  }
+
+  const copy: Record<string, any> = {};
+
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      copy[key] = deepClone(obj[key]);
+    }
+  }
+
+  return copy as T;
 }

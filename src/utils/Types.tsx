@@ -49,7 +49,7 @@ export interface Layout {
 export interface EditorState {
   type: string;
   id?: string;
-  active?: LayoutOrUnd;
+  active?: string;
   hovered?: string;
   history: History;
   layout: Layout[];
@@ -163,7 +163,7 @@ export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 export type OptionsObject = { id?: string; title: string; value: string };
 export type AppChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
 export type HandleChangeType = (e: AppChangeEvent, i?: number) => void;
-export type MoveTo = { item: Layout; location: "previous" | "next" };
+export type MoveTo = { id: string; location: "previous" | "next" };
 
 export type User =
   | {

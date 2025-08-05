@@ -1,9 +1,9 @@
 import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
-import { RefObject } from "react";
+import { memo, RefObject } from "react";
 
-const Container = ({ style, ref }: PropsWithId) => {
+const Container = memo(({ style, ref }: PropsWithId) => {
   const active = useClasses();
 
   return (
@@ -13,6 +13,6 @@ const Container = ({ style, ref }: PropsWithId) => {
       ref={ref as RefObject<HTMLHRElement>}
     />
   );
-};
+});
 
 export default Container;

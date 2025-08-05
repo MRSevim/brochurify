@@ -10,7 +10,11 @@ import {
   setValueFromShorthandStr,
   updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectActiveType,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import { filterForFixed } from "./SelectTransition";
 import NumberInput from "../../NumberInput";
@@ -193,7 +197,7 @@ const PopupComp = ({
   const handleChange = (value: string) => {
     setEditedString(value);
   };
-  const activeType = useAppSelector(selectActive)?.type || "";
+  const activeType = useAppSelector(selectActiveType) || "";
 
   if (!editedStr) return;
   const transitionProperty = getValueFromShorthandStr(editedString, 0);

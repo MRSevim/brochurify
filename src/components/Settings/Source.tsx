@@ -1,4 +1,8 @@
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectActiveType,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { getProp } from "@/utils/Helpers";
 import LinkInput from "../LinkInput";
@@ -8,7 +12,7 @@ import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import UploadWrapper from "./UploadWrapper";
 
 const Source = () => {
-  const activeType = useAppSelector(selectActive)?.type;
+  const activeType = useAppSelector(selectActiveType);
 
   return (
     <ToggleVisibilityWrapper title="Source" desc="Add the source of your media">
@@ -20,7 +24,7 @@ const Source = () => {
 
 const SourceUrl = () => {
   const type = "src";
-  const activeType = useAppSelector(selectActive)?.type;
+  const activeType = useAppSelector(selectActiveType);
   const variable = getProp<string>(useAppSelector, type);
   const dispatch = useAppDispatch();
 

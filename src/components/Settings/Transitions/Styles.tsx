@@ -6,6 +6,7 @@ import {
 } from "@/utils/Helpers";
 import {
   selectActive,
+  selectActiveType,
   selectPageWise,
   useAppDispatch,
   useAppSelector,
@@ -42,7 +43,7 @@ const Styles = () => {
   const selectorOuterType = outerType === "base" ? undefined : outerType;
   const dispatch = useAppDispatch();
   const [innerType, setInnerType] = useState<string>("");
-  const activeId = useAppSelector(selectActive)?.id || "";
+  const activeId = useAppSelector(selectActive) || "";
   const editedStr =
     getSetting(useAppSelector, selectorOuterType, midType, innerType) || "";
   const styles = getSetting<Style>(useAppSelector, selectorOuterType, midType);
@@ -227,7 +228,7 @@ const TransitionValueInner = ({
   activeStylesArr?: string[];
   children: React.ReactNode;
 }) => {
-  const activeType = useAppSelector(selectActive)?.type || "";
+  const activeType = useAppSelector(selectActiveType) || "";
 
   return (
     <>
@@ -269,7 +270,7 @@ export const TransitionTypeSettings = ({
   editedString: string;
 }) => {
   const pageWise = useAppSelector(selectPageWise);
-  const activeType = useAppSelector(selectActive)?.type || "";
+  const activeType = useAppSelector(selectActiveType) || "";
 
   useEffect(() => {
     let premadeEditedString;

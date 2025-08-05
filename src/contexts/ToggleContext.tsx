@@ -1,11 +1,5 @@
 "use client";
-import {
-  createContext,
-  useContext,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import { createContext, useContext, useState, SetStateAction } from "react";
 
 const createToggleContext = () => {
   const ToggleStateContext = createContext<boolean | undefined>(undefined);

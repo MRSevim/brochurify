@@ -1,6 +1,7 @@
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
 import {
   selectActive,
+  selectActiveType,
   selectPageWise,
   useAppDispatch,
   useAppSelector,
@@ -16,9 +17,8 @@ import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 import VariableSelector from "@/components/VariableSelector";
 
 const TextRelated = () => {
-  const active = useAppSelector(selectActive);
-  const activeId = active?.id;
-  const activeType = active?.type;
+  const activeId = useAppSelector(selectActive);
+  const activeType = useAppSelector(selectActiveType);
   const isText = activeType === "text";
   return (
     <ToggleVisibilityWrapper
@@ -35,7 +35,7 @@ const TextRelated = () => {
 const TextColor = () => {
   const type = "color";
   const pageWise = useAppSelector(selectPageWise);
-  const activeType = useAppSelector(selectActive)?.type;
+  const activeType = useAppSelector(selectActiveType);
   const colorStr = getSetting(useAppSelector, type);
   const dispatch = useAppDispatch();
   return (

@@ -28,7 +28,10 @@ import Icon from "./Icon";
 import { Layout, Where } from "@/utils/Types";
 import AddButton from "./AddButton";
 import DeleteButton from "./DeleteButton";
-import { useAddSectionToggle } from "@/contexts/AddSectionToggleContext";
+import {
+  useAddSectionToggleSetter,
+  useAddSectionToggleState,
+} from "@/contexts/AddSectionToggleContext";
 
 type VisibilityMap = Map<string, boolean>;
 
@@ -102,7 +105,7 @@ const LayoutItem = ({
   return (
     <>
       <SideDropWrapper depth={depth} item={item}>
-        <FocusWrapper item={item}>
+        <FocusWrapper id={item.id}>
           <CenterDropWrapper item={item} setVisibilityMap={setVisibilityMap}>
             <div className="flex items-center">
               {item.props.child && item.props.child.length > 0 && (
@@ -147,12 +150,12 @@ const CenterDropWrapper = ({
   children: React.ReactNode;
   setVisibilityMap: Dispatch<SetStateAction<VisibilityMap>>;
 }) => {
-  const activeId = useAppSelector(selectActive)?.id;
+  const activeId = useAppSelector(selectActive);
   const addLocation = useAppSelector(selectAddLocation);
   const id = item.id;
   const dispatch = useAppDispatch();
   const layout = useAppSelector(selectLayout);
-  const [, setToggle] = useAddSectionToggle();
+  const setToggle = useAddSectionToggleSetter();
   const [draggingOver, setDraggingOver] = useState(false);
   const active = activeId === id || draggingOver;
 
@@ -212,7 +215,7 @@ const CenterDropWrapper = ({
       <div
         onClick={(e) => {
           setToggle(true);
-          dispatch(setActive(item));
+          dispatch(setActive(item.id));
           e.stopPropagation();
         }}
         className="z-40 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-hoveredBlue opacity-0 hover:opacity-100 transition-opacity duration-200"
@@ -236,7 +239,7 @@ const SideDropWrapper = ({
   const addLocation = useAppSelector(selectAddLocation);
   const id = item.id;
   const dispatch = useAppDispatch();
-  const [, setToggle] = useAddSectionToggle();
+  const setToggle = useAddSectionToggleSetter();
   const beforeSelected =
     addLocation?.id === id && addLocation?.where === "before";
   const afterSelected =
@@ -333,7 +336,8 @@ const AddSection = () => {
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement | null>(null);
   const addLocation = useAppSelector(selectAddLocation);
-  const [toggle, setToggle] = useAddSectionToggle();
+  const setToggle = useAddSectionToggleSetter();
+  const toggle = useAddSectionToggleState();
 
   const handleGeneralClick = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as HTMLElement)) {

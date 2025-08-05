@@ -82,14 +82,16 @@ const updateWidths = (
       );
 
       if (childChanged || childRecursedChanged) {
-        updatedNode = {
-          ...node,
-          props: {
-            ...node.props,
-            child: recursedChild,
-          },
-        };
-        changed = true;
+        if (node.props.child !== recursedChild) {
+          updatedNode = {
+            ...node,
+            props: {
+              ...node.props,
+              child: recursedChild,
+            },
+          };
+          changed = true;
+        }
       }
     } else if (Array.isArray(node.props.child)) {
       // Recurse into non-row nodes

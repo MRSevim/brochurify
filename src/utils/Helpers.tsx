@@ -248,7 +248,7 @@ export function getSetting<T = string>(
 ): T {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
-    const activeId = state.editor.active?.id;
+    const activeId = state.editor.active;
 
     const getNestedValue = (obj: any, keys: string[]): any => {
       let current = obj;
@@ -286,7 +286,7 @@ export const getProp = <T extends unknown>(
 ) => {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
-    const activeId = state.editor.active?.id;
+    const activeId = state.editor.active;
     if (!activeId) throw Error("no activeId in getProp func");
 
     const element = findElementById(layout, activeId);

@@ -1,11 +1,10 @@
 import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
-import { RefObject } from "react";
+import { memo, RefObject } from "react";
 
-const Button = ({ children, style, ref }: PropsWithId) => {
+const Button = memo(({ children, style, ref }: PropsWithId) => {
   const active = useClasses();
-
   return (
     <styledElements.styledButton
       className={active}
@@ -15,6 +14,6 @@ const Button = ({ children, style, ref }: PropsWithId) => {
       {children}
     </styledElements.styledButton>
   );
-};
+});
 
 export default Button;

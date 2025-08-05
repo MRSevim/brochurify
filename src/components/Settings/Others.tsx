@@ -1,7 +1,11 @@
 import React from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectActiveType,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import Checkbox from "../Checkbox";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Transform from "./Transform";
@@ -89,8 +93,7 @@ const TabletOrMobileShow = ({
   title: string;
   outerType?: string;
 }) => {
-  const active = useAppSelector(selectActive);
-  const activeType = active?.type;
+  const activeType = useAppSelector(selectActiveType);
 
   const shouldBeFlex =
     activeType === "column" ||

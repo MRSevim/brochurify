@@ -1,4 +1,4 @@
-import { useAddSectionToggle } from "@/contexts/AddSectionToggleContext";
+import { useAddSectionToggleSetter } from "@/contexts/AddSectionToggleContext";
 import {
   selectActive,
   selectAddLocation,
@@ -6,92 +6,97 @@ import {
   useAppSelector,
 } from "@/redux/hooks";
 import { handleDrop, setAddLocation } from "@/redux/slices/editorSlice";
-import { Layout, Where } from "@/utils/Types";
-import { DragEvent, useRef, useState } from "react";
+import { Style, Where } from "@/utils/Types";
+import { DragEvent, memo, useRef, useState } from "react";
 import { styledElements } from "@/utils/StyledComponents";
 import { useEditorRef } from "@/contexts/EditorRefContext";
 import EditorActions from "./EditorActions";
 
-export const SideDropOverlay = ({
-  item,
-  children,
-  ref,
-}: {
-  item: Layout;
-  ref: React.RefObject<HTMLDivElement | null>;
-  children: React.ReactNode;
-}) => {
-  const addLocation = useAppSelector(selectAddLocation);
-  const id = item.id;
-  const beforeSelected =
-    addLocation?.id === id && addLocation?.where === "before";
-  const afterSelected =
-    addLocation?.id === id && addLocation?.where === "after";
-  const dispatch = useAppDispatch();
-  const [, setToggle] = useAddSectionToggle();
-  const notFixed = item.type !== "fixed";
-  const isColumn = item.type === "column";
-  const active = useAppSelector(selectActive)?.id === item.id;
+export const SideDropOverlay = memo(
+  ({
+    id,
+    type,
+    style,
+    children,
+    ref,
+  }: {
+    id: string;
+    type: string;
+    style: Style;
+    ref: React.RefObject<HTMLDivElement | null>;
+    children: React.ReactNode;
+  }) => {
+    const addLocation = useAppSelector(selectAddLocation);
+    const beforeSelected =
+      addLocation?.id === id && addLocation?.where === "before";
+    const afterSelected =
+      addLocation?.id === id && addLocation?.where === "after";
+    const dispatch = useAppDispatch();
+    const setToggle = useAddSectionToggleSetter();
+    const notFixed = type !== "fixed";
+    const isColumn = type === "column";
+    const active = useAppSelector(selectActive) === id;
+    console.log("sidedrop rendered", id);
+    const handleAddLocationClick = (
+      e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      where: Where
+    ) => {
+      e.stopPropagation();
+      if (addLocation && addLocation.id === id && addLocation.where === where) {
+        dispatch(setAddLocation(null));
+      } else {
+        dispatch(setAddLocation({ id, where }));
+        setToggle(true);
+      }
+    };
 
-  const handleAddLocationClick = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    where: Where
-  ) => {
-    e.stopPropagation();
-    if (addLocation && addLocation.id === id && addLocation.where === where) {
-      dispatch(setAddLocation(null));
-    } else {
-      dispatch(setAddLocation({ id, where }));
-      setToggle(true);
-    }
-  };
+    const handleSideDrop = (e: DragEvent<HTMLElement>, where: Where) => {
+      e.preventDefault();
+      dispatch(
+        handleDrop({
+          targetId: undefined,
+          addLocation: {
+            id,
+            where,
+          },
+        })
+      );
+    };
 
-  const handleSideDrop = (e: DragEvent<HTMLElement>, where: Where) => {
-    e.preventDefault();
-    dispatch(
-      handleDrop({
-        targetId: undefined,
-        addLocation: {
-          id,
-          where,
-        },
-      })
+    return (
+      <styledElements.styledComponentWrapperDiv
+        className={"block " + (notFixed && "relative")}
+        $styles={style}
+        $type={type}
+        ref={ref}
+      >
+        {notFixed && (
+          <SideDropZone
+            onClick={(e) => handleAddLocationClick(e, "before")}
+            onDrop={(e) => handleSideDrop(e, "before")}
+            selected={beforeSelected}
+            isColumn={isColumn}
+          >
+            <AddSign />
+          </SideDropZone>
+        )}
+        {active && <EditorActions id={id} type={type} />}
+        {children}
+        {notFixed && (
+          <SideDropZone
+            second={true}
+            onClick={(e) => handleAddLocationClick(e, "after")}
+            onDrop={(e) => handleSideDrop(e, "after")}
+            selected={afterSelected}
+            isColumn={isColumn}
+          >
+            <AddSign />
+          </SideDropZone>
+        )}
+      </styledElements.styledComponentWrapperDiv>
     );
-  };
-
-  return (
-    <styledElements.styledComponentWrapperDiv
-      className={"block " + (notFixed && "relative")}
-      $styles={item.props.style}
-      $type={item.type}
-      ref={ref}
-    >
-      {notFixed && (
-        <SideDropZone
-          onClick={(e) => handleAddLocationClick(e, "before")}
-          onDrop={(e) => handleSideDrop(e, "before")}
-          selected={beforeSelected}
-          isColumn={isColumn}
-        >
-          <AddSign />
-        </SideDropZone>
-      )}
-      {active && <EditorActions item={item} />}
-      {children}
-      {notFixed && (
-        <SideDropZone
-          second={true}
-          onClick={(e) => handleAddLocationClick(e, "after")}
-          onDrop={(e) => handleSideDrop(e, "after")}
-          selected={afterSelected}
-          isColumn={isColumn}
-        >
-          <AddSign />
-        </SideDropZone>
-      )}
-    </styledElements.styledComponentWrapperDiv>
-  );
-};
+  }
+);
 
 const SideDropZone = ({
   onDrop,

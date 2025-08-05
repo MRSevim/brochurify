@@ -1,9 +1,9 @@
 import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
-import { RefObject } from "react";
+import { memo, RefObject } from "react";
 
-const Fixed = ({ children, style, ref }: PropsWithId) => {
+const Fixed = memo(({ children, style, ref }: PropsWithId) => {
   const active = useClasses(true);
   return (
     <styledElements.styledFixed
@@ -14,6 +14,6 @@ const Fixed = ({ children, style, ref }: PropsWithId) => {
       {children}
     </styledElements.styledFixed>
   );
-};
+});
 
 export default Fixed;

@@ -2,7 +2,11 @@ import ResetButton from "@/components/ResetButton";
 import Select from "@/components/Select";
 import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectActiveType,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import { getSetting } from "@/utils/Helpers";
 import { OptionsObject, CONFIG } from "@/utils/Types";
@@ -81,7 +85,7 @@ const alignItemsAlignmentOptionsForColumn = [
 ];
 
 const Alignment = () => {
-  const activeType = useAppSelector(selectActive)?.type;
+  const activeType = useAppSelector(selectActiveType);
   const isRow = activeType === "row";
   const otherAlignable =
     activeType === "column" ||

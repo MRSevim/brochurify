@@ -30,7 +30,7 @@ const RenderedComponent = memo(({ item }: { item: Layout }) => {
       return style;
     })
   );
-  console.log(item.type);
+  console.log("component rendered", id);
   const ref = useRef<HTMLElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -38,12 +38,14 @@ const RenderedComponent = memo(({ item }: { item: Layout }) => {
   useIntersectionObserver([replayTrigger, styleString, wrapperRef], wrapperRef);
   return (
     <SideDropOverlay
-      item={item}
+      id={item.id}
+      type={item.type}
+      style={item.props.style}
       ref={wrapperRef}
       key={styleString + replayTrigger || ""}
     >
-      <FocusWrapper item={item}>
-        <CenterDropOverlay item={item}>
+      <FocusWrapper id={item.id}>
+        <CenterDropOverlay id={item.id}>
           <Component
             id={item.id}
             key={styleString + replayTrigger || ""}
@@ -60,42 +62,40 @@ const RenderedComponent = memo(({ item }: { item: Layout }) => {
   );
 });
 
-const CenterDropOverlay = ({
-  children,
-  item,
-}: {
-  item: Layout;
-  children: React.ReactNode;
-}) => {
-  const dispatch = useAppDispatch();
-  const hovered = useAppSelector(selectHoveredId) === item.id;
-  const [draggingOver, setDraggingOver] = useState(false);
-  const active = useAppSelector(selectActive)?.id === item.id || draggingOver;
-  return (
-    <>
-      <div
-        className={
-          "w-full h-full flex justify-center items-center " +
-          (hovered ? " hovered" : "") +
-          (active ? " active" : "")
-        }
-        onDrop={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          setDraggingOver(false);
-          dispatch(handleDrop({ targetId: item.id, addLocation: null }));
-        }}
-        onDragOver={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          setDraggingOver(true);
-        }}
-        onDragLeave={() => setDraggingOver(false)}
-      >
-        {children}
-      </div>
-    </>
-  );
-};
+const CenterDropOverlay = memo(
+  ({ children, id }: { id: string; children: React.ReactNode }) => {
+    const dispatch = useAppDispatch();
+    const hovered = useAppSelector(selectHoveredId) === id;
+    const [draggingOver, setDraggingOver] = useState(false);
+    const active = useAppSelector(selectActive) === id || draggingOver;
+    console.log("centerdrop rendered ", id);
+
+    return (
+      <>
+        <div
+          className={
+            "w-full h-full flex justify-center items-center " +
+            (hovered ? " hovered" : "") +
+            (active ? " active" : "")
+          }
+          onDrop={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setDraggingOver(false);
+            dispatch(handleDrop({ targetId: id, addLocation: null }));
+          }}
+          onDragOver={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setDraggingOver(true);
+          }}
+          onDragLeave={() => setDraggingOver(false)}
+        >
+          {children}
+        </div>
+      </>
+    );
+  }
+);
 
 export default RenderedComponent;

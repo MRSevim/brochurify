@@ -1,4 +1,4 @@
-import { selectActive, useAppSelector } from "@/redux/hooks";
+import { selectActiveType, useAppSelector } from "@/redux/hooks";
 import SizingAndBorder from "./SizingAndBorder";
 import Source from "./Source";
 import Url from "./Url";
@@ -13,8 +13,7 @@ import Transitions from "./Transitions/Transitions";
 import TextRelated from "./Text/TextRelated";
 
 const ElementSettings = () => {
-  const active = useAppSelector(selectActive);
-  const activeType = active?.type;
+  const activeType = useAppSelector(selectActiveType);
   const shouldHaveSource =
     activeType === "audio" || activeType === "image" || activeType === "video";
   const shouldHaveUrl = activeType === "button";

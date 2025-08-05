@@ -1,9 +1,9 @@
 import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
-import { RefObject } from "react";
+import { memo, RefObject } from "react";
 
-const Text = ({ text, style, ref }: PropsWithId) => {
+const Text = memo(({ text, style, ref }: PropsWithId) => {
   const active = useClasses();
 
   return (
@@ -14,6 +14,6 @@ const Text = ({ text, style, ref }: PropsWithId) => {
       dangerouslySetInnerHTML={{ __html: text || "" }}
     ></styledElements.styledDiv>
   );
-};
+});
 
 export default Text;

@@ -1,9 +1,9 @@
 import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
-import { RefObject } from "react";
+import { memo, RefObject } from "react";
 
-const Row = ({ children, style, ref }: PropsWithId) => {
+const Row = memo(({ children, style, ref }: PropsWithId) => {
   const active = useClasses();
 
   return (
@@ -15,6 +15,6 @@ const Row = ({ children, style, ref }: PropsWithId) => {
       {children}
     </styledElements.styledDiv>
   );
-};
+});
 
 export default Row;

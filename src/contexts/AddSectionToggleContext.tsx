@@ -3,24 +3,30 @@ import {
   createContext,
   useContext,
   useState,
-  Dispatch,
   SetStateAction,
   useEffect,
 } from "react";
 import { LayoutToggleContext } from "./ToggleContext";
 
-type AddSectionToggle = [boolean, Dispatch<SetStateAction<boolean>>];
+const AddSectionToggleStateContext = createContext<boolean | undefined>(
+  undefined
+);
+const AddSectionToggleSetterContext = createContext<
+  React.Dispatch<SetStateAction<boolean>> | undefined
+>(undefined);
 
-const AddSectionToggleContext = createContext<AddSectionToggle | null>(null);
+export const useAddSectionToggleState = () => {
+  const value = useContext(AddSectionToggleStateContext);
+  if (value === undefined)
+    throw new Error("useAddSectionToggle must be used inside provider");
+  return value;
+};
 
-export const useAddSectionToggle = (): AddSectionToggle => {
-  const context = useContext(AddSectionToggleContext);
-  if (!context) {
-    throw new Error(
-      "useAddSectionToggle must be used within a AddSectionToggleContextProvider"
-    );
-  }
-  return context;
+export const useAddSectionToggleSetter = () => {
+  const setter = useContext(AddSectionToggleSetterContext);
+  if (!setter)
+    throw new Error("useAddSectionToggleSetter Must be used inside provider");
+  return setter;
 };
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
@@ -37,8 +43,10 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   }, [layoutToggle]);
 
   return (
-    <AddSectionToggleContext.Provider value={[toggle, setToggle]}>
-      {children}
-    </AddSectionToggleContext.Provider>
+    <AddSectionToggleStateContext.Provider value={toggle}>
+      <AddSectionToggleSetterContext.Provider value={setToggle}>
+        {children}
+      </AddSectionToggleSetterContext.Provider>
+    </AddSectionToggleStateContext.Provider>
   );
 };

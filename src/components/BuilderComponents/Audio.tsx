@@ -1,8 +1,8 @@
 import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
-import { RefObject } from "react";
-const Audio = ({ style, src, ref }: PropsWithId) => {
+import { memo, RefObject } from "react";
+const Audio = memo(({ style, src, ref }: PropsWithId) => {
   const active = useClasses();
 
   return (
@@ -17,6 +17,6 @@ const Audio = ({ style, src, ref }: PropsWithId) => {
       Your browser does not support the audio tag.
     </styledElements.styledAudio>
   );
-};
+});
 
 export default Audio;

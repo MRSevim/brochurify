@@ -32,7 +32,7 @@ const Animations = () => {
   const animations = makeArraySplitFrom(animationsString, splitValue);
   const [editedIndex, setEditedIndex] = useState<number>(0);
   const dispatch = useAppDispatch();
-  const activeId = useAppSelector(selectActive)?.id || "";
+  const activeId = useAppSelector(selectActive) || "";
 
   const handleAddition = (editedStr: string) => {
     const newValue = addToString(animationsString || "", editedStr, splitValue);

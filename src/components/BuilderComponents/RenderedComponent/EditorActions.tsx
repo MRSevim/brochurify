@@ -1,5 +1,4 @@
 import { useAppDispatch } from "@/redux/hooks";
-import { Layout } from "@/utils/Types";
 import React, { useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import {
@@ -10,9 +9,9 @@ import {
 import { useEditorRef } from "@/contexts/EditorRefContext";
 import usePositionListener from "@/utils/hooks/usePositionListener";
 
-const EditorActions = ({ item }: { item: Layout }) => {
+const EditorActions = ({ id, type }: { id: string; type: string }) => {
   const dispatch = useAppDispatch();
-  const isColumn = item.type === "column";
+  const isColumn = type === "column";
   const [translateY, setTranslateY] = useState<number>(0);
   const [translateX, setTranslateX] = useState<number>(0);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -42,28 +41,28 @@ const EditorActions = ({ item }: { item: Layout }) => {
       type: isColumn ? "arrow-left" : "arrow-up",
       title: "Move to previous location",
       onClick: () => {
-        dispatch(moveToNextOrPrevious({ item, location: "previous" }));
+        dispatch(moveToNextOrPrevious({ id, location: "previous" }));
       },
     },
     {
       type: isColumn ? "arrow-right" : "arrow-down",
       title: "Move to next location",
       onClick: () => {
-        dispatch(moveToNextOrPrevious({ item, location: "next" }));
+        dispatch(moveToNextOrPrevious({ id, location: "next" }));
       },
     },
     {
       type: "copy",
       title: "Duplicate element",
       onClick: () => {
-        dispatch(duplicate(item));
+        dispatch(duplicate(id));
       },
     },
     {
       type: "trash",
       title: "Delete element",
       onClick: () => {
-        dispatch(deleteElement(item.id));
+        dispatch(deleteElement(id));
       },
     },
   ];

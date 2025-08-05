@@ -1,9 +1,9 @@
 import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
-import { RefObject } from "react";
+import { memo, RefObject } from "react";
 
-const Image = ({ style, src, alt, ref }: PropsWithId) => {
+const Image = memo(({ style, src, alt, ref }: PropsWithId) => {
   const active = useClasses();
 
   return (
@@ -15,6 +15,6 @@ const Image = ({ style, src, alt, ref }: PropsWithId) => {
       ref={ref as RefObject<HTMLImageElement>}
     />
   );
-};
+});
 
 export default Image;
