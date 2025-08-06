@@ -12,34 +12,82 @@ import { styledElements } from "@/utils/StyledComponents";
 import { useEditorRef } from "@/contexts/EditorRefContext";
 import EditorActions from "./EditorActions";
 
-export const SideDropOverlay = memo(
+export const SideDropOverlay = ({
+  id,
+  type,
+  style,
+  children,
+  ref,
+}: {
+  id: string;
+  type: string;
+  style: Style;
+  ref: React.RefObject<HTMLDivElement | null>;
+  children: React.ReactNode;
+}) => {
+  const addLocation = useAppSelector(selectAddLocation);
+  const beforeSelected =
+    addLocation?.id === id && addLocation?.where === "before";
+  const afterSelected =
+    addLocation?.id === id && addLocation?.where === "after";
+  const notFixed = type !== "fixed";
+  const isColumn = type === "column";
+  const active = useAppSelector(selectActive) === id;
+
+  return (
+    <styledElements.styledComponentWrapperDiv
+      className={"block " + (notFixed && "relative")}
+      $styles={style}
+      $type={type}
+      ref={ref}
+    >
+      {notFixed && (
+        <SideDropZone
+          id={id}
+          where="before"
+          selected={beforeSelected}
+          isColumn={isColumn}
+        />
+      )}
+      {active && <EditorActions id={id} type={type} />}
+      {children}
+      {notFixed && (
+        <SideDropZone
+          second={true}
+          id={id}
+          where="after"
+          selected={afterSelected}
+          isColumn={isColumn}
+        />
+      )}
+    </styledElements.styledComponentWrapperDiv>
+  );
+};
+
+const SideDropZone = memo(
   ({
+    where,
     id,
-    type,
-    style,
-    children,
-    ref,
+    selected,
+    isColumn,
+    second = false,
   }: {
+    selected: boolean;
+    isColumn: boolean;
     id: string;
-    type: string;
-    style: Style;
-    ref: React.RefObject<HTMLDivElement | null>;
-    children: React.ReactNode;
+    where: Where;
+    second?: boolean;
   }) => {
-    const addLocation = useAppSelector(selectAddLocation);
-    const beforeSelected =
-      addLocation?.id === id && addLocation?.where === "before";
-    const afterSelected =
-      addLocation?.id === id && addLocation?.where === "after";
+    const [draggingOver, setDraggingOver] = useState(false);
+    const commonClasses =
+      "cursor-pointer absolute flex justify-center align-center opacity-0 hover:opacity-100 transition-opacity duration-200 z-[60] ";
+    const selectedClasses = "opacity-100 bg-activeBlue";
     const dispatch = useAppDispatch();
     const setToggle = useAddSectionToggleSetter();
-    const notFixed = type !== "fixed";
-    const isColumn = type === "column";
-    const active = useAppSelector(selectActive) === id;
-    console.log("sidedrop rendered", id);
+    const addLocation = useAppSelector(selectAddLocation);
+
     const handleAddLocationClick = (
-      e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-      where: Where
+      e: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
       e.stopPropagation();
       if (addLocation && addLocation.id === id && addLocation.where === where) {
@@ -50,7 +98,7 @@ export const SideDropOverlay = memo(
       }
     };
 
-    const handleSideDrop = (e: DragEvent<HTMLElement>, where: Where) => {
+    const handleSideDrop = (e: DragEvent<HTMLElement>) => {
       e.preventDefault();
       dispatch(
         handleDrop({
@@ -64,83 +112,30 @@ export const SideDropOverlay = memo(
     };
 
     return (
-      <styledElements.styledComponentWrapperDiv
-        className={"block " + (notFixed && "relative")}
-        $styles={style}
-        $type={type}
-        ref={ref}
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDraggingOver(true);
+        }}
+        onDragLeave={() => setDraggingOver(false)}
+        onClick={handleAddLocationClick}
+        onDrop={(e) => {
+          setDraggingOver(false);
+          handleSideDrop(e);
+        }}
+        className={
+          commonClasses +
+          (isColumn ? "h-full w-1 top-0 " : "w-full h-1 ") +
+          (second && isColumn ? "right-0 " : "") +
+          (second && !isColumn ? "bottom-0 " : "") +
+          (draggingOver || selected ? selectedClasses : "bg-hoveredBlue")
+        }
       >
-        {notFixed && (
-          <SideDropZone
-            onClick={(e) => handleAddLocationClick(e, "before")}
-            onDrop={(e) => handleSideDrop(e, "before")}
-            selected={beforeSelected}
-            isColumn={isColumn}
-          >
-            <AddSign />
-          </SideDropZone>
-        )}
-        {active && <EditorActions id={id} type={type} />}
-        {children}
-        {notFixed && (
-          <SideDropZone
-            second={true}
-            onClick={(e) => handleAddLocationClick(e, "after")}
-            onDrop={(e) => handleSideDrop(e, "after")}
-            selected={afterSelected}
-            isColumn={isColumn}
-          >
-            <AddSign />
-          </SideDropZone>
-        )}
-      </styledElements.styledComponentWrapperDiv>
+        <AddSign />
+      </div>
     );
   }
 );
-
-const SideDropZone = ({
-  onDrop,
-  onClick,
-  selected,
-  children,
-  isColumn,
-  second = false,
-}: {
-  onDrop: (e: DragEvent<HTMLElement>) => void;
-  selected: boolean;
-  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-  children: React.ReactNode;
-  isColumn: boolean;
-  second?: boolean;
-}) => {
-  const [draggingOver, setDraggingOver] = useState(false);
-  const commonClasses =
-    "cursor-pointer absolute flex justify-center align-center opacity-0 hover:opacity-100 transition-opacity duration-200 z-[60] ";
-  const selectedClasses = "opacity-100 bg-activeBlue";
-  return (
-    <div
-      onDragOver={(e) => {
-        e.preventDefault();
-        setDraggingOver(true);
-      }}
-      onDragLeave={() => setDraggingOver(false)}
-      onClick={onClick}
-      onDrop={(e) => {
-        setDraggingOver(false);
-        onDrop(e);
-      }}
-      className={
-        commonClasses +
-        (isColumn ? "h-full w-1 top-0 " : "w-full h-1 ") +
-        (second && isColumn ? "right-0 " : "") +
-        (second && !isColumn ? "bottom-0 " : "") +
-        (draggingOver || selected ? selectedClasses : "bg-hoveredBlue")
-      }
-    >
-      {children}
-    </div>
-  );
-};
 
 const AddSign = () => {
   const [marginTop, setMarginTop] = useState<number>(0);
@@ -178,7 +173,7 @@ const AddSign = () => {
 
   return (
     <div
-      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit"
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg p-px px-1 rounded bg-inherit"
       style={{ marginTop, marginLeft }}
       ref={ref}
     >

@@ -1,9 +1,9 @@
 import useClasses from "@/utils/hooks/useClasses";
 import { PropsWithId } from "@/utils/Types";
 import { styledElements } from "@/utils/StyledComponents";
-import { RefObject, memo } from "react";
+import { RefObject } from "react";
 
-const Video = memo(({ style, src, ref }: PropsWithId) => {
+const Video = ({ style, src, ref }: PropsWithId) => {
   const active = useClasses();
   return (
     <styledElements.styledVideo
@@ -17,6 +17,6 @@ const Video = memo(({ style, src, ref }: PropsWithId) => {
       Your browser does not support the video tag.
     </styledElements.styledVideo>
   );
-});
+};
 
 export default Video;
