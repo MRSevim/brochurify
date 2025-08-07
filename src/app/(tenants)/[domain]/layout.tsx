@@ -65,7 +65,6 @@ export async function generateMetadata({
       images: [image],
     },
     ...(iconUrl && { icons: [iconUrl] }),
-    metadataBase: new URL(`https://${domain}`),
   };
 }
 
