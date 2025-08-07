@@ -14,6 +14,7 @@ const UserMenu = () => {
   const router = useRouter();
 
   const logout = async () => {
+    router.prefetch("/");
     setUser(undefined, false);
     const { error } = await logoutAction();
     if (error) {
