@@ -1,5 +1,10 @@
+import Container from "@/components/Container";
 import LoadingComp from "@/components/Loading";
 
 export default function Loading() {
-  return <LoadingComp size={50} />;
+  return (
+    <Container>
+      <LoadingComp size={50} />
+    </Container>
+  );
 }
