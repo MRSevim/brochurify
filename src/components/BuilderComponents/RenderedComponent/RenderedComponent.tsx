@@ -7,7 +7,7 @@ import {
 import { componentList } from "@/utils/ComponentsList";
 import { findElementById } from "@/utils/EditorHelpers";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
-import { Layout, Style } from "@/utils/Types";
+import { CONFIG, Layout, Style } from "@/utils/Types";
 import { memo, useRef, useState } from "react";
 import { SideDropOverlay } from "./SideDropOverlay";
 import FocusWrapper from "@/components/FocusWrapper";
@@ -20,26 +20,41 @@ const RenderedComponent = memo(
     const replayTrigger = useAppSelector((state) => {
       return state.replay.replayArr.find((item) => item.id === id)?.trigger;
     });
-    const styleString = JSON.stringify(
-      useAppSelector((state) => {
-        const layout = state.editor.layout;
+    const styleString = useAppSelector((state) => {
+      const layout = state.editor.layout;
+      const element = findElementById(layout, id);
+      const style = element?.props.style as Style;
 
-        const element = findElementById(layout, id);
+      // Utility function to safely extract styles from optional nested layers
+      const extractStyles = (s?: Style): Record<string, unknown> => ({
+        animation: s?.animation,
+        transition: s?.transition,
+        [CONFIG.possibleOuterTypes.scrolled]:
+          s?.[CONFIG.possibleOuterTypes.scrolled],
+      });
 
-        const style = element?.props.style as Style;
+      const tablet = style?.[CONFIG.possibleOuterTypes.tabletContainerQuery] as
+        | Style
+        | undefined;
+      const mobile = style?.[CONFIG.possibleOuterTypes.mobileContainerQuery] as
+        | Style
+        | undefined;
 
-        return style;
-      })
-    );
-    console.log("component rendered", item.type);
+      return JSON.stringify({
+        base: extractStyles(style),
+        tablet: extractStyles(tablet),
+        mobile: extractStyles(mobile),
+      });
+    });
     const ref = useRef<HTMLElement | null>(null);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-    useIntersectionObserver([replayTrigger, styleString, wrapperRef], ref);
+    useIntersectionObserver([replayTrigger, item.props.style, wrapperRef], ref);
     useIntersectionObserver(
-      [replayTrigger, styleString, wrapperRef],
+      [replayTrigger, item.props.style, wrapperRef],
       wrapperRef
     );
+
     return (
       <SideDropOverlay
         id={item.id}

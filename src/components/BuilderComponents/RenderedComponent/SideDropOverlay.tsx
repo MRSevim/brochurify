@@ -33,7 +33,6 @@ export const SideDropOverlay = ({
   const notFixed = type !== "fixed";
   const isColumn = type === "column";
   const active = useAppSelector(selectActive) === id;
-
   return (
     <styledElements.styledComponentWrapperDiv
       className={"block " + (notFixed && "relative")}
@@ -173,8 +172,12 @@ const AddSign = () => {
 
   return (
     <div
-      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg p-px px-1 rounded bg-inherit"
-      style={{ marginTop, marginLeft }}
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg p-px px-1 rounded bg-inherit text-white"
+      style={{
+        marginTop,
+        marginLeft,
+        fontFamily: "Roboto Mono, Roboto Mono Fallback",
+      }}
       ref={ref}
     >
       +

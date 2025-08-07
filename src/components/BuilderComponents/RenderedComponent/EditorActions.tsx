@@ -80,9 +80,10 @@ const EditorActions = ({ id, type }: { id: string; type: string }) => {
         <div
           key={icon.type}
           className={
-            "p-1 rounded editor-action " +
+            "p-1 rounded text-lg editor-action " +
             (icon.type === "trash" ? "bg-deleteRed" : "bg-background")
           }
+          style={{ fontFamily: "Roboto Mono, Roboto Mono Fallback" }}
           onClick={(e) => {
             e.stopPropagation();
             icon.onClick();

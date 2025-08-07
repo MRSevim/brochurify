@@ -13,7 +13,6 @@ import { generateLayoutItem, getPageWise } from "@/utils/Helpers";
 import {
   AddLocation,
   EditorState,
-  ItemAndLocation,
   Layout,
   MoveTo,
   PageWise,
@@ -148,9 +147,6 @@ export const editorSlice = createSlice({
       }
       deleteFromLayout(state.layout, action.payload);
     },
-    moveElement: (state, action: PayloadAction<ItemAndLocation>) => {
-      moveElementInner(state, action.payload);
-    },
     changeElementStyle: (
       state,
       action: PayloadAction<{ types: (string | undefined)[]; newValue: string }>
@@ -161,6 +157,7 @@ export const editorSlice = createSlice({
         let current: any = style;
 
         const path = types.filter((k): k is string => k !== undefined);
+
         if (path.length === 0) return;
 
         // Traverse all keys except the last one
@@ -455,7 +452,6 @@ export const {
   addElement,
   deleteElement,
   hydrate,
-  moveElement,
   setAddLocation,
   handleDrop,
   setDraggedItem,
