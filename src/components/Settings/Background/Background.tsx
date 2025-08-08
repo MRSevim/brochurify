@@ -12,7 +12,7 @@ import SecondaryTitle from "../../SecondaryTitle";
 import ToggleBtn from "../../ToggleBtn";
 import LinkInput from "../../LinkInput";
 import Select from "../../Select";
-import ResetButton from "../../ResetButton";
+import ResetButton, { ResetButtonWithType } from "../../ResetButton";
 import Slider from "../../Slider";
 import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
 import { CONFIG, StringOrUnd } from "@/utils/Types";
@@ -48,16 +48,7 @@ export const BackgroundColor = () => {
           );
         }}
       />
-      <ResetButton
-        onClick={() => {
-          dispatch(
-            changeElementStyle({
-              types: [type],
-              newValue: "",
-            })
-          );
-        }}
-      />
+      <ResetButtonWithType type={type} />
     </WrapperWithBottomLine>
   );
 };

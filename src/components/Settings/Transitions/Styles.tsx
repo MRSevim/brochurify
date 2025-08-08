@@ -3,6 +3,7 @@ import {
   convertVarIdsToVarNames,
   getSetting,
   getValueFromShorthandStr,
+  outerTypeArr,
 } from "@/utils/Helpers";
 import {
   selectActive,
@@ -13,7 +14,6 @@ import {
 } from "@/redux/hooks";
 import ReplayButton from "../../ReplayButton";
 import { triggerReplay } from "@/redux/slices/replaySlice";
-import { TypeSelect } from "../Animations";
 import { TransformItemPicker } from "../Transform";
 import {
   availableTransitions,
@@ -369,6 +369,52 @@ export const TransitionTypeSettings = ({
         />
       )}
     </>
+  );
+};
+export const TypeSelect = ({
+  setType,
+  type,
+}: {
+  setType: Dispatch<SetStateAction<string>>;
+  type: string;
+}) => {
+  return (
+    <div className="flex items-center justify-between gap-2 mb-2">
+      {outerTypeArr.map((item) => (
+        <TypeItem
+          key={item.text}
+          globalType={type}
+          type={item.type}
+          text={item.text}
+          onClick={() => {
+            setType(item.type);
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+const TypeItem = ({
+  text,
+  onClick,
+  type,
+  globalType,
+}: {
+  text: string;
+  onClick: () => void;
+  type: string;
+  globalType: string;
+}) => {
+  return (
+    <div
+      className={
+        "text-background  p-2 cursor-pointer " +
+        (type === globalType ? " bg-gray" : "bg-text")
+      }
+      onClick={onClick}
+    >
+      {text}
+    </div>
   );
 };
 

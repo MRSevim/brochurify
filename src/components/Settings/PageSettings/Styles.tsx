@@ -1,5 +1,5 @@
 import ColorPicker from "@/components/ColorPicker";
-import ResetButton from "@/components/ResetButton";
+import { ResetButtonWithType } from "@/components/ResetButton";
 import Select from "@/components/Select";
 import Slider from "@/components/Slider";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
@@ -55,7 +55,7 @@ const Color = () => {
           )
         }
       />
-      <ResetButtonWithOnClick type={type} />
+      <ResetButtonWithType type={type} considerPageWise={true} />
     </WrapperWithBottomLine>
   );
 };
@@ -78,7 +78,7 @@ const BackgroundColor = () => {
           )
         }
       />
-      <ResetButtonWithOnClick type={type} />
+      <ResetButtonWithType type={type} considerPageWise={true} />
     </WrapperWithBottomLine>
   );
 };
@@ -103,7 +103,7 @@ const FontSize = () => {
           )
         }
       />
-      <ResetButtonWithOnClick type={type} />
+      <ResetButtonWithType type={type} considerPageWise={true} />
     </WrapperWithBottomLine>
   );
 };
@@ -130,7 +130,7 @@ const FontFamily = () => {
           );
         }}
       />
-      <ResetButtonWithOnClick type={type} />
+      <ResetButtonWithType type={type} considerPageWise={true} />
     </WrapperWithBottomLine>
   );
 };
@@ -157,7 +157,7 @@ const LineHeight = () => {
           )
         }
       />
-      <ResetButtonWithOnClick type={type} />
+      <ResetButtonWithType type={type} considerPageWise={true} />
     </WrapperWithBottomLine>
   );
 };
@@ -232,20 +232,4 @@ const ToggleToBrowserDefaults = () => {
   );
 };
 
-export const ResetButtonWithOnClick = ({ type }: { type: string }) => {
-  const dispatch = useAppDispatch();
-
-  return (
-    <ResetButton
-      onClick={() => {
-        dispatch(
-          changeElementStyle({
-            types: [type],
-            newValue: (getPageWise()[type] as string) || "",
-          })
-        );
-      }}
-    />
-  );
-};
 export default Styles;

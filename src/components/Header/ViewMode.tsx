@@ -6,20 +6,12 @@ import Icon from "../Icon";
 import { FaDesktop } from "react-icons/fa";
 import { capitalizeFirstLetter } from "@/utils/Helpers";
 
-const ViewModeWrapper = () => {
+const Icons = ["desktop", "tablet", "phone"];
+
+const ViewMode = () => {
   const viewMode = useViewModeState();
   const setViewMode = useViewModeSetter();
-  return <ViewMode selected={viewMode} onSelect={(i) => setViewMode(i)} />;
-};
 
-const Icons = ["desktop", "tablet", "phone"];
-const ViewMode = ({
-  selected,
-  onSelect,
-}: {
-  selected: string;
-  onSelect: (i: string) => void;
-}) => {
   return (
     <div className="flex gap-2">
       {Icons.map((icon) => (
@@ -27,10 +19,10 @@ const ViewMode = ({
           key={icon}
           className={
             "p-2 cursor-pointer flex items-center " +
-            (selected === icon ? "bg-text rounded text-background" : "")
+            (viewMode === icon ? "bg-text rounded text-background" : "")
           }
           onClick={() => {
-            onSelect(icon);
+            setViewMode(icon);
           }}
         >
           {icon === "desktop" ? (
@@ -51,4 +43,4 @@ const ViewMode = ({
     </div>
   );
 };
-export default ViewModeWrapper;
+export default ViewMode;

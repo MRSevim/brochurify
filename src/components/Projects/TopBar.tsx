@@ -15,7 +15,6 @@ const TopBar = ({
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(project.title);
   const [loading, setLoading] = useState(false);
-
   const saveChanges = async () => {
     if (title !== project.title) {
       setLoading(true);
@@ -30,9 +29,9 @@ const TopBar = ({
 
   const handleEditClick = async () => {
     if (isEditing) {
-      // User clicked "save"
       await saveChanges();
     }
+
     setIsEditing((prev) => !prev);
   };
 
@@ -40,7 +39,12 @@ const TopBar = ({
     setTitle(e.target.value);
   };
 
-  const handleBlur = async () => {
+  const handleBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+    const nextFocused = e.relatedTarget;
+
+    // If next focus is the edit/save button, ignore blur
+    if (nextFocused?.classList.contains("edit-button")) return;
+
     if (isEditing) {
       await saveChanges();
       setIsEditing(false);

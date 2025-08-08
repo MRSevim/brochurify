@@ -38,7 +38,6 @@ const ElementSettings = () => {
       {isFixed && <FixedSettings />}
       <Background />
       {shouldHaveAlignment && <Alignment />}
-      {/*   <Animations /> */}
       <Transitions />
       {shouldHaveSource && <Source />}
       {isIcon && <IconType />}

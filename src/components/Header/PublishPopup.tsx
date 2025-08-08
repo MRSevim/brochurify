@@ -35,32 +35,6 @@ const PublishPopup = () => {
   const customDomain = useAppSelector((state) => state.editor.customDomain);
   const domainVerified = useAppSelector((state) => state.editor.domainVerified);
   const slugified = addNumberWithDash(slugify(name), length);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!name) return;
-      const get = async () => {
-        setLoading(true);
-        const safeName = slugify(name);
-        if (!safeName) {
-          setLength(0);
-          toast.error(
-            "Please enter a valid prefix. It should not be empty and include at least 1 number or letter."
-          );
-          return;
-        }
-        const { projects, error } = await scanPrefixAction(safeName);
-        if (error) {
-          toast.error(error);
-        } else if (projects) {
-          setLength(projects.length);
-        }
-        setLoading(false);
-      };
-      get();
-    }, 300); // run only after 300ms pause
-
-    return () => clearTimeout(timeout);
-  }, [name]);
 
   return (
     <Popup
@@ -107,7 +81,29 @@ const PublishPopup = () => {
             value={name}
             onChange={(e) => {
               setName(e.target.value);
+              const name = e.target.value;
               setLoading(true);
+              setTimeout(() => {
+                if (!name) return;
+                const get = async () => {
+                  const safeName = slugify(name);
+                  if (!safeName) {
+                    setLength(0);
+                    toast.error(
+                      "Please enter a valid prefix. It should not be empty and include at least 1 number or letter."
+                    );
+                    return;
+                  }
+                  const { projects, error } = await scanPrefixAction(safeName);
+                  if (error) {
+                    toast.error(error);
+                  } else if (projects) {
+                    setLength(projects.length);
+                  }
+                  setLoading(false);
+                };
+                get();
+              }, 300); // run only after 300ms pause
             }}
             desc="This prefix will show up in the url as subdomain. It has to be unique and url friendly or it will be altered by the app."
           />
@@ -154,11 +150,11 @@ const PublishPopup = () => {
           />
         </div>
       )}
+      <div className="mt-4 px-4 text-xs text-muted-foreground italic max-w-4xl mx-auto">
+        *It can take up to 10 minutes for new changes to apply.
+      </div>
       {!loading && (
         <>
-          <div className="mt-4 px-4 text-xs text-muted-foreground italic max-w-4xl mx-auto">
-            *It can take up to 10 minutes for new changes to apply.
-          </div>
           {(prefix || customDomain) && published && (
             <div className="mt-2 text-s p-4">
               Your website is live at following domains:

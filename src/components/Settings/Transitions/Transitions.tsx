@@ -3,6 +3,7 @@ import AddButton from "../../AddButton";
 import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import {
   addToString,
+  availableTimingFunctions,
   convertVarIdsToVarNames,
   getSetting,
   getValueFromShorthandStr,
@@ -18,7 +19,6 @@ import {
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import { filterForFixed } from "./SelectTransition";
 import NumberInput from "../../NumberInput";
-import { SelectTimingFunction } from "../Animations";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import Styles from "./Styles";
@@ -27,6 +27,7 @@ import Popup from "@/components/Popup";
 import { availableTransitions, SelectTransition } from "./SelectTransition";
 import VariableSelector from "@/components/VariableSelector";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
+import Select from "@/components/Select";
 
 const splitValue = ",";
 const type = "transition";
@@ -257,6 +258,25 @@ const PopupComp = ({
         }}
       />
     </Popup>
+  );
+};
+export const SelectTimingFunction = ({
+  type,
+  value,
+  onChange,
+}: {
+  type: string;
+  value: string;
+  onChange: (str: string) => void;
+}) => {
+  return (
+    <Select
+      title={type + " timing function"}
+      options={availableTimingFunctions}
+      selected={value}
+      showStyled={false}
+      onChange={(e) => onChange(e.target.value)}
+    />
   );
 };
 

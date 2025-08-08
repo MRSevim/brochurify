@@ -45,11 +45,6 @@ const TemplateViewer = ({
     get();
   }, []);
 
-  useEffect(() => {
-    if (previewedTemplate) {
-      setPreview(true);
-    } else setPreview(false);
-  }, [previewedTemplate]);
   return (
     <>
       <Popup
@@ -93,6 +88,7 @@ const TemplateViewer = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           setPreviewing(template.title);
+                          setPreview(true);
                         }}
                       />
                     </span>
@@ -111,7 +107,10 @@ const TemplateViewer = ({
             previewedTemplate.editor.pageWise,
             previewedTemplate.editor.variables
           )}
-          onClose={() => setPreviewing(null)}
+          onClose={() => {
+            setPreviewing(null);
+            setPreview(false);
+          }}
           title={previewedTemplate.title}
         />
       )}

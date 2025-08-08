@@ -101,7 +101,6 @@ const EditorInner = ({ children }: { children: React.ReactNode }) => {
 
 const EditorComponents = () => {
   const data = useAppSelector(selectLayout);
-  console.log("editor renders");
   return (
     <>
       {data.map((item) => {

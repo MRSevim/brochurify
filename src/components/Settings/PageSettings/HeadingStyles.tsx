@@ -9,8 +9,8 @@ import {
 } from "@/utils/Helpers";
 import InfoIcon from "@/components/InfoIcon";
 import Slider from "@/components/Slider";
-import ResetButton from "@/components/ResetButton";
-import { Style, CONFIG } from "@/utils/Types";
+import { ResetButtonWithOuterType } from "@/components/ResetButton";
+import { CONFIG } from "@/utils/Types";
 import WrapperWithBottomLine from "@/components/WrapperWithBottomLine";
 
 const HeadingStyles = () => {
@@ -52,7 +52,7 @@ const FontFamily = ({ outerType }: { outerType: string }) => {
           );
         }}
       />
-      <ResetButtonWithOnClick outerType={outerType} innerType={innerType} />
+      <ResetButtonWithOuterType outerType={outerType} innerType={innerType} />
     </>
   );
 };
@@ -78,31 +78,9 @@ const FontSize = ({ outerType }: { outerType: string }) => {
           )
         }
       />
-      <ResetButtonWithOnClick outerType={outerType} innerType={innerType} />
+      <ResetButtonWithOuterType outerType={outerType} innerType={innerType} />
     </>
   );
 };
 
-export const ResetButtonWithOnClick = ({
-  outerType,
-  innerType,
-}: {
-  outerType: string;
-  innerType: string;
-}) => {
-  const dispatch = useAppDispatch();
-  return (
-    <ResetButton
-      onClick={() => {
-        dispatch(
-          changeElementStyle({
-            types: [outerType, innerType],
-            newValue:
-              ((getPageWise()[outerType] as Style)[innerType] as string) || "",
-          })
-        );
-      }}
-    />
-  );
-};
 export default HeadingStyles;
