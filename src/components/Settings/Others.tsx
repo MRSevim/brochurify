@@ -10,7 +10,7 @@ import Checkbox from "../Checkbox";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Transform from "./Transform";
 import Slider from "../Slider";
-import ResetButton from "../ResetButton";
+import { ResetButtonWithType } from "../ResetButton";
 import { StringOrUnd, CONFIG } from "@/utils/Types";
 import VariableSelector from "../VariableSelector";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
@@ -159,11 +159,7 @@ const Opacity = () => {
           dispatch(changeElementStyle({ types: [type], newValue }))
         }
       />
-      <ResetButton
-        onClick={() =>
-          dispatch(changeElementStyle({ types: [type], newValue: "" }))
-        }
-      />
+      <ResetButtonWithType type={type} />
     </WrapperWithBottomLine>
   );
 };

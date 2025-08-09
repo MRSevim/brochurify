@@ -1,7 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { getSetting, getUnit } from "@/utils/Helpers";
 import Border from "./Border";
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
 import Image from "next/image";
 import marginBorderPadding from "../../../public/margin-border-padding.webp";
@@ -41,7 +41,6 @@ const SizingAndBorderInner = () => {
 };
 
 export const WidthAndHeight = () => {
-  const activeId = useAppSelector(selectActive);
   const [outerType, setOuterType] = useState("base");
 
   return (
@@ -54,11 +53,10 @@ export const WidthAndHeight = () => {
       </SecondaryTitle>
 
       <TypeSelect type={outerType} setType={setOuterType} />
-      <div key={outerType + activeId}>
-        <ControllersWrapper outerType={outerType} prefix="" />
-        <ControllersWrapper outerType={outerType} prefix="max-" />
-        <ControllersWrapper outerType={outerType} prefix="min-" />
-      </div>
+
+      <ControllersWrapper outerType={outerType} prefix="" />
+      <ControllersWrapper outerType={outerType} prefix="max-" />
+      <ControllersWrapper outerType={outerType} prefix="min-" />
     </WrapperWithBottomLine>
   );
 };

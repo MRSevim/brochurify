@@ -167,9 +167,6 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
   const [state, setState] = useState<any>(null);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    setState(null);
-  }, [popup]);
   if (!editor) return null;
   const Icons: Icon[] = [
     {
@@ -351,10 +348,12 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
   const buttonClasses = "p-2 rounded border border-text text-[12px] m-px";
 
   const handlePopupOpen = (type: string) => {
+    setState(null);
     setPopup(type);
   };
 
   const handlePopupClose = () => {
+    setState(null);
     setPopup(""); // Close the popup
   };
 
@@ -386,7 +385,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
                 } else if (popup === "letter-spacing") {
                   editor.chain().focus().unsetLetterSpacing().run();
                 }
-                setState(null);
+                handlePopupClose();
               }}
             >
               Unset

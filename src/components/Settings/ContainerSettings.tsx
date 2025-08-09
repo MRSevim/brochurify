@@ -30,7 +30,6 @@ const Padding = () => {
   return (
     <WrapperWithBottomLine>
       <Slider
-        key={i}
         value={getValueFromShorthandStr(variable, i)}
         title="Horizontal padding"
         onChange={(e) =>

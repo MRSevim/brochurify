@@ -391,11 +391,11 @@ export const getValueFromShorthandStr = (
   return values[i];
 };
 
-const findInVariables = (str: string, variables: Variable[]) => {
+export const findInVariables = (str: string, variables: Variable[]) => {
   const idMatch = str.match(/var\(--(.+?)\)/);
   const id = idMatch?.[1];
   const variable = variables.find((variable) => variable.id === id);
-  return variable?.name || str;
+  return variable;
 };
 
 export const convertVarIdToVarName = (
@@ -407,18 +407,18 @@ export const convertVarIdToVarName = (
   const variables = useAppSelector(selectVariables);
 
   if (str.startsWith("var(--")) {
-    return findInVariables(str, variables);
+    return findInVariables(str, variables)?.name;
   } else {
     return str;
   }
 };
 
-export const convertVarIdsToVarNames = (
+export const convertVarIdsToVars = (
   arr: string[],
   useAppSelector: UseSelector<{
     editor: EditorState;
   }>
-): string[] => {
+) => {
   const variables = useAppSelector(selectVariables);
   return arr.map((item) => {
     if (item.startsWith("var(--")) {

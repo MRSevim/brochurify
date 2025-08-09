@@ -1,10 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import {
-  convertVarIdsToVarNames,
-  getSetting,
-  getValueFromShorthandStr,
-  outerTypeArr,
-} from "@/utils/Helpers";
+import { getSetting, outerTypeArr } from "@/utils/Helpers";
 import {
   selectActive,
   selectActiveType,
@@ -106,13 +101,6 @@ const TransitionValueAddZone = ({
 
   const activeStyleKeys = activeStyles.map(([key]) => key);
 
-  const activeStylesFiltered = activeStyles.map(([key, value]) =>
-    value && typeof value === "string" && value?.startsWith("var") ? value : key
-  );
-  const activeStylesArr = convertVarIdsToVarNames(
-    activeStylesFiltered,
-    useAppSelector
-  );
   return (
     <>
       <AddButton
@@ -141,28 +129,26 @@ const TransitionValueAddZone = ({
           }}
         />
       )}
-      {activeStylesArr && (
+      {activeStyles && (
         <div className="mt-2 w-full">
-          {activeStylesArr.map((item, i) => {
-            const isVar = activeStylesFiltered[i].startsWith("var");
+          {activeStyles.map((item, i) => {
             return (
               <EditableListItem
                 key={i}
                 onEditClick={() => {
-                  setInnerType(activeStylesArr[i]);
+                  setInnerType(item[0]);
                   setShowPopup(true);
                 }}
-                showEditButton={!isVar}
+                showEditButton={true}
                 onDeleteClick={() => {
-                  handleChange(activeStyleKeys[i], undefined);
+                  handleChange(item[0], undefined);
                 }}
               >
-                {isVar
-                  ? item
-                  : availableTransitions.find(
-                      (transition) =>
-                        transition.value === getValueFromShorthandStr(item, 0)
-                    )?.title}
+                {
+                  availableTransitions.find(
+                    (transition) => transition.value === item[0]
+                  )?.title
+                }
               </EditableListItem>
             );
           })}

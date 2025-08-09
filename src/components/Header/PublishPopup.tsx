@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import Popup from "../Popup";
 import { usePublishPopup } from "@/contexts/PublishPopupContext";
 import TextInput from "../TextInput";
@@ -35,6 +35,7 @@ const PublishPopup = () => {
   const customDomain = useAppSelector((state) => state.editor.customDomain);
   const domainVerified = useAppSelector((state) => state.editor.domainVerified);
   const slugified = addNumberWithDash(slugify(name), length);
+  const latestNameRef = useRef(""); //this is here to prevent stale fetch updates
 
   return (
     <Popup
@@ -81,13 +82,15 @@ const PublishPopup = () => {
             value={name}
             onChange={(e) => {
               setName(e.target.value);
-              const name = e.target.value;
+              const value = e.target.value;
+              latestNameRef.current = value; // track the most recent input
               setLoading(true);
               setTimeout(() => {
-                if (!name) return;
+                if (!value) return;
                 const get = async () => {
-                  const safeName = slugify(name);
+                  const safeName = slugify(value);
                   if (!safeName) {
+                    if (latestNameRef.current !== value) return; // stale
                     setLength(0);
                     toast.error(
                       "Please enter a valid prefix. It should not be empty and include at least 1 number or letter."
@@ -95,6 +98,10 @@ const PublishPopup = () => {
                     return;
                   }
                   const { projects, error } = await scanPrefixAction(safeName);
+
+                  // Only update if this result is still the latest input
+                  if (latestNameRef.current !== value) return;
+
                   if (error) {
                     toast.error(error);
                   } else if (projects) {

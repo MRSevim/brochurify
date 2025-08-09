@@ -74,12 +74,6 @@ const PopupComp = ({
   const [name, setName] = useState(editedVar?.name || "");
   const editing = !!editedVar;
 
-  useEffect(() => {
-    if (!editedVar?.value && type === "transition") {
-      setValue("");
-    }
-  }, [type, editedVar]);
-
   return (
     <Popup
       editing={editing}
@@ -140,7 +134,7 @@ const PopupComp = ({
         <div className="flex flex-col items-center">
           <TransitionPropertyAddZone
             variablesAvailable={false}
-            transitionsString={value}
+            transitionsString={value || ""}
             onAction={(newVal: string) => setValue(newVal)}
           />
         </div>

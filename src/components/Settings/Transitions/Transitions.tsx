@@ -4,7 +4,8 @@ import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import {
   addToString,
   availableTimingFunctions,
-  convertVarIdsToVarNames,
+  convertVarIdsToVars,
+  findInVariables,
   getSetting,
   getValueFromShorthandStr,
   makeArraySplitFrom,
@@ -13,6 +14,7 @@ import {
 } from "@/utils/Helpers";
 import {
   selectActiveType,
+  selectVariables,
   useAppDispatch,
   useAppSelector,
 } from "@/redux/hooks";
@@ -70,11 +72,16 @@ export const TransitionPropertyAddZone = ({
   const [editing, setEditing] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const transitionsArray = makeArraySplitFrom(transitionsString, splitValue);
-  const transitions = convertVarIdsToVarNames(transitionsArray, useAppSelector);
+  const transitions = convertVarIdsToVars(transitionsArray, useAppSelector);
 
   const firstValueNotInsideTransitions =
     availableTransitions.find(
-      (option) => !transitions.some((t) => t.startsWith(option.value))
+      (option) =>
+        !transitions.some((t) =>
+          typeof t === "string"
+            ? t?.includes(option.value)
+            : t?.value.includes(option.value)
+        )
     )?.value || availableTransitions[0].value;
 
   const handleAddition = (editedStr: string) => {
@@ -123,7 +130,7 @@ export const TransitionPropertyAddZone = ({
       )}
       {showPopup && (
         <PopupComp
-          transitions={transitions}
+          transitions={transitionsArray}
           handleAddOrSave={(value) => {
             if (!editing) {
               handleAddition(value);
@@ -136,7 +143,9 @@ export const TransitionPropertyAddZone = ({
           editing={editing}
           editedStr={
             editing
-              ? transitions[editedIndex]
+              ? typeof transitions[editedIndex] === "string"
+                ? transitions[editedIndex]
+                : ""
               : firstValueNotInsideTransitions + " 100ms ease-in 0ms"
           }
           onClose={() => {
@@ -150,7 +159,7 @@ export const TransitionPropertyAddZone = ({
         <>
           <div className="mt-2 w-full">
             {transitions.map((item, i) => {
-              const isVar = transitionsArray[i].startsWith("var");
+              const isVar = typeof item !== "string";
 
               return (
                 <EditableListItem
@@ -166,7 +175,7 @@ export const TransitionPropertyAddZone = ({
                   showEditButton={!isVar}
                 >
                   {isVar
-                    ? item
+                    ? item?.name || ""
                     : availableTransitions.find(
                         (transition) =>
                           transition.value === getValueFromShorthandStr(item, 0)
@@ -198,6 +207,7 @@ const PopupComp = ({
   const handleChange = (value: string) => {
     setEditedString(value);
   };
+  const variables = useAppSelector(selectVariables);
   const activeType = useAppSelector(selectActiveType) || "";
 
   if (!editedStr) return;
@@ -215,7 +225,15 @@ const PopupComp = ({
         <SelectTransition
           options={availableTransitions
             .filter(
-              (option) => !transitions.some((t) => t.startsWith(option.value))
+              (option) =>
+                !transitions.some((t) => {
+                  const variable = findInVariables(t, variables);
+
+                  return (
+                    variable?.value.includes(option.value) ||
+                    t.startsWith(option.value)
+                  );
+                })
             )
             .filter((option) => filterForFixed(option, activeType))}
           value={transitionProperty}

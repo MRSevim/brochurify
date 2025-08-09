@@ -7,7 +7,7 @@ import {
   useAppSelector,
 } from "@/redux/hooks";
 import Text from "./Text";
-import ResetButton from "@/components/ResetButton";
+import { ResetButtonWithType } from "@/components/ResetButton";
 import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
 import Slider from "@/components/Slider";
 import { changeElementStyle } from "@/redux/slices/editorSlice";
@@ -47,11 +47,7 @@ const TextColor = () => {
           dispatch(changeElementStyle({ types: [type], newValue }))
         }
       />
-      <ResetButton
-        onClick={() => {
-          dispatch(changeElementStyle({ types: [type], newValue: "" }));
-        }}
-      />
+      <ResetButtonWithType type={type} />
     </WrapperWithBottomLine>
   );
 };
@@ -74,11 +70,7 @@ const FontFamily = () => {
           );
         }}
       />
-      <ResetButton
-        onClick={() => {
-          dispatch(changeElementStyle({ types: [type], newValue: "" }));
-        }}
-      />
+      <ResetButtonWithType type={type} />
     </WrapperWithBottomLine>
   );
 };
@@ -102,11 +94,7 @@ const FontSize = () => {
           );
         }}
       />
-      <ResetButton
-        onClick={() => {
-          dispatch(changeElementStyle({ types: [type], newValue: "" }));
-        }}
-      />
+      <ResetButtonWithType type={type} />
     </WrapperWithBottomLine>
   );
 };
@@ -124,7 +112,7 @@ export const FontSizePicker = ({
   return (
     <>
       <Slider
-        value={sliderValue}
+        value={sliderValue || ""}
         title="Pick a font size"
         step={1}
         onChange={onChange}

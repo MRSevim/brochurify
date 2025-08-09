@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 import DeleteButton from "../DeleteButton";
 import { useUser } from "@/contexts/UserContext";
-import SubscribeIcon from "../SubscribeIcon";
 import { useSubscribePopup } from "@/contexts/SubscribePopupContext";
 import {
   ALLOWED_ICON_TYPES,
@@ -28,13 +27,22 @@ const UploadWrapper = ({
   onEditOrAdd: (e: string) => void;
 }) => {
   const [popup, setPopup] = useState(false);
+  const [isSubbed, , setSubPopup] = useSubscribePopup();
   const [user] = useUser();
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
   if (!user) return <>{children}</>;
+
   return (
     <WrapperWithBottomLine>
       <div className="flex flex-col gap-2 items-center">
-        <Button text="Image Library" onClick={() => setPopup(true)} />
+        <Button
+          text="Image Library"
+          onClick={() => {
+            if (!isSubbed) {
+              setSubPopup(true);
+            } else setPopup(true);
+          }}
+        />
         <p className="font-bold italic">Or</p>
       </div>
       {children}
@@ -69,19 +77,12 @@ const Button = ({
   onClick: () => void;
   loading?: boolean;
 }) => {
-  const [isSubbed] = useSubscribePopup();
-
   return (
     <div className="flex gap-2">
-      <button
-        onClick={onClick}
-        className="p-2 bg-text text-background"
-        disabled={!isSubbed}
-      >
+      <button onClick={onClick} className="p-2 bg-text text-background">
         {!loading && text}
         {loading && <MiniLoadingSvg />}
       </button>
-      {!isSubbed && <SubscribeIcon />}
     </div>
   );
 };
@@ -158,7 +159,7 @@ const ImageUploader = ({
   };
 
   return (
-    <div className="">
+    <div>
       <ImagesList
         setImages={setImages}
         selectedImageUrl={selectedImageUrl}

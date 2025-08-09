@@ -31,16 +31,26 @@ const getFontSize = (editor: Editor, pageWise: PageWise) => {
 };
 
 const getFontFamily = (editor: Editor, pageWise: PageWise) => {
-  const selectedFontFamily = editor
-    .getAttributes("textStyle")
-    .fontFamily?.includes('"')
-    ? editor.getAttributes("textStyle").fontFamily?.replace(/"/g, "'")
+  let fontFamily = editor.getAttributes("textStyle").fontFamily
+    ? editor.getAttributes("textStyle").fontFamily
     : editor.isActive("heading")
-    ? pageWise[CONFIG.headings]?.["font-family"]
-    : pageWise["font-family"] || "inherit";
+      ? pageWise[CONFIG.headings]?.["font-family"]
+      : pageWise["font-family"] || "inherit";
 
-  return selectedFontFamily;
+  // Normalize double quotes to single quotes
+  fontFamily = fontFamily.replace(/"/g, "'");
+
+  // If it doesn't already start with a quote and has a comma, wrap first word
+  if (!/^['"]/.test(fontFamily) && fontFamily.includes(",")) {
+    const firstCommaIndex = fontFamily.indexOf(",");
+    fontFamily =
+      `'${fontFamily.slice(0, firstCommaIndex).trim()}',` +
+      fontFamily.slice(firstCommaIndex + 1);
+  }
+
+  return fontFamily;
 };
+
 const getColor = (editor: Editor, pageWise: PageWise) =>
   editor.getAttributes("textStyle").color || pageWise.color || "#000000";
 

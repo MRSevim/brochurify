@@ -1,4 +1,4 @@
-import ResetButton from "@/components/ResetButton";
+import { ResetButtonWithType } from "@/components/ResetButton";
 import Select from "@/components/Select";
 import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/components/ToggleVisibilityWrapper";
@@ -153,16 +153,7 @@ const Gap = () => {
           )
         }
       />
-      <ResetButton
-        onClick={() => {
-          dispatch(
-            changeElementStyle({
-              types: [type],
-              newValue: "",
-            })
-          );
-        }}
-      />
+      <ResetButtonWithType type={type} />
     </WrapperWithBottomLine>
   );
 };
@@ -240,16 +231,7 @@ const HorizontalOrVertical = ({
           );
         }}
       />
-      <ResetButton
-        onClick={() =>
-          dispatch(
-            changeElementStyle({
-              types: [type],
-              newValue: "",
-            })
-          )
-        }
-      />
+      <ResetButtonWithType type={type} />
     </WrapperWithBottomLine>
   );
 };
