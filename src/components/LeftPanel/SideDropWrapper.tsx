@@ -43,7 +43,7 @@ const SideDropZone = memo(
     const selected = addLocation?.id === id && addLocation?.where === where;
     const [draggingOver, setDraggingOver] = useState(false);
     const commonClasses =
-      "cursor-pointer absolute flex justify-center align-center left-0 right-0 h-full w-full opacity-0 hover:opacity-100 transition-opacity duration-200 ";
+      "cursor-pointer absolute flex justify-center align-center left-0 right-0 ms-2 me-4 h-1 opacity-0 hover:opacity-100 transition-opacity duration-200 ";
     const selectedClasses = "opacity-100 bg-activeBlue";
 
     const handleAddLocationClick = (where: Where) => {
