@@ -68,26 +68,24 @@ const SideDropZone = memo(
       );
     };
     return (
-      <div className="min-w-40">
-        <div
-          onClick={() => handleAddLocationClick(where)}
-          onDrop={(e) => {
-            setDraggingOver(false);
-            handleSideDrop(e, where);
-          }}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDraggingOver(true);
-          }}
-          onDragLeave={() => setDraggingOver(false)}
-          className={
-            commonClasses +
-            extraClass +
-            (draggingOver || selected ? selectedClasses : "bg-hoveredBlue")
-          }
-        >
-          <AddSign />
-        </div>
+      <div
+        onClick={() => handleAddLocationClick(where)}
+        onDrop={(e) => {
+          setDraggingOver(false);
+          handleSideDrop(e, where);
+        }}
+        onDragOver={(e) => {
+          e.preventDefault();
+          setDraggingOver(true);
+        }}
+        onDragLeave={() => setDraggingOver(false)}
+        className={
+          commonClasses +
+          extraClass +
+          (draggingOver || selected ? selectedClasses : "bg-hoveredBlue")
+        }
+      >
+        <AddSign />
       </div>
     );
   }
