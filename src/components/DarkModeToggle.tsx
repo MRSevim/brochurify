@@ -12,7 +12,6 @@ const DarkModeToggle = () => {
             title="Dark/Light Mode Switch"
             type={!lightMode ? "moon-fill" : "moon"}
             size="24px"
-            onClick={() => {}}
           />
         }
         checked={!lightMode}

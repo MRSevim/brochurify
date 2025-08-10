@@ -2,10 +2,10 @@ import { useUser } from "@/contexts/UserContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ToggleButton } from "../LeftPanel";
 import { logoutAction } from "@/utils/serverActions/userActions";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Icon from "../Icon";
 
 const UserMenu = () => {
   const [user, setUser] = useUser();
@@ -102,3 +102,24 @@ const UserMenu = () => {
 };
 
 export default UserMenu;
+
+const ToggleButton = ({
+  onClick,
+  toggled,
+}: {
+  onClick: () => void;
+  toggled: boolean;
+}) => {
+  const type = toggled ? "chevron-up" : "chevron-down";
+  return (
+    <button
+      className="p-1"
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick();
+      }}
+    >
+      <Icon type={type} size="20px" title="Toggle" />
+    </button>
+  );
+};

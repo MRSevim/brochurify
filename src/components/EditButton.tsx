@@ -8,7 +8,7 @@ const EditButton = ({
 }: {
   editing?: boolean;
   loading?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
     <button

@@ -14,7 +14,6 @@ const FocusWrapper = ({
 }) => {
   const dispatch = useAppDispatch();
   const activeId = useAppSelector(selectActive);
-  /*     console.log("focuswrapper rendered ", id); */
 
   return (
     <div

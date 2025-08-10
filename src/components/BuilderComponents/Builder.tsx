@@ -1,5 +1,5 @@
 import Editor from "@/components/BuilderComponents/Editor";
-import LeftPanel from "@/components/LeftPanel";
+import LeftPanel from "../LeftPanel/LeftPanel";
 import RightPanel from "@/components/RightPanel";
 import Loading from "@/components/Loading";
 import { useEffect, useState } from "react";
