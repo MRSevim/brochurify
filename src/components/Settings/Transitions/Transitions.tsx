@@ -68,8 +68,8 @@ export const TransitionPropertyAddZone = ({
   variablesAvailable?: boolean;
   onAction: (newVal: string) => void;
 }) => {
-  const [editedIndex, setEditedIndex] = useState<number>(0);
-  const [editing, setEditing] = useState(false);
+  const [editedIndex, setEditedIndex] = useState<number | undefined>(undefined);
+  const editing = editedIndex !== undefined;
   const [showPopup, setShowPopup] = useState(false);
   const transitionsArray = makeArraySplitFrom(transitionsString, splitValue);
   const transitions = convertVarIdsToVars(transitionsArray, useAppSelector);
@@ -136,7 +136,7 @@ export const TransitionPropertyAddZone = ({
               handleAddition(value);
             } else {
               handleEditOrDeletion(editedIndex, false, value);
-              setEditing(false);
+              setEditedIndex(undefined);
             }
             setShowPopup(false);
           }}
@@ -149,8 +149,7 @@ export const TransitionPropertyAddZone = ({
               : firstValueNotInsideTransitions + " 100ms ease-in 0ms"
           }
           onClose={() => {
-            setEditedIndex(0);
-            setEditing(false);
+            setEditedIndex(undefined);
             setShowPopup(false);
           }}
         />
@@ -166,7 +165,6 @@ export const TransitionPropertyAddZone = ({
                   key={i}
                   onEditClick={() => {
                     setEditedIndex(i);
-                    setEditing(true);
                     setShowPopup(true);
                   }}
                   onDeleteClick={() => {

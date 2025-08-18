@@ -12,7 +12,7 @@ import Popup from "@/components/Popup";
 import PricingComparison from "@/components/Homepage/PricingComparison";
 import { useRouter } from "next/navigation";
 
-type SubscribePopup = [boolean, boolean, Dispatch<SetStateAction<boolean>>];
+type SubscribePopup = [boolean, Dispatch<SetStateAction<boolean>>];
 
 const subscribePopupContext = createContext<SubscribePopup | null>(null);
 
@@ -33,7 +33,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   return (
-    <subscribePopupContext.Provider value={[isSubbed, popup, setPopup]}>
+    <subscribePopupContext.Provider value={[isSubbed, setPopup]}>
       {popup && (
         <Popup
           className="max-w-4xl"

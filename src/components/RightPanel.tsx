@@ -35,9 +35,7 @@ const RightPanelInner = () => {
     >
       {draggedItem ? (
         <div className="mt-8 text-center">
-          <SmallText>
-            Stop dragging to see the available pagewise and element settings
-          </SmallText>
+          <SmallText text="Stop dragging to see the available pagewise and element settings" />
         </div>
       ) : (
         <>

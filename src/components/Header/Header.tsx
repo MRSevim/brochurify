@@ -28,7 +28,7 @@ import ZoomView from "./ZoomView";
 import UserMenu from "./UserMenu";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "react-toastify";
-import { usePreview } from "@/contexts/PreviewContext";
+import { usePreviewSetter, usePreviewState } from "@/contexts/PreviewContext";
 import PublishPopup from "./PublishPopup";
 import { usePublishPopup } from "@/contexts/PublishPopupContext";
 
@@ -48,7 +48,8 @@ const Header = () => {
 
 const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
   const [user] = useUser();
-  const [preview, setPreview] = usePreview();
+  const preview = usePreviewState();
+  const setPreview = usePreviewSetter();
   const isTemplate =
     useAppSelector((state) => state.editor.type) === "template";
   const projectId = useAppSelector(selectProjectId);

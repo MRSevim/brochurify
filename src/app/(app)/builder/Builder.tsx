@@ -4,10 +4,10 @@ import Preview from "@/components/Preview";
 import { useEffect } from "react";
 import { useAppDispatch } from "@/redux/hooks";
 import { setActive } from "@/redux/slices/editorSlice";
-import { usePreview } from "@/contexts/PreviewContext";
+import { usePreviewState } from "@/contexts/PreviewContext";
 
 export default function Builder() {
-  const [preview] = usePreview();
+  const preview = usePreviewState();
 
   const dispatch = useAppDispatch();
 

@@ -1,5 +1,7 @@
-const SmallText = ({ children }: { children: React.ReactNode }) => {
-  return <p className="font-light text-sm text-center">{children} </p>;
-};
+import { memo } from "react";
+
+const SmallText = memo(({ text }: { text: string }) => {
+  return <p className="font-light text-sm text-center">{text} </p>;
+});
 
 export default SmallText;

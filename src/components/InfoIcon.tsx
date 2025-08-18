@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import SpeechBubble from "./SpeechBubble";
 
-const InfoIcon = memo(({ text }: { text: React.ReactNode }) => {
+const InfoIcon = memo(({ text }: { text: string }) => {
   return (
     <i
       className="bi bi-info-circle info-icon relative"

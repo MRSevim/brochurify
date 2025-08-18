@@ -7,7 +7,7 @@ import Icon from "../Icon";
 import { PreviewModal } from "../PreviewModal";
 import { generateHTML } from "@/utils/HTMLGenerator";
 import MiniLoadingSvg from "../MiniLoadingSvg";
-import { usePreview } from "@/contexts/PreviewContext";
+import { usePreviewSetter } from "@/contexts/PreviewContext";
 
 const TemplateViewer = ({
   positiveActionText,
@@ -23,7 +23,7 @@ const TemplateViewer = ({
   const [templates, setTemplates] = useState<Record<string, any>[] | null>(
     null
   );
-  const [, setPreview] = usePreview();
+  const setPreview = usePreviewSetter();
   const [getLoading, setGetLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [templateState, setInitialTemplate] = useState("Blank");

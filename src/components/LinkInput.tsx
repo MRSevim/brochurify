@@ -22,12 +22,10 @@ const LinkInput = ({
           {title}
         </label>
         <InfoIcon
-          text={
-            <>
-              {"This should start with https:// or # for anchors "} <br />
-              {desc ? "and " + desc : ""}
-            </>
-          }
+          text={`
+              This should start with https:// or # for anchors 
+              ${desc ? "and " + desc : ""}
+            `}
         />
       </div>
       <input

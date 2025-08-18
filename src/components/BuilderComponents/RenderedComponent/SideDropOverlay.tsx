@@ -140,7 +140,7 @@ const AddSign = () => {
   const [marginTop, setMarginTop] = useState<number>(0);
   const [marginLeft, setMarginLeft] = useState<number>(0);
   const ref = useRef<HTMLDivElement | null>(null);
-  const editorRef = useEditorRef();
+  /* const editorRef = useEditorRef(); */
 
   //This code causes headache by causing jumps on ui
   /*   const updateSignPosition = () => {

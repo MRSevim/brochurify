@@ -1,7 +1,7 @@
 import React from "react";
 import SmallText from "./SmallText";
 
-const SpeechBubble = ({ text }: { text: React.ReactNode }) => {
+const SpeechBubble = ({ text }: { text: string }) => {
   return (
     <div
       className="opacity-0 transition-all duration-300 info-text absolute right-0 top-full
@@ -9,7 +9,7 @@ const SpeechBubble = ({ text }: { text: React.ReactNode }) => {
             z-50
             before:absolute before:content-[''] before:w-0 before:h-0 before:border-8 before:border-transparent before:border-b-zinc-800 before:right-0 before:bottom-full"
     >
-      <SmallText>{text}</SmallText>
+      <SmallText text={text} />
     </div>
   );
 };

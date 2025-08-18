@@ -91,7 +91,7 @@ const VariableSelector = ({
               </div>
             )}
             {availableVars.length === 0 && (
-              <SmallText>No variables of type {type} is set</SmallText>
+              <SmallText text={`No variables of type ${type} is set`} />
             )}
           </div>
         </Popup>

@@ -27,7 +27,7 @@ const UploadWrapper = ({
   onEditOrAdd: (e: string) => void;
 }) => {
   const [popup, setPopup] = useState(false);
-  const [isSubbed, , setSubPopup] = useSubscribePopup();
+  const [isSubbed, setSubPopup] = useSubscribePopup();
   const [user] = useUser();
   const [selectedImageUrl, setSelectedImageUrl] = useState("");
   if (!user) return <>{children}</>;

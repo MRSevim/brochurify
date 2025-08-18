@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-const MiniLoadingSvg = () => {
+const MiniLoadingSvg = memo(() => {
   return (
     <svg className={"size-5 animate-spin mt-1 "} viewBox="0 0 24 24">
       {" "}
@@ -19,6 +19,6 @@ const MiniLoadingSvg = () => {
       ></path>
     </svg>
   );
-};
+});
 
 export default MiniLoadingSvg;

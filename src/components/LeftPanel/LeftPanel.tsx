@@ -77,8 +77,6 @@ const LayoutItem = memo(
     const dispatch = useAppDispatch();
     const showButtons = child && child.length > 0;
 
-    console.log("layout item rendered", type);
-
     const handleDelete = useCallback(
       (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -107,31 +105,28 @@ const LayoutItem = memo(
   }
 );
 
-const ChildVisibilityWrapper = memo(
-  ({
-    id,
-    depth,
-    child,
-  }: {
-    id: string;
-    depth: number;
-    child: Layout[] | undefined;
-  }) => {
-    const visibilityMap = useVisibilityMapState();
-    const isExpanded = visibilityMap.get(id) ?? false;
-    return (
-      <>
-        {isExpanded && (
-          <>
-            {/* Render child elements recursively */}
-            <ChildLayout child={child} depth={depth} />
-          </>
-        )}
-      </>
-    );
-  }
-);
-
+const ChildVisibilityWrapper = ({
+  id,
+  depth,
+  child,
+}: {
+  id: string;
+  depth: number;
+  child: Layout[] | undefined;
+}) => {
+  const visibilityMap = useVisibilityMapState();
+  const isExpanded = visibilityMap.get(id) ?? false;
+  return (
+    <>
+      {isExpanded && (
+        <>
+          {/* Render child elements recursively */}
+          <ChildLayout child={child} depth={depth} />
+        </>
+      )}
+    </>
+  );
+};
 const ChildLayout = memo(
   ({ depth, child }: { depth: number; child: Layout[] | undefined }) => {
     return (

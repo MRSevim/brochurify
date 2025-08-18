@@ -169,7 +169,7 @@ const Reverse = () => {
         title="Reverse on mobile and below"
         outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
       />
-      <SmallText>Only reverses if items are stacked</SmallText>
+      <SmallText text="Only reverses if items are stacked" />
     </WrapperWithBottomLine>
   );
 };

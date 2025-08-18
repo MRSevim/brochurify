@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/redux/hooks";
 import { ViewActions } from "./Header/Header";
 import { useViewModeState } from "@/contexts/ViewModeContext";
-import { usePreview } from "@/contexts/PreviewContext";
+import { usePreviewSetter } from "@/contexts/PreviewContext";
 
 export const PreviewModal = ({
   html,
@@ -13,7 +13,7 @@ export const PreviewModal = ({
   title?: string;
 }) => {
   const viewMode = useViewModeState();
-  const [, setPreview] = usePreview();
+  const setPreview = usePreviewSetter();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
 
   const maxWidth =

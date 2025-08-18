@@ -3,23 +3,29 @@ import {
   SetStateAction,
   useContext,
   useState,
-  Dispatch,
   createContext,
   useEffect,
 } from "react";
 import { LayoutToggleContext, SettingsToggleContext } from "./ToggleContext";
 import { useViewModeSetter } from "./ViewModeContext";
 
-type Preview = [boolean, Dispatch<SetStateAction<boolean>>];
+const PreviewStateContext = createContext<boolean | undefined>(undefined);
 
-const previewContext = createContext<Preview | null>(null);
+const PreviewSetterContext = createContext<
+  React.Dispatch<SetStateAction<boolean>> | undefined
+>(undefined);
 
-export const usePreview = (): Preview => {
-  const context = useContext(previewContext);
-  if (!context) {
-    throw new Error("usePreview must be used within a previewProvider");
-  }
-  return context;
+export const usePreviewState = () => {
+  const value = useContext(PreviewStateContext);
+  if (value === undefined)
+    throw new Error("usePreviewState must be used inside provider");
+  return value;
+};
+
+export const usePreviewSetter = () => {
+  const setter = useContext(PreviewSetterContext);
+  if (!setter) throw new Error("usePreviewSetter Must be used inside provider");
+  return setter;
 };
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
@@ -39,8 +45,10 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   }, [preview]);
 
   return (
-    <previewContext.Provider value={[preview, setPreview]}>
-      {children}
-    </previewContext.Provider>
+    <PreviewStateContext.Provider value={preview}>
+      <PreviewSetterContext.Provider value={setPreview}>
+        {children}
+      </PreviewSetterContext.Provider>
+    </PreviewStateContext.Provider>
   );
 };

@@ -54,7 +54,6 @@ const SideDropZone = memo(
         setToggle(true);
       }
     };
-
     const handleSideDrop = (e: DragEvent<HTMLElement>, where: Where) => {
       e.preventDefault();
       dispatch(
@@ -90,10 +89,12 @@ const SideDropZone = memo(
     );
   }
 );
-const AddSign = () => (
-  <div className="z-40 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit">
-    +
-  </div>
-);
+const AddSign = memo(() => {
+  return (
+    <div className="z-40 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm p-px px-1 rounded bg-inherit">
+      +
+    </div>
+  );
+});
 
 export default SideDropWrapper;

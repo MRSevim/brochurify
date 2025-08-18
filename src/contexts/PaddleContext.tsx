@@ -66,7 +66,6 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
           pwCustomer: {},
         });
       }
-      console.log("retain id updated");
     }
   };
   return (
