@@ -46,9 +46,10 @@ const LayoutInner = memo(() => {
     <>
       <AddSection />
       <div className="overflow-auto gutter-stable z-10 py-2">
-        {data?.map((item) => {
+        {data?.map((item, i) => {
           return (
             <LayoutItem
+              firstItem={i === 0}
               key={item.id}
               id={item.id}
               type={item.type}
@@ -64,11 +65,13 @@ const LayoutInner = memo(() => {
 
 const LayoutItem = memo(
   ({
+    firstItem,
     id,
     type,
     child,
     depth,
   }: {
+    firstItem: boolean;
     child: Layout[] | undefined;
     id: string;
     type: string;
@@ -87,7 +90,7 @@ const LayoutItem = memo(
 
     return (
       <>
-        <SideDropWrapper depth={depth} id={id}>
+        <SideDropWrapper depth={depth} id={id} firstItem={firstItem}>
           <FocusWrapper id={id}>
             <CenterDropWrapper id={id}>
               {" "}
@@ -131,8 +134,9 @@ const ChildLayout = memo(
   ({ depth, child }: { depth: number; child: Layout[] | undefined }) => {
     return (
       <>
-        {child?.map((childItem) => (
+        {child?.map((childItem, i) => (
           <LayoutItem
+            firstItem={i === 0}
             key={childItem.id}
             id={childItem.id}
             type={childItem.type}
