@@ -1,20 +1,19 @@
 import {
   selectActive,
-  selectHoveredId,
-  useAppDispatch,
+  selectDraggedOver,
+  selectHovered,
   useAppSelector,
 } from "@/redux/hooks";
 import { componentList } from "@/utils/ComponentsList";
 import { findElementById } from "@/utils/EditorHelpers";
 import { useIntersectionObserver } from "@/utils/hooks/useIntersectionObserver";
 import { CONFIG, Layout, Style } from "@/utils/Types";
-import { memo, useRef, useState } from "react";
+import { memo, useRef } from "react";
 import { SideDropOverlay } from "./SideDropOverlay";
 import FocusWrapper from "@/components/FocusWrapper";
-import { handleDrop } from "@/redux/slices/editorSlice";
 
 const RenderedComponent = memo(
-  ({ item }: { item: Layout }) => {
+  ({ item, firstItem }: { item: Layout; firstItem: boolean }) => {
     const Component = componentList[item.type as keyof typeof componentList];
     const id = item.id;
     const replayTrigger = useAppSelector((state) => {
@@ -54,9 +53,9 @@ const RenderedComponent = memo(
       [replayTrigger, item.props.style, wrapperRef],
       wrapperRef
     );
-
     return (
       <SideDropOverlay
+        firstItem={firstItem}
         id={item.id}
         type={item.type}
         style={item.props.style}
@@ -118,8 +117,12 @@ const RenderedComponent = memo(
 const EditorChildren = memo(({ items }: { items: Layout[] | undefined }) => {
   return (
     <>
-      {items?.map((childItem) => (
-        <RenderedComponent key={childItem.id} item={childItem} />
+      {items?.map((childItem, i) => (
+        <RenderedComponent
+          firstItem={i === 0}
+          key={childItem.id}
+          item={childItem}
+        />
       ))}
     </>
   );
@@ -132,11 +135,11 @@ const CenterDropOverlay = ({
   id: string;
   children: React.ReactNode;
 }) => {
-  const dispatch = useAppDispatch();
-  const hovered = useAppSelector(selectHoveredId) === id;
-  const [draggingOver, setDraggingOver] = useState(false);
-  const active = useAppSelector(selectActive) === id || draggingOver;
-
+  const itemHovered = useAppSelector(selectHovered);
+  const hovered = itemHovered?.id === id && !itemHovered.where;
+  const itemDraggedOver = useAppSelector(selectDraggedOver);
+  const draggedOver = itemDraggedOver?.id === id && !itemDraggedOver.where;
+  const active = useAppSelector(selectActive) === id || draggedOver;
   return (
     <>
       <div
@@ -145,18 +148,6 @@ const CenterDropOverlay = ({
           (hovered ? " hovered" : "") +
           (active ? " active" : "")
         }
-        onDrop={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          setDraggingOver(false);
-          dispatch(handleDrop({ targetId: id, addLocation: null }));
-        }}
-        onDragOver={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          setDraggingOver(true);
-        }}
-        onDragLeave={() => setDraggingOver(false)}
       >
         {children}
       </div>

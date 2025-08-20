@@ -1,12 +1,19 @@
 import { useAddSectionToggleSetter } from "@/contexts/AddSectionToggleContext";
 import {
   selectAddLocation,
+  selectDraggedOver,
+  selectHovered,
   useAppDispatch,
   useAppSelector,
 } from "@/redux/hooks";
-import { handleDrop, setAddLocation } from "@/redux/slices/editorSlice";
+import {
+  handleDrop,
+  setAddLocation,
+  setDraggedOver,
+  setHovered,
+} from "@/redux/slices/editorSlice";
 import { Where } from "@/utils/Types";
-import { DragEvent, memo, useState } from "react";
+import { DragEvent, memo } from "react";
 
 const SideDropWrapper = ({
   firstItem,
@@ -34,7 +41,11 @@ const SideDropZone = memo(({ id, where }: { id: string; where: Where }) => {
   const dispatch = useAppDispatch();
   const setToggle = useAddSectionToggleSetter();
   const selected = addLocation?.id === id && addLocation?.where === where;
-  const [draggingOver, setDraggingOver] = useState(false);
+  const itemDraggedOver = useAppSelector(selectDraggedOver);
+  const draggingOver =
+    itemDraggedOver?.id === id && itemDraggedOver.where === where;
+  const itemHovered = useAppSelector(selectHovered);
+  const hovered = itemHovered?.id === id && itemHovered.where === where;
   const active = draggingOver || selected;
 
   const handleAddLocationClick = (where: Where) => {
@@ -61,20 +72,28 @@ const SideDropZone = memo(({ id, where }: { id: string; where: Where }) => {
     <div
       onClick={() => handleAddLocationClick(where)}
       onDrop={(e) => {
-        setDraggingOver(false);
+        dispatch(setDraggedOver(undefined));
         handleSideDrop(e, where);
       }}
       onDragOver={(e) => {
         e.preventDefault();
-        setDraggingOver(true);
+        dispatch(setDraggedOver({ id: id, where }));
       }}
-      onDragLeave={() => setDraggingOver(false)}
-      className={`cursor-pointer transition-all duration-300 opacity-0 hover:opacity-100 h-[8px] hover:h-[64px] cursor-pointer overflow-hidden ${active ? "opacity-100 h-[64px]" : ""}`}
+      onDragLeave={() => dispatch(setDraggedOver(undefined))}
+      onMouseOver={(e) => {
+        e.stopPropagation();
+        dispatch(setHovered({ id, where }));
+      }}
+      onMouseLeave={(e) => {
+        e.stopPropagation();
+        dispatch(setHovered(undefined));
+      }}
+      className={`cursor-pointer transition-all duration-300 cursor-pointer overflow-hidden ${active || hovered ? "opacity-100 h-[64px]" : "opacity-0 h-[8px]"}`}
     >
       <div
         className={
           "flex justify-center items-center min-w-40 h-[48px] m-[8px] " +
-          (active ? " bg-activeBlue" : " bg-hoveredBlue")
+          (active ? " bg-activeBlue" : hovered ? " bg-hoveredBlue" : "")
         }
       >
         <AddSign />

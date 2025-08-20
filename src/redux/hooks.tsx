@@ -14,7 +14,8 @@ export const selectActive = (state: RootState) => state.editor.active;
 export const selectActiveType = (state: RootState) => {
   return findElementById(state.editor.layout, state.editor.active)?.type;
 };
-export const selectHoveredId = (state: RootState) => state.editor.hovered;
+export const selectHovered = (state: RootState) => state.editor.hovered;
+export const selectDraggedOver = (state: RootState) => state.editor.draggedOver;
 export const selectVariables = (state: RootState) => state.editor.variables;
 export const selectAddLocation = (state: RootState) => state.editor.addLocation;
 export const selectProjectId = (state: RootState) => state.editor.id;

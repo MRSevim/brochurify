@@ -1,15 +1,16 @@
 import { Layout } from "@/utils/Types";
-import { useEffect, useState } from "react";
-
+import { useEffect } from "react";
 import {
   selectActive,
   selectAddLocation,
+  selectDraggedOver,
+  selectHovered,
   selectLayout,
   useAppDispatch,
   useAppSelector,
 } from "@/redux/hooks";
 import { useAddSectionToggleSetter } from "@/contexts/AddSectionToggleContext";
-import { handleDrop, setActive } from "@/redux/slices/editorSlice";
+import { setActive } from "@/redux/slices/editorSlice";
 import { useVisibilityMapSetter } from "./VisibilityMapContext";
 
 const CenterDropWrapper = ({
@@ -25,8 +26,11 @@ const CenterDropWrapper = ({
   const dispatch = useAppDispatch();
   const layout = useAppSelector(selectLayout);
   const setToggle = useAddSectionToggleSetter();
-  const [draggingOver, setDraggingOver] = useState(false);
-  const active = activeId === id || draggingOver;
+  const itemDraggedOver = useAppSelector(selectDraggedOver);
+  const draggingOver = itemDraggedOver?.id === id && !itemDraggedOver.where;
+  const itemHovered = useAppSelector(selectHovered);
+  const hovered = itemHovered?.id === id && !itemHovered.where;
+  const active = activeId === id || draggingOver || hovered;
 
   useEffect(() => {
     const reveal = (activeId: string | undefined, layout: Layout[]) => {
@@ -65,16 +69,6 @@ const CenterDropWrapper = ({
   }, [activeId, addLocation]);
   return (
     <div
-      onDrop={(e) => {
-        e.preventDefault();
-        setDraggingOver(false);
-        dispatch(handleDrop({ targetId: id, addLocation: null }));
-      }}
-      onDragOver={(e) => {
-        e.preventDefault();
-        setDraggingOver(true);
-      }}
-      onDragLeave={() => setDraggingOver(false)}
       className={
         "p-1 border flex items-center justify-between relative " +
         (active ? "border-positiveGreen" : "border-gray")

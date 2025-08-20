@@ -1,5 +1,5 @@
 import {
-  selectHoveredId,
+  selectHovered,
   selectLayout,
   useAppDispatch,
   useAppSelector,
@@ -15,7 +15,10 @@ import {
 import { findElementById } from "../EditorHelpers";
 
 export default function useKeyPresses() {
-  const hoveredId = useAppSelector(selectHoveredId);
+  const hoveredItem = useAppSelector(selectHovered);
+  const hoveredId = !hoveredItem?.where
+    ? useAppSelector(selectHovered)?.id
+    : undefined;
   const layout = useAppSelector(selectLayout);
   const dispatch = useAppDispatch();
   const hovered = findElementById(layout, hoveredId || "");

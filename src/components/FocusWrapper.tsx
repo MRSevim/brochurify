@@ -1,6 +1,8 @@
 import {
+  handleDrop,
   setActive,
   setDraggedItem,
+  setDraggedOver,
   setHovered,
 } from "@/redux/slices/editorSlice";
 import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -22,7 +24,7 @@ const FocusWrapper = ({
       draggable
       onMouseOver={(e) => {
         e.stopPropagation();
-        dispatch(setHovered(id));
+        dispatch(setHovered({ id }));
       }}
       onMouseLeave={(e) => {
         e.stopPropagation();
@@ -35,6 +37,20 @@ const FocusWrapper = ({
       onDragEnd={(e) => {
         e.stopPropagation();
         dispatch(setDraggedItem(undefined));
+      }}
+      onDrop={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        dispatch(setDraggedOver(undefined));
+        dispatch(handleDrop({ targetId: id, addLocation: null }));
+      }}
+      onDragOver={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        dispatch(setDraggedOver({ id: id }));
+      }}
+      onDragLeave={() => {
+        dispatch(setDraggedOver(undefined));
       }}
       tabIndex={0}
       onClick={(e) => {

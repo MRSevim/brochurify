@@ -103,8 +103,10 @@ const EditorComponents = () => {
   const data = useAppSelector(selectLayout);
   return (
     <>
-      {data.map((item) => {
-        return <RenderedComponent key={item.id} item={item} />;
+      {data.map((item, i) => {
+        return (
+          <RenderedComponent firstItem={i === 0} key={item.id} item={item} />
+        );
       })}
     </>
   );

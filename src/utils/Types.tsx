@@ -50,7 +50,8 @@ export interface EditorState {
   type: string;
   id?: string;
   active?: string;
-  hovered?: string;
+  hovered?: OverType;
+  draggedOver?: OverType;
   history: History;
   layout: Layout[];
   pageWise: PageWise;
@@ -150,6 +151,7 @@ export type Style = {
 export type ElementRefObject = RefObject<HTMLElement | null>;
 export type StringOrUnd = string | undefined;
 export type LayoutOrUnd = Layout | undefined;
+export type OverType = { id: string; where?: Where };
 export type Where = "before" | "after";
 export type ItemAndLocation = {
   item: LayoutOrUnd;

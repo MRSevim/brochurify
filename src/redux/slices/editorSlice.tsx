@@ -15,6 +15,7 @@ import {
   EditorState,
   Layout,
   MoveTo,
+  OverType,
   PageWise,
   StringOrUnd,
   Style,
@@ -47,8 +48,11 @@ export const editorSlice = createSlice({
       state.addLocation = null;
       state.active = action.payload;
     },
-    setHovered: (state, action: PayloadAction<string | undefined>) => {
+    setHovered: (state, action: PayloadAction<OverType | undefined>) => {
       state.hovered = action.payload;
+    },
+    setDraggedOver: (state, action: PayloadAction<OverType | undefined>) => {
+      state.draggedOver = action.payload;
     },
     setPublished: (state, action: PayloadAction<boolean>) => {
       state.published = action.payload;
@@ -352,7 +356,7 @@ export const editorSlice = createSlice({
         return;
       }
       const newElement = generateNewIds(state.copied);
-      const hovered = findElementById(state.layout, state.hovered || "");
+      const hovered = findElementById(state.layout, state.hovered?.id || "");
       const addLocation = state.addLocation;
       const passed = canElementHaveChild(
         state,
@@ -444,6 +448,7 @@ export const editorSlice = createSlice({
 });
 
 export const {
+  setDraggedOver,
   setDomainVerified,
   setFromLocal,
   setPrefix,
