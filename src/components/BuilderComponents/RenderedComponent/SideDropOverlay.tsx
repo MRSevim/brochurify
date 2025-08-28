@@ -24,18 +24,15 @@ export const SideDropOverlay = ({
   type,
   style,
   children,
-  firstItem,
   ref,
 }: {
   id: string;
   type: string;
-  firstItem: boolean;
   style: Style;
   ref: React.RefObject<HTMLDivElement | null>;
   children: React.ReactNode;
 }) => {
   const notFixed = type !== "fixed";
-  const isColumn = type === "column";
   const active = useAppSelector(selectActive) === id;
 
   return (
@@ -45,104 +42,93 @@ export const SideDropOverlay = ({
       $type={type}
       ref={ref}
     >
-      {notFixed && firstItem && (
-        <SideDropZone id={id} where="before" isColumn={isColumn} />
-      )}
+      {notFixed && <SideDropZone id={id} where="before" />}
       {active && <EditorActions id={id} type={type} />}
       {children}
-      {notFixed && <SideDropZone id={id} where="after" isColumn={isColumn} />}
+      {notFixed && <SideDropZone id={id} where="after" />}
     </styledElements.styledComponentWrapperDiv>
   );
 };
 
-const SideDropZone = memo(
-  ({
-    where,
-    id,
-    isColumn,
-  }: {
-    isColumn: boolean;
-    id: string;
-    where: Where;
-  }) => {
-    const second = where === "after";
-    const addLocation = useAppSelector(selectAddLocation);
-    const selected = addLocation?.id === id && addLocation?.where === where;
-    const itemDraggedOver = useAppSelector(selectDraggedOver);
-    const draggingOver =
-      itemDraggedOver?.id === id && itemDraggedOver.where === where;
-    const itemHovered = useAppSelector(selectHovered);
-    const hovered = itemHovered?.id === id && itemHovered.where === where;
-    const commonClasses =
-      "cursor-pointer absolute flex justify-center align-center opacity-0 transition-opacity duration-200 z-[60] ";
-    const extraClasses =
-      selected || draggingOver
-        ? "opacity-100 bg-activeBlue"
-        : hovered
-          ? " opacity-100 bg-hoveredBlue"
-          : "";
+const SideDropZone = memo(({ where, id }: { id: string; where: Where }) => {
+  const second = where === "after";
+  const addLocation = useAppSelector(selectAddLocation);
+  const selected = addLocation?.id === id && addLocation?.where === where;
+  const itemDraggedOver = useAppSelector(selectDraggedOver);
+  const draggingOver =
+    itemDraggedOver?.id === id && itemDraggedOver.where === where;
+  const itemHovered = useAppSelector(selectHovered);
+  const hovered = itemHovered?.id === id && itemHovered.where === where;
+  const commonClasses =
+    "cursor-pointer absolute flex justify-center align-center opacity-0 transition-opacity duration-200 z-[60] ";
+  const extraClasses =
+    selected || draggingOver
+      ? "opacity-100 bg-activeBlue"
+      : hovered
+        ? " opacity-100 bg-hoveredBlue"
+        : "";
 
-    const dispatch = useAppDispatch();
-    const setToggle = useAddSectionToggleSetter();
+  const dispatch = useAppDispatch();
+  const setToggle = useAddSectionToggleSetter();
 
-    const handleAddLocationClick = (
-      e: React.MouseEvent<HTMLDivElement, MouseEvent>
-    ) => {
-      e.stopPropagation();
-      if (addLocation && addLocation.id === id && addLocation.where === where) {
-        dispatch(setAddLocation(null));
-      } else {
-        dispatch(setAddLocation({ id, where }));
-        setToggle(true);
-      }
-    };
+  const handleAddLocationClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    if (addLocation && addLocation.id === id && addLocation.where === where) {
+      dispatch(setAddLocation(null));
+    } else {
+      dispatch(setAddLocation({ id, where }));
+      setToggle(true);
+    }
+  };
 
-    const handleSideDrop = (e: DragEvent<HTMLElement>) => {
-      e.preventDefault();
-      dispatch(
-        handleDrop({
-          targetId: undefined,
-          addLocation: {
-            id,
-            where,
-          },
-        })
-      );
-    };
-
-    return (
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          dispatch(setDraggedOver({ id: id, where }));
-        }}
-        onDragLeave={() => dispatch(setDraggedOver(undefined))}
-        onMouseOver={(e) => {
-          e.stopPropagation();
-          dispatch(setHovered({ id, where }));
-        }}
-        onMouseLeave={(e) => {
-          e.stopPropagation();
-          dispatch(setHovered(undefined));
-        }}
-        onClick={handleAddLocationClick}
-        onDrop={(e) => {
-          dispatch(setDraggedOver(undefined));
-          handleSideDrop(e);
-        }}
-        className={
-          commonClasses +
-          (isColumn ? "h-full w-1 top-0 " : "w-full h-1 ") +
-          (second && isColumn ? "right-0 " : "") +
-          (second && !isColumn ? "bottom-0 " : "") +
-          extraClasses
-        }
-      >
-        <AddSign />
-      </div>
+  const handleSideDrop = (e: DragEvent<HTMLElement>) => {
+    e.preventDefault();
+    dispatch(
+      handleDrop({
+        targetId: undefined,
+        addLocation: {
+          id,
+          where,
+        },
+      })
     );
-  }
-);
+  };
+
+  return (
+    <div
+      onDragOver={(e) => {
+        e.preventDefault();
+        if (!draggingOver) {
+          dispatch(setDraggedOver({ id: id, where }));
+        }
+      }}
+      onDragLeave={() => dispatch(setDraggedOver(undefined))}
+      onMouseOver={(e) => {
+        e.stopPropagation();
+        dispatch(setHovered({ id, where }));
+      }}
+      onMouseLeave={(e) => {
+        e.stopPropagation();
+        dispatch(setHovered(undefined));
+      }}
+      onClick={handleAddLocationClick}
+      onDrop={(e) => {
+        dispatch(setDraggedOver(undefined));
+        handleSideDrop(e);
+      }}
+      className={
+        commonClasses +
+        "w-full h-1 " +
+        (second ? "bottom-0 " : "") +
+        extraClasses
+      }
+    >
+      <AddSign />
+    </div>
+  );
+});
 
 const AddSign = () => {
   const [marginTop, setMarginTop] = useState<number>(0);

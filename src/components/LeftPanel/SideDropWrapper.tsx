@@ -16,13 +16,11 @@ import { Where } from "@/utils/Types";
 import { DragEvent, memo } from "react";
 
 const SideDropWrapper = ({
-  firstItem,
   id,
   depth,
   children,
 }: {
   id: string;
-  firstItem: boolean;
   depth: number;
   children: React.ReactNode;
 }) => {
@@ -30,7 +28,7 @@ const SideDropWrapper = ({
 
   return (
     <div className="relative" style={marginLeftStyle}>
-      {firstItem && <SideDropZone where="before" id={id} />}
+      <SideDropZone where="before" id={id} />
       <div className="mx-2 min-w-40">{children} </div>
       <SideDropZone where="after" id={id} />
     </div>
@@ -77,7 +75,9 @@ const SideDropZone = memo(({ id, where }: { id: string; where: Where }) => {
       }}
       onDragOver={(e) => {
         e.preventDefault();
-        dispatch(setDraggedOver({ id: id, where }));
+        if (!draggingOver) {
+          dispatch(setDraggedOver({ id: id, where }));
+        }
       }}
       onDragLeave={() => dispatch(setDraggedOver(undefined))}
       onMouseOver={(e) => {

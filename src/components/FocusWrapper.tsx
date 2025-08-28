@@ -5,7 +5,12 @@ import {
   setDraggedOver,
   setHovered,
 } from "@/redux/slices/editorSlice";
-import { selectActive, useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  selectActive,
+  selectDraggedOver,
+  useAppDispatch,
+  useAppSelector,
+} from "@/redux/hooks";
 
 const FocusWrapper = ({
   id,
@@ -16,6 +21,9 @@ const FocusWrapper = ({
 }) => {
   const dispatch = useAppDispatch();
   const activeId = useAppSelector(selectActive);
+  const itemDraggedOver = useAppSelector(selectDraggedOver);
+  const draggingOver = itemDraggedOver?.id === id && !itemDraggedOver.where;
+  const draggingOverSideDrop = itemDraggedOver?.id && itemDraggedOver.where;
 
   return (
     <div
@@ -47,7 +55,8 @@ const FocusWrapper = ({
       onDragOver={(e) => {
         e.stopPropagation();
         e.preventDefault();
-        dispatch(setDraggedOver({ id: id }));
+        if (!draggingOver && !draggingOverSideDrop)
+          dispatch(setDraggedOver({ id: id }));
       }}
       onDragLeave={() => {
         dispatch(setDraggedOver(undefined));

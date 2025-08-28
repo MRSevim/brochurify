@@ -13,7 +13,7 @@ import { SideDropOverlay } from "./SideDropOverlay";
 import FocusWrapper from "@/components/FocusWrapper";
 
 const RenderedComponent = memo(
-  ({ item, firstItem }: { item: Layout; firstItem: boolean }) => {
+  ({ item }: { item: Layout }) => {
     const Component = componentList[item.type as keyof typeof componentList];
     const id = item.id;
     const replayTrigger = useAppSelector((state) => {
@@ -55,7 +55,6 @@ const RenderedComponent = memo(
     );
     return (
       <SideDropOverlay
-        firstItem={firstItem}
         id={item.id}
         type={item.type}
         style={item.props.style}
@@ -117,12 +116,8 @@ const RenderedComponent = memo(
 const EditorChildren = memo(({ items }: { items: Layout[] | undefined }) => {
   return (
     <>
-      {items?.map((childItem, i) => (
-        <RenderedComponent
-          firstItem={i === 0}
-          key={childItem.id}
-          item={childItem}
-        />
+      {items?.map((childItem) => (
+        <RenderedComponent key={childItem.id} item={childItem} />
       ))}
     </>
   );
