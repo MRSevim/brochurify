@@ -6,7 +6,6 @@ import Header from "@/components/Header/Header";
 import ClientWrapper, { StyledComponentsRegistry } from "@/utils/ClientWrapper";
 import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";
-import Script from "next/script";
 import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Footer from "@/components/Footer/Footer";
@@ -64,26 +63,6 @@ export default async function AppLayout({
   return (
     <html lang="en" className={roboto_mono.className}>
       <head>
-        {process.env.ENV === "production" && (
-          <>
-            <Script
-              async
-              src={
-                "https://www.googletagmanager.com/gtag/js?id=" +
-                process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
-              }
-            />
-            <Script id="google-analytics">
-              {` window.dataLayer = window.dataLayer || [];
-          function gtag() {
-            dataLayer.push(arguments);
-            }
-            gtag("js", new Date());
-            
-            gtag("config", "${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}");`}
-            </Script>
-          </>
-        )}
         {mapOverFonts(
           googleFontOptions.map((font) => font.title),
           true

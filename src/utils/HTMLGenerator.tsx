@@ -15,16 +15,8 @@ export const generateHTML = (
   pageWise: PageWise,
   variables: Variable[]
 ): string => {
-  const {
-    title,
-    description,
-    keywords,
-    canonical,
-    image,
-    iconUrl,
-    googleAnalyticsTag,
-    ...rest
-  } = pageWise;
+  const { title, description, keywords, canonical, image, iconUrl, ...rest } =
+    pageWise;
 
   const renderedBody = renderLayout(layout);
   const fullstylesWithIds =
@@ -88,15 +80,7 @@ export const generateHTML = (
     });
     });
     </script>`;
-  const googleAnalyticsScript = googleAnalyticsTag
-    ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsTag}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '${googleAnalyticsTag}');
-    </script>`
-    : "";
+
   const additionalStyles = `<style>
     ${getCssReset(pageWise)}
       body {
@@ -118,7 +102,6 @@ export const generateHTML = (
         ${fontLinks}
       ${baseHTMLHead}
       ${observerScript}
-      ${googleAnalyticsScript}
       ${additionalStyles}
       </head>
       <body>

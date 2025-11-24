@@ -1,7 +1,6 @@
 import { appConfig } from "@/utils/config";
 import { notFound } from "next/navigation";
 import { hasType } from "@/utils/EditorHelpers";
-import Script from "next/script";
 import {
   fullStylesWithIdsGenerator,
   styleGenerator,
@@ -83,20 +82,13 @@ export default async function SiteLayout({
   const pageWise = site.editor.pageWise;
   const layout = site.editor.layout;
   const variables = site.editor.variables;
-  const {
-    title,
-    description,
-    keywords,
-    canonical,
-    image,
-    iconUrl,
-    googleAnalyticsTag,
-    ...rest
-  } = pageWise;
+  const { title, description, keywords, canonical, image, iconUrl, ...rest } =
+    pageWise;
   const fullstylesWithIds =
     fullStylesWithIdsGenerator(layout, false) +
     fullStylesWithIdsGenerator(layout, true);
   const variablesString = variablesGenerator(variables);
+
   const styles = (
     <style>{`
         ${getCssReset(pageWise)}
@@ -112,24 +104,6 @@ export default async function SiteLayout({
         `}</style>
   );
 
-  const googleAnalyticsScript = googleAnalyticsTag ? (
-    <>
-      <Script
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsTag}`}
-      ></Script>
-      <Script>
-        {`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${googleAnalyticsTag}');
-       `}
-      </Script>
-    </>
-  ) : (
-    <></>
-  );
   const fonts = getUsedFonts(layout, pageWise);
   const fontLinks = mapOverFonts(fonts, true);
   return (
@@ -141,7 +115,6 @@ export default async function SiteLayout({
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
           />
         )}
-        {googleAnalyticsScript}
         {styles}
         {fontLinks}
       </head>

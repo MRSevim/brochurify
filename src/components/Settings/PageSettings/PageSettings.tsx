@@ -1,4 +1,3 @@
-import Analytics from "./Analytics";
 import CustomDomain from "./CustomDomain";
 import Seo from "./Seo";
 import Styles from "./Styles";
@@ -16,7 +15,6 @@ const PageSettings = () => {
       <Variables />
       <Styles />
       <WebsiteIcon />
-      <Analytics />
       <CustomDomain />
     </div>
   );
