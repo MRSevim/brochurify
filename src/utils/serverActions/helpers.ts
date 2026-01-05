@@ -4,8 +4,9 @@ import jwt from "jsonwebtoken";
 import { StringOrUnd } from "../Types";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "../db/db";
+import { env } from "../config";
 
-const TABLE_NAME = process.env.DB_TABLE_NAME;
+const TABLE_NAME = env.DB_TABLE_NAME;
 
 export const generateToken = (
   cookies: ReadonlyRequestCookies,
@@ -15,17 +16,17 @@ export const generateToken = (
   let token;
   let cookieOptions: Partial<ResponseCookie> = {
     httpOnly: true,
-    secure: process.env.ENV !== "development", // Use secure cookies in production
+    secure: env.ENV !== "development", // Use secure cookies in production
     sameSite: "strict",
     path: "/",
   };
   if (rememberMe) {
     cookieOptions.maxAge = 30 * 24 * 60 * 60;
-    token = jwt.sign({ userId }, process.env.JWT_SECRET as string, {
+    token = jwt.sign({ userId }, env.JWT_SECRET, {
       expiresIn: "30d",
     });
   } else {
-    token = jwt.sign({ userId }, process.env.JWT_SECRET as string);
+    token = jwt.sign({ userId }, env.JWT_SECRET);
   }
   cookies.set("jwt", token, cookieOptions);
 
@@ -50,7 +51,7 @@ export const getUser = async (userId: string) => {
 export const protect = async (token: StringOrUnd) => {
   try {
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      const decoded = jwt.verify(token, env.JWT_SECRET) as {
         userId: string;
       };
 

@@ -1,11 +1,12 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { env } from "../config";
 
 const dbClient = new DynamoDBClient({
-  region: process.env.AWS_REGION,
+  region: env.AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+    accessKeyId: env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
   },
 });
 

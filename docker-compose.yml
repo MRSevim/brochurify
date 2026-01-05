@@ -7,8 +7,8 @@ services:
       - "9001:9001" # MinIO console
     env_file: ./.env
     environment:
-      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
-      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
+      MINIO_ROOT_USER: local
+      MINIO_ROOT_PASSWORD: "12345"
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"

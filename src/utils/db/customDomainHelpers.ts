@@ -4,12 +4,13 @@ import { StringOrUnd } from "../Types";
 import docClient from "./db";
 import { GetCommand, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { Vercel } from "@vercel/sdk";
+import { env } from "../config";
 
 export const vercel = new Vercel({
-  bearerToken: process.env.VERCEL_API_TOKEN,
+  bearerToken: env.VERCEL_API_TOKEN,
 });
 
-const TABLE_NAME = process.env.DB_TABLE_NAME;
+const TABLE_NAME = env.DB_TABLE_NAME;
 const PROJECT_NAME = "brochurify";
 
 export async function requestCustomDomain(

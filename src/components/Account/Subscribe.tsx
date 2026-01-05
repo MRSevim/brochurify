@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import MiniLoadingSvg from "../MiniLoadingSvg";
 import { usePaddle } from "@/contexts/PaddleContext";
 import { checkSub } from "@/utils/Helpers";
+import { env } from "@/utils/config";
 
 const Subscribe = ({ user }: { user: Record<string, any> }) => {
   const [userInContext] = useUser();
@@ -73,7 +74,7 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
             paddle.Checkout.open({
               items: [
                 {
-                  priceId: process.env.NEXT_PUBLIC_PADDLE_SUB_PRICE_ID!,
+                  priceId: env.NEXT_PUBLIC_PADDLE_SUB_PRICE_ID!,
                   quantity: 1,
                 },
               ],

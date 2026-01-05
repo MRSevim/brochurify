@@ -3,9 +3,9 @@ import { deleteFromS3, uploadToS3 } from "../s3/helpers";
 import { DeleteCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 import { checkRole, protect } from "../serverActions/helpers";
-import { appConfig } from "../config";
+import { appConfig, env } from "../config";
 
-const TABLE_NAME = process.env.DB_TABLE_NAME;
+const TABLE_NAME = env.DB_TABLE_NAME;
 
 export const ALLOWED_IMAGE_TYPES = [
   "image/apng",
@@ -119,7 +119,7 @@ export async function deleteUserImageAndUpdateLibrary({
 
   // Delete item from DynamoDB
   const deleteCommand = new DeleteCommand({
-    TableName: process.env.DB_TABLE_NAME,
+    TableName: env.DB_TABLE_NAME,
     Key: {
       userId,
       id: dynamoId,

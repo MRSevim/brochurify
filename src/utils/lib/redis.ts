@@ -1,10 +1,11 @@
 import { Queue } from "bullmq";
 import { Redis } from "ioredis";
+import { env } from "../config";
 
 export const connection = new Redis({
-  host: process.env.REDIS_HOST,
-  port: Number(process.env.REDIS_PORT) || 6379,
-  password: process.env.REDIS_PASSWORD,
+  host: env.REDIS_HOST,
+  port: 6379,
+  password: env.REDIS_PASSWORD,
   maxRetriesPerRequest: null,
 });
 

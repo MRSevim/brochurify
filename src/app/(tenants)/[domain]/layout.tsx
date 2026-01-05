@@ -1,4 +1,4 @@
-import { appConfig } from "@/utils/config";
+import { appConfig, env } from "@/utils/config";
 import { notFound } from "next/navigation";
 import { hasType } from "@/utils/EditorHelpers";
 import {
@@ -15,12 +15,9 @@ import { cache } from "react";
 import { Metadata } from "next";
 
 async function getSiteCached(domain: string) {
-  const res = await fetch(
-    `${process.env.APP_URL}/api/getSite?domain=${domain}`,
-    {
-      next: { revalidate: 600 }, // 10 minutes
-    }
-  );
+  const res = await fetch(`${env.APP_URL}/api/getSite?domain=${domain}`, {
+    next: { revalidate: 600 }, // 10 minutes
+  });
 
   if (!res.ok) return undefined;
   return await res.json();

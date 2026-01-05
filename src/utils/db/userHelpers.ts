@@ -10,8 +10,9 @@ import { getUser, protect } from "../serverActions/helpers";
 import { StringOrUnd } from "../Types";
 import { deleteFolderFromS3 } from "../s3/helpers";
 import { removeCustomDomainInner } from "./customDomainHelpers";
+import { env } from "../config";
 
-const TABLE_NAME = process.env.DB_TABLE_NAME;
+const TABLE_NAME = env.DB_TABLE_NAME;
 
 export async function createOrUpdateUser({
   email,

@@ -1,8 +1,8 @@
 "use server";
-import { appConfig } from "@/utils/config";
+import { appConfig, env } from "@/utils/config";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(env.RESEND_API_KEY);
 
 export const submitAction = async (formData: FormData) => {
   const name = formData.get("name");
@@ -11,7 +11,7 @@ export const submitAction = async (formData: FormData) => {
   try {
     await resend.emails.send({
       from: "contact@" + appConfig.BASE_DOMAIN,
-      to: process.env.MY_EMAIL as string,
+      to: env.MY_EMAIL,
       subject: "Contact Form Submitted in Brochurify",
       text: `Name: ${name} \nEmail: ${email}\n\nMessage: ${message}`,
     });

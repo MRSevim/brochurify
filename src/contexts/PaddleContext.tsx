@@ -5,6 +5,7 @@ import { PaddleEnv } from "@/utils/Types";
 import { useUser } from "./UserContext";
 import { getUserAction } from "@/utils/serverActions/userActions";
 import { checkSub } from "@/utils/Helpers";
+import { env } from "@/utils/config";
 
 type PaddleContext = [Paddle | undefined];
 
@@ -25,9 +26,9 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     initializePaddle({
-      environment: process.env.NEXT_PUBLIC_PADDLE_ENV as PaddleEnv,
-      token: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN!,
-      ...(process.env.NEXT_PUBLIC_PADDLE_ENV === "production"
+      environment: env.NEXT_PUBLIC_PADDLE_ENV as PaddleEnv,
+      token: env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN!,
+      ...(env.NEXT_PUBLIC_PADDLE_ENV === "production"
         ? {
             pwCustomer: {},
           }
@@ -53,7 +54,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   }, [isSubscribed, paddle]);
 
   const updatePaddleRetainId = (id: string) => {
-    if (process.env.NEXT_PUBLIC_PADDLE_ENV === "production") {
+    if (env.NEXT_PUBLIC_PADDLE_ENV === "production") {
       if (!paddle) return console.warn("Paddle not initialized");
       if (id) {
         paddle.Update({

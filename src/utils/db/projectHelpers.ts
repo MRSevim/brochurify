@@ -5,7 +5,6 @@ import {
   QueryCommand,
   UpdateCommand,
   ScanCommand,
-  QueryCommandOutput,
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "./db";
 import { v4 as uuidv4 } from "uuid";
@@ -15,10 +14,10 @@ import { stripEditorFields } from "../Helpers";
 import { generateHTML } from "../HTMLGenerator";
 import { snapshotQueue } from "../lib/redis";
 import { deleteFromS3 } from "../s3/helpers";
-import { appConfig } from "../config";
+import { appConfig, env } from "../config";
 import { removeCustomDomainInner, vercel } from "./customDomainHelpers";
 
-const TABLE_NAME = process.env.DB_TABLE_NAME;
+const TABLE_NAME = env.DB_TABLE_NAME;
 
 const addJobToQueue = async (
   isTemplate: boolean,

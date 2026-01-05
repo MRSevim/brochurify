@@ -5,8 +5,9 @@ import {
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
 import s3Client from "./s3Client";
+import { env } from "../config";
 
-const Bucket = process.env.S3_BUCKET_NAME;
+const Bucket = env.S3_BUCKET_NAME;
 
 export const uploadToS3 = async ({
   buffer,
@@ -27,7 +28,7 @@ export const uploadToS3 = async ({
 
     await s3Client.send(command);
 
-    return `${process.env.AWS_CLOUDFRONT_URL}/${key}`;
+    return `${env.AWS_CLOUDFRONT_URL}/${key}`;
   } catch (error: any) {
     throw new Error(error);
   }

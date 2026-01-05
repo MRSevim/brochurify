@@ -9,13 +9,14 @@ import { cookies } from "next/headers";
 import { generateToken } from "./helpers";
 
 import { Environment, Paddle } from "@paddle/paddle-node-sdk";
+import { env } from "../config";
 
 export const loginAction = async (
   googleCredential: any,
   rememberMe: boolean
 ) => {
   try {
-    const CLIENT_ID_GOOGLE = process.env.GOOGLE_CLIENT_ID;
+    const CLIENT_ID_GOOGLE = env.GOOGLE_CLIENT_ID;
 
     const client = new OAuth2Client(CLIENT_ID_GOOGLE);
 
@@ -76,9 +77,9 @@ export const getUserAction = async () => {
   }
 };
 
-const paddle = new Paddle(process.env.PADDLE_API_KEY!, {
+const paddle = new Paddle(env.PADDLE_API_KEY!, {
   environment:
-    process.env.NEXT_PUBLIC_PADDLE_ENV === "sandbox"
+    env.NEXT_PUBLIC_PADDLE_ENV === "sandbox"
       ? Environment.sandbox
       : Environment.production,
 });
