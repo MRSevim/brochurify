@@ -1,4 +1,4 @@
-import { hasType } from "./EditorHelpers";
+import { hasType } from "../features/builder/utils/EditorHelpers";
 import { getUsedFonts } from "./getUsedFonts";
 import { mapOverFonts } from "./GoogleFonts";
 import {

@@ -1,4 +1,4 @@
-import Account from "@/components/Account/Account";
+import Account from "@/features/auth/components/Account/Account";
 import Container from "@/components/Container";
 
 const page = () => {

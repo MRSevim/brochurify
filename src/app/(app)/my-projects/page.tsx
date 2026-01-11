@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
-import AddSection from "@/components/Projects/AddSection";
-import ProjectsList from "@/components/Projects/ProjectsList";
+import AddSection from "@/features/projects/components/AddSection";
+import ProjectsList from "@/features/projects/components/ProjectsList";
 
 const page = async () => {
   return (

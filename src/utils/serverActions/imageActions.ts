@@ -4,7 +4,7 @@ import {
   deleteUserImageAndUpdateLibrary,
   getUserImages,
   uploadUserImageAndUpdateLibrary,
-} from "../db/imageHelpers";
+} from "../../lib/db/imageHelpers";
 
 export const uploadAction = async (
   base64: string,

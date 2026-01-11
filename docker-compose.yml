@@ -7,38 +7,39 @@ services:
       - "9001:9001" # MinIO console
     env_file: ./.env
     environment:
-      MINIO_ROOT_USER: local
-      MINIO_ROOT_PASSWORD: "12345"
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
-
   dynamodb:
-    image: instructure/dynamo-local-admin
+    image: amazon/dynamodb-local:latest
     container_name: dynamodb
     ports:
       - "8000:8000"
-    user: root
-    env_file: ./.env
-    environment:
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      REGION: ${AWS_REGION}
-      ENDPOINT: ${AWS_DYNAMODB_URL}
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data"
     volumes:
       - dynamodb_data:/home/dynamodblocal/data
+    working_dir: /home/dynamodblocal
+    user: root
+  dynamodb-admin:
+    image: aaronshaf/dynamodb-admin
+    container_name: dynamodb-admin
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: http://dynamodb:8000
+    depends_on:
+      - dynamodb
   redis:
     image: redis:7-alpine # ✅ Use official redis image
     container_name: redis
     restart: unless-stopped
     ports:
-      - "6379:6379" # ✅ Expose Redis port if needed locally
+      - "6379:6379" # ✅ Expose Redis port
     volumes:
       - redis_data:/data
     command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # optional config
-    depends_on:
-      - minio
-      - dynamodb
 
 volumes:
   minio_data: {}

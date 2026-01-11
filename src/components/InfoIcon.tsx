@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import SpeechBubble from "./SpeechBubble";
+import SmallText from "./SmallText";
 
 const InfoIcon = memo(({ text }: { text: string }) => {
   return (
@@ -11,5 +11,18 @@ const InfoIcon = memo(({ text }: { text: string }) => {
     </i>
   );
 });
+
+const SpeechBubble = ({ text }: { text: string }) => {
+  return (
+    <div
+      className="opacity-0 transition-all duration-300 info-text absolute right-0 top-full
+            pointer-events-none px-4 py-2 bg-zinc-800 text-white rounded w-[300px]
+            z-50
+            before:absolute before:content-[''] before:w-0 before:h-0 before:border-8 before:border-transparent before:border-b-zinc-800 before:right-0 before:bottom-full"
+    >
+      <SmallText text={text} />
+    </div>
+  );
+};
 
 export default InfoIcon;

@@ -1,0 +1,407 @@
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { getSetting, outerTypeArr } from "@/utils/Helpers";
+import {
+  selectActive,
+  selectActiveType,
+  selectPageWise,
+  useAppDispatch,
+  useAppSelector,
+} from "@/lib/redux/hooks";
+import ReplayButton from "../../../../../../components/ReplayButton";
+import { triggerReplay } from "@/features/builder/lib/redux/slices/replaySlice";
+import { TransformItemPicker } from "../Transform";
+import {
+  availableTransitions,
+  filterForFixed,
+  SelectTransition,
+} from "./SelectTransition";
+import SecondaryTitle from "@/components/SecondaryTitle";
+import InfoIcon from "@/components/InfoIcon";
+import AddButton from "@/components/AddButton";
+import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
+import EditableListItem from "../EditableListItem";
+import Popup from "@/components/Popup";
+import { OpacityPicker } from "../Others";
+import { PositionPicker } from "../FixedSettings";
+import { ShorthandTogglerPicker } from "../ShorthandToggler";
+import { CONFIG, Style } from "@/utils/Types";
+import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
+import ColorPicker from "@/features/builder/components/ColorPicker";
+import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
+import { FontSizePicker } from "../Text/TextRelated";
+
+const Styles = () => {
+  const [outerType, setOuterType] = useState("base");
+  const [midType, setMidType] = useState<string>(
+    CONFIG.possibleOuterTypes.scrolled
+  );
+  const selectorOuterType = outerType === "base" ? undefined : outerType;
+  const dispatch = useAppDispatch();
+  const [innerType, setInnerType] = useState<string>("");
+  const activeId = useAppSelector(selectActive) || "";
+  const editedStr =
+    getSetting(useAppSelector, selectorOuterType, midType, innerType) || "";
+  const styles = getSetting<Style>(useAppSelector, selectorOuterType, midType);
+
+  const handleStyleChange = (
+    innerTypeParam: string | undefined,
+    newValue: string | undefined
+  ) => {
+    dispatch(
+      changeElementStyle({
+        types: [selectorOuterType, midType, innerTypeParam ?? innerType],
+        newValue: newValue ?? "",
+      })
+    );
+  };
+  return (
+    <WrapperWithBottomLine flex={true}>
+      <SecondaryTitle title="Transitioned styles">
+        <InfoIcon text="Apply styles for specified classes. You can change transition properties from above." />
+      </SecondaryTitle>
+      <ReplayButton
+        onClick={() => {
+          dispatch(triggerReplay(activeId));
+        }}
+      />
+      <ResponsiveTypeSelect setType={setOuterType} type={outerType} />
+      <TypeSelect type={midType} setType={setMidType} />
+      <TransitionValueAddZone
+        handleChange={handleStyleChange}
+        styles={styles}
+        editedStr={editedStr}
+        innerType={innerType}
+        setInnerType={setInnerType}
+      />
+    </WrapperWithBottomLine>
+  );
+};
+
+const TransitionValueAddZone = ({
+  styles,
+  editedStr,
+  innerType,
+  setInnerType,
+  handleChange,
+}: {
+  styles: Style;
+  editedStr: string;
+  setInnerType: Dispatch<SetStateAction<string>>;
+  innerType: string;
+  handleChange: (
+    innerTypeParam: string | undefined,
+    newValue: string | undefined
+  ) => void;
+}) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const activeStyles =
+    styles && typeof styles === "object"
+      ? Object.entries(styles).filter(([_, value]) => value !== "")
+      : [];
+
+  const activeStyleKeys = activeStyles.map(([key]) => key);
+
+  return (
+    <>
+      <AddButton
+        onClick={() => {
+          const typeNotActiveStyle =
+            availableTransitions.find(
+              (option) => !activeStyleKeys.includes(option.value)
+            )?.value || "transition";
+
+          setInnerType(typeNotActiveStyle);
+          setShowPopup((prev) => !prev);
+        }}
+      />
+      {showPopup && (
+        <PopupComp
+          activeStylesArr={activeStyleKeys}
+          setInnerType={setInnerType}
+          innerType={innerType}
+          handleAddOrSave={(value) => {
+            handleChange(undefined, value);
+            setShowPopup(false);
+          }}
+          editedStr={editedStr}
+          onClose={() => {
+            setShowPopup(false);
+          }}
+        />
+      )}
+      {activeStyles && (
+        <div className="mt-2 w-full">
+          {activeStyles.map((item, i) => {
+            return (
+              <EditableListItem
+                key={i}
+                onEditClick={() => {
+                  setInnerType(item[0]);
+                  setShowPopup(true);
+                }}
+                showEditButton={true}
+                onDeleteClick={() => {
+                  handleChange(item[0], undefined);
+                }}
+              >
+                {
+                  availableTransitions.find(
+                    (transition) => transition.value === item[0]
+                  )?.title
+                }
+              </EditableListItem>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
+};
+
+const PopupComp = ({
+  onClose,
+  handleAddOrSave,
+  setInnerType,
+  innerType,
+  activeStylesArr,
+  editedStr,
+}: {
+  onClose: () => void;
+  setInnerType: Dispatch<SetStateAction<string>>;
+  innerType: string;
+  editedStr: string;
+  activeStylesArr: string[];
+  handleAddOrSave: (value: string) => void;
+}) => {
+  const [editedString, setEditedString] = useState(editedStr);
+  const editing = !!editedStr;
+
+  return (
+    <Popup
+      editing={editing}
+      onClose={onClose}
+      onEditOrAdd={() => {
+        handleAddOrSave(editedString);
+      }}
+    >
+      <TransitionValueInner
+        editing={editing}
+        innerType={innerType}
+        setInnerType={setInnerType}
+        activeStylesArr={activeStylesArr}
+      >
+        <TransitionTypeSettings
+          innerType={innerType}
+          editedStr={editedStr}
+          setEditedString={setEditedString}
+          editedString={editedString}
+        />
+      </TransitionValueInner>
+    </Popup>
+  );
+};
+
+const TransitionValueInner = ({
+  innerType,
+  setInnerType,
+  activeStylesArr,
+  editing,
+  children,
+}: {
+  editing: boolean;
+  setInnerType: Dispatch<SetStateAction<string>>;
+  innerType: string;
+  activeStylesArr?: string[];
+  children: React.ReactNode;
+}) => {
+  const activeType = useAppSelector(selectActiveType) || "";
+
+  return (
+    <>
+      {" "}
+      {!editing && (
+        <SelectTransition
+          options={
+            activeStylesArr
+              ? availableTransitions
+                  .filter(
+                    (option) =>
+                      !activeStylesArr.some((t) => t.startsWith(option.value))
+                  )
+                  .filter((option) => filterForFixed(option, activeType))
+              : availableTransitions
+          }
+          value={innerType}
+          onChange={(value) => {
+            setInnerType(value);
+          }}
+        />
+      )}
+      {children}
+    </>
+  );
+};
+
+export const TransitionTypeSettings = ({
+  innerType,
+  editedString,
+  setEditedString,
+  editedStr,
+  variableCreator = false,
+}: {
+  setEditedString: Dispatch<SetStateAction<string>>;
+  variableCreator?: boolean;
+  innerType: string;
+  editedStr: string;
+  editedString: string;
+}) => {
+  const pageWise = useAppSelector(selectPageWise);
+  const activeType = useAppSelector(selectActiveType) || "";
+
+  useEffect(() => {
+    let premadeEditedString;
+    if (innerType === "translate") {
+      premadeEditedString = "0px 0px";
+    } else if (innerType === "rotate") {
+      premadeEditedString = "0deg";
+    } else if (innerType === "scale" || innerType === "opacity") {
+      premadeEditedString = "1";
+    } else if (
+      innerType === "margin" ||
+      innerType === "padding" ||
+      innerType === "border-radius" ||
+      innerType === "margin/padding"
+    ) {
+      premadeEditedString = "0px 0px 0px 0px";
+    } else if (innerType === "font-size") {
+      premadeEditedString = "16px";
+    } else {
+      premadeEditedString = "";
+    }
+    if (!editedStr) {
+      setEditedString(premadeEditedString);
+    } else {
+      setEditedString(editedStr);
+    }
+  }, [innerType, editedStr]);
+  return (
+    <>
+      {" "}
+      {(innerType === "translate" ||
+        innerType === "rotate" ||
+        innerType === "scale") && (
+        <TransformItemPicker
+          variablesAvailable={!variableCreator}
+          type={innerType}
+          onChange={(newVal) => setEditedString(newVal)}
+          variableStr={editedString}
+        />
+      )}
+      {(innerType === "background-color" || innerType === "color") && (
+        <ColorPicker
+          title="Select color"
+          selected={editedString || pageWise[innerType] || "#000000"}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {innerType === "opacity" && (
+        <OpacityPicker
+          variablesAvailable={!variableCreator}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {(((innerType === "top" ||
+        innerType === "left" ||
+        innerType === "bottom" ||
+        innerType === "right") &&
+        activeType === "fixed" &&
+        !variableCreator) ||
+        innerType === "distance") && (
+        <PositionPicker
+          variablesAvailable={!variableCreator}
+          type={innerType}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {(innerType === "border-radius" ||
+        innerType === "padding" ||
+        innerType === "margin" ||
+        innerType === "margin/padding") && (
+        <ShorthandTogglerPicker
+          variablesAvailable={!variableCreator}
+          type={innerType}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {(innerType === "width" ||
+        innerType === "height" ||
+        innerType === "width/height") && (
+        <PositionPicker
+          variablesAvailable={!variableCreator}
+          hasAutoOption={true}
+          type={innerType}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+      {innerType === "font-size" && (
+        <FontSizePicker
+          variablesAvailable={!variableCreator}
+          variable={editedString}
+          onChange={(newVal) => setEditedString(newVal)}
+        />
+      )}
+    </>
+  );
+};
+export const TypeSelect = ({
+  setType,
+  type,
+}: {
+  setType: Dispatch<SetStateAction<string>>;
+  type: string;
+}) => {
+  return (
+    <div className="flex items-center justify-between gap-2 mb-2">
+      {outerTypeArr.map((item) => (
+        <TypeItem
+          key={item.text}
+          globalType={type}
+          type={item.type}
+          text={item.text}
+          onClick={() => {
+            setType(item.type);
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+const TypeItem = ({
+  text,
+  onClick,
+  type,
+  globalType,
+}: {
+  text: string;
+  onClick: () => void;
+  type: string;
+  globalType: string;
+}) => {
+  return (
+    <div
+      className={
+        "text-background  p-2 cursor-pointer " +
+        (type === globalType ? " bg-gray" : "bg-text")
+      }
+      onClick={onClick}
+    >
+      {text}
+    </div>
+  );
+};
+
+export default Styles;

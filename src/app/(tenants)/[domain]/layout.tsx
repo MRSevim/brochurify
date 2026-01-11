@@ -1,6 +1,6 @@
 import { appConfig, env } from "@/utils/config";
 import { notFound } from "next/navigation";
-import { hasType } from "@/utils/EditorHelpers";
+import { hasType } from "@/features/builder/utils/EditorHelpers";
 import {
   fullStylesWithIdsGenerator,
   styleGenerator,

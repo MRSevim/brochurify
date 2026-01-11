@@ -10,7 +10,7 @@ import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Footer from "@/components/Footer/Footer";
 import { appConfig } from "@/utils/config";
-import { env } from "@/utils/config";
+import { serverEnv } from "@/utils/serverConfig";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -71,7 +71,7 @@ export default async function AppLayout({
       </head>
       <StyledComponentsRegistry>
         <ClientWrapper lightMode={lightMode} UserFromCookie={userFromCookie}>
-          <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}>
+          <GoogleOAuthProvider clientId={serverEnv.GOOGLE_CLIENT_ID}>
             <body
               className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
             >

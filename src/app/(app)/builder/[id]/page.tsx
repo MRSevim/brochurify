@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getProjectAction } from "@/utils/serverActions/projectActions";
+import { getProjectAction } from "@/features/projects/utils/serverActions/projectActions";
 import Wrapper from "./Wrapper";
 
 export default async function Page({

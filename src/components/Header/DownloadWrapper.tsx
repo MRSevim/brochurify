@@ -3,7 +3,7 @@ import {
   selectPageWise,
   selectVariables,
   useAppSelector,
-} from "@/redux/hooks";
+} from "@/lib/redux/hooks";
 import { generateHTML } from "@/utils/HTMLGenerator";
 import { FaDownload } from "react-icons/fa";
 

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { protect } from "@/utils/serverActions/helpers";
+import { protect } from "@/features/auth/utils/helpers";
 
 export async function GET() {
   try {

@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { subscribe, unsubscribe } from "@/utils/db/userHelpers";
+import { subscribe, unsubscribe } from "@/features/auth/lib/db/userHelpers";
 import {
   Environment,
   EventName,
   SubscriptionNotification,
 } from "@paddle/paddle-node-sdk";
 import { Paddle } from "@paddle/paddle-node-sdk";
+import { serverEnv } from "@/utils/serverConfig";
 import { env } from "@/utils/config";
 
-const paddle = new Paddle(env.PADDLE_API_KEY!, {
+const paddle = new Paddle(serverEnv.PADDLE_API_KEY, {
   environment:
     env.NEXT_PUBLIC_PADDLE_ENV === "sandbox"
       ? Environment.sandbox
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     // If express returned a JSON, remove any other middleware that might have processed raw request to object
     const rawRequestBody = (await request.text()) || "";
     // Replace `PADDLE_WEBHOOK_SECRET` with the secret key in notifications from vendor dashboard
-    const secretKey = env.PADDLE_WEBHOOK_SECRET || "";
+    const secretKey = serverEnv.PADDLE_WEBHOOK_SECRET || "";
     if (!signature || !rawRequestBody) {
       throw Error("Missing signature or rawRequestBody");
     }

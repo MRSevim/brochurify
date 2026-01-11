@@ -1,5 +1,5 @@
 import { getUnit } from "@/utils/Helpers";
-import UnitSelector from "./UnitSelector";
+import UnitSelector from "../features/builder/components/UnitSelector";
 
 type Props = {
   min?: number;

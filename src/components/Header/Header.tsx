@@ -4,33 +4,36 @@ import {
   selectProjectId,
   useAppDispatch,
   useAppSelector,
-} from "@/redux/hooks";
-import DarkModeToggle from "../DarkModeToggle";
+} from "@/lib/redux/hooks";
+import DarkModeToggle from "../../features/theme/components/DarkModeToggle";
 import Icon from "../Icon";
 import {
   LayoutToggleContext,
   SettingsToggleContext,
-} from "@/contexts/ToggleContext";
+} from "@/features/builder/utils/contexts/ToggleContext";
 import {
   redo,
   setActive,
   setFromLocal,
   undo,
-} from "@/redux/slices/editorSlice";
+} from "@/features/builder/lib/redux/slices/editorSlice";
 import SavePopupWrapper from "./SavePopupWrapper";
 import Link from "next/link";
-import { triggerReplay } from "@/redux/slices/replaySlice";
+import { triggerReplay } from "@/features/builder/lib/redux/slices/replaySlice";
 import DownloadWrapper from "./DownloadWrapper";
 import { usePathname } from "next/navigation";
 import Container from "../Container";
 import ViewMode from "./ViewMode";
 import ZoomView from "./ZoomView";
 import UserMenu from "./UserMenu";
-import { useUser } from "@/contexts/UserContext";
+import { useUser } from "@/features/auth/utils/contexts/UserContext";
 import { toast } from "react-toastify";
-import { usePreviewSetter, usePreviewState } from "@/contexts/PreviewContext";
+import {
+  usePreviewSetter,
+  usePreviewState,
+} from "@/features/builder/utils/contexts/PreviewContext";
 import PublishPopup from "./PublishPopup";
-import { usePublishPopup } from "@/contexts/PublishPopupContext";
+import { usePublishPopup } from "@/features/builder/utils/contexts/PublishPopupContext";
 
 const Header = () => {
   const pathname = usePathname();

@@ -48,7 +48,7 @@ function splitStyleRecursive(style: Style): [Style, Style] {
   return [first, second];
 }
 
-export function styleDivider(style: Style): [Style, Style] {
+function styleDivider(style: Style): [Style, Style] {
   const first: Style = {};
   const second: Style = {};
 

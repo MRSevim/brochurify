@@ -1,8 +1,8 @@
-import { useUser } from "@/contexts/UserContext";
+import { useUser } from "@/features/auth/utils/contexts/UserContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { logoutAction } from "@/utils/serverActions/userActions";
+import { logoutAction } from "@/features/auth/utils/userActions";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Icon from "../Icon";

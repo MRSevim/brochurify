@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect } from "react";
 import Builder from "../Builder";
-import { useAppDispatch } from "@/redux/hooks";
-import { hydrate } from "@/redux/slices/editorSlice";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { hydrate } from "@/features/builder/lib/redux/slices/editorSlice";
 
 const Wrapper = ({
   type = "project",

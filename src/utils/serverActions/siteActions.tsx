@@ -1,5 +1,5 @@
 import { GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import docClient from "../db/db";
+import docClient from "../../lib/db/db";
 
 export const getSite = async (domain: string) => {
   try {

@@ -1,7 +1,7 @@
 import {
   useViewModeSetter,
   useViewModeState,
-} from "@/contexts/ViewModeContext";
+} from "@/features/builder/utils/contexts/ViewModeContext";
 import Icon from "../Icon";
 import { FaDesktop } from "react-icons/fa";
 import { capitalizeFirstLetter } from "@/utils/Helpers";

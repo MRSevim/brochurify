@@ -1,4 +1,4 @@
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import SuccessAlert from "../SuccessAlert";
 
 const SavePopupWrapper = () => {

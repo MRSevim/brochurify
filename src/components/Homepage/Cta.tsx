@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import TemplateViewer from "../Projects/TemplateViewer";
+import TemplateViewer from "../../features/projects/components/TemplateViewer";
 import { saveToLocalStorage } from "@/utils/Helpers";
 import { createPortal } from "react-dom";
 

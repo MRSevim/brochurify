@@ -20,10 +20,11 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl;
 
   const path = url.pathname;
+
   // This allows local subdomain testing
   const hostname = request.headers
-    .get("host")!
-    .replace(".localhost:3000", appConfig.DOMAIN_EXTENSION);
+    .get("host")
+    ?.replace(".localhost:3000", appConfig.DOMAIN_EXTENSION);
 
   //if no localhost subdomain, return early
   if (hostname === "localhost:3000") return;

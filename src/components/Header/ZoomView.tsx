@@ -1,4 +1,4 @@
-import { useZoom } from "@/contexts/ZoomContext";
+import { useZoom } from "@/features/builder/utils/contexts/ZoomContext";
 import React, { useState } from "react";
 import Icon from "../Icon";
 

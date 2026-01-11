@@ -1,9 +1,9 @@
 "use client";
-import { useUser } from "@/contexts/UserContext";
+import { useUser } from "@/features/auth/utils/contexts/UserContext";
 import { useState } from "react";
 import { User } from "@/utils/Types";
 import Checkbox from "@/components/Checkbox";
-import { GoogleLoginComp } from "@/components/GoogleLoginComp";
+import { GoogleLoginComp } from "@/features/auth/components/GoogleLoginComp";
 import { toast } from "react-toastify";
 import Container from "@/components/Container";
 import { useRouter } from "next/navigation";

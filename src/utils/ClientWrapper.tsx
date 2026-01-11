@@ -2,23 +2,23 @@
 import {
   LayoutToggleContext,
   SettingsToggleContext,
-} from "@/contexts/ToggleContext";
-import { makeStore, AppStore } from "@/redux/store";
+} from "@/features/builder/utils/contexts/ToggleContext";
+import { makeStore, AppStore } from "@/lib/redux/store";
 import { useRef, useState } from "react";
 import { Provider } from "react-redux";
-import { Provider as LightModeProvider } from "@/contexts/DarkModeContext";
-import { Provider as ViewModeProvider } from "@/contexts/ViewModeContext";
-import { Provider as PreviewProvider } from "@/contexts/PreviewContext";
-import { Provider as ZoomProvider } from "@/contexts/ZoomContext";
-import { Provider as AddSectionToggleProvider } from "@/contexts/AddSectionToggleContext";
-import { Provider as UserProvider } from "@/contexts/UserContext";
-import { Provider as SubscribePopupProvider } from "@/contexts/SubscribePopupContext";
-import { EditorRefProvider } from "@/contexts/EditorRefContext";
-import { Provider as PublishPopupProvider } from "@/contexts/PublishPopupContext";
-import { Provider as PaddleContextProvider } from "@/contexts/PaddleContext";
+import { Provider as LightModeProvider } from "@/features/theme/utils/DarkModeContext";
+import { Provider as ViewModeProvider } from "@/features/builder/utils/contexts/ViewModeContext";
+import { Provider as PreviewProvider } from "@/features/builder/utils/contexts/PreviewContext";
+import { Provider as ZoomProvider } from "@/features/builder/utils/contexts/ZoomContext";
+import { Provider as AddSectionToggleProvider } from "@/features/builder/utils/contexts/AddSectionToggleContext";
+import { Provider as UserProvider } from "@/features/auth/utils/contexts/UserContext";
+import { Provider as SubscribePopupProvider } from "@/utils/contexts/SubscribePopupContext";
+import { EditorRefProvider } from "@/features/builder/utils/contexts/EditorRefContext";
+import { Provider as PublishPopupProvider } from "@/features/builder/utils/contexts/PublishPopupContext";
+import { Provider as PaddleContextProvider } from "@/features/auth/utils/contexts/PaddleContext";
 import { ServerStyleSheet, StyleSheetManager } from "styled-components";
 import { User } from "./Types";
-import { useSyncUser } from "./hooks/useSyncUser";
+import { useSyncUser } from "../features/auth/utils/useSyncUser";
 import { useServerInsertedHTML } from "next/navigation";
 
 export default function ClientWrapper({

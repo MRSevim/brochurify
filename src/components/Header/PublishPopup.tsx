@@ -1,21 +1,21 @@
 "use client";
 import React, { useRef, useState } from "react";
 import Popup from "../Popup";
-import { usePublishPopup } from "@/contexts/PublishPopupContext";
+import { usePublishPopup } from "@/features/builder/utils/contexts/PublishPopupContext";
 import TextInput from "../TextInput";
 import { appConfig } from "@/utils/config";
 import { toast } from "react-toastify";
 import {
   scanPrefixAction,
   updateAction,
-} from "@/utils/serverActions/projectActions";
+} from "@/features/projects/utils/serverActions/projectActions";
 import MiniLoadingSvg from "../MiniLoadingSvg";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   setDomainVerified,
   setPrefix,
   setPublished,
-} from "@/redux/slices/editorSlice";
+} from "@/features/builder/lib/redux/slices/editorSlice";
 import { addNumberWithDash, slugify } from "@/utils/Helpers";
 import ButtonWithLoading from "../ButtonWithLoading";
 import Link from "next/link";
