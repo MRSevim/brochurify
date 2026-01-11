@@ -1,7 +1,7 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { RootState } from "../../../../../lib/redux/store";
 import { saveToLocalStorage } from "@/utils/Helpers";
-import { hydrate, hydrateLocal, redo, undo } from "../slices/editorSlice";
+import { hydrate, hydrateLocal } from "../slices/editorSlice";
 import { saved, saving } from "../slices/popupSlice";
 import { updateAction } from "@/features/projects/utils/serverActions/projectActions";
 import { toast } from "react-toastify";

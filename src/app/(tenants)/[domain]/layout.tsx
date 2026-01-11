@@ -1,4 +1,4 @@
-import { appConfig, env } from "@/utils/config";
+import { appConfig } from "@/utils/config";
 import { notFound } from "next/navigation";
 import { hasType } from "@/features/builder/utils/EditorHelpers";
 import {
@@ -13,9 +13,10 @@ import { mapOverFonts } from "@/utils/GoogleFonts";
 import { getUsedFonts } from "@/utils/getUsedFonts";
 import { cache } from "react";
 import { Metadata } from "next";
+import { serverEnv } from "@/utils/serverConfig";
 
 async function getSiteCached(domain: string) {
-  const res = await fetch(`${env.APP_URL}/api/getSite?domain=${domain}`, {
+  const res = await fetch(`${serverEnv.APP_URL}/api/getSite?domain=${domain}`, {
     next: { revalidate: 600 }, // 10 minutes
   });
 

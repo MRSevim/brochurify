@@ -1,9 +1,4 @@
-import {
-  selectActive,
-  selectDraggedOver,
-  selectHovered,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { componentList } from "@/features/builder/utils/ComponentsList";
 import { findElementById } from "@/features/builder/utils/EditorHelpers";
 import { useIntersectionObserver } from "@/features/builder/utils/hooks/useIntersectionObserver";
@@ -11,6 +6,11 @@ import { CONFIG, Layout, Style } from "@/utils/Types";
 import { memo, useRef } from "react";
 import { SideDropOverlay } from "./SideDropOverlay";
 import FocusWrapper from "@/features/builder/components/FocusWrapper";
+import {
+  selectActive,
+  selectDraggedOver,
+  selectHovered,
+} from "@/features/builder/lib/redux/selectors";
 
 const RenderedComponent = memo(
   ({ item }: { item: Layout }) => {

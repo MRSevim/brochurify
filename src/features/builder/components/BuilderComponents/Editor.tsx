@@ -2,12 +2,7 @@ import {
   LayoutToggleContext,
   SettingsToggleContext,
 } from "@/features/builder/utils/contexts/ToggleContext";
-import {
-  selectLayout,
-  selectPageWise,
-  selectVariables,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import React, { useEffect, useState } from "react";
 import { useViewModeState } from "@/features/builder/utils/contexts/ViewModeContext";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
@@ -16,6 +11,11 @@ import useKeyPresses from "@/features/builder/utils/hooks/useKeypresses";
 import { useZoom } from "@/features/builder/utils/contexts/ZoomContext";
 import { useEditorRef } from "@/features/builder/utils/contexts/EditorRefContext";
 import RenderedComponent from "./RenderedComponent/RenderedComponent";
+import {
+  selectLayout,
+  selectPageWise,
+  selectVariables,
+} from "../../lib/redux/selectors";
 
 const Editor = () => {
   return (

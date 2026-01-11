@@ -4,11 +4,7 @@ import Popup from "@/components/Popup";
 import Select from "@/components/Select";
 import TextInput from "@/components/TextInput";
 import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibilityWrapper";
-import {
-  selectVariables,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   addVariable,
   deleteVariable,
@@ -16,12 +12,13 @@ import {
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import { fontOptions } from "@/utils/Helpers";
 import { Variable } from "@/utils/Types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EditableListItem from "../EditableListItem";
 import { TransitionPropertyAddZone } from "../Transitions/Transitions";
 import { TransitionTypeSettings } from "../Transitions/Styles";
 import { variableSelectables } from "../Transitions/SelectTransition";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
+import { selectVariables } from "@/features/builder/lib/redux/selectors";
 
 const Variables = () => {
   return (

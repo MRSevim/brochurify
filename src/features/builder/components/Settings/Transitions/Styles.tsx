@@ -1,13 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { getSetting, outerTypeArr } from "@/utils/Helpers";
-import {
-  selectActive,
-  selectActiveType,
-  selectPageWise,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
-import ReplayButton from "../../../../../../components/ReplayButton";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import ReplayButton from "../../ReplayButton";
 import { triggerReplay } from "@/features/builder/lib/redux/slices/replaySlice";
 import { TransformItemPicker } from "../Transform";
 import {
@@ -29,6 +23,11 @@ import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
 import ColorPicker from "@/features/builder/components/ColorPicker";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import { FontSizePicker } from "../Text/TextRelated";
+import {
+  selectActive,
+  selectActiveType,
+  selectPageWise,
+} from "@/features/builder/lib/redux/selectors";
 
 const Styles = () => {
   const [outerType, setOuterType] = useState("base");

@@ -1,4 +1,4 @@
-import { selectActiveType, useAppSelector } from "@/lib/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import SizingAndBorder from "./SizingAndBorder";
 import Source from "./Source";
 import Url from "./Url";
@@ -11,6 +11,7 @@ import Anchor from "./Anchor";
 import Others from "./Others";
 import Transitions from "./Transitions/Transitions";
 import TextRelated from "./Text/TextRelated";
+import { selectActiveType } from "../../lib/redux/selectors";
 
 const ElementSettings = () => {
   const activeType = useAppSelector(selectActiveType);

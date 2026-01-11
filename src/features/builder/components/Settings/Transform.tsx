@@ -1,6 +1,6 @@
 import React from "react";
-import SecondaryTitle from "../../../../../components/SecondaryTitle";
-import InfoIcon from "../../../../../components/InfoIcon";
+import SecondaryTitle from "@/components/SecondaryTitle";
+import InfoIcon from "@/components/InfoIcon";
 import {
   getSetting,
   getUnit,
@@ -9,11 +9,11 @@ import {
 } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import NumberInput from "../../../../../components/NumberInput";
-import UnitSelector from "../../../../../components/UnitSelector";
-import ToggleBtn from "../../../../../components/ToggleBtn";
-import VariableSelector from "../../../../../components/VariableSelector";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
+import NumberInput from "@/components/NumberInput";
+import UnitSelector from "../UnitSelector";
+import ToggleBtn from "@/components/ToggleBtn";
+import VariableSelector from "../VariableSelector";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const availableOptions = [
   { title: "Move", type: "translate" },

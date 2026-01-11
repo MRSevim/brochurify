@@ -1,9 +1,4 @@
-import {
-  selectActiveType,
-  selectVariables,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import {
   capitalizeFirstLetter,
@@ -16,12 +11,13 @@ import {
 } from "@/utils/Helpers";
 import { SizingType, StringOrUnd } from "@/utils/Types";
 import { useState } from "react";
-import SecondaryTitle from "../../../../../components/SecondaryTitle";
-import Icon from "../../../../../components/Icon";
-import Slider from "../../../../../components/Slider";
-import ResetButton from "../../../../../components/ResetButton";
-import VariableSelector from "../../../../../components/VariableSelector";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
+import SecondaryTitle from "@/components/SecondaryTitle";
+import Icon from "@/components/Icon";
+import Slider from "@/components/Slider";
+import ResetButton from "../ResetButton";
+import VariableSelector from "../VariableSelector";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import { selectActiveType, selectVariables } from "../../lib/redux/selectors";
 
 const units = ["px", "em", "%"];
 const sizingTypeArray: SizingType[] = [

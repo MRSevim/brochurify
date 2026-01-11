@@ -5,12 +5,8 @@ import {
   setDraggedOver,
   setHovered,
 } from "@/features/builder/lib/redux/slices/editorSlice";
-import {
-  selectActive,
-  selectDraggedOver,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { selectActive, selectDraggedOver } from "../lib/redux/selectors";
 
 const FocusWrapper = ({
   id,

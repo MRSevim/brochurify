@@ -1,15 +1,12 @@
-import {
-  selectActiveType,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
-import ToggleVisibilityWrapper from "../../../../../components/ToggleVisibilityWrapper";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { getProp } from "@/utils/Helpers";
-import LinkInput from "../../../../../components/LinkInput";
+import LinkInput from "@/components/LinkInput";
 import { changeElementProp } from "@/features/builder/lib/redux/slices/editorSlice";
-import TextInput from "../../../../../components/TextInput";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
+import TextInput from "@/components/TextInput";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import UploadWrapper from "./UploadWrapper";
+import { selectActiveType } from "../../lib/redux/selectors";
 
 const Source = () => {
   const activeType = useAppSelector(selectActiveType);

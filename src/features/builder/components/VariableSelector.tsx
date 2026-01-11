@@ -2,7 +2,8 @@ import { StringOrUnd } from "@/utils/Types";
 import { useState } from "react";
 import SmallText from "../../../components/SmallText";
 import Popup from "../../../components/Popup";
-import { selectVariables, useAppSelector } from "@/lib/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
+import { selectVariables } from "../lib/redux/selectors";
 
 const addVarAtStart = (str: StringOrUnd) => `var(--${str})`;
 const parseSelectedVars = (value: string) =>

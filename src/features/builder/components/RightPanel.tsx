@@ -1,15 +1,15 @@
 import { SettingsToggleContext } from "@/features/builder/utils/contexts/ToggleContext";
 import PanelWrapper from "./PanelWrapper";
+import { useAppSelector } from "@/lib/redux/hooks";
+import PageSettings from "./Settings/PageSettings/PageSettings";
+import ElementSettings from "./Settings/ElementSettings";
+import SmallText from "../../../components/SmallText";
+import { styledElements } from "@/features/builder/utils/StyledComponents";
 import {
   selectActive,
   selectPageWise,
   selectVariables,
-  useAppSelector,
-} from "@/lib/redux/hooks";
-import PageSettings from "../features/builder/components/BuilderComponents/Settings/PageSettings/PageSettings";
-import ElementSettings from "../features/builder/components/BuilderComponents/Settings/ElementSettings";
-import SmallText from "../../../components/SmallText";
-import { styledElements } from "@/features/builder/utils/StyledComponents";
+} from "../lib/redux/selectors";
 
 const RightPanel = () => {
   const toggle = SettingsToggleContext.useToggle();

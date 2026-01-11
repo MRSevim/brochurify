@@ -1,6 +1,7 @@
-import { selectVariables, useAppSelector } from "@/lib/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import Slider from "../../../components/Slider";
 import VariableSelector from "./VariableSelector";
+import { selectVariables } from "../lib/redux/selectors";
 
 type Props = {
   title: string;
@@ -82,7 +83,7 @@ const ColorPicker = ({
           <p className="mb-1">Color</p>
           <div className="relative">
             <div
-              className="mx-2 absolute rounded outline outline-text w-10 h-10 border border-2 border-background"
+              className="mx-2 absolute rounded outline outline-text w-10 h-10 border border-background"
               style={{ backgroundColor: finalSelected }}
             ></div>
             <input

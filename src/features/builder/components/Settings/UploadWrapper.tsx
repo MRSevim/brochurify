@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
-import Popup from "../../../../../components/Popup";
-import MiniLoadingSvg from "../../../../../components/MiniLoadingSvg";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import Popup from "@/components/Popup";
+import MiniLoadingSvg from "@/components/MiniLoadingSvg";
 import {
   deleteAction,
   getAction,
@@ -9,10 +9,13 @@ import {
 } from "@/utils/serverActions/imageActions";
 import { toast } from "react-toastify";
 import Image from "next/image";
-import DeleteButton from "../../../../../components/DeleteButton";
+import DeleteButton from "@/components/DeleteButton";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
 import { useSubscribePopup } from "@/utils/contexts/SubscribePopupContext";
-import { ALLOWED_ICON_TYPES, ALLOWED_IMAGE_TYPES } from "@/lib/db/imageHelpers";
+import {
+  ALLOWED_ICON_TYPES,
+  ALLOWED_IMAGE_TYPES,
+} from "@/utils/AllowedImageTypes";
 
 const UploadWrapper = ({
   icon = false,

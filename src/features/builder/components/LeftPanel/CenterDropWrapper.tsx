@@ -1,17 +1,16 @@
 import { Layout } from "@/utils/Types";
 import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { useAddSectionToggleSetter } from "@/features/builder/utils/contexts/AddSectionToggleContext";
+import { setActive } from "@/features/builder/lib/redux/slices/editorSlice";
+import { useVisibilityMapSetter } from "./VisibilityMapContext";
 import {
   selectActive,
   selectAddLocation,
   selectDraggedOver,
   selectHovered,
   selectLayout,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
-import { useAddSectionToggleSetter } from "@/features/builder/utils/contexts/AddSectionToggleContext";
-import { setActive } from "@/features/builder/lib/redux/slices/editorSlice";
-import { useVisibilityMapSetter } from "./VisibilityMapContext";
+} from "../../lib/redux/selectors";
 
 const CenterDropWrapper = ({
   id,

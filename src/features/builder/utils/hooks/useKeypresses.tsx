@@ -1,9 +1,4 @@
-import {
-  selectHovered,
-  selectLayout,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useEffect } from "react";
 import {
   deleteElement,
@@ -13,6 +8,7 @@ import {
   undo,
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import { findElementById } from "../EditorHelpers";
+import { selectHovered, selectLayout } from "../../lib/redux/selectors";
 
 export default function useKeyPresses() {
   const hoveredItem = useAppSelector(selectHovered);

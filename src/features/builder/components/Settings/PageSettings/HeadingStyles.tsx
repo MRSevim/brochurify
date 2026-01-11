@@ -4,7 +4,6 @@ import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSl
 import {
   defaultInheritFontOptions,
   getFontVariables,
-  getPageWise,
   getSetting,
 } from "@/utils/Helpers";
 import InfoIcon from "@/components/InfoIcon";

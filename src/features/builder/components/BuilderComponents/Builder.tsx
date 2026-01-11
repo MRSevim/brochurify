@@ -1,4 +1,4 @@
-import Editor from "@/components/BuilderComponents/Editor";
+import Editor from "./Editor";
 import LeftPanel from "../LeftPanel/LeftPanel";
 import RightPanel from "@/features/builder/components/RightPanel";
 import Loading from "@/components/Loading";

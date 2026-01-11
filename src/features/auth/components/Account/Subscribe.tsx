@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import MiniLoadingSvg from "../../../../components/MiniLoadingSvg";
-import { usePaddle } from "@/features/auth/utils/PaddleContext";
+import { usePaddle } from "../../utils/contexts/PaddleContext";
 import { checkSub } from "@/utils/Helpers";
 import { env } from "@/utils/config";
 

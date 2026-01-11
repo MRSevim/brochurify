@@ -1,6 +1,6 @@
 import { useState } from "react";
-import AddButton from "../../../../../../components/AddButton";
-import ToggleVisibilityWrapper from "../../../../../../components/ToggleVisibilityWrapper";
+import AddButton from "@/components/AddButton";
+import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import {
   addToString,
   availableTimingFunctions,
@@ -12,15 +12,10 @@ import {
   setValueFromShorthandStr,
   updateOrDeleteAtIndex,
 } from "@/utils/Helpers";
-import {
-  selectActiveType,
-  selectVariables,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import { filterForFixed } from "./SelectTransition";
-import NumberInput from "../../../../../../components/NumberInput";
+import NumberInput from "@/components/NumberInput";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import Styles from "./Styles";
@@ -30,6 +25,10 @@ import { availableTransitions, SelectTransition } from "./SelectTransition";
 import VariableSelector from "@/features/builder/components/VariableSelector";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import Select from "@/components/Select";
+import {
+  selectActiveType,
+  selectVariables,
+} from "@/features/builder/lib/redux/selectors";
 
 const splitValue = ",";
 const type = "transition";

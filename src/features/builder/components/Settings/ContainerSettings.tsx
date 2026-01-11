@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import ToggleVisibilityWrapper from "../../../../../components/ToggleVisibilityWrapper";
+import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { WidthAndHeight } from "./SizingAndBorder";
 import {
   getDefaultStyle,
@@ -8,9 +8,9 @@ import {
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import Slider from "../../../../../components/Slider";
-import ResetButton from "../../../../../components/ResetButton";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
+import Slider from "@/components/Slider";
+import ResetButton from "../ResetButton";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const ContainerSettings = () => {
   return (

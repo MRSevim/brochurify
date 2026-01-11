@@ -1,11 +1,11 @@
+import { useAppSelector } from "@/lib/redux/hooks";
+import { generateHTML } from "@/utils/HTMLGenerator";
+import { PreviewModal } from "./PreviewModal";
 import {
   selectLayout,
   selectPageWise,
   selectVariables,
-  useAppSelector,
-} from "@/lib/redux/hooks";
-import { generateHTML } from "@/utils/HTMLGenerator";
-import { PreviewModal } from "./PreviewModal";
+} from "../lib/redux/selectors";
 
 const Preview = () => {
   const layout = useAppSelector(selectLayout);

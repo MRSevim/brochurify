@@ -4,26 +4,21 @@ import {
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
-import ToggleVisibilityWrapper from "../../../../../../components/ToggleVisibilityWrapper";
-import {
-  selectPageWise,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
-import ColorPicker from "../../../../../../components/ColorPicker";
+import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import ColorPicker from "../../ColorPicker";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import SecondaryTitle from "../../../../../../components/SecondaryTitle";
-import ToggleBtn from "../../../../../../components/ToggleBtn";
-import LinkInput from "../../../../../../components/LinkInput";
-import Select from "../../../../../../components/Select";
-import ResetButton, {
-  ResetButtonWithType,
-} from "../../../../../../components/ResetButton";
-import Slider from "../../../../../../components/Slider";
+import SecondaryTitle from "@/components/SecondaryTitle";
+import ToggleBtn from "@/components/ToggleBtn";
+import LinkInput from "@/components/LinkInput";
+import Select from "@/components/Select";
+import ResetButton, { ResetButtonWithType } from "../../ResetButton";
+import Slider from "@/components/Slider";
 import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
 import { CONFIG, StringOrUnd } from "@/utils/Types";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import UploadWrapper from "../UploadWrapper";
+import { selectPageWise } from "@/features/builder/lib/redux/selectors";
 
 const Background = () => {
   return (

@@ -36,7 +36,7 @@ export const PreviewModal = ({
             if (onClose) onClose();
             setPreview(false);
           }}
-          className="absolute top-2 text-deleteRed bg-[rgb(107,114,128)]/50 rounded right-3 z-[120] text-3xl p-1 px-3 rounded-full hover:bg-[rgb(107,114,128)]/100 transition me-3"
+          className="absolute top-2 text-deleteRed bg-[rgb(107,114,128)]/50 rounded right-3 z-[120] text-3xl p-1 px-3 hover:bg-[rgb(107,114,128)]/100 transition me-3"
         >
           &times;
         </button>

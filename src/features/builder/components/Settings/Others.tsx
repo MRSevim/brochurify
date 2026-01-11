@@ -1,19 +1,16 @@
 import React from "react";
-import ToggleVisibilityWrapper from "../../../../../components/ToggleVisibilityWrapper";
+import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
-import {
-  selectActiveType,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
-import Checkbox from "../../../../../components/Checkbox";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import Checkbox from "@/components/Checkbox";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import Transform from "./Transform";
-import Slider from "../../../../../components/Slider";
-import { ResetButtonWithType } from "../../../../../components/ResetButton";
+import Slider from "@/components/Slider";
+import { ResetButtonWithType } from "../ResetButton";
 import { StringOrUnd, CONFIG } from "@/utils/Types";
-import VariableSelector from "../../../../../components/VariableSelector";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
+import VariableSelector from "../VariableSelector";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import { selectActiveType } from "../../lib/redux/selectors";
 
 const Others = () => {
   return (

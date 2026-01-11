@@ -1,10 +1,5 @@
 "use client";
-import {
-  selectActive,
-  selectProjectId,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import DarkModeToggle from "../../features/theme/components/DarkModeToggle";
 import Icon from "../Icon";
 import {
@@ -34,6 +29,10 @@ import {
 } from "@/features/builder/utils/contexts/PreviewContext";
 import PublishPopup from "./PublishPopup";
 import { usePublishPopup } from "@/features/builder/utils/contexts/PublishPopupContext";
+import {
+  selectActive,
+  selectProjectId,
+} from "@/features/builder/lib/redux/selectors";
 
 const Header = () => {
   const pathname = usePathname();

@@ -4,16 +4,16 @@ import Border from "./Border";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import Image from "next/image";
-import marginBorderPadding from "../../../public/margin-border-padding.webp";
-import ToggleVisibilityWrapper from "../../../../../components/ToggleVisibilityWrapper";
-import NumberInput from "../../../../../components/NumberInput";
-import SecondaryTitle from "../../../../../components/SecondaryTitle";
-import InfoIcon from "../../../../../components/InfoIcon";
+import marginBorderPadding from "@/../public/margin-border-padding.webp";
+import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
+import NumberInput from "@/components/NumberInput";
+import SecondaryTitle from "@/components/SecondaryTitle";
+import InfoIcon from "@/components/InfoIcon";
 import ShorthandToggler from "./ShorthandToggler";
 import { CONFIG } from "@/utils/Types";
-import VariableSelector from "../../../../../components/VariableSelector";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
-import UnitSelector from "../../../../../components/UnitSelector";
+import VariableSelector from "../VariableSelector";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import UnitSelector from "../UnitSelector";
 
 const SizingAndBorder = () => {
   return (

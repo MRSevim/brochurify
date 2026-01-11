@@ -2,8 +2,8 @@ import {
   selectLayout,
   selectPageWise,
   selectVariables,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+} from "@/features/builder/lib/redux/selectors";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { generateHTML } from "@/utils/HTMLGenerator";
 import { FaDownload } from "react-icons/fa";
 

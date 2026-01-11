@@ -12,7 +12,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { findElementById } from "../features/builder/utils/EditorHelpers";
 import { UseSelector } from "react-redux";
-import { selectVariables } from "@/lib/redux/hooks";
+import { selectVariables } from "@/features/builder/lib/redux/selectors";
 import { googleFontOptions } from "./GoogleFonts";
 
 export const runIntersectionObserver = (elem: HTMLElement | undefined) => {

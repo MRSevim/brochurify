@@ -1,5 +1,5 @@
-import ToggleBtn from "../../../../../components/ToggleBtn";
-import Slider from "../../../../../components/Slider";
+import ToggleBtn from "@/components/ToggleBtn";
+import Slider from "@/components/Slider";
 import {
   getSetting,
   getValueFromShorthandStr,
@@ -7,12 +7,12 @@ import {
 } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import Select from "../../../../../components/Select";
-import ColorPicker from "../../../../../components/ColorPicker";
-import SecondaryTitle from "../../../../../components/SecondaryTitle";
+import Select from "@/components/Select";
+import ColorPicker from "../ColorPicker";
+import SecondaryTitle from "@/components/SecondaryTitle";
 import ShorthandToggler from "./ShorthandToggler";
-import ResetButton from "../../../../../components/ResetButton";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
+import ResetButton from "../ResetButton";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const Border = () => {
   const type = "border";

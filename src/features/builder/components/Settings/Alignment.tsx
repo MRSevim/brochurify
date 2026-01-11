@@ -2,18 +2,15 @@ import { ResetButtonWithType } from "@/features/builder/components/ResetButton";
 import Select from "@/components/Select";
 import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibilityWrapper";
-import {
-  selectActiveType,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import { getSetting } from "@/utils/Helpers";
 import { OptionsObject, CONFIG } from "@/utils/Types";
 import React from "react";
-import Checkbox from "../../../../../components/Checkbox";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
-import Slider from "../../../../../components/Slider";
+import Checkbox from "@/components/Checkbox";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import Slider from "@/components/Slider";
+import { selectActiveType } from "../../lib/redux/selectors";
 
 const justifyContentAlignmentOptionsForRow = [
   {

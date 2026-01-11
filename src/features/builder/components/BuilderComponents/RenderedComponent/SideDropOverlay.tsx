@@ -1,12 +1,5 @@
 import { useAddSectionToggleSetter } from "@/features/builder/utils/contexts/AddSectionToggleContext";
-import {
-  selectActive,
-  selectAddLocation,
-  selectDraggedOver,
-  selectHovered,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   handleDrop,
   setAddLocation,
@@ -18,6 +11,12 @@ import { DragEvent, memo, useRef, useState } from "react";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
 import { useEditorRef } from "@/features/builder/utils/contexts/EditorRefContext";
 import EditorActions from "./EditorActions";
+import {
+  selectActive,
+  selectAddLocation,
+  selectDraggedOver,
+  selectHovered,
+} from "@/features/builder/lib/redux/selectors";
 
 export const SideDropOverlay = ({
   id,

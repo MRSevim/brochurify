@@ -2,10 +2,10 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { getProp } from "@/utils/Helpers";
 import iconList from "bootstrap-icons/font/bootstrap-icons.json";
 import { changeElementProp } from "@/features/builder/lib/redux/slices/editorSlice";
-import Icon from "../../../../../components/Icon";
+import Icon from "@/components/Icon";
 import { useState } from "react";
-import ToggleVisibilityWrapper from "../../../../../components/ToggleVisibilityWrapper";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
+import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const IconType = () => {
   const [searchString, setSearchString] = useState("");

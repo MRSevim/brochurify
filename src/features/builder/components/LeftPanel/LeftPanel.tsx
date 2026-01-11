@@ -1,11 +1,6 @@
 import { LayoutToggleContext } from "@/features/builder/utils/contexts/ToggleContext";
 import PanelWrapper from "../PanelWrapper";
-import {
-  selectAddLocation,
-  selectLayout,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import FocusWrapper from "../FocusWrapper";
 import { componentList } from "@/features/builder/utils/ComponentsList";
 import { useRef, useEffect, memo, useCallback } from "react";
@@ -28,6 +23,7 @@ import {
   useVisibilityMapState,
   VisibilityMapProvider,
 } from "./VisibilityMapContext";
+import { selectAddLocation, selectLayout } from "../../lib/redux/selectors";
 
 const LeftPanel = () => {
   const toggle = LayoutToggleContext.useToggle();

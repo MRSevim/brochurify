@@ -1,5 +1,5 @@
-import DeleteButton from "../../../../../components/DeleteButton";
-import EditButton from "../../../../../components/EditButton";
+import DeleteButton from "@/components/DeleteButton";
+import EditButton from "@/components/EditButton";
 
 const EditableListItem = ({
   onEditClick,

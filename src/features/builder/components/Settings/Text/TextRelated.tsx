@@ -1,11 +1,5 @@
 import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibilityWrapper";
-import {
-  selectActive,
-  selectActiveType,
-  selectPageWise,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import Text from "./Text";
 import { ResetButtonWithType } from "@/features/builder/components/ResetButton";
 import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
@@ -15,6 +9,11 @@ import ColorPicker from "@/features/builder/components/ColorPicker";
 import FontFamilyPicker from "@/features/builder/components/FontFamilyPicker";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import VariableSelector from "@/features/builder/components/VariableSelector";
+import {
+  selectActive,
+  selectActiveType,
+  selectPageWise,
+} from "@/features/builder/lib/redux/selectors";
 
 const TextRelated = () => {
   const activeId = useAppSelector(selectActive);

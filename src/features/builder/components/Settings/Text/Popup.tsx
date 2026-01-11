@@ -3,10 +3,11 @@ import ColorPicker from "@/features/builder/components/ColorPicker";
 import FontFamilyPicker from "@/features/builder/components/FontFamilyPicker";
 import LinkInput from "@/components/LinkInput";
 import Slider from "@/components/Slider";
-import { selectPageWise, useAppSelector } from "@/lib/redux/hooks";
+import { useAppSelector } from "@/lib/redux/hooks";
 import { Style, CONFIG, PageWise } from "@/utils/Types";
 import { Editor } from "@tiptap/react";
 import { Dispatch, useEffect } from "react";
+import { selectPageWise } from "@/features/builder/lib/redux/selectors";
 
 const getFontSize = (editor: Editor, pageWise: PageWise) => {
   const { state } = editor;

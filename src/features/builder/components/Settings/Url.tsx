@@ -1,10 +1,10 @@
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { getProp } from "@/utils/Helpers";
 import React from "react";
-import LinkInput from "../../../../../components/LinkInput";
+import LinkInput from "@/components/LinkInput";
 import { changeElementProp } from "@/features/builder/lib/redux/slices/editorSlice";
-import Checkbox from "../../../../../components/Checkbox";
-import WrapperWithBottomLine from "../../../../../components/WrapperWithBottomLine";
+import Checkbox from "@/components/Checkbox";
+import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const Url = () => {
   const type = "href";

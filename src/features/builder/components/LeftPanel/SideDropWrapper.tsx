@@ -1,11 +1,5 @@
 import { useAddSectionToggleSetter } from "@/features/builder/utils/contexts/AddSectionToggleContext";
-import {
-  selectAddLocation,
-  selectDraggedOver,
-  selectHovered,
-  useAppDispatch,
-  useAppSelector,
-} from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
   handleDrop,
   setAddLocation,
@@ -14,6 +8,11 @@ import {
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import { Where } from "@/utils/Types";
 import { DragEvent, memo } from "react";
+import {
+  selectAddLocation,
+  selectDraggedOver,
+  selectHovered,
+} from "../../lib/redux/selectors";
 
 const SideDropWrapper = ({
   id,
@@ -88,7 +87,7 @@ const SideDropZone = memo(({ id, where }: { id: string; where: Where }) => {
         e.stopPropagation();
         dispatch(setHovered(undefined));
       }}
-      className={`cursor-pointer transition-all duration-300 cursor-pointer overflow-hidden ${active || hovered ? "opacity-100 h-[64px]" : "opacity-0 h-[8px]"}`}
+      className={`cursor-pointer transition-all duration-300 overflow-hidden ${active || hovered ? "opacity-100 h-[64px]" : "opacity-0 h-[8px]"}`}
     >
       <div
         className={
