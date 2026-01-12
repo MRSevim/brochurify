@@ -1,5 +1,5 @@
 import { useAppSelector } from "@/lib/redux/hooks";
-import SuccessAlert from "../SuccessAlert";
+import Alert from "../Alert";
 
 const SavePopupWrapper = () => {
   const savePopup = useAppSelector((state) => state.popup.savePopup);
@@ -8,7 +8,7 @@ const SavePopupWrapper = () => {
     <>
       {savePopup && (
         <div className="ms-2">
-          <SuccessAlert text={savePopup} />
+          <Alert text={savePopup} />
         </div>
       )}
     </>

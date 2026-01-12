@@ -11,7 +11,6 @@ import { Layout, PropsWithId } from "@/utils/Types";
 import Effects from "./Effects";
 import { mapOverFonts } from "@/utils/GoogleFonts";
 import { getUsedFonts } from "@/utils/getUsedFonts";
-import { cache } from "react";
 import { Metadata } from "next";
 import { serverEnv } from "@/utils/serverConfig";
 
@@ -23,10 +22,6 @@ async function getSiteCached(domain: string) {
   if (!res.ok) return undefined;
   return await res.json();
 }
-const get = cache(async (domain: string) => {
-  const site = await getSiteCached(domain);
-  return site;
-});
 
 export async function generateMetadata({
   params,
@@ -34,7 +29,7 @@ export async function generateMetadata({
   params: Promise<{ domain: string }>;
 }): Promise<Metadata> {
   const { domain } = await params;
-  const site = await get(domain);
+  const site = await getSiteCached(domain);
   if (!site || !site.editor) {
     return {};
   }
@@ -72,7 +67,7 @@ export default async function SiteLayout({
 }) {
   const { domain } = await params;
 
-  const site = await get(domain);
+  const site = await getSiteCached(domain);
 
   if (!site || !site.editor) {
     return notFound();

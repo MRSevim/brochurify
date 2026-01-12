@@ -1,13 +1,9 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { protect } from "@/features/auth/utils/helpers";
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("jwt")?.value;
-
-    const user = await protect(token);
+    const user = await protect();
 
     const response = NextResponse.json(user);
 

@@ -1,5 +1,4 @@
 "use server";
-import { cookies } from "next/headers";
 import {
   deleteUserImageAndUpdateLibrary,
   getUserImages,
@@ -12,10 +11,7 @@ export const uploadAction = async (
   isIcon: boolean
 ) => {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("jwt")?.value || "";
     const newImage = await uploadUserImageAndUpdateLibrary({
-      token,
       base64,
       fileType,
       isIcon,
@@ -28,11 +24,7 @@ export const uploadAction = async (
 
 export const deleteAction = async (imageUrl: string) => {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("jwt")?.value || "";
-
     await deleteUserImageAndUpdateLibrary({
-      token,
       imageUrl,
     });
     return { error: "" };
@@ -43,10 +35,7 @@ export const deleteAction = async (imageUrl: string) => {
 
 export const getAction = async () => {
   try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("jwt")?.value || "";
-
-    const images = await getUserImages(token);
+    const images = await getUserImages();
     return { images, error: "" };
   } catch (error: any) {
     return { error: error.message };

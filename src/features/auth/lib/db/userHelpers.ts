@@ -7,7 +7,6 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "../../../../lib/db/db";
 import { getUser, protect } from "../../utils/helpers";
-import { StringOrUnd } from "../../../../utils/Types";
 import { deleteFolderFromS3 } from "../../../../lib/s3/helpers";
 import { removeCustomDomainInner } from "../../../../lib/db/customDomainHelpers";
 import { serverEnv } from "@/utils/serverConfig";
@@ -54,8 +53,8 @@ export async function createOrUpdateUser({
   return userItem;
 }
 
-export async function deleteUser(token: StringOrUnd) {
-  const user = await protect(token);
+export async function deleteUser() {
+  const user = await protect();
 
   // Step 1: Query all items with the userId
   const queryCommand = new QueryCommand({
@@ -100,8 +99,8 @@ export async function deleteUser(token: StringOrUnd) {
   return true;
 }
 
-export async function getUserProfile(token: StringOrUnd) {
-  const user = await protect(token);
+export async function getUserProfile() {
+  const user = await protect();
 
   return user;
 }
@@ -151,7 +150,7 @@ export async function unsubscribe(paddleCustomerId: string) {
   const roles = new Set(user.roles || []);
   roles.delete("subscriber");
 
-  // Remove subscriptionId field
+  // Remove customerId field
   const { paddleCustomerId: _, ...rest } = user;
 
   const updatedUser = {

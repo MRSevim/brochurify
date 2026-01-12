@@ -13,17 +13,15 @@ import {
 const TABLE_NAME = serverEnv.DB_TABLE_NAME;
 
 export async function uploadUserImageAndUpdateLibrary({
-  token,
   base64,
   fileType,
   isIcon,
 }: {
-  token: string;
   base64: string;
   fileType: string;
   isIcon: boolean;
 }): Promise<{ url: string; size: number; createdAt: string }> {
-  const user = await protect(token);
+  const user = await protect();
   checkRole(user, "subscriber");
   const userId = user.userId;
 
@@ -79,13 +77,11 @@ export async function uploadUserImageAndUpdateLibrary({
 }
 
 export async function deleteUserImageAndUpdateLibrary({
-  token,
   imageUrl,
 }: {
-  token: string;
   imageUrl: string;
 }) {
-  const user = await protect(token);
+  const user = await protect();
   checkRole(user, "subscriber");
   const userId = user.userId;
 
@@ -116,11 +112,11 @@ export async function deleteUserImageAndUpdateLibrary({
   await docClient.send(deleteCommand);
 }
 
-export async function getUserImages(token: string): Promise<{
+export async function getUserImages(): Promise<{
   images: { url: string; size: number; createdAt: string }[];
   totalSize: number;
 }> {
-  const user = await protect(token);
+  const user = await protect();
   checkRole(user, "subscriber");
   const userId = user.userId;
   const items = await getImagesInner(userId);

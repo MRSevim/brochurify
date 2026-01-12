@@ -1,7 +1,20 @@
-import Container from "@/components/Container";
-import Link from "next/link";
+"use client"; // Error boundaries must be Client Components
 
-export default function NotFound() {
+import { useEffect } from "react";
+import Container from "@/components/Container";
+
+export default function ErrorBoundary({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    // Log the error to an error reporting service
+    console.error(error);
+  }, [error]);
+
   return (
     <Container>
       <div className="bg-background shadow-lg rounded-2xl p-8 max-w-md w-full text-center text-text left-1/2 relative -translate-x-1/2">
@@ -20,14 +33,16 @@ export default function NotFound() {
             />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold mb-2">Not Found</h1>
-        <p className="text-gray-600 mb-6">Could not find requested resource</p>
-        <Link
-          href="/"
+        <h1 className="text-2xl font-bold mb-2">Something went wrong!</h1>
+        <p className="text-gray-600 mb-6">
+          {error.message || "An unexpected error occurred. Please try again."}
+        </p>
+        <button
+          onClick={() => reset()}
           className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
         >
-          Home
-        </Link>
+          Try Again
+        </button>
       </div>
     </Container>
   );

@@ -9,7 +9,7 @@ import {
 import docClient from "../../../../lib/db/db";
 import { v4 as uuidv4 } from "uuid";
 import { checkRole, protect } from "../../../auth/utils/helpers";
-import { EditorState, StringOrUnd } from "../../../../utils/Types";
+import { EditorState } from "../../../../utils/Types";
 import { stripEditorFields } from "../../../../utils/Helpers";
 import { generateHTML } from "../../../../utils/HTMLGenerator";
 import { snapshotQueue } from "../../../../lib/redis";
@@ -59,23 +59,20 @@ const addJobToQueue = async (
   );
 };
 
-export async function createProject(
-  project: {
-    title: string;
-    type: string;
-    editor: Partial<EditorState>;
-    snapshot?: string;
-  },
-  token: StringOrUnd
-) {
-  const user = await protect(token);
+export async function createProject(project: {
+  title: string;
+  type: string;
+  editor: Partial<EditorState>;
+  snapshot?: string;
+}) {
+  const user = await protect();
   const type = project.type;
   const isTemplate = type === "template";
   if (isTemplate) {
     checkRole(user, "admin");
   }
   if (type === "project") {
-    const projects = await getAllProjects(type, token);
+    const projects = await getAllProjects(type);
     const projectsLength = projects.length;
 
     const subLimit = appConfig.SUB_ACC_PROJECT_LIMIT;
@@ -127,8 +124,8 @@ export async function createProject(
   return projectItem;
 }
 
-export async function getAllProjects(type: string, token: StringOrUnd) {
-  const user = await protect(token);
+export async function getAllProjects(type: string) {
+  const user = await protect();
   if (type === "template") {
     checkRole(user, "admin");
   }
@@ -167,8 +164,9 @@ export async function getTemplates() {
 
   return templates;
 }
-export async function scanPrefix(prefix: string, token: StringOrUnd) {
-  await protect(token);
+
+export async function scanPrefix(prefix: string) {
+  await protect();
   let items: any[] = [];
   let index = 0;
   let consecutiveMisses = 0;
@@ -205,12 +203,8 @@ export async function scanPrefix(prefix: string, token: StringOrUnd) {
   return items;
 }
 
-export async function getProjectById(
-  type: string,
-  token: StringOrUnd,
-  id: string
-) {
-  const user = await protect(token);
+export async function getProjectById(type: string, id: string) {
+  const user = await protect();
 
   const command = new GetCommand({
     TableName: TABLE_NAME,
@@ -231,7 +225,6 @@ export async function getProjectById(
 
 export async function updateProject(
   type: string,
-  token: StringOrUnd,
   id: string,
   updates: Partial<{
     title: string;
@@ -243,7 +236,7 @@ export async function updateProject(
     };
   }>
 ) {
-  const user = await protect(token);
+  const user = await protect();
   const isTemplate = type === "template";
   if (isTemplate) {
     checkRole(user, "admin");
@@ -365,12 +358,8 @@ export async function updateProject(
   return result.Attributes;
 }
 
-export async function deleteProject(
-  type: string,
-  token: StringOrUnd,
-  id: string
-) {
-  const user = await protect(token);
+export async function deleteProject(type: string, id: string) {
+  const user = await protect();
   const isTemplate = type === "template";
   if (isTemplate) {
     checkRole(user, "admin");

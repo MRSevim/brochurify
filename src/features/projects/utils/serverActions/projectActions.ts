@@ -10,7 +10,7 @@ import {
   updateProject,
 } from "../../lib/db/projectHelpers";
 import { EditorState } from "../../../../utils/Types";
-import { cookies } from "next/headers";
+import { returnErrorFromUnknown } from "@/utils/Helpers";
 
 export const createAction = async (project: {
   type: string;
@@ -19,16 +19,13 @@ export const createAction = async (project: {
   snapshot?: string;
 }) => {
   try {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt")?.value;
-
-    await createProject(project, jwt);
+    await createProject(project);
 
     revalidatePath("/my-projects");
 
     return { error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return returnErrorFromUnknown(error);
   }
 };
 
@@ -46,70 +43,56 @@ export const updateAction = async (
   }>
 ) => {
   try {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt")?.value;
-
-    const updatedProject = await updateProject(type, jwt, id, updates);
+    const updatedProject = await updateProject(type, id, updates);
 
     revalidatePath("/my-projects");
 
     return { prefix: updatedProject?.prefix, error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return { prefix: "", ...returnErrorFromUnknown(error) };
   }
 };
 
 export const getAllAction = async (type: string) => {
   try {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt")?.value;
-
-    const projects = await getAllProjects(type, jwt);
+    const projects = await getAllProjects(type);
     return { projects, error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return { projects: undefined };
   }
 };
 export const scanPrefixAction = async (prefix: string) => {
   try {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt")?.value;
-
-    const projects = await scanPrefix(prefix, jwt);
+    const projects = await scanPrefix(prefix);
     return { projects: projects || [], error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return { projects: [], ...returnErrorFromUnknown(error) };
   }
 };
 export const getAllTemplatesAction = async () => {
   try {
     const templates = await getTemplates();
     return { templates, error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return { templates: undefined, ...returnErrorFromUnknown(error) };
   }
 };
 
 export const getProjectAction = async (type: string, id: string) => {
   try {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt")?.value;
-
-    const project = await getProjectById(type, jwt, id);
+    const project = await getProjectById(type, id);
     return project;
-  } catch (error: any) {
+  } catch (error) {
     return;
   }
 };
 
 export const deleteAction = async (type: string, id: string) => {
   try {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt")?.value;
-    await deleteProject(type, jwt, id);
+    await deleteProject(type, id);
     revalidatePath("/my-projects");
-    return "";
-  } catch (error: any) {
-    return error.message;
+    return { error: "" };
+  } catch (error) {
+    return returnErrorFromUnknown(error);
   }
 };

@@ -1,18 +1,14 @@
 import { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 import jwt from "jsonwebtoken";
-import { StringOrUnd } from "../../../utils/Types";
 import { GetCommand } from "@aws-sdk/lib-dynamodb";
 import docClient from "../../../lib/db/db";
 import { serverEnv } from "@/utils/serverConfig";
+import { cookies } from "next/headers";
 
 const TABLE_NAME = serverEnv.DB_TABLE_NAME;
 
-export const generateToken = (
-  cookies: ReadonlyRequestCookies,
-  userId: string,
-  rememberMe: boolean
-) => {
+export const generateToken = async (userId: string, rememberMe: boolean) => {
+  const cookieStore = await cookies();
   let token;
   let cookieOptions: Partial<ResponseCookie> = {
     httpOnly: true,
@@ -28,7 +24,7 @@ export const generateToken = (
   } else {
     token = jwt.sign({ userId }, serverEnv.JWT_SECRET);
   }
-  cookies.set("jwt", token, cookieOptions);
+  cookieStore.set("jwt", token, cookieOptions);
 
   return token;
 };
@@ -48,36 +44,30 @@ export const getUser = async (userId: string) => {
   return user;
 };
 
-export const protect = async (token: StringOrUnd) => {
-  try {
-    if (token) {
-      const decoded = jwt.verify(token, serverEnv.JWT_SECRET) as {
-        userId: string;
-      };
+export const protect = async () => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("jwt")?.value;
+  if (token) {
+    const decoded = jwt.verify(token, serverEnv.JWT_SECRET) as {
+      userId: string;
+    };
 
-      const user = await getUser(decoded.userId);
-      if (!user) {
-        throw new Error("Not authorized, token failed, Login please");
-      }
-      return user;
-    } else {
-      throw new Error("Not authorized, no token, Login please");
+    const user = await getUser(decoded.userId);
+    if (!user) {
+      throw new Error("Not authorized, token failed, Login please");
     }
-  } catch (error: any) {
-    throw error;
+    return user;
+  } else {
+    throw new Error("Not authorized, no token, Login please");
   }
 };
 
-export const checkRole = (
+export const checkRole = async (
   user: Record<string, any>,
   role: string,
   customError?: string
 ) => {
-  try {
-    if (!Array.isArray(user.roles) || !user.roles.includes(role)) {
-      throw new Error(customError || `Not authorized, ${role} role required`);
-    }
-  } catch (error: any) {
-    throw error;
+  if (!Array.isArray(user.roles) || !user.roles.includes(role)) {
+    throw new Error(customError || `Not authorized, ${role} role required`);
   }
 };

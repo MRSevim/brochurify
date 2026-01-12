@@ -30,14 +30,13 @@ export const loginAction = async (
       throw Error("Invalid Google payload");
     }
 
-    const cookieStore = await cookies();
     const user = await createOrUpdateUser({
       email,
       username: name,
       image: picture,
     });
 
-    generateToken(cookieStore, user.userId, rememberMe);
+    generateToken(user.userId, rememberMe);
 
     return { user, error: "" };
   } catch (error: any) {
@@ -57,9 +56,7 @@ export const logoutAction = async () => {
 
 export const deleteUserAction = async () => {
   try {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt")?.value;
-    await deleteUser(jwt);
+    await deleteUser();
     return { error: "" };
   } catch (error: any) {
     return { error: error.message };
@@ -68,9 +65,7 @@ export const deleteUserAction = async () => {
 
 export const getUserAction = async () => {
   try {
-    const cookieStore = await cookies();
-    const jwt = cookieStore.get("jwt")?.value;
-    const user = await getUserProfile(jwt);
+    const user = await getUserProfile();
     return { user, error: "" };
   } catch (error: any) {
     return { error: error.message };

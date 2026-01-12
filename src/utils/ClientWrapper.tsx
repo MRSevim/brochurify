@@ -36,21 +36,21 @@ export default function ClientWrapper({
         <PublishPopupProvider>
           <LightModeProvider lightModeFromCookie={lightMode}>
             <ViewModeProvider>
-              <PreviewProvider>
-                <ZoomProvider>
-                  <UserProvider UserFromCookie={UserFromCookie}>
-                    <PaddleContextProvider>
-                      <SubscribePopupProvider>
-                        <AddSectionToggleProvider>
-                          <EditorRefProvider>
-                            <InnerWrapper>{children}</InnerWrapper>
-                          </EditorRefProvider>
-                        </AddSectionToggleProvider>
-                      </SubscribePopupProvider>
-                    </PaddleContextProvider>
-                  </UserProvider>
-                </ZoomProvider>
-              </PreviewProvider>
+              <ZoomProvider>
+                <UserProvider UserFromCookie={UserFromCookie}>
+                  <PaddleContextProvider>
+                    <SubscribePopupProvider>
+                      <AddSectionToggleProvider>
+                        <EditorRefProvider>
+                          <InnerWrapper>
+                            <PreviewProvider>{children}</PreviewProvider>
+                          </InnerWrapper>
+                        </EditorRefProvider>
+                      </AddSectionToggleProvider>
+                    </SubscribePopupProvider>
+                  </PaddleContextProvider>
+                </UserProvider>
+              </ZoomProvider>
             </ViewModeProvider>
           </LightModeProvider>
         </PublishPopupProvider>

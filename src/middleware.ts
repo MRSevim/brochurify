@@ -27,14 +27,14 @@ export function middleware(request: NextRequest) {
     ?.replace(".localhost:3000", appConfig.DOMAIN_EXTENSION);
 
   //if no localhost subdomain, return early
-  if (hostname === "localhost:3000") return;
+  if (hostname === "localhost:3000") return NextResponse.next();
 
   // 🧠 --- Skip platform root non-tenant paths
   const isPlatformRoot =
     hostname === appConfig.BASE_DOMAIN ||
     hostname === "www." + appConfig.BASE_DOMAIN;
   const isRootPage = path === "/" || path === "";
-  if (isPlatformRoot || !isRootPage) return;
+  if (isPlatformRoot || !isRootPage) return NextResponse.next();
 
   // 🧭 ---  Rewrite for everything else
   if (!isPlatformRoot) {

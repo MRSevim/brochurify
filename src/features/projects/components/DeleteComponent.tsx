@@ -23,7 +23,7 @@ export const DeleteComponent = ({
           onConfirm={async () => {
             setLoading(true);
 
-            const error = await deleteAction(type, project.id);
+            const { error } = await deleteAction(type, project.id);
             if (error) {
               toast.error(error);
             } else {

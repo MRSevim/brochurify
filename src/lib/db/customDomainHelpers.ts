@@ -13,12 +13,8 @@ export const vercel = new Vercel({
 const TABLE_NAME = serverEnv.DB_TABLE_NAME;
 const PROJECT_NAME = "brochurify";
 
-export async function requestCustomDomain(
-  id: string,
-  domain: string,
-  token: StringOrUnd
-) {
-  const user = await protect(token);
+export async function requestCustomDomain(id: string, domain: string) {
+  const user = await protect();
   checkRole(user, "subscriber");
 
   // Regex check for valid domain format
@@ -136,8 +132,8 @@ export async function requestCustomDomain(
   return [...baseRecords, ...(verification ?? [])];
 }
 
-export async function checkVerificationStatus(id: string, token: StringOrUnd) {
-  const user = await protect(token);
+export async function checkVerificationStatus(id: string) {
+  const user = await protect();
   checkRole(user, "subscriber");
 
   const existing = await docClient.send(
@@ -184,8 +180,8 @@ export async function checkVerificationStatus(id: string, token: StringOrUnd) {
   }
 }
 
-export async function removeCustomDomain(id: string, token: StringOrUnd) {
-  const user = await protect(token);
+export async function removeCustomDomain(id: string) {
+  const user = await protect();
 
   // Fetch the current item
   const { Item } = await docClient.send(

@@ -8,6 +8,8 @@ import {
 } from "react";
 import { LayoutToggleContext, SettingsToggleContext } from "./ToggleContext";
 import { useViewModeSetter } from "./ViewModeContext";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { setActive } from "../../lib/redux/slices/editorSlice";
 
 const PreviewStateContext = createContext<boolean | undefined>(undefined);
 
@@ -33,6 +35,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   const setLayoutToggle = LayoutToggleContext.useSetToggle();
   const setSettingsToggle = SettingsToggleContext.useSetToggle();
   const setViewMode = useViewModeSetter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (preview) {
@@ -42,6 +45,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
     } else document.body.style.overflow = "";
 
     setViewMode("desktop");
+    dispatch(setActive(undefined));
   }, [preview]);
 
   return (

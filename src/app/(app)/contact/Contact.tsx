@@ -1,36 +1,40 @@
 "use client";
 import Container from "@/components/Container";
 import { submitAction } from "./submitAction";
-import { useState } from "react";
+import { useActionState } from "react";
+import Alert from "@/components/Alert";
 
-const initialState = {
+export type ContactState = {
+  error: string;
+  successMessage: string;
+  defaultValues?: {
+    name: string;
+    email: string;
+    message: string;
+  };
+};
+
+const initialState: ContactState = {
   error: "",
   successMessage: "",
 };
 
+const popupClasses = "text-center mt-2 p-3";
+
 export default function ContactForm() {
-  const [isPending, setIsPending] = useState(false);
-  const [state, setState] = useState(initialState);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsPending(true);
-    setState(initialState);
-    const formData = new FormData(e.currentTarget);
-    const state = await submitAction(formData);
-    setState(state);
-    setIsPending(false);
-  };
+  const [state, action, isPending] = useActionState(submitAction, initialState);
 
   return (
     <Container>
       <div className="max-w-xl mx-auto p-6 bg-background text-text rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center mb-6">Contact</h2>
-        <form onSubmit={handleSubmit}>
+        <form action={action}>
           <div className="mb-4">
             <label htmlFor="name" className="block  font-semibold mb-2">
               Name
             </label>
             <input
+              defaultValue={state.defaultValues?.name}
               type="text"
               name="name"
               placeholder="Your Name"
@@ -43,6 +47,7 @@ export default function ContactForm() {
               Email
             </label>
             <input
+              defaultValue={state.defaultValues?.email}
               type="email"
               name="email"
               placeholder="Your Email"
@@ -55,6 +60,7 @@ export default function ContactForm() {
               Message
             </label>
             <textarea
+              defaultValue={state.defaultValues?.message}
               name="message"
               id="message"
               placeholder="Your Message"
@@ -71,20 +77,14 @@ export default function ContactForm() {
             Send Message
           </button>
           {state.successMessage && (
-            <div
-              className="text-center mt-2 p-3 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-600"
-              role="alert"
-            >
-              <span className="font-small">{state.successMessage}</span>
-            </div>
+            <Alert className={popupClasses} text={state.successMessage} />
           )}
           {state.error && (
-            <div
-              className="text-center mt-2 p-3 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-600"
-              role="alert"
-            >
-              <span className="font-small">{state.error}</span>
-            </div>
+            <Alert
+              className={popupClasses}
+              text={state.successMessage}
+              type="error"
+            />
           )}
         </form>
       </div>

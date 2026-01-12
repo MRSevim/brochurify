@@ -561,3 +561,9 @@ export function slugify(input: string): string {
     .replace(/[^a-z0-9]+/g, "-") // Replace all non-url-safe characters with "-"
     .replace(/^-+|-+$/g, ""); // Trim leading/trailing dashes
 }
+
+export const returnErrorFromUnknown = (error: unknown) => {
+  if (error instanceof Error && error.message) return { error: error.message };
+  if (typeof error === "string" && error) return { error };
+  return { error: "Unknown Error Occurred!" };
+};
