@@ -1,7 +1,8 @@
+const isDev = process.env.ENV === "development";
 export const appConfig = {
   MONTHLY_SUB_PRICE: 5,
-  DOMAIN_EXTENSION: ".localhost:3000",
-  BASE_DOMAIN: "localhost:3000",
+  DOMAIN_EXTENSION: isDev ? ".localhost:3000" : ".brochurify.app",
+  BASE_DOMAIN: isDev ? "localhost:3000" : "brochurify.app",
   MAX_IMAGE_SIZE_MB: 5,
   MAX_IMAGE_COUNT: 50,
   MAX_PROJECT_SIZE_KB: 400,
