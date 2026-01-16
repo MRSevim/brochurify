@@ -60,7 +60,7 @@ const EditorWrapper = ({ children }: { children: React.ReactNode }) => {
   }, [zoom]);
 
   return (
-    <div className={"relative h-full overflow-hidden " + addedString}>
+    <div className={"relative h-full overflow-hidden bg-white " + addedString}>
       <div
         className={`overflow-auto mx-auto ${maxWidth}`}
         style={{
