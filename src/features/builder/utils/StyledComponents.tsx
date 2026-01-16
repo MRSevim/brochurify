@@ -11,7 +11,11 @@ import { PageWise, Style, Variable } from "../../../utils/Types";
 export const styledElements = {
   styledEditor: styled.div<{ $styles: PageWise; $variables: Variable[] }>`
     ${({ $styles, $variables }) => {
-      const { overflow, ...rest } = $styles;
+      const {
+        overflow,
+        "background-color": backgroundColor,
+        ...rest
+      } = $styles;
       const variablesString = variablesGenerator($variables);
       const styleResets = getStyleResets($styles);
       const style = styleGenerator(rest);
