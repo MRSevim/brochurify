@@ -4,18 +4,14 @@ import { useState } from "react";
 import MiniLoadingSvg from "../../../../components/MiniLoadingSvg";
 import ConfirmationPopup from "../../../../components/ConfirmationPopup";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 import {
   deleteUserAction,
   logoutAction,
 } from "@/features/auth/utils/userActions";
-import { useUser } from "@/features/auth/utils/contexts/UserContext";
 
 const DeleteAccount = () => {
   const [confirming, setConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const [, setUser] = useUser();
 
   return (
     <>
@@ -40,11 +36,6 @@ const DeleteAccount = () => {
             const { error } = await deleteUserAction();
             if (error) {
               toast.error(error);
-            } else {
-              setConfirming(false);
-              await logoutAction();
-              setUser(undefined, false);
-              router.push("/");
             }
             setLoading(false);
           }}

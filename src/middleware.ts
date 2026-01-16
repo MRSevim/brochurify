@@ -5,16 +5,16 @@ import { appConfig } from "./utils/config";
 const authenticatedRoutes = ["/my-projects", "/my-account"];
 
 export function middleware(request: NextRequest) {
-  const user = request.cookies.get("user")?.value;
+  const token = request.cookies.get("jwt")?.value;
 
-  if (user && request.nextUrl.pathname.startsWith("/register")) {
+  if (token && request.nextUrl.pathname.startsWith("/register")) {
     return NextResponse.redirect(new URL("/", request.url));
   }
   const requiresAuth = authenticatedRoutes.some((route) =>
     request.nextUrl.pathname.startsWith(route)
   );
 
-  if (!user && requiresAuth) {
+  if (!token && requiresAuth) {
     return NextResponse.redirect(new URL("/register", request.url));
   }
   const url = request.nextUrl;
@@ -22,12 +22,7 @@ export function middleware(request: NextRequest) {
   const path = url.pathname;
 
   // This allows local subdomain testing
-  const hostname = request.headers
-    .get("host")
-    ?.replace(".localhost:3000", appConfig.DOMAIN_EXTENSION);
-
-  //if no localhost subdomain, return early
-  if (hostname === "localhost:3000") return NextResponse.next();
+  const hostname = request.headers.get("host");
 
   // 🧠 --- Skip platform root non-tenant paths
   const isPlatformRoot =
@@ -39,6 +34,7 @@ export function middleware(request: NextRequest) {
   // 🧭 ---  Rewrite for everything else
   if (!isPlatformRoot) {
     const domain = hostname;
+
     url.pathname = `/${domain}`;
     return NextResponse.rewrite(url);
   }

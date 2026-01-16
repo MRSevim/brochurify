@@ -10,7 +10,7 @@ const Checkbox = ({
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
-    <form className="mb-2 flex items-center">
+    <div className="mb-2 flex items-center">
       <input
         id={"checkbox-" + title}
         type="checkbox"
@@ -21,7 +21,7 @@ const Checkbox = ({
       <label htmlFor={"checkbox-" + title} className="ms-2 text-sm font-medium">
         {title}
       </label>
-    </form>
+    </div>
   );
 };
 

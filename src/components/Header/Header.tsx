@@ -40,7 +40,7 @@ const Header = () => {
 
   return (
     <header className="w-full bg-background">
-      <Container pushedVertically={false} addBottomMargin={false}>
+      <Container isMain={false}>
         <TopHeader isBuilder={isBuilder} />
         {isBuilder && <BuilderHeader />}
       </Container>
@@ -59,7 +59,7 @@ const TopHeader = ({ isBuilder }: { isBuilder: boolean }) => {
   const [publishPopup, setPublishPopup] = usePublishPopup();
   const published = useAppSelector((state) => state.editor.published);
   return (
-    <div className="flex flex-col justify-center md:justify-between md:flex-row items-center py-2 flex-wrap ">
+    <div className="flex flex-col justify-center md:justify-between md:flex-row items-center py-2 flex-wrap">
       <Link href="/">
         <p className="font-bold text-lg">Brochurify</p>
       </Link>

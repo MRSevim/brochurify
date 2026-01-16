@@ -19,7 +19,7 @@ const Select = ({
   onChange,
 }: Props) => {
   return (
-    <form className="max-w-sm mx-auto mb-2">
+    <div className="max-w-sm mx-auto mb-2">
       <div className="flex justify-between">
         <label
           htmlFor={"options-" + title}
@@ -59,7 +59,7 @@ const Select = ({
           );
         })}
       </select>
-    </form>
+    </div>
   );
 };
 

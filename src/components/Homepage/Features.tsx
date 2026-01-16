@@ -3,16 +3,19 @@ import Icon from "../Icon";
 const features = [
   {
     title: "Speed",
+    icon: "speedometer2",
     explanation:
       "Design your one page website with premade templates, through the drag and drop editor and responsive builder and go live for free.",
   },
   {
     title: "Ease of Use",
+    icon: "magic",
     explanation:
       "No coding required. Easily build professional-looking, responsive websites with intuitive interface and numerous customization tools.",
   },
   {
     title: "Customization",
+    icon: "sliders",
     explanation:
       "Tweak parts of your website with content editing, seo related configurations and style edits.",
   },
@@ -24,7 +27,7 @@ const Features = () => {
       {features.map((feature) => (
         <FeatureWrapper key={feature.title}>
           <HeaderDiv>
-            <IconComp type="ev-front" />
+            <IconComp type={feature.icon} />
             <HeaderSpan>{feature.title}</HeaderSpan>
           </HeaderDiv>
           <p>{feature.explanation}</p>

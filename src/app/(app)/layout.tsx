@@ -3,7 +3,10 @@ import "./globals.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Roboto_Mono } from "next/font/google";
 import Header from "@/components/Header/Header";
-import ClientWrapper, { StyledComponentsRegistry } from "@/utils/ClientWrapper";
+import ClientWrapper, {
+  StyledComponentsRegistry,
+  ToggleContexts,
+} from "@/utils/ClientWrapper";
 import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";
 import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
@@ -11,6 +14,19 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Footer from "@/components/Footer/Footer";
 import { appConfig } from "@/utils/config";
 import { serverEnv } from "@/utils/serverConfig";
+import jwt from "jsonwebtoken";
+import { getUser } from "@/features/auth/utils/helpers";
+import { User } from "@/utils/Types";
+import { Provider as LightModeProvider } from "@/features/theme/utils/DarkModeContext";
+import { Provider as ViewModeProvider } from "@/features/builder/utils/contexts/ViewModeContext";
+import { Provider as PreviewProvider } from "@/features/builder/utils/contexts/PreviewContext";
+import { Provider as ZoomProvider } from "@/features/builder/utils/contexts/ZoomContext";
+import { Provider as AddSectionToggleProvider } from "@/features/builder/utils/contexts/AddSectionToggleContext";
+import { Provider as UserProvider } from "@/features/auth/utils/contexts/UserContext";
+import { Provider as SubscribePopupProvider } from "@/utils/contexts/SubscribePopupContext";
+import { EditorRefProvider } from "@/features/builder/utils/contexts/EditorRefContext";
+import { Provider as PublishPopupProvider } from "@/features/builder/utils/contexts/PublishPopupContext";
+import { Provider as PaddleContextProvider } from "@/features/auth/utils/contexts/PaddleContext";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -56,10 +72,15 @@ export default async function AppLayout({
 }>) {
   const cookieStore = await cookies();
   const lightMode = cookieStore.get("lightMode")?.value === "true";
-  const user = cookieStore.get("user")?.value;
-  const userFromCookie = user
-    ? JSON.parse(decodeURIComponent(user))
-    : undefined;
+  const token = cookieStore.get("jwt")?.value;
+  let userFromCookie: User;
+  if (token) {
+    const decoded = jwt.verify(token, serverEnv.JWT_SECRET) as unknown as {
+      userId: string;
+    };
+
+    userFromCookie = (await getUser(decoded.userId)) as User;
+  }
 
   return (
     <html lang="en" className={roboto_mono.className}>
@@ -70,18 +91,45 @@ export default async function AppLayout({
         )}
       </head>
       <StyledComponentsRegistry>
-        <ClientWrapper lightMode={lightMode} UserFromCookie={userFromCookie}>
-          <GoogleOAuthProvider clientId={serverEnv.GOOGLE_CLIENT_ID}>
-            <body
-              className={"flex flex-col h-screen " + (!lightMode ? "dark" : "")}
-            >
-              <Header />
-              <ToastContainer />
-              {children}
-              <Footer />
-            </body>
-          </GoogleOAuthProvider>
-        </ClientWrapper>
+        <ToggleContexts>
+          <PublishPopupProvider>
+            <LightModeProvider lightModeFromCookie={lightMode}>
+              <ViewModeProvider>
+                <ZoomProvider>
+                  <UserProvider UserFromCookie={userFromCookie}>
+                    <PaddleContextProvider>
+                      <SubscribePopupProvider>
+                        <AddSectionToggleProvider>
+                          <EditorRefProvider>
+                            <ClientWrapper>
+                              <PreviewProvider>
+                                <GoogleOAuthProvider
+                                  clientId={serverEnv.GOOGLE_CLIENT_ID}
+                                >
+                                  <body
+                                    className={
+                                      "flex flex-col h-screen " +
+                                      (!lightMode ? "dark" : "")
+                                    }
+                                  >
+                                    <Header />
+                                    <ToastContainer />
+                                    {children}
+                                    <Footer />
+                                  </body>
+                                </GoogleOAuthProvider>
+                              </PreviewProvider>
+                            </ClientWrapper>
+                          </EditorRefProvider>
+                        </AddSectionToggleProvider>
+                      </SubscribePopupProvider>
+                    </PaddleContextProvider>
+                  </UserProvider>
+                </ZoomProvider>
+              </ViewModeProvider>
+            </LightModeProvider>
+          </PublishPopupProvider>
+        </ToggleContexts>
       </StyledComponentsRegistry>
     </html>
   );

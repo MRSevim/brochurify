@@ -12,7 +12,7 @@ const GroupedRadioButtons = ({
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
-    <form className="mt-1 flex items-center">
+    <div className="mb-2 flex items-center">
       {valuesArr.map((item) => (
         <span key={item} className="flex items-center">
           <input
@@ -32,7 +32,7 @@ const GroupedRadioButtons = ({
           </label>
         </span>
       ))}
-    </form>
+    </div>
   );
 };
 

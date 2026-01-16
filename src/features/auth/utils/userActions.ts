@@ -10,6 +10,8 @@ import { generateToken } from "./helpers";
 import { Environment, Paddle } from "@paddle/paddle-node-sdk";
 import { serverEnv } from "@/utils/serverConfig";
 import { env } from "../../../utils/config";
+import { redirect } from "next/navigation";
+import { returnErrorFromUnknown } from "@/utils/Helpers";
 
 export const loginAction = async (
   googleCredential: any,
@@ -36,39 +38,40 @@ export const loginAction = async (
       image: picture,
     });
 
-    generateToken(user.userId, rememberMe);
-
-    return { user, error: "" };
-  } catch (error: any) {
-    return { user: undefined, error: error.message };
+    generateToken(await cookies(), user.userId, rememberMe);
+  } catch (error) {
+    return { user: undefined, ...returnErrorFromUnknown(error) };
   }
+  redirect("/");
 };
 
 export const logoutAction = async () => {
   try {
     const cookieStore = await cookies();
     cookieStore.delete("jwt");
-    return { error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return returnErrorFromUnknown(error);
   }
+  redirect("/");
 };
 
 export const deleteUserAction = async () => {
   try {
     await deleteUser();
-    return { error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+    const cookieStore = await cookies();
+    cookieStore.delete("jwt");
+  } catch (error) {
+    return returnErrorFromUnknown(error);
   }
+  redirect("/");
 };
 
 export const getUserAction = async () => {
   try {
     const user = await getUserProfile();
     return { user, error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return returnErrorFromUnknown(error);
   }
 };
 
@@ -91,7 +94,7 @@ export const getPortalLink = async (custId: string) => {
     const session = await paddle.customerPortalSessions.create(custId, subIds);
 
     return { portalLink: session.urls.general.overview };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return returnErrorFromUnknown(error);
   }
 };

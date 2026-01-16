@@ -1,7 +1,7 @@
 export const appConfig = {
   MONTHLY_SUB_PRICE: 5,
-  DOMAIN_EXTENSION: ".brochurify.app",
-  BASE_DOMAIN: "brochurify.app",
+  DOMAIN_EXTENSION: ".localhost:3000",
+  BASE_DOMAIN: "localhost:3000",
   MAX_IMAGE_SIZE_MB: 5,
   MAX_IMAGE_COUNT: 50,
   MAX_PROJECT_SIZE_KB: 400,

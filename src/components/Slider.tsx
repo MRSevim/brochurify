@@ -85,7 +85,6 @@ const Slider = ({
         <div className="flex items-center ms-1">
           <input
             type="number"
-            id={"steps-range-alternative-input-" + title}
             value={parsed}
             step=".1"
             onChange={(e) => onChange(e.target.value + unit)}

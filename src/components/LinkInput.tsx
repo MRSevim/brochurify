@@ -13,7 +13,7 @@ const LinkInput = ({
   desc?: string;
 }) => {
   return (
-    <form className="mb-2">
+    <div className="mb-2">
       <div className="flex justify-between">
         <label
           htmlFor={"link-input-" + title}
@@ -35,7 +35,7 @@ const LinkInput = ({
         onChange={onChange}
         className="text-sm rounded-lg block w-full p-2.5"
       />
-    </form>
+    </div>
   );
 };
 

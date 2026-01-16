@@ -14,7 +14,10 @@ const Alert = ({
     cls = "text-red-800 bg-red-200 dark:bg-gray-800 dark:text-red-600";
   }
   return (
-    <div className={"p-1 text-sm rounded-lg " + cls + className} role="alert">
+    <div
+      className={"p-1 text-sm rounded-lg " + cls + className}
+      role={type === "success" ? "status" : "alert"}
+    >
       <span className="font-small">{text}</span>
     </div>
   );

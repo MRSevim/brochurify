@@ -11,7 +11,7 @@ const Footer = () => {
   const year = new Date().getFullYear();
   return (
     <footer className="w-full bg-background">
-      <Container pushedVertically={false} addBottomMargin={false}>
+      <Container isMain={false}>
         <div className="my-6 flex flex-col sm:flex-row items-center justify-between text-sm">
           <div>© {year} Brochurify. All rights reserved.</div>
           <Link

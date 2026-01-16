@@ -13,7 +13,7 @@ const TextInput = ({
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
-    <form className="mb-2">
+    <div className="mb-2">
       <div className="flex justify-between">
         <label
           htmlFor={"text-input-" + title}
@@ -30,7 +30,7 @@ const TextInput = ({
         onChange={onChange}
         className="text-sm rounded-lg block w-full p-2.5"
       />
-    </form>
+    </div>
   );
 };
 

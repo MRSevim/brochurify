@@ -1,4 +1,5 @@
 import docClient from "@/lib/db/db";
+import { appConfig } from "@/utils/config";
 import { GetCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { NextResponse } from "next/server";
 
@@ -25,7 +26,7 @@ export async function GET(request: Request) {
 const getSite = async (domain: string) => {
   try {
     console.log("getting tenant site from domain: ", domain);
-    if (domain.endsWith(".brochurify.app")) {
+    if (domain.endsWith(appConfig.DOMAIN_EXTENSION)) {
       const prefix = domain.split(".")[0].toLowerCase();
       console.log("🔍 Detected subdomain prefix:", prefix);
 

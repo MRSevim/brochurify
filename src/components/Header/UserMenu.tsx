@@ -4,26 +4,23 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { logoutAction } from "@/features/auth/utils/userActions";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 import Icon from "../Icon";
 
 const UserMenu = () => {
-  const [user, setUser] = useUser();
+  const [user] = useUser();
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   const logout = async () => {
-    router.prefetch("/");
-    setUser(undefined, false);
     const { error } = await logoutAction();
     if (error) {
       toast.error(error);
-    } else {
-      setExpanded(false);
-      router.push("/");
     }
   };
+
+  useEffect(() => {
+    if (!user) setExpanded(false); //to turn expanded false on logout or account deletion
+  }, [user]);
 
   useEffect(() => {
     if (contentRef.current) {

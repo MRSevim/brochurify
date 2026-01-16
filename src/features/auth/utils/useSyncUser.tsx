@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
 
 export function useSyncUser() {
-  const [, , updateExistingUser] = useUser();
+  const [, setUser] = useUser();
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
@@ -14,7 +14,7 @@ export function useSyncUser() {
         const res = await fetch("/api/user/profile");
         if (res.ok) {
           const user = await res.json();
-          updateExistingUser(user);
+          setUser(user);
         }
       } catch (error: any) {
         console.error("Error fetching user:", error.message);

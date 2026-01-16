@@ -125,7 +125,7 @@ export default async function SiteLayout({
 const RenderedComponent = ({ item }: { item: Layout }) => {
   const { type } = item;
   const isFixed = type === "fixed";
-  const Component = componentList[item.type as keyof typeof componentList];
+  const Component = componentList[type as keyof typeof componentList];
   const id = item.id;
 
   return (

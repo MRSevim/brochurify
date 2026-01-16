@@ -129,7 +129,6 @@ export async function getAllProjects(type: string) {
   if (type === "template") {
     checkRole(user, "admin");
   }
-
   const command = new QueryCommand({
     TableName: TABLE_NAME,
     KeyConditionExpression: "userId = :userId",

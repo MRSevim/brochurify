@@ -19,7 +19,7 @@ const NumberInput = ({
   const parsed = isNaN(parseFloat(value)) ? "" : parseFloat(value);
 
   return (
-    <form className="mb-2 flex flex-col justify-between">
+    <div className="mb-2 flex flex-col justify-between">
       <div className="flex justify-between">
         <label
           htmlFor={"number-input-" + title}
@@ -41,7 +41,7 @@ const NumberInput = ({
         />
         {children && children}
       </div>
-    </form>
+    </div>
   );
 };
 

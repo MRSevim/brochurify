@@ -51,7 +51,10 @@ textarea {
   color: var(--background);
 }
 body {
-  color: var(--text);
+  color: var(--text);  
+}
+body.dark {
+  background-color: #121212;
 }
 .gutter-stable {
   scrollbar-gutter: stable;

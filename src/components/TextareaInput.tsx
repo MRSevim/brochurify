@@ -12,7 +12,7 @@ const TextareaInput = ({
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }) => {
   return (
-    <form className="mb-2">
+    <div className="mb-2">
       <label
         htmlFor={"textarea-input-" + title}
         className="block mb-2 text-sm font-medium"
@@ -26,7 +26,7 @@ const TextareaInput = ({
         onChange={onChange}
         className="text-sm rounded-lg block w-full p-2.5"
       />
-    </form>
+    </div>
   );
 };
 

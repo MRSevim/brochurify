@@ -1,18 +1,14 @@
 import { loginAction } from "@/features/auth/utils/userActions";
-import { User } from "@/utils/Types";
 import { GoogleLogin } from "@react-oauth/google";
+import { toast } from "react-toastify";
 
-export const GoogleLoginComp = ({
-  handleAfter,
-  rememberMe,
-}: {
-  handleAfter: (error: string, user: User) => void;
-  rememberMe: boolean;
-}) => {
+export const GoogleLoginComp = ({ rememberMe }: { rememberMe: boolean }) => {
   const handleGoogleLogin = async (credential: any) => {
-    const { error, user } = await loginAction(credential, rememberMe);
+    const { error } = await loginAction(credential, rememberMe);
 
-    handleAfter(error, user);
+    if (error) {
+      toast.error(error);
+    }
   };
   return (
     <>

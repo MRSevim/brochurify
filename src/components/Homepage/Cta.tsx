@@ -6,19 +6,19 @@ import { saveToLocalStorage } from "@/utils/Helpers";
 import { createPortal } from "react-dom";
 
 const Cta = () => {
-  const [adding, setAdding] = useState(false);
+  const [fresh, setFresh] = useState(false);
   const [popup, setPopup] = useState(false);
   const router = useRouter();
   return (
     <>
       <div className="flex gap-3 justify-center mt-3">
         <button
-          className="p-4 bg-slate-400 text-xl	rounded hover:scale-110"
+          className="p-4 bg-gray text-xl text-background rounded hover:scale-110"
           onClick={() => {
             const editorState = localStorage.getItem("editor");
             if (editorState) {
               setPopup(true);
-            } else setAdding(true);
+            } else setFresh(true);
           }}
         >
           Go to Builder
@@ -34,15 +34,15 @@ const Cta = () => {
           </button>
           <button
             className="p-4 bg-amber text-l rounded"
-            onClick={() => setAdding(true)}
+            onClick={() => setFresh(true)}
           >
             Start from 0
           </button>
         </Popup>
       )}
-      {adding && (
+      {fresh && (
         <TemplateViewer
-          setAdding={setAdding}
+          setAdding={setFresh}
           handleSelect={async (selectedTemplate: Record<string, any>) => {
             saveToLocalStorage({ ...selectedTemplate.editor });
             router.push("/builder");
