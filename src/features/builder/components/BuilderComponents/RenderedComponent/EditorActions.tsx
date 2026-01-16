@@ -16,7 +16,7 @@ const EditorActions = ({ id, type }: { id: string; type: string }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const editorRef = useEditorRef();
 
-  const updateActionsPosition = () => {
+  useEffect(() => {
     if (ref.current && editorRef.current) {
       const actionsRect = ref.current.getBoundingClientRect();
       const editorRect = editorRef.current.getBoundingClientRect();
@@ -32,11 +32,7 @@ const EditorActions = ({ id, type }: { id: string; type: string }) => {
       if (actionsRect.left < editorRect.left)
         setTranslateX(editorRect.left - actionsRect.left);
     }
-  };
-
-  useEffect(() => {
-    updateActionsPosition();
-  }, []);
+  }, [ref.current, editorRef.current]);
 
   const icons = [
     {
