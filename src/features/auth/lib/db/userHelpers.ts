@@ -131,7 +131,7 @@ export async function subscribe(userId: string, paddleCustomerId: string) {
 }
 
 export async function unsubscribe(paddleCustomerId: string) {
-  // Scan the table to find the user with matching subscriptionId
+  // Scan the table to find the user with matching customerId
   const scanCommand = new ScanCommand({
     TableName: TABLE_NAME,
     FilterExpression: "paddleCustomerId = :paddleCustomerId",

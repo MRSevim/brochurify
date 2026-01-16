@@ -1,9 +1,6 @@
 "use client";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
-import {
-  getPortalLink,
-  getUserAction,
-} from "@/features/auth/utils/userActions";
+import { getPortalLink } from "@/features/auth/utils/userActions";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -12,10 +9,10 @@ import { usePaddle } from "../../utils/contexts/PaddleContext";
 import { checkSub } from "@/utils/Helpers";
 import { env } from "@/utils/config";
 
-const Subscribe = ({ user }: { user: Record<string, any> }) => {
-  const [userInContext] = useUser();
+const Subscribe = () => {
+  const [user] = useUser();
   const [paddle] = usePaddle();
-  const isSubscribed = checkSub(userInContext);
+  const isSubscribed = checkSub(user);
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -23,14 +20,13 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
     const get = async () => {
       setLoading(true);
       if (isSubscribed) {
-        const { user: userFetched } = await getUserAction();
-        if (!userFetched) {
+        if (!user) {
           setLoading(false);
           return toast.error("Could not fetch subscriber info...");
         }
 
         const { portalLink, error } = await getPortalLink(
-          userFetched.paddleCustomerId
+          user.paddleCustomerId
         );
 
         if (error) {
@@ -45,9 +41,9 @@ const Subscribe = ({ user }: { user: Record<string, any> }) => {
     };
 
     get();
-  }, [isSubscribed]);
+  }, [user]);
 
-  if (!userInContext)
+  if (!user)
     return (
       <p className="m-2 text-deleteRed">Could not get user in context...</p>
     );

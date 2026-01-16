@@ -2,8 +2,6 @@
 import { useContext, useState, createContext, useEffect } from "react";
 import { initializePaddle, Paddle } from "@paddle/paddle-js";
 import { useUser } from "./UserContext";
-import { getUserAction } from "@/features/auth/utils/userActions";
-import { checkSub } from "@/utils/Helpers";
 import { env } from "@/utils/config";
 import { Environment } from "@paddle/paddle-node-sdk";
 
@@ -21,8 +19,7 @@ export const usePaddle = (): PaddleContext => {
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   const [paddle, setPaddle] = useState<Paddle>();
-  const [userInContext] = useUser();
-  const isSubscribed = checkSub(userInContext);
+  const [user] = useUser();
 
   useEffect(() => {
     initializePaddle({
@@ -41,20 +38,12 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const get = async () => {
-      if (isSubscribed) {
-        const { user } = await getUserAction();
-        if (!user) {
-          return console.warn("Could not fetch user in paddleContext");
-        }
-        updatePaddleRetainId(user.paddleCustomerId);
-      } else {
-        updatePaddleRetainId("");
-      }
+      updatePaddleRetainId(user?.paddleCustomerId || "");
     };
 
     if (!paddle) return;
     get();
-  }, [isSubscribed, paddle]);
+  }, [user, paddle]);
 
   const updatePaddleRetainId = (id: string) => {
     if (env.NEXT_PUBLIC_PADDLE_ENV === "production") {

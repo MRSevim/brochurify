@@ -71,7 +71,7 @@ export const getUserAction = async () => {
     const user = await getUserProfile();
     return { user, error: "" };
   } catch (error) {
-    return returnErrorFromUnknown(error);
+    return { user: undefined, ...returnErrorFromUnknown(error) };
   }
 };
 
@@ -93,8 +93,8 @@ export const getPortalLink = async (custId: string) => {
 
     const session = await paddle.customerPortalSessions.create(custId, subIds);
 
-    return { portalLink: session.urls.general.overview };
+    return { portalLink: session.urls.general.overview, error: "" };
   } catch (error) {
-    return returnErrorFromUnknown(error);
+    return { portalLink: "", ...returnErrorFromUnknown(error) };
   }
 };

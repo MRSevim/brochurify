@@ -5,8 +5,9 @@ import { FaTimes } from "react-icons/fa";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
 import { checkSub } from "@/utils/Helpers";
 
-const UserInfo = ({ user }: { user: Record<string, any> }) => {
-  const [userInContext] = useUser();
+const UserInfo = () => {
+  const [user] = useUser();
+  if (!user) return;
   return (
     <ul className="mb-2 list-none">
       <li>
@@ -18,7 +19,7 @@ const UserInfo = ({ user }: { user: Record<string, any> }) => {
       </li>
       <li className="flex items-center">
         <strong>Subscription Status</strong>:
-        {checkSub(userInContext) ? (
+        {checkSub(user) ? (
           <span className="flex items-center text-positiveGreen font-semibold">
             <Icon type="check2" size="24px" title="Checkbox" className="mx-1" />{" "}
             Subscribed

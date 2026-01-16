@@ -1,5 +1,5 @@
 import { useAppDispatch } from "@/lib/redux/hooks";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import {
   deleteElement,
@@ -7,7 +7,6 @@ import {
   moveToNextOrPrevious,
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import { useEditorRef } from "@/features/builder/utils/contexts/EditorRefContext";
-import usePositionListener from "@/features/builder/utils/hooks/usePositionListener";
 
 const EditorActions = ({ id, type }: { id: string; type: string }) => {
   const dispatch = useAppDispatch();
@@ -34,7 +33,10 @@ const EditorActions = ({ id, type }: { id: string; type: string }) => {
         setTranslateX(editorRect.left - actionsRect.left);
     }
   };
-  usePositionListener(updateActionsPosition);
+
+  useEffect(() => {
+    updateActionsPosition();
+  }, []);
 
   const icons = [
     {
@@ -89,12 +91,7 @@ const EditorActions = ({ id, type }: { id: string; type: string }) => {
             icon.onClick();
           }}
         >
-          <Icon
-            title={icon.title}
-            type={icon.type}
-            size="18px"
-            onClick={() => {}}
-          />
+          <Icon title={icon.title} type={icon.type} size="18px" />
         </div>
       ))}
     </div>

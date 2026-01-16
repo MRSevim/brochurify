@@ -161,7 +161,9 @@ const AddSign = () => {
     });
   };
 
-  usePositionListener(updateSignPosition, true); */
+    useEffect(() => {
+      updateSignPosition();
+    }, []); */
 
   return (
     <div

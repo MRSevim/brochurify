@@ -56,4 +56,7 @@ export const styledElements = {
   styledVideo: styled.video<{ $styles: Style }>`
     ${({ $styles }) => getRest($styles)}
   `,
+  styledP: styled.p<{ $styles: Style }>`
+    ${({ $styles }) => getRest($styles)}
+  `,
 };

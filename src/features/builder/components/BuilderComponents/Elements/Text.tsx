@@ -7,12 +7,12 @@ const Text = ({ text, style, ref }: PropsWithId) => {
   const active = useClasses();
 
   return (
-    <styledElements.styledDiv
+    <styledElements.styledP
       ref={ref as RefObject<HTMLDivElement>}
       className={active}
       $styles={style}
       dangerouslySetInnerHTML={{ __html: text || "" }}
-    ></styledElements.styledDiv>
+    ></styledElements.styledP>
   );
 };
 
