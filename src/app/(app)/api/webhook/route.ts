@@ -1,20 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { subscribe, unsubscribe } from "@/features/auth/lib/db/userHelpers";
-import {
-  Environment,
-  EventName,
-  SubscriptionNotification,
-} from "@paddle/paddle-node-sdk";
-import { Paddle } from "@paddle/paddle-node-sdk";
+import { EventName, SubscriptionNotification } from "@paddle/paddle-node-sdk";
 import { serverEnv } from "@/utils/serverConfig";
-import { env } from "@/utils/config";
-
-const paddle = new Paddle(serverEnv.PADDLE_API_KEY, {
-  environment:
-    env.NEXT_PUBLIC_PADDLE_ENV === "sandbox"
-      ? Environment.sandbox
-      : Environment.production,
-});
+import { paddle } from "@/features/auth/lib/paddle";
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +19,7 @@ export async function POST(request: NextRequest) {
     const eventData = await paddle.webhooks.unmarshal(
       rawRequestBody,
       secretKey,
-      signature
+      signature,
     );
     const event = eventData.eventType;
     const data = eventData.data as SubscriptionNotification;
@@ -59,7 +47,7 @@ export async function POST(request: NextRequest) {
       { error: error instanceof Error ? error.message : "Unknown Error" },
       {
         status: 400,
-      }
+      },
     );
   }
 }

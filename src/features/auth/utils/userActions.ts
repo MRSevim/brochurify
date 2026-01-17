@@ -7,15 +7,14 @@ import {
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { cookies } from "next/headers";
 import { generateToken } from "./helpers";
-import { Environment, Paddle } from "@paddle/paddle-node-sdk";
 import { serverEnv } from "@/utils/serverConfig";
-import { env } from "../../../utils/config";
 import { redirect } from "next/navigation";
 import { returnErrorFromUnknown } from "@/utils/Helpers";
+import { paddle } from "../lib/paddle";
 
 export const loginAction = async (
   googleCredential: any,
-  rememberMe: boolean
+  rememberMe: boolean,
 ) => {
   try {
     const CLIENT_ID_GOOGLE = serverEnv.GOOGLE_CLIENT_ID;
@@ -74,13 +73,6 @@ export const getUserAction = async () => {
     return { user: undefined, ...returnErrorFromUnknown(error) };
   }
 };
-
-const paddle = new Paddle(serverEnv.PADDLE_API_KEY, {
-  environment:
-    env.NEXT_PUBLIC_PADDLE_ENV === "sandbox"
-      ? Environment.sandbox
-      : Environment.production,
-});
 
 export const getPortalLink = async (custId: string) => {
   try {

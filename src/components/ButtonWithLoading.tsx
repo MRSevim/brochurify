@@ -14,6 +14,7 @@ const ButtonWithLoading = ({
   const cls = type === "red" ? "bg-deleteRed text-white" : "bg-amber";
   return (
     <button
+      disabled={loading}
       className={"p-1 text-black rounded cursor-pointer " + cls}
       onClick={onClick}
     >

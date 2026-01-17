@@ -26,7 +26,7 @@ const Subscribe = () => {
         }
 
         const { portalLink, error } = await getPortalLink(
-          user.paddleCustomerId
+          user.paddleCustomerId,
         );
 
         if (error) {
