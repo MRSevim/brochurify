@@ -42,6 +42,7 @@ export async function createOrUpdateUser({
     image,
     email,
     roles: user?.roles || roles,
+    paddleCustomerId: user?.paddleCustomerId,
   };
 
   const command = new PutCommand({
@@ -90,7 +91,7 @@ export async function deleteUser() {
           userId: item.userId,
           id: item.id,
         },
-      })
+      }),
     );
   });
 
@@ -164,5 +165,6 @@ export async function unsubscribe(paddleCustomerId: string) {
   });
 
   await docClient.send(putCommand);
+
   return updatedUser;
 }

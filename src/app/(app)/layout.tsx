@@ -14,8 +14,6 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Footer from "@/components/Footer/Footer";
 import { appConfig } from "@/utils/config";
 import { serverEnv } from "@/utils/serverConfig";
-import jwt from "jsonwebtoken";
-import { getUser } from "@/features/auth/utils/helpers";
 import { User } from "@/utils/Types";
 import { Provider as LightModeProvider } from "@/features/theme/utils/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/features/builder/utils/contexts/ViewModeContext";
@@ -27,6 +25,7 @@ import { Provider as SubscribePopupProvider } from "@/utils/contexts/SubscribePo
 import { EditorRefProvider } from "@/features/builder/utils/contexts/EditorRefContext";
 import { Provider as PublishPopupProvider } from "@/features/builder/utils/contexts/PublishPopupContext";
 import { Provider as PaddleContextProvider } from "@/features/auth/utils/contexts/PaddleContext";
+import { getUserAction } from "@/features/auth/utils/userActions";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],
@@ -70,24 +69,19 @@ export default async function AppLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
+  const [cookieStore, { user }] = await Promise.all([
+    cookies(),
+    getUserAction(),
+  ]);
   const lightMode = cookieStore.get("lightMode")?.value === "true";
-  const token = cookieStore.get("jwt")?.value;
-  let userFromCookie: User;
-  if (token) {
-    const decoded = jwt.verify(token, serverEnv.JWT_SECRET) as unknown as {
-      userId: string;
-    };
-
-    userFromCookie = (await getUser(decoded.userId)) as User;
-  }
+  const userFromCookie = user as User;
 
   return (
     <html lang="en" className={roboto_mono.className}>
       <head>
         {mapOverFonts(
           googleFontOptions.map((font) => font.title),
-          true
+          true,
         )}
       </head>
       <StyledComponentsRegistry>
