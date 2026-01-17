@@ -1,4 +1,4 @@
-import { StringOrUnd } from "@/utils/Types";
+import { StringOrUnd } from "@/utils/types/Types";
 import { useState } from "react";
 import SmallText from "../../../components/SmallText";
 import Popup from "../../../components/Popup";
@@ -26,7 +26,7 @@ const VariableSelector = ({
   const [varOpen, setVarOpen] = useState(false);
   const [value, setValue] = useState(selected || "");
   const availableVars = useAppSelector(selectVariables).filter(
-    (item) => item.type === type
+    (item) => item.type === type,
   );
   const selectedVars = parseSelectedVars(value);
   return (
@@ -68,7 +68,7 @@ const VariableSelector = ({
                       if (variablesBehaveAsArray) {
                         if (selectedVars.includes(added)) {
                           setValue(
-                            selectedVars.filter((v) => v !== added).join(",")
+                            selectedVars.filter((v) => v !== added).join(","),
                           );
                         } else {
                           setValue([...selectedVars, added].join(","));

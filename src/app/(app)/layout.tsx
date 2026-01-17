@@ -14,7 +14,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Footer from "@/components/Footer/Footer";
 import { appConfig } from "@/utils/config";
 import { serverEnv } from "@/utils/serverConfig";
-import { User } from "@/utils/Types";
+import { User } from "@/utils/types/Types";
 import { Provider as LightModeProvider } from "@/features/theme/utils/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/features/builder/utils/contexts/ViewModeContext";
 import { Provider as PreviewProvider } from "@/features/builder/utils/contexts/PreviewContext";

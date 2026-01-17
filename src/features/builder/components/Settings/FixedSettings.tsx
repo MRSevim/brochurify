@@ -5,7 +5,7 @@ import { getSetting, getUnit } from "@/utils/Helpers";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import GroupedRadioButtons from "@/components/GroupedRadioButtons";
 import NumberInput from "@/components/NumberInput";
-import { StringOrUnd } from "@/utils/Types";
+import { StringOrUnd } from "@/utils/types/Types";
 import VariableSelector from "../VariableSelector";
 
 const positionsArr = ["top", "bottom", "left", "right"];

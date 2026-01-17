@@ -20,7 +20,7 @@ import {
   StringOrUnd,
   Style,
   Variable,
-} from "@/utils/Types";
+} from "@/utils/types/Types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
@@ -105,7 +105,10 @@ export const editorSlice = createSlice({
     },
     handleDrop: (
       state,
-      action: PayloadAction<{ targetId: StringOrUnd; addLocation: AddLocation }>
+      action: PayloadAction<{
+        targetId: StringOrUnd;
+        addLocation: AddLocation;
+      }>,
     ) => {
       const addLocation = action.payload.addLocation;
       const targetId = action.payload.targetId;
@@ -117,7 +120,7 @@ export const editorSlice = createSlice({
     },
     addElement: (
       state,
-      action: PayloadAction<{ type: string; addLocation: AddLocation }>
+      action: PayloadAction<{ type: string; addLocation: AddLocation }>,
     ) => {
       const newElement = generateLayoutItem(action.payload.type);
       const active = findElementById(state.layout, state.active);
@@ -125,7 +128,7 @@ export const editorSlice = createSlice({
         state,
         action.payload.addLocation,
         newElement,
-        active
+        active,
       );
       if (passed) {
         insertElement(
@@ -133,7 +136,7 @@ export const editorSlice = createSlice({
           newElement,
           action.payload.addLocation,
           active?.id,
-          true
+          true,
         );
       }
     },
@@ -153,7 +156,10 @@ export const editorSlice = createSlice({
     },
     changeElementStyle: (
       state,
-      action: PayloadAction<{ types: (string | undefined)[]; newValue: string }>
+      action: PayloadAction<{
+        types: (string | undefined)[];
+        newValue: string;
+      }>,
     ) => {
       const { types, newValue } = action.payload;
 
@@ -229,7 +235,7 @@ export const editorSlice = createSlice({
       action: PayloadAction<{
         type: string;
         newValue: number | string | boolean;
-      }>
+      }>,
     ) => {
       const { type, newValue } = action.payload;
 
@@ -261,7 +267,7 @@ export const editorSlice = createSlice({
     editVariable: (state, action: PayloadAction<Variable>) => {
       const newVariable = action.payload;
       const foundIndex = state.variables.findIndex(
-        (item) => item.id === newVariable.id
+        (item) => item.id === newVariable.id,
       );
 
       if (foundIndex === -1) {
@@ -275,7 +281,7 @@ export const editorSlice = createSlice({
     deleteVariable: (state, action: PayloadAction<Variable>) => {
       const variableToDel = action.payload;
       const index = state.variables.findIndex(
-        (item) => item.id === variableToDel.id
+        (item) => item.id === variableToDel.id,
       );
       if (index === -1) {
         toast.error("Something went wrong");
@@ -329,7 +335,7 @@ export const editorSlice = createSlice({
     },
     addToHistory: (
       state,
-      action: PayloadAction<{ layout: Layout[]; pageWise: PageWise }>
+      action: PayloadAction<{ layout: Layout[]; pageWise: PageWise }>,
     ) => {
       const history = state.history;
       const currentIndex = history.findIndex((item) => item.current);
@@ -362,7 +368,7 @@ export const editorSlice = createSlice({
         state,
         addLocation,
         newElement,
-        hovered
+        hovered,
       );
 
       if (passed) {
@@ -371,7 +377,7 @@ export const editorSlice = createSlice({
           newElement,
           addLocation,
           hovered?.id,
-          false
+          false,
         );
       }
     },
@@ -392,7 +398,7 @@ export const editorSlice = createSlice({
               if (i === 0) {
                 // Can't move, already first
                 toast.error(
-                  "This element is the first element in its parent and can't be moved further"
+                  "This element is the first element in its parent and can't be moved further",
                 );
                 return true;
               }
@@ -401,7 +407,7 @@ export const editorSlice = createSlice({
               if (i === arr.length - 1) {
                 // Can't move, already last
                 toast.error(
-                  "This element is the last element in its parent and can't be moved further"
+                  "This element is the last element in its parent and can't be moved further",
                 );
                 return true;
               }

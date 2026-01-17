@@ -8,7 +8,7 @@ import {
   CONFIG,
   Variable,
   User,
-} from "./Types";
+} from "./types/Types";
 import { v4 as uuidv4 } from "uuid";
 import { findElementById } from "../features/builder/utils/EditorHelpers";
 import { UseSelector } from "react-redux";
@@ -212,7 +212,7 @@ export const getDefaultElementProps = (type: string): Props => {
 };
 
 export const stripEditorFields = (
-  param: EditorState | Partial<EditorState>
+  param: EditorState | Partial<EditorState>,
 ) => {
   const stripped = {
     layout: param.layout,
@@ -263,7 +263,7 @@ export function getSetting<T = string>(
 
     // Compose full path as an array: [type, ...innerTypes]
     const path = [type, ...innerTypes].filter(
-      (k): k is string => k !== undefined
+      (k): k is string => k !== undefined,
     );
 
     if (!activeId) {
@@ -281,7 +281,7 @@ export const getProp = <T extends unknown>(
   useAppSelector: UseSelector<{
     editor: EditorState;
   }>,
-  type: string
+  type: string,
 ) => {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
@@ -297,7 +297,7 @@ export const getProp = <T extends unknown>(
 export const getFontVariables = (
   useAppSelector: UseSelector<{
     editor: EditorState;
-  }>
+  }>,
 ) => {
   return useAppSelector(selectVariables)
     .filter((item) => item.type === "font-family")
@@ -306,7 +306,7 @@ export const getFontVariables = (
 
 export const makeArraySplitFrom = (
   str: string | undefined,
-  splitValue: string
+  splitValue: string,
 ): string[] => {
   if (!str) return [];
 
@@ -339,7 +339,7 @@ export const makeArraySplitFrom = (
 export const addToString = (
   str: string,
   newVal: string,
-  splitValue: string
+  splitValue: string,
 ): string => {
   if (!str) {
     return newVal;
@@ -354,7 +354,7 @@ export const updateOrDeleteAtIndex = (
   newVal: string | undefined,
   i: number,
   deletion: boolean,
-  splitValue: string
+  splitValue: string,
 ) => {
   const arr = makeArraySplitFrom(str, splitValue);
 
@@ -376,7 +376,7 @@ export const updateOrDeleteAtIndex = (
 
 export const getValueFromShorthandStr = (
   str: string | undefined,
-  i: number | undefined
+  i: number | undefined,
 ) => {
   if (!str || i === undefined || i < 0) {
     return "";
@@ -401,7 +401,7 @@ export const convertVarIdToVarName = (
   str: string,
   useAppSelector: UseSelector<{
     editor: EditorState;
-  }>
+  }>,
 ) => {
   const variables = useAppSelector(selectVariables);
 
@@ -416,7 +416,7 @@ export const convertVarIdsToVars = (
   arr: string[],
   useAppSelector: UseSelector<{
     editor: EditorState;
-  }>
+  }>,
 ) => {
   const variables = useAppSelector(selectVariables);
   return arr.map((item) => {
@@ -431,7 +431,7 @@ export const convertVarIdsToVars = (
 export const setValueFromShorthandStr = (
   str: string | undefined,
   i: number | undefined,
-  newValue: string
+  newValue: string,
 ) => {
   if (!str || i === undefined || i < 0) {
     throw Error("Please pass in str and i"); // Handle edge cases like undefined or invalid index
@@ -461,7 +461,7 @@ export function setCookie(
   cname: string,
   cvalue: string,
   exdays: number,
-  setExpirationDate?: boolean
+  setExpirationDate?: boolean,
 ) {
   let cookieStr = `${cname}=${cvalue};path=/`;
 

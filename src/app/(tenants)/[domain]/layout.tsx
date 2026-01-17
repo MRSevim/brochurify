@@ -7,7 +7,7 @@ import {
   variablesGenerator,
 } from "@/utils/StyleGenerators";
 import { getCssReset } from "@/utils/StyleGenerators";
-import { Layout, PropsWithId } from "@/utils/Types";
+import { Layout, PropsWithId } from "@/utils/types/Types";
 import Effects from "./Effects";
 import { mapOverFonts } from "@/utils/GoogleFonts";
 import { getUsedFonts } from "@/utils/getUsedFonts";

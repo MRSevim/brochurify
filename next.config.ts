@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL("https://lh3.googleusercontent.com/**"),
       new URL("https://d23cxyudk0cypl.cloudfront.net/**"),
+      new URL("http://localhost:9000/**"), //This should point to local s3 url
     ],
   },
 };

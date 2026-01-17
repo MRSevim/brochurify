@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { runIntersectionObserver } from "../../../../utils/Helpers";
-import { ElementRefObject } from "../../../../utils/Types";
+import { ElementRefObject } from "../../../../utils/types/Types";
 
 export const useIntersectionObserver = (
   arr: any[],
-  ref: ElementRefObject | undefined
+  ref: ElementRefObject | undefined,
 ) => {
   useEffect(() => {
     if (!ref) {

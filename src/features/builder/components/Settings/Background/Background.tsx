@@ -15,7 +15,7 @@ import Select from "@/components/Select";
 import ResetButton, { ResetButtonWithType } from "../../ResetButton";
 import Slider from "@/components/Slider";
 import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
-import { CONFIG, StringOrUnd } from "@/utils/Types";
+import { CONFIG, StringOrUnd } from "@/utils/types/Types";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import UploadWrapper from "../UploadWrapper";
 import { selectPageWise } from "@/features/builder/lib/redux/selectors";
@@ -45,7 +45,7 @@ export const BackgroundColor = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           );
         }}
       />
@@ -84,7 +84,7 @@ const BackgroundShadow = () => {
       changeElementStyle({
         types: [type],
         newValue: "5px 5px 5px 2px " + pageWise.color || "#000000",
-      })
+      }),
     );
   const handleToggle = () => {
     if (!toggled) {
@@ -94,7 +94,7 @@ const BackgroundShadow = () => {
         changeElementStyle({
           types: [type],
           newValue: "",
-        })
+        }),
       );
     }
   };
@@ -103,7 +103,7 @@ const BackgroundShadow = () => {
       changeElementStyle({
         types: [type],
         newValue: setValueFromShorthandStr(variable, i, e),
-      })
+      }),
     );
   };
   return (
@@ -175,25 +175,25 @@ export const BackgroundImage = () => {
       changeElementStyle({
         types: [type],
         newValue: `url("${CONFIG.placeholderImgUrl}")`,
-      })
+      }),
     );
     dispatch(
       changeElementStyle({
         types: ["background-repeat"],
         newValue: "no-repeat",
-      })
+      }),
     );
     dispatch(
       changeElementStyle({
         types: ["background-position"],
         newValue: "50% 50%",
-      })
+      }),
     );
     dispatch(
       changeElementStyle({
         types: ["background-size"],
         newValue: "cover",
-      })
+      }),
     );
   };
   const handleToggle = () => {
@@ -204,16 +204,16 @@ export const BackgroundImage = () => {
         changeElementStyle({
           types: [type],
           newValue: "",
-        })
+        }),
       );
       dispatch(
-        changeElementStyle({ types: ["background-position"], newValue: "" })
+        changeElementStyle({ types: ["background-position"], newValue: "" }),
       );
       dispatch(
-        changeElementStyle({ types: ["background-repeat"], newValue: "" })
+        changeElementStyle({ types: ["background-repeat"], newValue: "" }),
       );
       dispatch(
-        changeElementStyle({ types: ["background-size"], newValue: "" })
+        changeElementStyle({ types: ["background-size"], newValue: "" }),
       );
     }
   };
@@ -246,7 +246,7 @@ const Link = () => {
           changeElementStyle({
             types: [type],
             newValue: `url(${newValue})`,
-          })
+          }),
         );
       }}
     >
@@ -258,7 +258,7 @@ const Link = () => {
             changeElementStyle({
               types: [type],
               newValue: `url(${e.target.value})`,
-            })
+            }),
           )
         }
       />
@@ -280,7 +280,7 @@ const BackgroundSize = () => {
           changeElementStyle({
             types: ["background-size"],
             newValue: e.target.value,
-          })
+          }),
         )
       }
     />

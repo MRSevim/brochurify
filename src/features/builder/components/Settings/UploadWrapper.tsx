@@ -238,7 +238,7 @@ const ImagesList = ({
                   toast.error(error);
                 } else {
                   setImages((prev) =>
-                    prev.filter((image) => image.url !== img.url)
+                    prev.filter((image) => image.url !== img.url),
                   );
                 }
                 setDeleteLoading(false);

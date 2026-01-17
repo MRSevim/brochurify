@@ -9,7 +9,7 @@ import {
   scanPrefix,
   updateProject,
 } from "../../lib/db/projectHelpers";
-import { EditorState } from "../../../../utils/Types";
+import { EditorState } from "../../../../utils/types/Types";
 import { addNumberWithDash, returnErrorFromUnknown } from "@/utils/Helpers";
 
 export const createAction = async (project: {
@@ -40,7 +40,7 @@ export const updateAction = async (
       published: boolean;
       editor?: EditorState;
     };
-  }>
+  }>,
 ) => {
   try {
     const updatedProject = await updateProject(type, id, updates);

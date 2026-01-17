@@ -14,7 +14,7 @@ import {
 import HeadingStyles from "./HeadingStyles";
 import InfoIcon from "@/components/InfoIcon";
 import ToggleBtn from "@/components/ToggleBtn";
-import { CONFIG } from "@/utils/Types";
+import { CONFIG } from "@/utils/types/Types";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import { BackgroundImage } from "../Background/Background";
 
@@ -51,7 +51,7 @@ const Color = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           )
         }
       />
@@ -74,7 +74,7 @@ const BackgroundColor = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           )
         }
       />
@@ -99,7 +99,7 @@ const FontSize = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           )
         }
       />
@@ -126,7 +126,7 @@ const FontFamily = () => {
             changeElementStyle({
               types: [type],
               newValue: e.target.value,
-            })
+            }),
           );
         }}
       />
@@ -153,7 +153,7 @@ const LineHeight = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           )
         }
       />
@@ -167,12 +167,12 @@ const ToggleToBrowserDefaults = () => {
   const fontWeigthHeading = getSetting(
     useAppSelector,
     CONFIG.headings,
-    "font-weight"
+    "font-weight",
   );
   const fontSizeHeading = getSetting(
     useAppSelector,
     CONFIG.headings,
-    "font-size"
+    "font-size",
   );
   const linkColor = getSetting(useAppSelector, "a", "color");
   const linkTextDecoration = getSetting(useAppSelector, "a", "text-decoration");
@@ -188,25 +188,25 @@ const ToggleToBrowserDefaults = () => {
       changeElementStyle({
         types: [CONFIG.headings, "font-weight"],
         newValue,
-      })
+      }),
     );
     dispatch(
       changeElementStyle({
         types: [CONFIG.headings, "font-size"],
         newValue,
-      })
+      }),
     );
     dispatch(
       changeElementStyle({
         types: ["a", "color"],
         newValue,
-      })
+      }),
     );
     dispatch(
       changeElementStyle({
         types: ["a", "text-decoration"],
         newValue,
-      })
+      }),
     );
   };
 

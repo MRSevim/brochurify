@@ -1,4 +1,4 @@
-import { Layout } from "@/utils/Types";
+import { Layout } from "@/utils/types/Types";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useAddSectionToggleSetter } from "@/features/builder/utils/contexts/AddSectionToggleContext";
@@ -38,7 +38,7 @@ const CenterDropWrapper = ({
       const getParentIds = (
         id: string,
         layout: Layout[],
-        parents: string[] = []
+        parents: string[] = [],
       ): string[] => {
         for (const item of layout) {
           if (item.id === id) return parents;

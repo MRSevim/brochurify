@@ -3,14 +3,20 @@ import { serverEnv } from "@/utils/serverConfig";
 
 const isDev = serverEnv.ENV === "development";
 
-const s3Client = new S3Client({
-  region: serverEnv.AWS_REGION,
-  endpoint: isDev ? "http://localhost:9000" : undefined,
-  forcePathStyle: isDev,
-  credentials: {
-    accessKeyId: serverEnv.AWS_ACCESS_KEY_ID,
-    secretAccessKey: serverEnv.AWS_SECRET_ACCESS_KEY,
-  },
-});
+const s3Client =
+  globalThis.s3Client ??
+  new S3Client({
+    region: serverEnv.AWS_REGION,
+    endpoint: isDev ? "http://localhost:9000" : undefined,
+    forcePathStyle: isDev,
+    credentials: {
+      accessKeyId: serverEnv.AWS_ACCESS_KEY_ID,
+      secretAccessKey: serverEnv.AWS_SECRET_ACCESS_KEY,
+    },
+  });
 
 export default s3Client;
+
+if (serverEnv.ENV !== "production") {
+  globalThis.s3Client = s3Client;
+}

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
-import { User } from "@/utils/Types";
+import { User } from "@/utils/types/Types";
 import { getUserAction } from "./userActions";
 
 export function useSyncUser() {

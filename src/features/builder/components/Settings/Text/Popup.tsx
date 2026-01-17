@@ -4,7 +4,7 @@ import FontFamilyPicker from "@/features/builder/components/FontFamilyPicker";
 import LinkInput from "@/components/LinkInput";
 import Slider from "@/components/Slider";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { Style, CONFIG, PageWise } from "@/utils/Types";
+import { Style, CONFIG, PageWise } from "@/utils/types/Types";
 import { Editor } from "@tiptap/react";
 import { Dispatch, useEffect } from "react";
 import { selectPageWise } from "@/features/builder/lib/redux/selectors";

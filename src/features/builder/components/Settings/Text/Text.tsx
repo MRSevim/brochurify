@@ -18,7 +18,7 @@ import { useEditor, EditorContent, Editor } from "@tiptap/react";
 import { getProp } from "@/utils/Helpers";
 import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
-import { HeadingLevel } from "@/utils/Types";
+import { HeadingLevel } from "@/utils/types/Types";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import Popup from "./Popup";
 import {
@@ -70,7 +70,7 @@ const Text = () => {
     if (editor) {
       editor.view.dom.addEventListener(
         "dragstart",
-        (event) => event.preventDefault()
+        (event) => event.preventDefault(),
         //prevents dragging
       );
     }

@@ -9,7 +9,7 @@ import {
 import InfoIcon from "@/components/InfoIcon";
 import Slider from "@/components/Slider";
 import { ResetButtonWithOuterType } from "@/features/builder/components/ResetButton";
-import { CONFIG } from "@/utils/Types";
+import { CONFIG } from "@/utils/types/Types";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 
 const HeadingStyles = () => {
@@ -47,7 +47,7 @@ const FontFamily = ({ outerType }: { outerType: string }) => {
             changeElementStyle({
               types: [outerType, innerType],
               newValue: e.target.value,
-            })
+            }),
           );
         }}
       />
@@ -73,7 +73,7 @@ const FontSize = ({ outerType }: { outerType: string }) => {
             changeElementStyle({
               types: [outerType, innerType],
               newValue,
-            })
+            }),
           )
         }
       />

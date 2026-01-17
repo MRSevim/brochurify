@@ -1,5 +1,5 @@
 "use client";
-import { User } from "@/utils/Types";
+import { User } from "@/utils/types/Types";
 import {
   useContext,
   useState,

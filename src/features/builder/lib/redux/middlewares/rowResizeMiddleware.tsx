@@ -1,5 +1,5 @@
 import { Middleware } from "@reduxjs/toolkit";
-import { Layout } from "@/utils/Types";
+import { Layout } from "@/utils/types/Types";
 import { RootState } from "../../../../../lib/redux/store";
 import {
   hydrate,
@@ -13,12 +13,12 @@ import {
 // Utility to count non-fixed children of row nodes
 const getRowNonFixedCounts = (
   nodes: Layout[],
-  acc: Record<string, number> = {}
+  acc: Record<string, number> = {},
 ) => {
   for (const node of nodes) {
     if (node.type === "row" && Array.isArray(node.props.child)) {
       const count = node.props.child.filter(
-        (child) => child.type !== "fixed"
+        (child) => child.type !== "fixed",
       ).length;
       acc[node.id] = count;
     }
@@ -32,7 +32,7 @@ const getRowNonFixedCounts = (
 // Recursive update that preserves references unless changes are made
 const updateWidths = (
   nodes: Layout[],
-  prevCounts: Record<string, number>
+  prevCounts: Record<string, number>,
 ): [Layout[], boolean] => {
   let changed = false;
 
@@ -42,7 +42,7 @@ const updateWidths = (
     if (node.type === "row" && Array.isArray(node.props.child)) {
       const prevCount = prevCounts[node.id] ?? 0;
       const nonFixedChildren = node.props.child.filter(
-        (c) => c.type !== "fixed"
+        (c) => c.type !== "fixed",
       );
       const currCount = nonFixedChildren.length;
 
@@ -78,7 +78,7 @@ const updateWidths = (
       // Recurse into children
       const [recursedChild, childRecursedChanged] = updateWidths(
         newChildArray,
-        prevCounts
+        prevCounts,
       );
 
       if (childChanged || childRecursedChanged) {
@@ -97,7 +97,7 @@ const updateWidths = (
       // Recurse into non-row nodes
       const [recursedChild, childChanged] = updateWidths(
         node.props.child,
-        prevCounts
+        prevCounts,
       );
       if (childChanged) {
         updatedNode = {

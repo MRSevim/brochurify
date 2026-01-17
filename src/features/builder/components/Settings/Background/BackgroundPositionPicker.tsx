@@ -7,7 +7,7 @@ import {
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import "./BackgroundPositionPicker.css";
-import { HandleChangeType, OptionsObject } from "@/utils/Types";
+import { HandleChangeType, OptionsObject } from "@/utils/types/Types";
 import Select from "@/components/Select";
 
 const type = "background-position";
@@ -37,7 +37,7 @@ export const BackgroundPositionPicker = () => {
       changeElementStyle({
         types: ["background-position"],
         newValue: `${regulatedXPercent}% ${regulatedYPercent}%`,
-      })
+      }),
     );
   };
 
@@ -111,7 +111,7 @@ export const BackgroundPositionPicker = () => {
                   changeElementStyle({
                     types: ["background-position"],
                     newValue: "50% 50%",
-                  })
+                  }),
                 )
               }
             >
@@ -136,7 +136,7 @@ const Alignment = ({ isCover }: { isCover: boolean }) => {
       changeElementStyle({
         types: [type],
         newValue,
-      })
+      }),
     );
   };
 

@@ -1,4 +1,4 @@
-import { Layout, PageWise, Style } from "./Types";
+import { Layout, PageWise, Style } from "./types/Types";
 import { googleFontOptions } from "./GoogleFonts";
 const validFontTitles = new Set(googleFontOptions.map((f) => f.title));
 

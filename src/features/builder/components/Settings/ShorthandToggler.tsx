@@ -9,7 +9,7 @@ import {
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
-import { SizingType, StringOrUnd } from "@/utils/Types";
+import { SizingType, StringOrUnd } from "@/utils/types/Types";
 import { useState } from "react";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import Icon from "@/components/Icon";
@@ -50,7 +50,7 @@ const ShorthandToggler = ({ type }: { type: string }) => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           )
         }
       />
@@ -63,7 +63,7 @@ const ShorthandToggler = ({ type }: { type: string }) => {
               newValue:
                 (getDefaultStyle(activeType)[type] as string) ||
                 "0px 0px 0px 0px ",
-            })
+            }),
           );
         }}
       />

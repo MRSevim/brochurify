@@ -4,12 +4,12 @@ import {
   EditorState,
   ItemAndLocation,
   Layout,
-} from "../../../utils/Types";
+} from "../../../utils/types/Types";
 import { v4 as uuidv4 } from "uuid";
 
 export const moveElementInner = (
   state: EditorState,
-  payload: ItemAndLocation
+  payload: ItemAndLocation,
 ) => {
   if (payload.addLocation?.id === payload.item?.id) return;
   const currentElement = payload.item;
@@ -24,7 +24,7 @@ export const moveElementInner = (
     state,
     payload.addLocation,
     currentElement,
-    targetElement
+    targetElement,
   );
   if (passed) {
     if (
@@ -42,7 +42,7 @@ export const moveElementInner = (
       currentElement,
       payload.addLocation,
       targetId,
-      false
+      false,
     );
   }
 };
@@ -55,7 +55,7 @@ export const canElementHaveChild = (
   state: EditorState,
   addLocation: AddLocation,
   newElement: Layout,
-  targetElement: Layout | undefined
+  targetElement: Layout | undefined,
 ) => {
   const parentElements = ["column", "row", "button", "container", "fixed"];
 
@@ -63,7 +63,7 @@ export const canElementHaveChild = (
   const isInsideButton = (layout: Layout[], targetId: string): boolean => {
     const findParentChain = (
       layout: Layout[],
-      targetId: string
+      targetId: string,
     ): string[] | null => {
       for (const element of layout) {
         if (element.id === targetId) {
@@ -114,7 +114,7 @@ export const canElementHaveChild = (
 // Helper function to check if the target ID is within the children of a layout element
 export const isInChildren = (
   children: Layout[] | undefined,
-  targetId: string
+  targetId: string,
 ): boolean => {
   if (!children) return false;
   for (const child of children) {
@@ -127,7 +127,7 @@ export const isInChildren = (
 
 export const deleteFromLayout = (
   layout: Layout[],
-  targetId: string
+  targetId: string,
 ): boolean => {
   let deleted = false;
 
@@ -153,7 +153,7 @@ export const deleteFromLayout = (
 
 export const findElementById = (
   layout: Layout[],
-  targetId: string | undefined
+  targetId: string | undefined,
 ): Layout | undefined => {
   for (const item of layout) {
     if (item.id === targetId) {
@@ -174,7 +174,7 @@ export const generateNewIds = (copied: Layout) => {
 
   if (copied.props?.child) {
     newProps.child = copied.props.child.map((child: Layout) =>
-      generateNewIds(child)
+      generateNewIds(child),
     );
   }
 
@@ -205,7 +205,7 @@ export const insertElement = (
   newElement: Layout,
   addLocation: AddLocation | undefined,
   targetId: string | undefined,
-  pushIfNoActive: boolean
+  pushIfNoActive: boolean,
 ): void => {
   if (!addLocation) {
     if (targetId) {
@@ -224,7 +224,7 @@ export const insertElement = (
             newElement,
             addLocation,
             targetId,
-            pushIfNoActive
+            pushIfNoActive,
           );
         }
       }
@@ -250,7 +250,7 @@ export const insertElement = (
         newElement,
         addLocation,
         targetId,
-        pushIfNoActive
+        pushIfNoActive,
       );
     }
   }

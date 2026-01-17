@@ -7,13 +7,13 @@ import {
   styleGenerator,
   variablesGenerator,
 } from "./StyleGenerators";
-import { Layout, PageWise, Variable } from "./Types";
+import { Layout, PageWise, Variable } from "./types/Types";
 import { html as beautifyHtml } from "js-beautify";
 
 export const generateHTML = (
   layout: Layout[],
   pageWise: PageWise,
-  variables: Variable[]
+  variables: Variable[],
 ): string => {
   const { title, description, keywords, canonical, image, iconUrl, ...rest } =
     pageWise;
@@ -204,6 +204,6 @@ const updateInternalLinks = (html: string): string => {
       if (/onclick\s*=/.test(match)) return match;
 
       return `<a${preAttrs} ${hrefAttr} ${onclickAttr}${postAttrs}>`;
-    }
+    },
   );
 };

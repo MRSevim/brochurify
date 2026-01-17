@@ -9,7 +9,7 @@ import {
   deleteElement,
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import Icon from "../../../../components/Icon";
-import { Layout } from "@/utils/Types";
+import { Layout } from "@/utils/types/Types";
 import AddButton from "../../../../components/AddButton";
 import DeleteButton from "../../../../components/DeleteButton";
 import {
@@ -81,7 +81,7 @@ const LayoutItem = memo(
         event.stopPropagation();
         dispatch(deleteElement(id));
       },
-      [id, dispatch]
+      [id, dispatch],
     );
 
     return (
@@ -101,7 +101,7 @@ const LayoutItem = memo(
         <ChildVisibilityWrapper child={child} depth={depth} id={id} />
       </>
     );
-  }
+  },
 );
 
 const ChildVisibilityWrapper = ({
@@ -141,7 +141,7 @@ const ChildLayout = memo(
         ))}
       </>
     );
-  }
+  },
 );
 const AddSection = memo(() => {
   const availableElements = Object.keys(componentList);

@@ -18,7 +18,7 @@ import Popup from "@/components/Popup";
 import { OpacityPicker } from "../Others";
 import { PositionPicker } from "../FixedSettings";
 import { ShorthandTogglerPicker } from "../ShorthandToggler";
-import { CONFIG, Style } from "@/utils/Types";
+import { CONFIG, Style } from "@/utils/types/Types";
 import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
 import ColorPicker from "@/features/builder/components/ColorPicker";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
@@ -32,7 +32,7 @@ import {
 const Styles = () => {
   const [outerType, setOuterType] = useState("base");
   const [midType, setMidType] = useState<string>(
-    CONFIG.possibleOuterTypes.scrolled
+    CONFIG.possibleOuterTypes.scrolled,
   );
   const selectorOuterType = outerType === "base" ? undefined : outerType;
   const dispatch = useAppDispatch();
@@ -44,13 +44,13 @@ const Styles = () => {
 
   const handleStyleChange = (
     innerTypeParam: string | undefined,
-    newValue: string | undefined
+    newValue: string | undefined,
   ) => {
     dispatch(
       changeElementStyle({
         types: [selectorOuterType, midType, innerTypeParam ?? innerType],
         newValue: newValue ?? "",
-      })
+      }),
     );
   };
   return (
@@ -89,7 +89,7 @@ const TransitionValueAddZone = ({
   innerType: string;
   handleChange: (
     innerTypeParam: string | undefined,
-    newValue: string | undefined
+    newValue: string | undefined,
   ) => void;
 }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -106,7 +106,7 @@ const TransitionValueAddZone = ({
         onClick={() => {
           const typeNotActiveStyle =
             availableTransitions.find(
-              (option) => !activeStyleKeys.includes(option.value)
+              (option) => !activeStyleKeys.includes(option.value),
             )?.value || "transition";
 
           setInnerType(typeNotActiveStyle);
@@ -145,7 +145,7 @@ const TransitionValueAddZone = ({
               >
                 {
                   availableTransitions.find(
-                    (transition) => transition.value === item[0]
+                    (transition) => transition.value === item[0],
                   )?.title
                 }
               </EditableListItem>
@@ -225,7 +225,7 @@ const TransitionValueInner = ({
               ? availableTransitions
                   .filter(
                     (option) =>
-                      !activeStylesArr.some((t) => t.startsWith(option.value))
+                      !activeStylesArr.some((t) => t.startsWith(option.value)),
                   )
                   .filter((option) => filterForFixed(option, activeType))
               : availableTransitions

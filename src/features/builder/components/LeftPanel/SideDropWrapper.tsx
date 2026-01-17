@@ -6,7 +6,7 @@ import {
   setDraggedOver,
   setHovered,
 } from "@/features/builder/lib/redux/slices/editorSlice";
-import { Where } from "@/utils/Types";
+import { Where } from "@/utils/types/Types";
 import { DragEvent, memo } from "react";
 import {
   selectAddLocation,
@@ -62,7 +62,7 @@ const SideDropZone = memo(({ id, where }: { id: string; where: Where }) => {
           id,
           where,
         },
-      })
+      }),
     );
   };
   return (

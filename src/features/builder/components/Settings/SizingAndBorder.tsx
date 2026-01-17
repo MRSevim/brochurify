@@ -10,7 +10,7 @@ import NumberInput from "@/components/NumberInput";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import ShorthandToggler from "./ShorthandToggler";
-import { CONFIG } from "@/utils/Types";
+import { CONFIG } from "@/utils/types/Types";
 import VariableSelector from "../VariableSelector";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import UnitSelector from "../UnitSelector";
@@ -143,7 +143,7 @@ const NumberController = ({
   const variable = getSetting(
     useAppSelector,
     selectorOuterType,
-    selectorInnerType
+    selectorInnerType,
   );
   const initialType = getUnit(variable);
   const [radioType, setRadioType] = useState(initialType || "px");
@@ -153,7 +153,7 @@ const NumberController = ({
       changeElementStyle({
         types: [selectorOuterType, selectorInnerType],
         newValue,
-      })
+      }),
     );
   };
 

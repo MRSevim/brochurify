@@ -2,7 +2,7 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { componentList } from "@/features/builder/utils/ComponentsList";
 import { findElementById } from "@/features/builder/utils/EditorHelpers";
 import { useIntersectionObserver } from "@/features/builder/utils/hooks/useIntersectionObserver";
-import { CONFIG, Layout, Style } from "@/utils/Types";
+import { CONFIG, Layout, Style } from "@/utils/types/Types";
 import { memo, useRef } from "react";
 import { SideDropOverlay } from "./SideDropOverlay";
 import FocusWrapper from "@/features/builder/components/FocusWrapper";
@@ -51,7 +51,7 @@ const RenderedComponent = memo(
     useIntersectionObserver([replayTrigger, item.props.style, wrapperRef], ref);
     useIntersectionObserver(
       [replayTrigger, item.props.style, wrapperRef],
-      wrapperRef
+      wrapperRef,
     );
     return (
       <SideDropOverlay
@@ -78,7 +78,7 @@ const RenderedComponent = memo(
   },
   function areEqual(
     prev: Readonly<{ item: Layout }>,
-    next: Readonly<{ item: Layout }>
+    next: Readonly<{ item: Layout }>,
   ): boolean {
     const prevItem = prev.item;
     const nextItem = next.item;
@@ -110,7 +110,7 @@ const RenderedComponent = memo(
     }
 
     return true;
-  }
+  },
 );
 
 const EditorChildren = memo(({ items }: { items: Layout[] | undefined }) => {

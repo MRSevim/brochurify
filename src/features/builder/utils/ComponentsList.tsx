@@ -1,5 +1,5 @@
 import Button from "../components/BuilderComponents/Elements/Button";
-import { PropsWithId } from "../../../utils/Types";
+import { PropsWithId } from "../../../utils/types/Types";
 import Column from "../components/BuilderComponents/Elements/Column";
 import Text from "../components/BuilderComponents/Elements/Text";
 import Row from "../components/BuilderComponents/Elements/Row";

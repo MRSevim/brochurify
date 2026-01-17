@@ -11,7 +11,7 @@ import {
   editVariable,
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import { fontOptions } from "@/utils/Helpers";
-import { Variable } from "@/utils/Types";
+import { Variable } from "@/utils/types/Types";
 import { useState } from "react";
 import EditableListItem from "../EditableListItem";
 import { TransitionPropertyAddZone } from "../Transitions/Transitions";
@@ -69,7 +69,7 @@ const PopupComp = ({
 }) => {
   const dispatch = useAppDispatch();
   const [type, setType] = useState<Variable["type"]>(
-    editedVar?.type || "color"
+    editedVar?.type || "color",
   );
   const [value, setValue] = useState(editedVar?.value || "");
   const [name, setName] = useState(editedVar?.name || "");
@@ -86,7 +86,7 @@ const PopupComp = ({
               ...editedVar,
               name,
               value,
-            })
+            }),
           );
         } else {
           dispatch(
@@ -94,7 +94,7 @@ const PopupComp = ({
               type,
               name,
               value,
-            })
+            }),
           );
         }
         onClose();

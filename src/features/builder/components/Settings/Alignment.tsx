@@ -5,7 +5,7 @@ import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibil
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import { getSetting } from "@/utils/Helpers";
-import { OptionsObject, CONFIG } from "@/utils/Types";
+import { OptionsObject, CONFIG } from "@/utils/types/Types";
 import React from "react";
 import Checkbox from "@/components/Checkbox";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
@@ -146,7 +146,7 @@ const Gap = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           )
         }
       />
@@ -193,7 +193,7 @@ const TabletOrMobile = ({
           changeElementStyle({
             types: [outerType, innerType],
             newValue: checked ? "" : reverse,
-          })
+          }),
         );
       }}
     />
@@ -224,7 +224,7 @@ const HorizontalOrVertical = ({
             changeElementStyle({
               types: [type],
               newValue: e.target.value,
-            })
+            }),
           );
         }}
       />

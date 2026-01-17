@@ -1,4 +1,4 @@
-import { Layout, PageWise, Style, Variable, StringOrUnd } from "./Types";
+import { Layout, PageWise, Style, Variable, StringOrUnd } from "./types/Types";
 
 const layoutKeys: (keyof Style)[] = [
   "width",
@@ -133,7 +133,7 @@ export const styleGenerator = (style: Style): string => {
 
 export const fullStylesWithIdsGenerator = (
   layout: Layout[],
-  rest: boolean
+  rest: boolean,
 ): string => {
   return layout
     .map((item) => {

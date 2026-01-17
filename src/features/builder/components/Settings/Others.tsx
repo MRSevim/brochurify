@@ -7,7 +7,7 @@ import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSl
 import Transform from "./Transform";
 import Slider from "@/components/Slider";
 import { ResetButtonWithType } from "../ResetButton";
-import { StringOrUnd, CONFIG } from "@/utils/Types";
+import { StringOrUnd, CONFIG } from "@/utils/types/Types";
 import VariableSelector from "../VariableSelector";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import { selectActiveType } from "../../lib/redux/selectors";
@@ -77,7 +77,7 @@ const TabletOrMobile = ({
           changeElementStyle({
             types: [outerType, innerType],
             newValue: checked ? "" : hidden,
-          })
+          }),
         );
       }}
     />
@@ -113,7 +113,7 @@ const TabletOrMobileShow = ({
           changeElementStyle({
             types: [outerType, innerType],
             newValue: checked ? "" : show,
-          })
+          }),
         );
       }}
     />
@@ -135,7 +135,7 @@ const OverflowHidden = () => {
           changeElementStyle({
             types: [type],
             newValue: !checked ? "hidden" : "",
-          })
+          }),
         );
       }}
     />

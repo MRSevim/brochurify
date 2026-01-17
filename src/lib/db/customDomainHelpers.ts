@@ -1,6 +1,6 @@
 import { parse } from "tldts";
 import { checkRole, protect } from "../../features/auth/utils/helpers";
-import { StringOrUnd } from "../../utils/Types";
+import { StringOrUnd } from "../../utils/types/Types";
 import docClient from "./db";
 import { GetCommand, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { Vercel } from "@vercel/sdk";
@@ -28,7 +28,7 @@ export async function requestCustomDomain(id: string, domain: string) {
     new GetCommand({
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },
-    })
+    }),
   );
 
   if (!existingProject) {
@@ -48,7 +48,7 @@ export async function requestCustomDomain(id: string, domain: string) {
       ExpressionAttributeNames: { "#customDomain": "customDomain" },
       ExpressionAttributeValues: { ":domain": domain },
       Limit: 1,
-    })
+    }),
   );
 
   function isSubdomain(domain: string): boolean {
@@ -91,7 +91,7 @@ export async function requestCustomDomain(id: string, domain: string) {
   ) {
     if (existingDomain.Items[0].domainVerified) {
       throw new Error(
-        "Domain you entered is already verified. Please wait a little if you do not see your live site"
+        "Domain you entered is already verified. Please wait a little if you do not see your live site",
       );
     } else {
       const result = await vercel.projects.getProjectDomain({
@@ -125,7 +125,7 @@ export async function requestCustomDomain(id: string, domain: string) {
         ":status": false,
         ":updatedAt": new Date().toISOString(),
       },
-    })
+    }),
   );
   const verification = mainDomainResponse.verification;
 
@@ -140,7 +140,7 @@ export async function checkVerificationStatus(id: string) {
     new GetCommand({
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },
-    })
+    }),
   );
 
   // If already verified in DB, skip and return immediately
@@ -172,7 +172,7 @@ export async function checkVerificationStatus(id: string) {
         ExpressionAttributeValues: {
           ":status": true,
         },
-      })
+      }),
     );
     return true;
   } else {
@@ -188,7 +188,7 @@ export async function removeCustomDomain(id: string) {
     new GetCommand({
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },
-    })
+    }),
   );
 
   if (!Item) throw new Error("Project not found");
@@ -200,7 +200,7 @@ export async function removeCustomDomain(id: string) {
 
 export const removeCustomDomainInner = async (
   Item: Record<string, any>,
-  user: Record<string, any>
+  user: Record<string, any>,
 ) => {
   await vercel.projects.removeProjectDomain({
     idOrName: PROJECT_NAME,
@@ -219,6 +219,6 @@ export const removeCustomDomainInner = async (
         "#customDomain": "customDomain",
         "#domainVerified": "domainVerified",
       },
-    })
+    }),
   );
 };

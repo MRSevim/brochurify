@@ -9,7 +9,7 @@ import {
 import docClient from "../../../../lib/db/db";
 import { v4 as uuidv4 } from "uuid";
 import { checkRole, protect } from "../../../auth/utils/helpers";
-import { EditorState } from "../../../../utils/Types";
+import { EditorState } from "../../../../utils/types/Types";
 import { stripEditorFields } from "../../../../utils/Helpers";
 import { generateHTML } from "../../../../utils/HTMLGenerator";
 import { snapshotQueue } from "../../../../lib/redis";
@@ -27,7 +27,7 @@ const addJobToQueue = async (
   isTemplate: boolean,
   html: string,
   userId: string,
-  id: string
+  id: string,
 ) => {
   const jobId = `${userId}-${id}`;
   console.log(`🔁 Scheduling snapshot job (${jobId}) to run in 10 minutes...`);
@@ -55,7 +55,7 @@ const addJobToQueue = async (
       removeOnFail: true,
       attempts: 3, // Retry on failure
       backoff: { type: "fixed", delay: 5000 }, // Wait between retries
-    }
+    },
   );
 };
 
@@ -82,13 +82,13 @@ export async function createProject(project: {
       checkRole(
         user,
         "admin",
-        `You cannot create more than ${subLimit} projects!`
+        `You cannot create more than ${subLimit} projects!`,
       );
     } else if (projectsLength > freeLimit) {
       checkRole(
         user,
         "subscriber",
-        `You cannot create more than ${freeLimit} projects!`
+        `You cannot create more than ${freeLimit} projects!`,
       );
     }
   }
@@ -96,7 +96,7 @@ export async function createProject(project: {
   const { layout, pageWise, variables } = project.editor;
   if (!layout || !pageWise || !variables) {
     throw Error(
-      "Please pass in layout, pageWise and variables to createProject"
+      "Please pass in layout, pageWise and variables to createProject",
     );
   }
   const id = uuidv4();
@@ -184,7 +184,7 @@ export async function scanPrefix(prefix: string) {
           ":prefixVal": currentPrefix,
         },
         ProjectionExpression: "prefix", // optional
-      })
+      }),
     );
 
     if (result.Items && result.Items.length > 0) {
@@ -233,7 +233,7 @@ export async function updateProject(
       published: boolean;
       editor?: EditorState;
     };
-  }>
+  }>,
 ) {
   const user = await protect();
   const isTemplate = type === "template";
@@ -245,7 +245,7 @@ export async function updateProject(
     new GetCommand({
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },
-    })
+    }),
   );
 
   if (!existingProject.Item) {
@@ -267,7 +267,7 @@ export async function updateProject(
     const { layout, pageWise, variables } = updates.editor;
     if (!layout || !pageWise || !variables) {
       throw Error(
-        "Please pass in layout, pageWise and variables to updateProject"
+        "Please pass in layout, pageWise and variables to updateProject",
       );
     }
 
@@ -275,7 +275,7 @@ export async function updateProject(
       isTemplate,
       generateHTML(layout, pageWise, variables),
       user.userId,
-      id
+      id,
     );
     const MAX_PROJECT_SIZE_BYTES = appConfig.MAX_PROJECT_SIZE_KB * 1024;
     const Body = JSON.stringify(stripEditorFields(updates.editor));
@@ -283,7 +283,7 @@ export async function updateProject(
 
     if (sizeInBytes > MAX_PROJECT_SIZE_BYTES) {
       throw new Error(
-        `Project data size exceeds the limit of ${appConfig.MAX_PROJECT_SIZE_KB} KB`
+        `Project data size exceeds the limit of ${appConfig.MAX_PROJECT_SIZE_KB} KB`,
       );
     }
     setExpressions.push("#editor = :editor");
@@ -298,7 +298,7 @@ export async function updateProject(
       const reserved = ["www", "admin", "app", "send"];
       if (reserved.includes(prefix.toLowerCase())) {
         throw Error(
-          `The subdomain "${prefix}" is reserved and cannot be used.`
+          `The subdomain "${prefix}" is reserved and cannot be used.`,
         );
       }
       setExpressions.push("#prefix = :prefix");
@@ -369,7 +369,7 @@ export async function deleteProject(type: string, id: string) {
     new GetCommand({
       TableName: TABLE_NAME,
       Key: { userId: user.userId, id },
-    })
+    }),
   );
 
   const Item = existingProject.Item;
@@ -385,7 +385,7 @@ export async function deleteProject(type: string, id: string) {
   await deleteFromS3(
     isTemplate
       ? `templateSnapshots/${id}.jpeg`
-      : `${user.userId}/snapshots/${id}.jpeg`
+      : `${user.userId}/snapshots/${id}.jpeg`,
   );
 
   //editor data deletion

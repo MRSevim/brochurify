@@ -1,5 +1,5 @@
 import Select from "@/components/Select";
-import { OptionsObject } from "@/utils/Types";
+import { OptionsObject } from "@/utils/types/Types";
 
 export const SelectTransition = ({
   value,

@@ -6,7 +6,7 @@ import {
   setDraggedOver,
   setHovered,
 } from "@/features/builder/lib/redux/slices/editorSlice";
-import { Style, Where } from "@/utils/Types";
+import { Style, Where } from "@/utils/types/Types";
 import { DragEvent, memo, useRef, useState } from "react";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
 import { useEditorRef } from "@/features/builder/utils/contexts/EditorRefContext";
@@ -71,7 +71,7 @@ const SideDropZone = memo(({ where, id }: { id: string; where: Where }) => {
   const setToggle = useAddSectionToggleSetter();
 
   const handleAddLocationClick = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     e.stopPropagation();
     if (addLocation && addLocation.id === id && addLocation.where === where) {
@@ -91,7 +91,7 @@ const SideDropZone = memo(({ where, id }: { id: string; where: Where }) => {
           id,
           where,
         },
-      })
+      }),
     );
   };
 

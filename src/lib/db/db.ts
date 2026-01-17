@@ -13,6 +13,11 @@ const dbClient = new DynamoDBClient({
   },
 });
 
-const docClient = DynamoDBDocumentClient.from(dbClient);
+const docClient =
+  globalThis.dynamodbClient ?? DynamoDBDocumentClient.from(dbClient);
 
 export default docClient;
+
+if (serverEnv.ENV !== "production") {
+  globalThis.dynamodbClient = docClient;
+}
