@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
+import { User } from "@/utils/Types";
+import { getUserAction } from "./userActions";
 
 export function useSyncUser() {
   const [, setUser] = useUser();
@@ -11,13 +13,13 @@ export function useSyncUser() {
       try {
         if (document.visibilityState !== "visible") return;
 
-        const res = await fetch("/api/user/profile");
-        if (res.ok) {
-          const user = await res.json();
-          setUser(user);
-        }
-      } catch (error: any) {
-        console.error("Error fetching user:", error.message);
+        const { user, error } = await getUserAction();
+
+        if (error) {
+          throw new Error(error);
+        } else setUser(user as User);
+      } catch (error) {
+        console.error("Error fetching user:", error);
       }
     };
 

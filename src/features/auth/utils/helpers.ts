@@ -12,7 +12,7 @@ const TABLE_NAME = serverEnv.DB_TABLE_NAME;
 export const generateToken = async (
   cookieStore: ReadonlyRequestCookies,
   userId: string,
-  rememberMe: boolean
+  rememberMe: boolean,
 ) => {
   let token;
   let cookieOptions: Partial<ResponseCookie> = {
@@ -72,7 +72,7 @@ export const protect = async () => {
 export const checkRole = (
   user: Record<string, any>,
   role: string,
-  customError?: string
+  customError?: string,
 ) => {
   if (!Array.isArray(user.roles) || !user.roles.includes(role)) {
     throw new Error(customError || `Not authorized, ${role} role required`);
