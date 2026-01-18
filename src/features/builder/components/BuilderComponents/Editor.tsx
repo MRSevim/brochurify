@@ -90,7 +90,7 @@ const EditorInner = ({ children }: { children: React.ReactNode }) => {
     <styledElements.styledEditor
       $styles={pageWise}
       $variables={variables}
-      className="editor relative"
+      className="relative"
       key={globalTrigger}
     >
       {" "}

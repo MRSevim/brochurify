@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useAddSectionToggleSetter } from "@/features/builder/utils/contexts/AddSectionToggleContext";
 import { setActive } from "@/features/builder/lib/redux/slices/editorSlice";
-import { useVisibilityMapSetter } from "./VisibilityMapContext";
 import {
   selectActive,
   selectAddLocation,
@@ -11,6 +10,7 @@ import {
   selectHovered,
   selectLayout,
 } from "../../lib/redux/selectors";
+import { useVisibilitySetSetter } from "./VisibilitySetContext";
 
 const CenterDropWrapper = ({
   id,
@@ -20,7 +20,7 @@ const CenterDropWrapper = ({
   children: React.ReactNode;
 }) => {
   const activeId = useAppSelector(selectActive);
-  const setVisibilityMap = useVisibilityMapSetter();
+  const setVisibilityMap = useVisibilitySetSetter();
   const addLocation = useAppSelector(selectAddLocation);
   const dispatch = useAppDispatch();
   const layout = useAppSelector(selectLayout);
@@ -56,10 +56,10 @@ const CenterDropWrapper = ({
 
       const parentIds = getParentIds(activeId, layout);
 
-      setVisibilityMap((prevMap) => {
-        const newMap = new Map(prevMap);
-        parentIds.forEach((parentId) => newMap.set(parentId, true));
-        return newMap;
+      setVisibilityMap((prevSet) => {
+        const newSet = new Set(prevSet);
+        parentIds.forEach((parentId) => newSet.add(parentId));
+        return newSet;
       });
     };
 

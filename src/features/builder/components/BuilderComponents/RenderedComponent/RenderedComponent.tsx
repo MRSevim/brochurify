@@ -22,28 +22,31 @@ const RenderedComponent = memo(
     const styleString = useAppSelector((state) => {
       const layout = state.editor.layout;
       const element = findElementById(layout, id);
-      const style = element?.props.style as Style;
+      if (element) {
+        const style = element.props.style;
 
-      // Utility function to safely extract styles from optional nested layers
-      const extractStyles = (s?: Style): Record<string, unknown> => ({
-        animation: s?.animation,
-        transition: s?.transition,
-        [CONFIG.possibleOuterTypes.scrolled]:
-          s?.[CONFIG.possibleOuterTypes.scrolled],
-      });
+        // Utility function to safely extract styles from optional nested layers
+        const extractStyles = (s?: Style): Record<string, unknown> => ({
+          animation: s?.animation,
+          transition: s?.transition,
+          [CONFIG.possibleOuterTypes.scrolled]:
+            s?.[CONFIG.possibleOuterTypes.scrolled],
+        });
 
-      const tablet = style?.[CONFIG.possibleOuterTypes.tabletContainerQuery] as
-        | Style
-        | undefined;
-      const mobile = style?.[CONFIG.possibleOuterTypes.mobileContainerQuery] as
-        | Style
-        | undefined;
+        const tablet = style?.[
+          CONFIG.possibleOuterTypes.tabletContainerQuery
+        ] as Style | undefined;
+        const mobile = style?.[
+          CONFIG.possibleOuterTypes.mobileContainerQuery
+        ] as Style | undefined;
 
-      return JSON.stringify({
-        base: extractStyles(style),
-        tablet: extractStyles(tablet),
-        mobile: extractStyles(mobile),
-      });
+        return JSON.stringify({
+          base: extractStyles(style),
+          tablet: extractStyles(tablet),
+          mobile: extractStyles(mobile),
+        });
+      }
+      return "";
     });
     const ref = useRef<HTMLElement | null>(null);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -87,7 +90,6 @@ const RenderedComponent = memo(
     if (prevItem.id !== nextItem.id || prevItem.type !== nextItem.type) {
       return false;
     }
-
     const prevProps = prevItem.props;
     const nextProps = nextItem.props;
 
@@ -101,7 +103,6 @@ const RenderedComponent = memo(
     if (prevKeys.length !== nextKeys.length) {
       return false;
     }
-
     // Compare each non-ignored key using strict equality
     for (const key of prevKeys) {
       if (prevProps[key] !== nextProps[key]) {

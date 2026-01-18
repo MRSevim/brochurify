@@ -5,12 +5,7 @@ import Slider from "@/components/Slider";
 import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import {
-  fontOptions,
-  getFontVariables,
-  getPageWise,
-  getSetting,
-} from "@/utils/Helpers";
+import { fontOptions, getFontVariables, getSetting } from "@/utils/Helpers";
 import HeadingStyles from "./HeadingStyles";
 import InfoIcon from "@/components/InfoIcon";
 import ToggleBtn from "@/components/ToggleBtn";
@@ -164,7 +159,7 @@ const LineHeight = () => {
 
 const ToggleToBrowserDefaults = () => {
   const initial = "revert";
-  const fontWeigthHeading = getSetting(
+  const fontWeightHeading = getSetting(
     useAppSelector,
     CONFIG.headings,
     "font-weight",
@@ -177,7 +172,7 @@ const ToggleToBrowserDefaults = () => {
   const linkColor = getSetting(useAppSelector, "a", "color");
   const linkTextDecoration = getSetting(useAppSelector, "a", "text-decoration");
   const toggled =
-    fontWeigthHeading === initial &&
+    fontWeightHeading === initial &&
     fontSizeHeading === initial &&
     linkColor === initial &&
     linkTextDecoration === initial;

@@ -15,9 +15,7 @@ export function useSyncUser() {
 
         const { user, error } = await getUserAction();
 
-        if (error) {
-          throw new Error(error);
-        } else setUser(user as User);
+        if (!error) setUser(user as User);
       } catch (error) {
         console.error("Error fetching user:", error);
       }

@@ -81,6 +81,7 @@ const typeArr = [
   { text: "Tablet", type: CONFIG.possibleOuterTypes.tabletContainerQuery },
   { text: "Mobile", type: CONFIG.possibleOuterTypes.mobileContainerQuery },
 ];
+
 export const TypeSelect = ({
   setType,
   type,
@@ -104,6 +105,7 @@ export const TypeSelect = ({
     </div>
   );
 };
+
 const TypeItem = ({
   text,
   onClick,

@@ -44,12 +44,14 @@ export const BackgroundPositionPicker = () => {
   const startDrag = (e: React.MouseEvent) => {
     updateFromEvent(e.clientX, e.clientY);
     const move = (ev: MouseEvent) => updateFromEvent(ev.clientX, ev.clientY);
-    const up = () => {
-      document.removeEventListener("mousemove", move);
-      document.removeEventListener("mouseup", up);
-    };
-    document.addEventListener("mousemove", move);
-    document.addEventListener("mouseup", up);
+    if (containerRef.current) {
+      const up = () => {
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", up);
+      };
+      document.addEventListener("mousemove", move);
+      document.addEventListener("mouseup", up);
+    }
   };
 
   const startTouch = (e: React.TouchEvent) => {
@@ -60,16 +62,18 @@ export const BackgroundPositionPicker = () => {
       const touchMove = ev.touches[0];
       updateFromEvent(touchMove.clientX, touchMove.clientY);
     };
-    const end = () => {
-      document.removeEventListener("touchmove", move);
-      document.removeEventListener("touchend", end);
-    };
-    document.addEventListener("touchmove", move);
-    document.addEventListener("touchend", end);
+    if (containerRef.current) {
+      const end = () => {
+        document.removeEventListener("touchmove", move);
+        document.removeEventListener("touchend", end);
+      };
+      document.addEventListener("touchmove", move);
+      document.addEventListener("touchend", end);
+    }
   };
 
-  const position0 = isCover ? position[0] : 100 - position[0];
-  const position1 = isCover ? position[1] : 100 - position[1];
+  const positionx = isCover ? position[0] : 100 - position[0];
+  const positiony = isCover ? position[1] : 100 - position[1];
 
   return (
     <>
@@ -97,10 +101,10 @@ export const BackgroundPositionPicker = () => {
             <div
               className="bg-position-dot"
               style={{
-                left: `${position0}%`,
-                top: `${position1}%`,
+                left: `${positionx}%`,
+                top: `${positiony}%`,
               }}
-              title={`${position0.toFixed(0)}%, ${position1.toFixed(0)}%`}
+              title={`${positionx.toFixed(0)}%, ${positiony.toFixed(0)}%`}
             />
           </div>
           <div className="flex justify-center">

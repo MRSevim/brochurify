@@ -186,7 +186,7 @@ export const OpacityPicker = ({
         <VariableSelector
           selected={variable || ""}
           type={type}
-          onChange={(value) => onChange(value)}
+          onChange={onChange}
         />
       )}
     </>

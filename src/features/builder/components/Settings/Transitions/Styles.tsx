@@ -3,11 +3,11 @@ import { getSetting, outerTypeArr } from "@/utils/Helpers";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import ReplayButton from "../../ReplayButton";
 import { triggerReplay } from "@/features/builder/lib/redux/slices/replaySlice";
-import { TransformItemPicker } from "../Transform";
 import {
   availableTransitions,
   filterForFixed,
   SelectTransition,
+  TransitionTypeSettings,
 } from "./SelectTransition";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
@@ -15,18 +15,12 @@ import AddButton from "@/components/AddButton";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import EditableListItem from "../EditableListItem";
 import Popup from "@/components/Popup";
-import { OpacityPicker } from "../Others";
-import { PositionPicker } from "../FixedSettings";
-import { ShorthandTogglerPicker } from "../ShorthandToggler";
 import { CONFIG, Style } from "@/utils/types/Types";
 import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
-import ColorPicker from "@/features/builder/components/ColorPicker";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
-import { FontSizePicker } from "../Text/TextRelated";
 import {
   selectActive,
   selectActiveType,
-  selectPageWise,
 } from "@/features/builder/lib/redux/selectors";
 
 const Styles = () => {
@@ -104,12 +98,12 @@ const TransitionValueAddZone = ({
     <>
       <AddButton
         onClick={() => {
-          const typeNotActiveStyle =
+          const firstNonActiveStyle =
             availableTransitions.find(
               (option) => !activeStyleKeys.includes(option.value),
-            )?.value || "transition";
+            )?.value || "translate";
 
-          setInnerType(typeNotActiveStyle);
+          setInnerType(firstNonActiveStyle);
           setShowPopup((prev) => !prev);
         }}
       />
@@ -210,7 +204,7 @@ const TransitionValueInner = ({
   editing: boolean;
   setInnerType: Dispatch<SetStateAction<string>>;
   innerType: string;
-  activeStylesArr?: string[];
+  activeStylesArr: string[];
   children: React.ReactNode;
 }) => {
   const activeType = useAppSelector(selectActiveType) || "";
@@ -221,7 +215,7 @@ const TransitionValueInner = ({
       {!editing && (
         <SelectTransition
           options={
-            activeStylesArr
+            activeStylesArr.length
               ? availableTransitions
                   .filter(
                     (option) =>
@@ -241,121 +235,6 @@ const TransitionValueInner = ({
   );
 };
 
-export const TransitionTypeSettings = ({
-  innerType,
-  editedString,
-  setEditedString,
-  editedStr,
-  variableCreator = false,
-}: {
-  setEditedString: Dispatch<SetStateAction<string>>;
-  variableCreator?: boolean;
-  innerType: string;
-  editedStr: string;
-  editedString: string;
-}) => {
-  const pageWise = useAppSelector(selectPageWise);
-  const activeType = useAppSelector(selectActiveType) || "";
-
-  useEffect(() => {
-    let premadeEditedString;
-    if (innerType === "translate") {
-      premadeEditedString = "0px 0px";
-    } else if (innerType === "rotate") {
-      premadeEditedString = "0deg";
-    } else if (innerType === "scale" || innerType === "opacity") {
-      premadeEditedString = "1";
-    } else if (
-      innerType === "margin" ||
-      innerType === "padding" ||
-      innerType === "border-radius" ||
-      innerType === "margin/padding"
-    ) {
-      premadeEditedString = "0px 0px 0px 0px";
-    } else if (innerType === "font-size") {
-      premadeEditedString = "16px";
-    } else {
-      premadeEditedString = "";
-    }
-    if (!editedStr) {
-      setEditedString(premadeEditedString);
-    } else {
-      setEditedString(editedStr);
-    }
-  }, [innerType, editedStr]);
-  return (
-    <>
-      {" "}
-      {(innerType === "translate" ||
-        innerType === "rotate" ||
-        innerType === "scale") && (
-        <TransformItemPicker
-          variablesAvailable={!variableCreator}
-          type={innerType}
-          onChange={(newVal) => setEditedString(newVal)}
-          variableStr={editedString}
-        />
-      )}
-      {(innerType === "background-color" || innerType === "color") && (
-        <ColorPicker
-          title="Select color"
-          selected={editedString || pageWise[innerType] || "#000000"}
-          onChange={(newVal) => setEditedString(newVal)}
-        />
-      )}
-      {innerType === "opacity" && (
-        <OpacityPicker
-          variablesAvailable={!variableCreator}
-          variable={editedString}
-          onChange={(newVal) => setEditedString(newVal)}
-        />
-      )}
-      {(((innerType === "top" ||
-        innerType === "left" ||
-        innerType === "bottom" ||
-        innerType === "right") &&
-        activeType === "fixed" &&
-        !variableCreator) ||
-        innerType === "distance") && (
-        <PositionPicker
-          variablesAvailable={!variableCreator}
-          type={innerType}
-          variable={editedString}
-          onChange={(newVal) => setEditedString(newVal)}
-        />
-      )}
-      {(innerType === "border-radius" ||
-        innerType === "padding" ||
-        innerType === "margin" ||
-        innerType === "margin/padding") && (
-        <ShorthandTogglerPicker
-          variablesAvailable={!variableCreator}
-          type={innerType}
-          variable={editedString}
-          onChange={(newVal) => setEditedString(newVal)}
-        />
-      )}
-      {(innerType === "width" ||
-        innerType === "height" ||
-        innerType === "width/height") && (
-        <PositionPicker
-          variablesAvailable={!variableCreator}
-          hasAutoOption={true}
-          type={innerType}
-          variable={editedString}
-          onChange={(newVal) => setEditedString(newVal)}
-        />
-      )}
-      {innerType === "font-size" && (
-        <FontSizePicker
-          variablesAvailable={!variableCreator}
-          variable={editedString}
-          onChange={(newVal) => setEditedString(newVal)}
-        />
-      )}
-    </>
-  );
-};
 export const TypeSelect = ({
   setType,
   type,

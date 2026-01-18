@@ -98,10 +98,10 @@ export const ShorthandTogglerPicker = ({
     if (i !== undefined) {
       dispatchFunc(setValueFromShorthandStr(newVar, i, e));
     } else {
-      let updatedVariable = variable || "";
+      let updatedVariable = newVar || "";
 
       sizingTypeArray?.forEach((item, i) => {
-        updatedVariable = setValueFromShorthandStr(newVar, i, e);
+        updatedVariable = setValueFromShorthandStr(updatedVariable, i, e);
       });
       dispatchFunc(updatedVariable);
     }

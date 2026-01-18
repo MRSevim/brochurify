@@ -3,17 +3,18 @@ import { getProp } from "@/utils/Helpers";
 import iconList from "bootstrap-icons/font/bootstrap-icons.json";
 import { changeElementProp } from "@/features/builder/lib/redux/slices/editorSlice";
 import Icon from "@/components/Icon";
-import { useState } from "react";
+import { useDeferredValue, useState } from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
 const IconType = () => {
   const [searchString, setSearchString] = useState("");
+  const deferredSearchString = useDeferredValue(searchString);
 
   return (
     <ToggleVisibilityWrapper title="Icon Settings">
       <WrapperWithBottomLine>
-        <form className="max-w-sm mx-auto mb-2">
+        <div className="max-w-sm mx-auto mb-2">
           <label className="block mb-2 text-sm font-medium">Icon type</label>
           <input
             type="text"
@@ -24,10 +25,10 @@ const IconType = () => {
           />
           <div className="w-full h-full">
             <div className="grid grid-cols-3 gap-2 max-h-80 overflow-hidden overflow-y-auto">
-              <Filtered searchString={searchString} />
+              <Filtered searchString={deferredSearchString} />
             </div>
           </div>
-        </form>
+        </div>
       </WrapperWithBottomLine>
     </ToggleVisibilityWrapper>
   );
@@ -40,7 +41,7 @@ const Filtered = ({ searchString }: { searchString: string }) => {
 
   // Filter icons based on search input
   const filteredIcons = Object.keys(iconList).filter((icon) =>
-    icon.toLowerCase().includes(searchString.toLowerCase())
+    icon.toLowerCase().includes(searchString.toLowerCase()),
   );
   return (
     <>
@@ -53,7 +54,7 @@ const Filtered = ({ searchString }: { searchString: string }) => {
             (variable === icon ? " border p-1 border-text rounded" : "")
           }
         >
-          <Icon title={icon} type={icon} size="24px" onClick={() => {}} />
+          <Icon title={icon} type={icon} size="24px" />
           <span className="text-xs">{icon}</span>
         </div>
       ))}

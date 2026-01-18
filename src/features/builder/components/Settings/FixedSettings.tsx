@@ -34,11 +34,7 @@ const NumberController = ({ type }: { type: string }) => {
   const variable = getSetting(useAppSelector, type);
 
   const handleInputChange = (newValue: string) => {
-    if (newValue === "") {
-      dispatch(changeElementStyle({ types: [type], newValue: "" }));
-    } else {
-      dispatch(changeElementStyle({ types: [type], newValue }));
-    }
+    dispatch(changeElementStyle({ types: [type], newValue }));
   };
 
   return (

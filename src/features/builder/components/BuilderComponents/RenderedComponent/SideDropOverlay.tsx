@@ -7,9 +7,8 @@ import {
   setHovered,
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import { Style, Where } from "@/utils/types/Types";
-import { DragEvent, memo, useRef, useState } from "react";
+import { DragEvent, memo } from "react";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
-import { useEditorRef } from "@/features/builder/utils/contexts/EditorRefContext";
 import EditorActions from "./EditorActions";
 import {
   selectActive,
@@ -100,7 +99,7 @@ const SideDropZone = memo(({ where, id }: { id: string; where: Where }) => {
       onDragOver={(e) => {
         e.preventDefault();
         if (!draggingOver) {
-          dispatch(setDraggedOver({ id: id, where }));
+          dispatch(setDraggedOver({ id, where }));
         }
       }}
       onDragLeave={() => dispatch(setDraggedOver(undefined))}
@@ -130,50 +129,12 @@ const SideDropZone = memo(({ where, id }: { id: string; where: Where }) => {
 });
 
 const AddSign = () => {
-  const [marginTop, setMarginTop] = useState<number>(0);
-  const [marginLeft, setMarginLeft] = useState<number>(0);
-  const ref = useRef<HTMLDivElement | null>(null);
-  /* const editorRef = useEditorRef(); */
-
-  //This code causes headache by causing jumps on ui
-  /*   const updateSignPosition = () => {
-    requestAnimationFrame(() => {
-      if (ref.current && editorRef.current) {
-        const signRect = ref.current.getBoundingClientRect();
-        const editorRect = editorRef.current.getBoundingClientRect();
-
-        let newMarginTop = 0;
-        if (signRect.top <= editorRect.top) {
-          newMarginTop = 12;
-        } else if (signRect.bottom >= editorRect.bottom) {
-          newMarginTop = -12;
-        }
-
-        setMarginTop(newMarginTop);
-        let newMarginLeft = 0;
-        if (signRect.left <= editorRect.left) {
-          newMarginLeft = 12;
-        } else if (signRect.right >= editorRect.right) {
-          newMarginLeft = -12;
-        }
-        setMarginLeft(newMarginLeft);
-      }
-    });
-  };
-
-    useEffect(() => {
-      updateSignPosition();
-    }, []); */
-
   return (
     <div
       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg p-px px-1 rounded bg-inherit text-white"
       style={{
-        marginTop,
-        marginLeft,
         fontFamily: "Roboto Mono, Roboto Mono Fallback",
       }}
-      ref={ref}
     >
       +
     </div>

@@ -19,10 +19,10 @@ import {
 import SideDropWrapper from "./SideDropWrapper";
 import CenterDropWrapper from "./CenterDropWrapper";
 import {
-  useVisibilityMapSetter,
-  useVisibilityMapState,
-  VisibilityMapProvider,
-} from "./VisibilityMapContext";
+  useVisibilitySetSetter,
+  useVisibilitySetState,
+  VisibilitySetProvider,
+} from "./VisibilitySetContext";
 import { selectAddLocation, selectLayout } from "../../lib/redux/selectors";
 
 const LeftPanel = () => {
@@ -30,16 +30,15 @@ const LeftPanel = () => {
 
   return (
     <PanelWrapper toggle={toggle} from="left" zIndex="10">
-      <VisibilityMapProvider>
+      <VisibilitySetProvider>
         <LayoutInner />
-      </VisibilityMapProvider>
+      </VisibilitySetProvider>
     </PanelWrapper>
   );
 };
 
 const LayoutInner = memo(() => {
   const data = useAppSelector(selectLayout);
-  // Centralized visibility map state
   const depth = 0;
   return (
     <>
@@ -74,7 +73,7 @@ const LayoutItem = memo(
     depth: number;
   }) => {
     const dispatch = useAppDispatch();
-    const showButtons = child && child.length > 0;
+    const showButton = child && child.length > 0;
 
     const handleDelete = useCallback(
       (event: React.MouseEvent) => {
@@ -91,7 +90,7 @@ const LayoutItem = memo(
             <CenterDropWrapper id={id}>
               {" "}
               <div className="flex items-center">
-                {showButtons && <ToggleButton id={id} />}
+                {showButton && <ToggleButton id={id} />}
                 <div className="ms-2">{type}</div>
               </div>
               <DeleteButton onClick={handleDelete} />
@@ -113,8 +112,8 @@ const ChildVisibilityWrapper = ({
   depth: number;
   child: Layout[] | undefined;
 }) => {
-  const visibilityMap = useVisibilityMapState();
-  const isExpanded = visibilityMap.get(id) ?? false;
+  const visibilitySet = useVisibilitySetState();
+  const isExpanded = visibilitySet.has(id) ?? false;
   return (
     <>
       {isExpanded && (
@@ -126,6 +125,7 @@ const ChildVisibilityWrapper = ({
     </>
   );
 };
+
 const ChildLayout = memo(
   ({ depth, child }: { depth: number; child: Layout[] | undefined }) => {
     return (
@@ -143,6 +143,7 @@ const ChildLayout = memo(
     );
   },
 );
+
 const AddSection = memo(() => {
   const availableElements = Object.keys(componentList);
   const dispatch = useAppDispatch();
@@ -200,9 +201,9 @@ const AddSection = memo(() => {
 });
 
 export const ToggleButton = memo(({ id }: { id: string }) => {
-  const visibilityMap = useVisibilityMapState();
-  const setVisibilityMap = useVisibilityMapSetter();
-  const isExpanded = visibilityMap.get(id) ?? false;
+  const visibilitySet = useVisibilitySetState();
+  const setVisibilitySet = useVisibilitySetSetter();
+  const isExpanded = visibilitySet.has(id) ?? false;
   const type = isExpanded ? "chevron-up" : "chevron-down";
 
   return (
@@ -210,18 +211,18 @@ export const ToggleButton = memo(({ id }: { id: string }) => {
       className="p-1"
       onClick={(event) => {
         event.stopPropagation();
-        setVisibilityMap((prev) => {
-          const newMap = new Map(prev);
+        setVisibilitySet((prev) => {
+          const newSet = new Set(prev);
 
           if (isExpanded) {
             // Remove item ID if it is currently expanded
-            newMap.delete(id);
+            newSet.delete(id);
           } else {
             // Add item ID if it is currently collapsed
-            newMap.set(id, true);
+            newSet.add(id);
           }
 
-          return newMap;
+          return newSet;
         });
       }}
     >

@@ -14,6 +14,17 @@ import ShorthandToggler from "./ShorthandToggler";
 import ResetButton from "../ResetButton";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 
+const types = [
+  "dotted",
+  "dashed",
+  "solid",
+  "double",
+  "groove",
+  "ridge",
+  "inset",
+  "outset",
+];
+
 const Border = () => {
   const type = "border";
   const borderRadiusType = "border-radius";
@@ -26,7 +37,7 @@ const Border = () => {
       changeElementStyle({
         types: [type],
         newValue: "2px solid #000000",
-      })
+      }),
     );
 
   const handleToggle = () => {
@@ -36,20 +47,20 @@ const Border = () => {
         changeElementStyle({
           types: [borderRadiusType],
           newValue: "0% 0% 0% 0%",
-        })
+        }),
       );
     } else {
       dispatch(
         changeElementStyle({
           types: [type],
           newValue: "",
-        })
+        }),
       );
       dispatch(
         changeElementStyle({
           types: [borderRadiusType],
           newValue: "",
-        })
+        }),
       );
     }
   };
@@ -59,7 +70,7 @@ const Border = () => {
       changeElementStyle({
         types: [type],
         newValue: setValueFromShorthandStr(borderStr, i, e),
-      })
+      }),
     );
   };
 
@@ -78,13 +89,16 @@ const Border = () => {
               title={"Thickness"}
               onChange={(e) => handleChange(e, 0)}
             />
-            <BorderType
-              onChange={(e) => handleChange(e, 1)}
-              value={getValueFromShorthandStr(borderStr, 1)}
+            <Select
+              title={"Select a border type"}
+              options={types}
+              onChange={(e) => handleChange(e.target.value, 1)}
+              selected={getValueFromShorthandStr(borderStr, 1)}
             />
-            <BorderColor
+            <ColorPicker
+              title={"Select a border color"}
               onChange={(e) => handleChange(e, 2)}
-              value={getValueFromShorthandStr(borderStr, 2)}
+              selected={getValueFromShorthandStr(borderStr, 2)}
             />
             <ResetButton onClick={() => setToInitial()} />
           </WrapperWithBottomLine>
@@ -92,50 +106,6 @@ const Border = () => {
         </>
       )}
     </WrapperWithBottomLine>
-  );
-};
-
-const BorderColor = ({
-  onChange,
-  value,
-}: {
-  onChange: (e: string) => void;
-  value: string;
-}) => {
-  return (
-    <ColorPicker
-      title={"Select a border color"}
-      selected={value}
-      onChange={onChange}
-    />
-  );
-};
-
-const BorderType = ({
-  onChange,
-  value,
-}: {
-  onChange: (e: string) => void;
-  value: string;
-}) => {
-  const types = [
-    "dotted",
-    "dashed",
-    "solid",
-    "double",
-    "groove",
-    "ridge",
-    "inset",
-    "outset",
-  ];
-
-  return (
-    <Select
-      title={"Select a border type"}
-      options={types}
-      selected={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
   );
 };
 

@@ -33,6 +33,7 @@ const SideDropWrapper = ({
     </div>
   );
 };
+
 const SideDropZone = memo(({ id, where }: { id: string; where: Where }) => {
   const addLocation = useAppSelector(selectAddLocation);
   const dispatch = useAppDispatch();

@@ -41,13 +41,13 @@ const Transform = () => {
 const translateUnits = ["px", "%"];
 const degreeUnits = ["deg", "turn"];
 
-export const TransformItem = ({
+const TransformItem = ({
   type,
   title,
 }: {
   type: string;
   outerType?: string;
-  title?: string;
+  title: string;
 }) => {
   const variableStr = getSetting(useAppSelector, type);
   const toggled = !!variableStr;
@@ -58,7 +58,7 @@ export const TransformItem = ({
       changeElementStyle({
         types: [type],
         newValue,
-      })
+      }),
     );
   };
 
@@ -82,7 +82,7 @@ export const TransformItem = ({
         changeElementStyle({
           types: [type],
           newValue: "",
-        })
+        }),
       );
     }
   };
@@ -90,13 +90,9 @@ export const TransformItem = ({
   return (
     <WrapperWithBottomLine>
       <div className="w-full text-center">
-        {title ? (
-          <SecondaryTitle title={title}>
-            <ToggleBtn checked={toggled} onChange={handleToggle} />
-          </SecondaryTitle>
-        ) : (
+        <SecondaryTitle title={title}>
           <ToggleBtn checked={toggled} onChange={handleToggle} />
-        )}
+        </SecondaryTitle>
 
         {toggled && (
           <TransformItemPicker

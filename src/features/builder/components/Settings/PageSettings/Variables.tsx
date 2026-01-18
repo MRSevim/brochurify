@@ -15,8 +15,10 @@ import { Variable } from "@/utils/types/Types";
 import { useState } from "react";
 import EditableListItem from "../EditableListItem";
 import { TransitionPropertyAddZone } from "../Transitions/Transitions";
-import { TransitionTypeSettings } from "../Transitions/Styles";
-import { variableSelectables } from "../Transitions/SelectTransition";
+import {
+  variableSelectables,
+  TransitionTypeSettings,
+} from "../Transitions/SelectTransition";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import { selectVariables } from "@/features/builder/lib/redux/selectors";
 

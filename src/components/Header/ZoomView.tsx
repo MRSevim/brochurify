@@ -2,10 +2,11 @@ import { useZoom } from "@/features/builder/utils/contexts/ZoomContext";
 import React, { useState } from "react";
 import Icon from "../Icon";
 
+const percentages = [0, 25, 50, 75];
+
 const ZoomView = () => {
   const [zoom, setZoom] = useZoom();
   const [toggled, setToggled] = useState(false);
-  const percentages = [0, 25, 50, 75];
 
   return (
     <div className="relative">

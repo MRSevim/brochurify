@@ -79,7 +79,11 @@ const Button = ({
 }) => {
   return (
     <div className="flex gap-2">
-      <button onClick={onClick} className="p-2 bg-text text-background">
+      <button
+        disabled={loading}
+        onClick={onClick}
+        className="p-2 bg-text text-background"
+      >
         {!loading && text}
         {loading && <MiniLoadingSvg />}
       </button>

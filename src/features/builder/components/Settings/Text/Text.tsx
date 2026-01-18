@@ -137,11 +137,9 @@ const Text = () => {
     if (!editor) return;
 
     if (content !== editor.getHTML()) {
-      let { from, to } = editor.state.selection;
       editor.commands.setContent(content, false, {
         preserveWhitespace: "full",
       });
-      editor.commands.setTextSelection({ from, to });
     }
   }, [content]);
 

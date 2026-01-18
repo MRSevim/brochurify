@@ -159,14 +159,14 @@ const Reverse = () => {
   return (
     <WrapperWithBottomLine>
       <TabletOrMobile
-        title="Reverse on tablet and below"
+        title="Reverse on tablet and below *"
         outerType={CONFIG.possibleOuterTypes.tabletContainerQuery}
       />
       <TabletOrMobile
-        title="Reverse on mobile and below"
+        title="Reverse on mobile and below *"
         outerType={CONFIG.possibleOuterTypes.mobileContainerQuery}
       />
-      <SmallText text="Only reverses if items are stacked" />
+      <SmallText text="*Only reverses if items are stacked" />
     </WrapperWithBottomLine>
   );
 };

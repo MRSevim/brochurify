@@ -79,15 +79,15 @@ export const TransitionPropertyAddZone = ({
         !transitions.some((t) =>
           typeof t === "string"
             ? t?.includes(option.value)
-            : t?.value.includes(option.value)
-        )
+            : t?.value.includes(option.value),
+        ),
     )?.value || availableTransitions[0].value;
 
   const handleAddition = (editedStr: string) => {
     const newValue = addToString(
       transitionsString || "",
       editedStr,
-      splitValue
+      splitValue,
     );
     onAction(newValue);
   };
@@ -95,7 +95,7 @@ export const TransitionPropertyAddZone = ({
   const handleEditOrDeletion = (
     i: number,
     deletion: boolean,
-    transition: string | undefined
+    transition: string | undefined,
   ) => {
     if (!transitionsString) return;
     const newValue = updateOrDeleteAtIndex(
@@ -103,7 +103,7 @@ export const TransitionPropertyAddZone = ({
       transition,
       i,
       deletion,
-      splitValue
+      splitValue,
     );
 
     if (!newValue) {
@@ -175,7 +175,8 @@ export const TransitionPropertyAddZone = ({
                     ? item?.name || ""
                     : availableTransitions.find(
                         (transition) =>
-                          transition.value === getValueFromShorthandStr(item, 0)
+                          transition.value ===
+                          getValueFromShorthandStr(item, 0),
                       )?.title}
                 </EditableListItem>
               );
@@ -226,11 +227,12 @@ const PopupComp = ({
                 !transitions.some((t) => {
                   const variable = findInVariables(t, variables);
 
+                  //filter the existing values (as variable or naked transition) out of options
                   return (
                     variable?.value.includes(option.value) ||
                     t.startsWith(option.value)
                   );
-                })
+                }),
             )
             .filter((option) => filterForFixed(option, activeType))}
           value={transitionProperty}
@@ -244,7 +246,7 @@ const PopupComp = ({
         value={getValueFromShorthandStr(editedString, 1)}
         onChange={(e) => {
           handleChange(
-            setValueFromShorthandStr(editedString, 1, e.target.value + "ms")
+            setValueFromShorthandStr(editedString, 1, e.target.value + "ms"),
           );
         }}
       />
@@ -266,7 +268,7 @@ const PopupComp = ({
             newValue = setValueFromShorthandStr(
               editedString,
               3,
-              e.target.value + "ms"
+              e.target.value + "ms",
             );
           }
           handleChange(newValue);
@@ -275,7 +277,7 @@ const PopupComp = ({
     </Popup>
   );
 };
-export const SelectTimingFunction = ({
+const SelectTimingFunction = ({
   type,
   value,
   onChange,
