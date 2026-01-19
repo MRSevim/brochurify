@@ -1,4 +1,10 @@
-import { Layout, PageWise, Style, Variable, StringOrUnd } from "./types/Types";
+import {
+  Layout,
+  PageWise,
+  Style,
+  Variable,
+} from "@/features/builder/utils/types.d";
+import { StringOrUnd } from "./types/Types.d";
 
 const layoutKeys: (keyof Style)[] = [
   "width",

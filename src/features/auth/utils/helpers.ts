@@ -6,6 +6,7 @@ import docClient from "../../../lib/db/db";
 import { serverEnv } from "@/utils/serverConfig";
 import { cookies } from "next/headers";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import { User } from "./types";
 
 const TABLE_NAME = serverEnv.DB_TABLE_NAME;
 
@@ -77,4 +78,9 @@ export const checkRole = (
   if (!Array.isArray(user.roles) || !user.roles.includes(role)) {
     throw new Error(customError || `Not authorized, ${role} role required`);
   }
+};
+
+export const checkSub = (user: User) => {
+  if (!user) return false;
+  return user?.roles?.includes("subscriber");
 };

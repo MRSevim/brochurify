@@ -9,23 +9,23 @@ import ClientWrapper, {
 } from "@/utils/ClientWrapper";
 import { ToastContainer } from "react-toastify";
 import { cookies } from "next/headers";
-import { googleFontOptions, mapOverFonts } from "@/utils/GoogleFonts";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import Footer from "@/components/Footer/Footer";
 import { appConfig } from "@/utils/config";
 import { serverEnv } from "@/utils/serverConfig";
-import { User } from "@/utils/types/Types";
+import { User } from "@/features/auth/utils/types";
 import { Provider as LightModeProvider } from "@/features/theme/utils/DarkModeContext";
 import { Provider as ViewModeProvider } from "@/features/builder/utils/contexts/ViewModeContext";
 import { Provider as PreviewProvider } from "@/features/builder/utils/contexts/PreviewContext";
 import { Provider as ZoomProvider } from "@/features/builder/utils/contexts/ZoomContext";
 import { Provider as AddSectionToggleProvider } from "@/features/builder/utils/contexts/AddSectionToggleContext";
 import { Provider as UserProvider } from "@/features/auth/utils/contexts/UserContext";
-import { Provider as SubscribePopupProvider } from "@/utils/contexts/SubscribePopupContext";
+import { Provider as SubscribePopupProvider } from "@/features/auth/utils/contexts/SubscribePopupContext";
 import { EditorRefProvider } from "@/features/builder/utils/contexts/EditorRefContext";
 import { Provider as PublishPopupProvider } from "@/features/builder/utils/contexts/PublishPopupContext";
 import { Provider as PaddleContextProvider } from "@/features/auth/utils/contexts/PaddleContext";
-import { getUserAction } from "@/features/auth/utils/userActions";
+import { getUserAction } from "@/features/auth/utils/serverActions/userActions";
+import { googleFontOptions, mapOverFonts } from "@/utils/fontUtils";
 
 const roboto_mono = Roboto_Mono({
   subsets: ["latin"],

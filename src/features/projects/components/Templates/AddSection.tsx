@@ -2,10 +2,10 @@
 import { useState } from "react";
 import AddButton from "@/components/AddButton";
 import Popup from "@/components/Popup";
-import { getPageWise } from "@/utils/Helpers";
 import TextInput from "@/components/TextInput";
 import { createAction } from "@/features/projects/utils/serverActions/projectActions";
 import { toast } from "react-toastify";
+import { getPageWise } from "@/features/builder/utils/helpers";
 
 const AddSection = () => {
   const [adding, setAdding] = useState(false);

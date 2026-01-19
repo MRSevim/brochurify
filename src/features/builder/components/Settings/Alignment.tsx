@@ -4,13 +4,12 @@ import SmallText from "@/components/SmallText";
 import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import { getSetting } from "@/utils/Helpers";
-import { OptionsObject, CONFIG } from "@/utils/types/Types";
-import React from "react";
+import { getSetting } from "@/features/builder/utils/helpers";
 import Checkbox from "@/components/Checkbox";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import Slider from "@/components/Slider";
 import { selectActiveType } from "../../lib/redux/selectors";
+import { CONFIG, OptionsObject } from "../../utils/types.d";
 
 const justifyContentAlignmentOptionsForRow = [
   {

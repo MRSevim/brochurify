@@ -7,7 +7,6 @@ const ReplayButton = ({ onClick }: { onClick: () => void }) => {
         className="p-1 text-background bg-text rounded cursor-pointer flex items-center gap-2"
         onClick={onClick}
       >
-        {" "}
         <Icon title="Replay" type="play-circle-fill" size="20px" />
         Replay
       </button>

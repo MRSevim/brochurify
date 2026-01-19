@@ -2,7 +2,7 @@ import { useUser } from "@/features/auth/utils/contexts/UserContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { logoutAction } from "@/features/auth/utils/userActions";
+import { logoutAction } from "@/features/auth/utils/serverActions/userActions";
 import { toast } from "react-toastify";
 import Icon from "../Icon";
 

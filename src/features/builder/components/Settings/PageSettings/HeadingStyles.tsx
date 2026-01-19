@@ -1,16 +1,13 @@
 import Select from "@/components/Select";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import {
-  defaultInheritFontOptions,
-  getFontVariables,
-  getSetting,
-} from "@/utils/Helpers";
+import { getSetting, getFontVariables } from "@/features/builder/utils/helpers";
 import InfoIcon from "@/components/InfoIcon";
 import Slider from "@/components/Slider";
 import { ResetButtonWithOuterType } from "@/features/builder/components/ResetButton";
-import { CONFIG } from "@/utils/types/Types";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
+import { CONFIG } from "@/features/builder/utils/types.d";
+import { defaultInheritFontOptions } from "@/utils/fontUtils";
 
 const HeadingStyles = () => {
   const outerType = CONFIG.headings;

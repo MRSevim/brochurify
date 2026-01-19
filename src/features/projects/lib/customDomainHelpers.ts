@@ -1,14 +1,19 @@
 import { parse } from "tldts";
-import { checkRole, protect } from "../../features/auth/utils/helpers";
-import { StringOrUnd } from "../../utils/types/Types";
-import docClient from "./db";
+import { checkRole, protect } from "../../auth/utils/helpers";
+import docClient from "../../../lib/db/db";
 import { GetCommand, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { Vercel } from "@vercel/sdk";
 import { serverEnv } from "@/utils/serverConfig";
 
-export const vercel = new Vercel({
-  bearerToken: serverEnv.VERCEL_API_TOKEN,
-});
+export const vercel =
+  globalThis.vercelClient ??
+  new Vercel({
+    bearerToken: serverEnv.VERCEL_API_TOKEN,
+  });
+
+if (serverEnv.ENV !== "production") {
+  globalThis.vercelClient = vercel;
+}
 
 const TABLE_NAME = serverEnv.DB_TABLE_NAME;
 const PROJECT_NAME = "brochurify";
@@ -55,6 +60,7 @@ export async function requestCustomDomain(id: string, domain: string) {
     const parsed = parse(domain);
     return !!parsed.subdomain;
   }
+
   const subdomainRecords = [
     {
       domain,
@@ -78,7 +84,9 @@ export async function requestCustomDomain(id: string, domain: string) {
       reason: "CNAME to redirect www to apex (Optional)",
     },
   ];
+
   const baseRecords = isSubdomain(domain) ? subdomainRecords : apexRecords;
+
   if (
     existingDomain.Items?.length &&
     existingDomain.Items[0].id !== id &&
@@ -102,6 +110,7 @@ export async function requestCustomDomain(id: string, domain: string) {
       return [...baseRecords, ...(result.verification ?? [])];
     }
   }
+
   const mainDomainResponse = await vercel.projects.addProjectDomain({
     idOrName: PROJECT_NAME,
     requestBody: {

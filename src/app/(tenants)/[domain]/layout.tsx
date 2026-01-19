@@ -7,12 +7,11 @@ import {
   variablesGenerator,
 } from "@/utils/StyleGenerators";
 import { getCssReset } from "@/utils/StyleGenerators";
-import { Layout, PropsWithId } from "@/utils/types/Types";
 import Effects from "./Effects";
-import { mapOverFonts } from "@/utils/GoogleFonts";
-import { getUsedFonts } from "@/utils/getUsedFonts";
+import { mapOverFonts, getUsedFonts } from "@/utils/fontUtils";
 import { Metadata } from "next";
 import { serverEnv } from "@/utils/serverConfig";
+import { Layout, PropsWithId } from "@/features/builder/utils/types.d";
 
 async function getSiteCached(domain: string) {
   const res = await fetch(`${serverEnv.APP_URL}/api/getSite?domain=${domain}`, {

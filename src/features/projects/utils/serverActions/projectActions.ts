@@ -9,7 +9,7 @@ import {
   scanPrefix,
   updateProject,
 } from "../../lib/db/projectHelpers";
-import { EditorState } from "../../../../utils/types/Types";
+import { EditorState } from "@/features/builder/utils/types.d";
 import { addNumberWithDash, returnErrorFromUnknown } from "@/utils/Helpers";
 
 export const createAction = async (project: {
@@ -57,7 +57,7 @@ export const getAllAction = async (type: string) => {
   try {
     const projects = await getAllProjects(type);
 
-    return { projects, error: "" };
+    return { projects };
   } catch (error) {
     return { projects: undefined };
   }
@@ -71,6 +71,7 @@ export const scanPrefixAction = async (prefix: string) => {
     return { slugified: "", ...returnErrorFromUnknown(error) };
   }
 };
+
 export const getAllTemplatesAction = async () => {
   try {
     const templates = await getTemplates();

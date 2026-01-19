@@ -9,7 +9,7 @@ import {
   deleteElement,
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import Icon from "../../../../components/Icon";
-import { Layout } from "@/utils/types/Types";
+
 import AddButton from "../../../../components/AddButton";
 import DeleteButton from "../../../../components/DeleteButton";
 import {
@@ -24,6 +24,7 @@ import {
   VisibilitySetProvider,
 } from "./VisibilitySetContext";
 import { selectAddLocation, selectLayout } from "../../lib/redux/selectors";
+import { Layout } from "../../utils/types.d";
 
 const LeftPanel = () => {
   const toggle = LayoutToggleContext.useToggle();

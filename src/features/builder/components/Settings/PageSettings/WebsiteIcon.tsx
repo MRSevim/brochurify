@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getSetting } from "@/utils/Helpers";
+import { getSetting } from "@/features/builder/utils/helpers";
 import React from "react";
 import LinkInput from "@/components/LinkInput";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
@@ -19,7 +19,7 @@ const WebsiteIcon = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           );
         }}
       >
@@ -31,7 +31,7 @@ const WebsiteIcon = () => {
               changeElementStyle({
                 types: [type],
                 newValue: e.target.value,
-              })
+              }),
             )
           }
         />

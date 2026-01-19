@@ -9,17 +9,14 @@ import {
 import docClient from "../../../../lib/db/db";
 import { v4 as uuidv4 } from "uuid";
 import { checkRole, protect } from "../../../auth/utils/helpers";
-import { EditorState } from "../../../../utils/types/Types";
-import { stripEditorFields } from "../../../../utils/Helpers";
+import { EditorState } from "@/features/builder/utils/types.d";
 import { generateHTML } from "../../../../utils/HTMLGenerator";
 import { snapshotQueue } from "../../../../lib/redis";
 import { deleteFromS3 } from "../../../../lib/s3/helpers";
 import { appConfig } from "../../../../utils/config";
-import {
-  removeCustomDomainInner,
-  vercel,
-} from "../../../../lib/db/customDomainHelpers";
+import { removeCustomDomainInner, vercel } from "../customDomainHelpers";
 import { serverEnv } from "../../../../utils/serverConfig";
+import { stripEditorFields } from "../../utils/helpers";
 
 const TABLE_NAME = serverEnv.DB_TABLE_NAME;
 
@@ -168,7 +165,6 @@ export async function scanPrefix(prefix: string) {
   await protect();
   let items: any[] = [];
   let index = 0;
-  let consecutiveMisses = 0;
 
   while (true) {
     const currentPrefix = index === 0 ? prefix : `${prefix}-${index}`;
@@ -189,11 +185,9 @@ export async function scanPrefix(prefix: string) {
 
     if (result.Items && result.Items.length > 0) {
       items.push(...result.Items);
-      consecutiveMisses = 0;
     } else {
       // Stop if no more matching prefixes found
-      consecutiveMisses++;
-      if (consecutiveMisses >= 1) break; // You can increase this to allow gaps like "text, text-1, text-3"
+      break;
     }
 
     index++;
@@ -240,7 +234,7 @@ export async function updateProject(
   if (isTemplate) {
     checkRole(user, "admin");
   }
-  // ✅ 1. Get the project by ID and ensure it belongs to the user
+  // Get the project by ID and ensure it belongs to the user
   const existingProject = await docClient.send(
     new GetCommand({
       TableName: TABLE_NAME,
@@ -364,7 +358,7 @@ export async function deleteProject(type: string, id: string) {
     checkRole(user, "admin");
   }
 
-  // ✅ 1. Get the project by ID and ensure it belongs to the user
+  // Get the project by ID and ensure it belongs to the user
   const existingProject = await docClient.send(
     new GetCommand({
       TableName: TABLE_NAME,
@@ -377,6 +371,7 @@ export async function deleteProject(type: string, id: string) {
   if (!Item) {
     throw Error("Project not found or unauthorized");
   }
+
   if (Item.customDomain) {
     await removeCustomDomainInner(Item, user);
   }

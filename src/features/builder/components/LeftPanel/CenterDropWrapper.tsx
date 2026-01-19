@@ -1,4 +1,4 @@
-import { Layout } from "@/utils/types/Types";
+import { Layout } from "../../utils/types.d";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useAddSectionToggleSetter } from "@/features/builder/utils/contexts/AddSectionToggleContext";

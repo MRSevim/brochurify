@@ -1,8 +1,8 @@
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import { getPageWise } from "@/utils/Helpers";
 import { memo, useCallback } from "react";
-import { Style } from "@/utils/types/Types";
+import { Style } from "../utils/types.d";
+import { getPageWise } from "../utils/helpers";
 
 const ResetButton = ({ onClick }: { onClick: () => void }) => {
   return (
@@ -17,6 +17,7 @@ const ResetButton = ({ onClick }: { onClick: () => void }) => {
     </div>
   );
 };
+
 export const ResetButtonWithOuterType = memo(
   ({ outerType, innerType }: { outerType: string; innerType: string }) => {
     const dispatch = useAppDispatch();
@@ -36,6 +37,7 @@ export const ResetButtonWithOuterType = memo(
     );
   },
 );
+
 export const ResetButtonWithType = memo(
   ({
     type,

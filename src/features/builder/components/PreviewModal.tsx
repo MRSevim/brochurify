@@ -2,6 +2,7 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { ViewActions } from "../../../components/Header/Header";
 import { useViewModeState } from "@/features/builder/utils/contexts/ViewModeContext";
 import { usePreviewSetter } from "@/features/builder/utils/contexts/PreviewContext";
+import { getMaxWidthForEditor } from "../utils/helpers";
 
 export const PreviewModal = ({
   html,
@@ -16,12 +17,7 @@ export const PreviewModal = ({
   const setPreview = usePreviewSetter();
   const globalTrigger = useAppSelector((state) => state.replay.globalTrigger);
 
-  const maxWidth =
-    viewMode === "desktop"
-      ? "max-w-full"
-      : viewMode === "tablet"
-        ? "max-w-[768px]"
-        : "max-w-[360px]";
+  const maxWidth = getMaxWidthForEditor(viewMode);
 
   return (
     <div className="fixed inset-0 bg-white flex justify-center items-center z-[110] ">

@@ -16,6 +16,7 @@ import {
   selectPageWise,
   selectVariables,
 } from "../../lib/redux/selectors";
+import { getMaxWidthForEditor } from "../../utils/helpers";
 
 const Editor = () => {
   return (
@@ -46,12 +47,8 @@ const EditorWrapper = ({ children }: { children: React.ReactNode }) => {
   } else if (settingsToggle) {
     addedString = "right-full sm:left-0 sm:right-96 w-screen-one-excluded";
   }
-  const maxWidth =
-    viewMode === "desktop"
-      ? "max-w-full"
-      : viewMode === "tablet"
-        ? "max-w-[768px]"
-        : "max-w-[360px]";
+
+  const maxWidth = getMaxWidthForEditor(viewMode);
 
   useEffect(() => {
     if (ref.current) {

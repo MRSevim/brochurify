@@ -1,5 +1,6 @@
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import { getSetting, getUnit } from "@/utils/Helpers";
+import { getUnit } from "@/utils/Helpers";
+import { getSetting } from "@/features/builder/utils/helpers";
 import Border from "./Border";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
@@ -10,10 +11,10 @@ import NumberInput from "@/components/NumberInput";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import ShorthandToggler from "./ShorthandToggler";
-import { CONFIG } from "@/utils/types/Types";
 import VariableSelector from "../VariableSelector";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import UnitSelector from "../UnitSelector";
+import { CONFIG } from "../../utils/types.d";
 
 const SizingAndBorder = () => {
   return (

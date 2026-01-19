@@ -22,6 +22,7 @@ const ToggleVisibilityWrapper = ({ children, title, desc }: Props) => {
     </>
   );
 };
+
 const ToggleButton = ({
   onClick,
   toggled,
@@ -36,4 +37,5 @@ const ToggleButton = ({
     </button>
   );
 };
+
 export default ToggleVisibilityWrapper;

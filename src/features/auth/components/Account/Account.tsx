@@ -1,7 +1,7 @@
 import DeleteAccount from "./DeleteAccount";
 import UserInfo from "./UserInfo";
 import Subscribe from "./Subscribe";
-import { getUserAction } from "../../utils/userActions";
+import { getUserAction } from "../../utils/serverActions/userActions";
 import { notFound } from "next/navigation";
 
 const Account = async () => {

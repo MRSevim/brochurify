@@ -1,13 +1,12 @@
+import { Layout, PageWise, Variable } from "@/features/builder/utils/types.d";
 import { hasType } from "../features/builder/utils/EditorHelpers";
-import { getUsedFonts } from "./getUsedFonts";
-import { mapOverFonts } from "./GoogleFonts";
+import { getUsedFonts, mapOverFonts } from "./fontUtils";
 import {
   fullStylesWithIdsGenerator,
   getCssReset,
   styleGenerator,
   variablesGenerator,
 } from "./StyleGenerators";
-import { Layout, PageWise, Variable } from "./types/Types";
 import { html as beautifyHtml } from "js-beautify";
 
 export const generateHTML = (

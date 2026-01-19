@@ -1,6 +1,7 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { Paddle } from "@paddle/paddle-node-sdk";
+import { Vercel } from "@vercel/sdk";
 import { Queue } from "bullmq";
 import type { Redis } from "ioredis";
 
@@ -11,7 +12,8 @@ declare global {
   };
   var s3Client: S3Client | undefined;
   var dynamodbClient: DynamoDBDocumentClient | undefined;
-  var paddleInstance: Paddle;
+  var paddleInstance: Paddle | undefined;
+  var vercelClient: Vercel | undefined;
 }
 
 export {};

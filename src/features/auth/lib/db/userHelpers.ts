@@ -8,7 +8,7 @@ import {
 import docClient from "../../../../lib/db/db";
 import { getUser, protect } from "../../utils/helpers";
 import { deleteFolderFromS3 } from "../../../../lib/s3/helpers";
-import { removeCustomDomainInner } from "../../../../lib/db/customDomainHelpers";
+import { removeCustomDomainInner } from "../../../projects/lib/customDomainHelpers";
 import { serverEnv } from "@/utils/serverConfig";
 
 const TABLE_NAME = serverEnv.DB_TABLE_NAME;

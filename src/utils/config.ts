@@ -1,4 +1,5 @@
 const isDev = process.env.ENV === "development";
+
 export const appConfig = {
   MONTHLY_SUB_PRICE: 5,
   DOMAIN_EXTENSION: isDev ? ".localhost:3000" : ".brochurify.app",

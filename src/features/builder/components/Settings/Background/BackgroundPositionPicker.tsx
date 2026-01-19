@@ -1,14 +1,20 @@
-import React, { useRef } from "react";
+import React, { ChangeEvent, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import {
-  getSetting,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
 import "./BackgroundPositionPicker.css";
-import { HandleChangeType, OptionsObject } from "@/utils/types/Types";
+
 import Select from "@/components/Select";
+import { OptionsObject } from "@/features/builder/utils/types.d";
+import { getSetting } from "@/features/builder/utils/helpers";
+
+type HandleChangeType = (
+  e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  i?: number,
+) => void;
 
 const type = "background-position";
 

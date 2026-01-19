@@ -70,7 +70,7 @@ const CustomDomain = () => {
             setRemoveLoading(true);
             setError("");
 
-            const error = await removeCustomDomainAction(id);
+            const { error } = await removeCustomDomainAction(id);
             if (error) {
               setError(error);
             } else {

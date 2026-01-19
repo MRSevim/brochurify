@@ -5,13 +5,14 @@ import Slider from "@/components/Slider";
 import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
-import { fontOptions, getFontVariables, getSetting } from "@/utils/Helpers";
+import { getFontVariables, getSetting } from "@/features/builder/utils/helpers";
 import HeadingStyles from "./HeadingStyles";
 import InfoIcon from "@/components/InfoIcon";
 import ToggleBtn from "@/components/ToggleBtn";
-import { CONFIG } from "@/utils/types/Types";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import { BackgroundImage } from "../Background/Background";
+import { CONFIG } from "@/features/builder/utils/types.d";
+import { fontOptions } from "@/utils/fontUtils";
 
 const Styles = () => {
   return (

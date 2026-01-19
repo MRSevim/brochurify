@@ -1,12 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
-import { getProp } from "@/utils/Helpers";
 import LinkInput from "@/components/LinkInput";
 import { changeElementProp } from "@/features/builder/lib/redux/slices/editorSlice";
 import TextInput from "@/components/TextInput";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import UploadWrapper from "./UploadWrapper";
 import { selectActiveType } from "../../lib/redux/selectors";
+import { getProp } from "../../utils/helpers";
 
 const Source = () => {
   const activeType = useAppSelector(selectActiveType);
@@ -43,7 +43,7 @@ const SourceUrl = () => {
           changeElementProp({
             type,
             newValue: e.target.value,
-          })
+          }),
         )
       }
     />
@@ -58,7 +58,7 @@ const SourceUrl = () => {
               changeElementProp({
                 type,
                 newValue,
-              })
+              }),
             );
           }}
         >
@@ -87,7 +87,7 @@ const AltText = () => {
             changeElementProp({
               type,
               newValue: e.target.value,
-            })
+            }),
           )
         }
       />

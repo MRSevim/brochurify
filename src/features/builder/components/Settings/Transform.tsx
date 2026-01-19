@@ -2,11 +2,11 @@ import React from "react";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import InfoIcon from "@/components/InfoIcon";
 import {
-  getSetting,
   getUnit,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
+import { getSetting } from "@/features/builder/utils/helpers";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import NumberInput from "@/components/NumberInput";

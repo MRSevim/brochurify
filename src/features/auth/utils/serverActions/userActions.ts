@@ -3,14 +3,14 @@ import {
   createOrUpdateUser,
   deleteUser,
   getUserProfile,
-} from "../lib/db/userHelpers";
+} from "../../lib/db/userHelpers";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { cookies } from "next/headers";
-import { generateToken } from "./helpers";
+import { generateToken } from "../helpers";
 import { serverEnv } from "@/utils/serverConfig";
 import { redirect } from "next/navigation";
 import { returnErrorFromUnknown } from "@/utils/Helpers";
-import { paddle } from "../lib/paddle";
+import { paddle } from "../../lib/paddle";
 
 export const loginAction = async (
   googleCredential: any,

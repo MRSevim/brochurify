@@ -1,11 +1,11 @@
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getProp } from "@/utils/Helpers";
 import iconList from "bootstrap-icons/font/bootstrap-icons.json";
 import { changeElementProp } from "@/features/builder/lib/redux/slices/editorSlice";
 import Icon from "@/components/Icon";
 import { useDeferredValue, useState } from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import { getProp } from "../../utils/helpers";
 
 const IconType = () => {
   const [searchString, setSearchString] = useState("");

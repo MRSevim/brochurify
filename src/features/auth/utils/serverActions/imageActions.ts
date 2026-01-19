@@ -1,4 +1,5 @@
 "use server";
+import { returnErrorFromUnknown } from "@/utils/Helpers";
 import {
   deleteUserImageAndUpdateLibrary,
   getUserImages,
@@ -8,7 +9,7 @@ import {
 export const uploadAction = async (
   base64: string,
   fileType: string,
-  isIcon: boolean
+  isIcon: boolean,
 ) => {
   try {
     const newImage = await uploadUserImageAndUpdateLibrary({
@@ -17,8 +18,8 @@ export const uploadAction = async (
       isIcon,
     });
     return { newImage, error: "" };
-  } catch (error: any) {
-    return { error: error.message };
+  } catch (error) {
+    return { newImage: undefined, ...returnErrorFromUnknown(error) };
   }
 };
 
@@ -29,7 +30,7 @@ export const deleteAction = async (imageUrl: string) => {
     });
     return { error: "" };
   } catch (error: any) {
-    return { error: error.message };
+    return returnErrorFromUnknown(error);
   }
 };
 
@@ -38,6 +39,6 @@ export const getAction = async () => {
     const images = await getUserImages();
     return { images, error: "" };
   } catch (error: any) {
-    return { error: error.message };
+    return { images: undefined, ...returnErrorFromUnknown(error) };
   }
 };

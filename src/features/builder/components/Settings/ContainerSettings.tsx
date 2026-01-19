@@ -2,11 +2,10 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { WidthAndHeight } from "./SizingAndBorder";
 import {
-  getDefaultStyle,
-  getSetting,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
+import { getDefaultStyle, getSetting } from "@/features/builder/utils/helpers";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import Slider from "@/components/Slider";
 import ResetButton from "../ResetButton";
@@ -37,7 +36,7 @@ const Padding = () => {
             changeElementStyle({
               types: [type],
               newValue: setValueFromShorthandStr(variable, i, e),
-            })
+            }),
           )
         }
       />
@@ -52,10 +51,10 @@ const Padding = () => {
                   i,
                   getValueFromShorthandStr(
                     getDefaultStyle("container").padding,
-                    i
-                  )
+                    i,
+                  ),
                 ) || "0 12" + "px",
-            })
+            }),
           );
         }}
       />

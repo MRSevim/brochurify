@@ -1,5 +1,4 @@
 import Button from "../components/BuilderComponents/Elements/Button";
-import { PropsWithId } from "../../../utils/types/Types";
 import Column from "../components/BuilderComponents/Elements/Column";
 import Text from "../components/BuilderComponents/Elements/Text";
 import Row from "../components/BuilderComponents/Elements/Row";
@@ -10,6 +9,7 @@ import Container from "../components/BuilderComponents/Elements/Container";
 import Divider from "../components/BuilderComponents/Elements/Divider";
 import Icon from "../components/BuilderComponents/Elements/Icon";
 import Fixed from "../components/BuilderComponents/Elements/Fixed";
+import { PropsWithId } from "./types.d";
 
 export const componentList = {
   button: (props: PropsWithId) => <Button {...props} />,

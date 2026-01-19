@@ -9,22 +9,24 @@ import {
   moveElementInner,
   removeHistoryCurrents,
 } from "@/features/builder/utils/EditorHelpers";
-import { generateLayoutItem, getPageWise } from "@/utils/Helpers";
-import {
-  AddLocation,
-  EditorState,
-  Layout,
-  MoveTo,
-  OverType,
-  PageWise,
-  StringOrUnd,
-  Style,
-  Variable,
-} from "@/utils/types/Types";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+import {
+  EditorState,
+  OverType,
+  AddLocation,
+  Layout,
+  PageWise,
+  Style,
+  Variable,
+} from "@/features/builder/utils/types.d";
+import { StringOrUnd } from "@/utils/types/Types.d";
+import {
+  generateLayoutItem,
+  getPageWise,
+} from "@/features/builder/utils/helpers";
 
 const initialState: EditorState = {
   type: "project",
@@ -148,7 +150,7 @@ export const editorSlice = createSlice({
           (action.payload === state.active ||
             isInChildren(found.props.child, action.payload))
         ) {
-          //if deleted element is active or deleted elements descendant is active
+          //if deleted element is active or deleted element is descendant is active
           state.active = undefined;
         }
       }
@@ -164,8 +166,7 @@ export const editorSlice = createSlice({
       const { types, newValue } = action.payload;
 
       const applyStyle = <T extends Style | PageWise>(style: T) => {
-        let current: any = style;
-
+        let current: Record<string, any> = style;
         const path = types.filter((k): k is string => k !== undefined);
 
         if (path.length === 0) return;
@@ -195,7 +196,6 @@ export const editorSlice = createSlice({
             cleanup(obj[key]);
             if (
               typeof obj[key] === "object" &&
-              obj[key] !== null &&
               Object.keys(obj[key]).length === 0
             ) {
               delete obj[key];
@@ -340,7 +340,7 @@ export const editorSlice = createSlice({
       const history = state.history;
       const currentIndex = history.findIndex((item) => item.current);
 
-      // If current is not at the end, remove all history after it
+      // If current is not at the end, remove all history after current
       if (currentIndex !== -1 && currentIndex < history.length - 1) {
         history.splice(currentIndex + 1);
       }
@@ -381,7 +381,10 @@ export const editorSlice = createSlice({
         );
       }
     },
-    moveToNextOrPrevious: (state, action: PayloadAction<MoveTo>) => {
+    moveToNextOrPrevious: (
+      state,
+      action: PayloadAction<{ id: string; location: "previous" | "next" }>,
+    ) => {
       const currentElementId = action.payload.id;
 
       if (!currentElementId) {
@@ -400,7 +403,7 @@ export const editorSlice = createSlice({
                 toast.error(
                   "This element is the first element in its parent and can't be moved further",
                 );
-                return true;
+                return false;
               }
               [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
             } else if (location === "next") {
@@ -409,7 +412,7 @@ export const editorSlice = createSlice({
                 toast.error(
                   "This element is the last element in its parent and can't be moved further",
                 );
-                return true;
+                return false;
               }
               [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
             }
@@ -434,7 +437,7 @@ export const editorSlice = createSlice({
           const item = layout[i];
 
           if (item.id === targetId) {
-            const duplicated = generateNewIds(item); // your function for deep ID regeneration
+            const duplicated = generateNewIds(item); // function for deep ID regeneration
             layout.splice(i + 1, 0, duplicated); // insert right after
             return true;
           }

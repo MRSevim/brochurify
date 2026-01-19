@@ -1,5 +1,5 @@
 import { Middleware } from "@reduxjs/toolkit";
-import { Layout } from "@/utils/types/Types";
+import { Layout } from "@/features/builder/utils/types.d";
 import { RootState } from "../../../../../lib/redux/store";
 import {
   hydrate,

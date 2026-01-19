@@ -4,7 +4,7 @@ import { useState } from "react";
 import MiniLoadingSvg from "../../../../components/MiniLoadingSvg";
 import ConfirmationPopup from "../../../../components/ConfirmationPopup";
 import { toast } from "react-toastify";
-import { deleteUserAction } from "@/features/auth/utils/userActions";
+import { deleteUserAction } from "@/features/auth/utils/serverActions/userActions";
 
 const DeleteAccount = () => {
   const [confirming, setConfirming] = useState(false);

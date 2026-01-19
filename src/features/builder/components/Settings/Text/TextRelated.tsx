@@ -2,7 +2,6 @@ import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibil
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import Text from "./Text";
 import { ResetButtonWithType } from "@/features/builder/components/ResetButton";
-import { convertVarIdToVarName, getSetting } from "@/utils/Helpers";
 import Slider from "@/components/Slider";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import ColorPicker from "@/features/builder/components/ColorPicker";
@@ -14,6 +13,10 @@ import {
   selectActiveType,
   selectPageWise,
 } from "@/features/builder/lib/redux/selectors";
+import {
+  convertVarIdToVarName,
+  getSetting,
+} from "@/features/builder/utils/helpers";
 
 const TextRelated = () => {
   const activeId = useAppSelector(selectActive);
@@ -65,7 +68,7 @@ const FontFamily = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           );
         }}
       />
@@ -89,7 +92,7 @@ const FontSize = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           );
         }}
       />

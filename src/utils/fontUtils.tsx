@@ -1,5 +1,61 @@
-import { Layout, PageWise, Style } from "./types/Types";
-import { googleFontOptions } from "./GoogleFonts";
+import { Layout, PageWise, Style } from "@/features/builder/utils/types.d";
+
+export const googleFontOptions = [
+  { title: "Roboto", value: "'Roboto', sans-serif" },
+  { title: "EB Garamond", value: "'EB Garamond', serif" },
+  { title: "Dancing Script", value: "'Dancing Script', cursive" },
+  { title: "Inter", value: "'Inter', sans-serif" },
+  { title: "Space Mono", value: "'Space Mono', monospace" },
+  { title: "Merriweather", value: "'Merriweather', serif" },
+  { title: "Lobster", value: "'Lobster', cursive" },
+  { title: "Courier Prime", value: "'Courier Prime', monospace" },
+];
+
+const systemFontOptions = [
+  { title: "Default", value: "initial" },
+  { title: "Arial", value: "'Arial', sans-serif" },
+  { title: "Verdana", value: "'Verdana', sans-serif" },
+  { title: "Tahoma", value: "'Tahoma', sans-serif" },
+  { title: "Trebuchet MS", value: "'Trebuchet MS', sans-serif" },
+  { title: "Times New Roman", value: "'Times New Roman', serif" },
+  { title: "Georgia", value: "'Georgia', serif" },
+  { title: "Garamond", value: "'Garamond', serif" },
+  { title: "Courier New", value: "'Courier New', monospace" },
+  { title: "Brush Script MT", value: "'Brush Script MT', cursive" },
+];
+export const fontOptions = [...systemFontOptions, ...googleFontOptions];
+
+export const defaultInheritFontOptions = [
+  ...systemFontOptions.map((option) => {
+    if (option.value === "initial") return { ...option, value: "inherit" };
+    return option;
+  }),
+  ...googleFontOptions,
+];
+
+export const mapOverFonts = (fonts: string[], keyed = false) => {
+  const getHref = (font: string) =>
+    `https://fonts.googleapis.com/css2?family=${font.replace(
+      / /g,
+      "+",
+    )}:ital,wght@0,400;0,700;1,400;1,700&display=swap`;
+
+  if (!keyed) {
+    return fonts
+      .map(
+        (font) => `
+      <link
+      href="${getHref(font)}"
+           rel="stylesheet"/>
+           `,
+      )
+      .join("\n");
+  }
+  return fonts.map((font) => (
+    <link key={font} href={getHref(font)} rel="stylesheet" />
+  ));
+};
+
 const validFontTitles = new Set(googleFontOptions.map((f) => f.title));
 
 const cleanFont = (font: string) => {
@@ -27,9 +83,11 @@ function extractFontsFromStyle(style: Style | undefined, fontSet: Set<string>) {
     }
   }
 }
+
 function extractFontsFromTextHTML(html: string, fontSet: Set<string>) {
+  //Use jsdom on the server
   if (typeof window === "undefined") {
-    const { JSDOM } = require("jsdom"); // Only loaded on server}
+    const { JSDOM } = require("jsdom"); // Only loaded on server
     const dom = new JSDOM(`<!DOCTYPE html><p>${html}</p>`);
     const elements = dom.window.document.querySelectorAll("[style]");
 
@@ -81,6 +139,7 @@ export function getUsedFonts(layout: Layout[], pageWise: PageWise): string[] {
       }
     }
   };
+
   traverseLayout(layout);
 
   // ✅ Step 2: Extract from pageWise styles

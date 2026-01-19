@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import ToggleVisibilityWrapper from "@/features/builder/components/ToggleVisibilityWrapper";
 import TextInput from "@/components/TextInput";
-import { getSetting } from "@/utils/Helpers";
+import { getSetting } from "@/features/builder/utils/helpers";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import TextareaInput from "@/components/TextareaInput";
 import LinkInput from "@/components/LinkInput";
@@ -45,7 +45,7 @@ const WebsiteTitle = () => {
             changeElementStyle({
               types: [type],
               newValue: e.target.value,
-            })
+            }),
           )
         }
       />
@@ -68,7 +68,7 @@ const WebsiteDescription = () => {
             changeElementStyle({
               types: [type],
               newValue: e.target.value,
-            })
+            }),
           )
         }
       />
@@ -91,7 +91,7 @@ const WebsiteKeywords = () => {
             changeElementStyle({
               types: [type],
               newValue: e.target.value,
-            })
+            }),
           )
         }
       />
@@ -112,7 +112,7 @@ const WebsiteImage = () => {
             changeElementStyle({
               types: [type],
               newValue,
-            })
+            }),
           );
         }}
       >
@@ -124,7 +124,7 @@ const WebsiteImage = () => {
               changeElementStyle({
                 types: [type],
                 newValue: e.target.value,
-              })
+              }),
             )
           }
         />

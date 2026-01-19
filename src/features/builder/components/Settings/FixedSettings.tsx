@@ -1,11 +1,12 @@
 import React, { ChangeEvent, useState } from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getSetting, getUnit } from "@/utils/Helpers";
+import { getUnit } from "@/utils/Helpers";
+import { getSetting } from "@/features/builder/utils/helpers";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import GroupedRadioButtons from "@/components/GroupedRadioButtons";
 import NumberInput from "@/components/NumberInput";
-import { StringOrUnd } from "@/utils/types/Types";
+import { StringOrUnd } from "@/utils/types/Types.d";
 import VariableSelector from "../VariableSelector";
 
 const positionsArr = ["top", "bottom", "left", "right"];

@@ -18,61 +18,48 @@ export const uploadToS3 = async ({
   key: string;
   contentType: string;
 }) => {
-  try {
-    const command = new PutObjectCommand({
-      Bucket,
-      Key: key,
-      Body: buffer,
-      ContentType: contentType,
-    });
+  const command = new PutObjectCommand({
+    Bucket,
+    Key: key,
+    Body: buffer,
+    ContentType: contentType,
+  });
 
-    await s3Client.send(command);
+  await s3Client.send(command);
 
-    return `${serverEnv.AWS_CLOUDFRONT_URL}/${key}`;
-  } catch (error: any) {
-    throw new Error(error);
-  }
+  return `${serverEnv.AWS_CLOUDFRONT_URL}/${key}`;
 };
 
 export const deleteFromS3 = async (key: string) => {
-  try {
-    const command = new DeleteObjectCommand({
-      Bucket,
-      Key: key,
-    });
-    await s3Client.send(command);
-  } catch (error: any) {
-    throw new Error(error);
-  }
+  const command = new DeleteObjectCommand({
+    Bucket,
+    Key: key,
+  });
+  await s3Client.send(command);
 };
 
 export const deleteFolderFromS3 = async (prefix: string) => {
-  try {
-    // List all objects under the prefix
-    const listedObjects = await s3Client.send(
-      new ListObjectsCommand({
-        Bucket,
-        Prefix: prefix,
-      })
-    );
-
-    if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
-      console.warn("No objects found under prefix:", prefix);
-      return;
-    }
-
-    // Prepare delete params for multiple objects
-    const deleteParams = {
+  // List all objects under the prefix
+  const listedObjects = await s3Client.send(
+    new ListObjectsCommand({
       Bucket,
-      Delete: {
-        Objects: listedObjects.Contents.map((obj) => ({ Key: obj.Key! })),
-      },
-    };
+      Prefix: prefix,
+    }),
+  );
 
-    // Delete all listed objects
-    await s3Client.send(new DeleteObjectsCommand(deleteParams));
-  } catch (error: any) {
-    console.error("Failed to delete files from S3:", error);
-    throw new Error(error);
+  if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
+    console.warn("No objects found under prefix:", prefix);
+    return;
   }
+
+  // Prepare delete params for multiple objects
+  const deleteParams = {
+    Bucket,
+    Delete: {
+      Objects: listedObjects.Contents.map((obj) => ({ Key: obj.Key! })),
+    },
+  };
+
+  // Delete all listed objects
+  await s3Client.send(new DeleteObjectsCommand(deleteParams));
 };

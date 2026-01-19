@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
-import { User } from "@/utils/types/Types";
-import { getUserAction } from "./userActions";
+import { User } from "./types";
+import { getUserAction } from "./serverActions/userActions";
 
 export function useSyncUser() {
   const [, setUser] = useUser();

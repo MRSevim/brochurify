@@ -1,12 +1,12 @@
 "use client";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
-import { getPortalLink } from "@/features/auth/utils/userActions";
+import { getPortalLink } from "@/features/auth/utils/serverActions/userActions";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import MiniLoadingSvg from "../../../../components/MiniLoadingSvg";
 import { usePaddle } from "../../utils/contexts/PaddleContext";
-import { checkSub } from "@/utils/Helpers";
+import { checkSub } from "../../utils/helpers";
 import { env } from "@/utils/config";
 
 const Subscribe = () => {

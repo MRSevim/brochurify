@@ -2,11 +2,6 @@ import { useState } from "react";
 import AddButton from "@/components/AddButton";
 import ToggleVisibilityWrapper from "../../ToggleVisibilityWrapper";
 import {
-  addToString,
-  availableTimingFunctions,
-  convertVarIdsToVars,
-  findInVariables,
-  getSetting,
   getValueFromShorthandStr,
   makeArraySplitFrom,
   setValueFromShorthandStr,
@@ -29,6 +24,12 @@ import {
   selectActiveType,
   selectVariables,
 } from "@/features/builder/lib/redux/selectors";
+import {
+  convertVarIdsToVars,
+  findInVariables,
+  getSetting,
+} from "@/features/builder/utils/helpers";
+import { addToString, availableTimingFunctions } from "./helpers";
 
 const splitValue = ",";
 const type = "transition";

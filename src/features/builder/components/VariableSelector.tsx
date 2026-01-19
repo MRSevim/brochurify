@@ -1,4 +1,4 @@
-import { StringOrUnd } from "@/utils/types/Types";
+import { StringOrUnd } from "@/utils/types/Types.d";
 import { useState } from "react";
 import SmallText from "../../../components/SmallText";
 import Popup from "../../../components/Popup";
@@ -80,7 +80,7 @@ const VariableSelector = ({
                       }
                     }}
                   >
-                    {item.name}{" "}
+                    {item.name}
                     {type === "color" && (
                       <div
                         className="size-5"

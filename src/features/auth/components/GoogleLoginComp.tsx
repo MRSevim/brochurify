@@ -1,4 +1,4 @@
-import { loginAction } from "@/features/auth/utils/userActions";
+import { loginAction } from "@/features/auth/utils/serverActions/userActions";
 import { GoogleLogin } from "@react-oauth/google";
 import { toast } from "react-toastify";
 

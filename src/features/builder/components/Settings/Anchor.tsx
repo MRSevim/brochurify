@@ -1,7 +1,7 @@
 import React from "react";
 import ToggleVisibilityWrapper from "../ToggleVisibilityWrapper";
 import TextInput from "@/components/TextInput";
-import { getProp } from "@/utils/Helpers";
+import { getProp } from "../../utils/helpers";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementProp } from "@/features/builder/lib/redux/slices/editorSlice";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
@@ -25,7 +25,7 @@ const Anchor = () => {
               changeElementProp({
                 type,
                 newValue: e.target.value,
-              })
+              }),
             )
           }
         />

@@ -15,10 +15,8 @@ import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
 import { useEditor, EditorContent, Editor } from "@tiptap/react";
-import { getProp } from "@/utils/Helpers";
 import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
-import { HeadingLevel } from "@/utils/types/Types";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import Popup from "./Popup";
 import {
@@ -30,6 +28,7 @@ import sanitizeHtml from "sanitize-html";
 import LetterSpacing from "@/features/builder/lib/Tiptap/LetterSpacing";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import { useDispatch } from "react-redux";
+import { getProp } from "@/features/builder/utils/helpers";
 
 const Text = () => {
   const content = getProp<string>(useAppSelector, "text");
@@ -334,7 +333,7 @@ const EditBar = ({ editor }: { editor: Editor | null }) => {
           editor
             .chain()
             .focus()
-            .toggleHeading({ level: level as HeadingLevel })
+            .toggleHeading({ level: level as 1 | 2 | 3 | 4 | 5 | 6 })
             .run(),
         title: "Heading level " + level,
         active: editor.isActive("heading", { level }),

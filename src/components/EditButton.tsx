@@ -12,6 +12,7 @@ const EditButton = ({
 }) => {
   return (
     <button
+      disabled={loading}
       className="bg-amber text-black p-1 rounded edit-button"
       onClick={onClick}
     >

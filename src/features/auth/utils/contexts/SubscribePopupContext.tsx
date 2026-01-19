@@ -6,11 +6,11 @@ import {
   Dispatch,
   createContext,
 } from "react";
-import { useUser } from "../../features/auth/utils/contexts/UserContext";
-import { checkSub } from "@/utils/Helpers";
+import { useUser } from "./UserContext";
 import Popup from "@/components/Popup";
 import PricingComparison from "@/components/Homepage/PricingComparison";
 import { useRouter } from "next/navigation";
+import { checkSub } from "../helpers";
 
 type SubscribePopup = [boolean, Dispatch<SetStateAction<boolean>>];
 
@@ -20,7 +20,7 @@ export const useSubscribePopup = (): SubscribePopup => {
   const context = useContext(subscribePopupContext);
   if (!context) {
     throw new Error(
-      "useSubscribePopup must be used within a subscribePopupProvider"
+      "useSubscribePopup must be used within a subscribePopupProvider",
     );
   }
   return context;

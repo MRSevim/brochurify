@@ -21,14 +21,14 @@ const TemplateViewer = ({
   children?: React.ReactNode;
 }) => {
   const [templates, setTemplates] = useState<Record<string, any>[] | null>(
-    null
+    null,
   );
   const setPreview = usePreviewSetter();
   const [getLoading, setGetLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [templateState, setInitialTemplate] = useState("Blank");
+  const [selectLoading, setSelectLoading] = useState(false);
+  const [templateTitle, setTemplateTitle] = useState("Blank");
   const [previewing, setPreviewing] = useState<string | null>(null);
-  const selectedTemplate = templates?.find((t) => t.title === templateState);
+  const selectedTemplate = templates?.find((t) => t.title === templateTitle);
   const previewedTemplate = templates?.find((t) => t.title === previewing);
 
   useEffect(() => {
@@ -49,14 +49,14 @@ const TemplateViewer = ({
     <>
       <Popup
         positiveActionText={positiveActionText}
-        loading={loading}
+        loading={selectLoading}
         className="max-w-5xl"
         editing={false}
         onClose={() => setAdding(false)}
         onEditOrAdd={async () => {
-          setLoading(true);
+          setSelectLoading(true);
           if (selectedTemplate) await handleSelect(selectedTemplate);
-          setLoading(false);
+          setSelectLoading(false);
         }}
       >
         {getLoading ? (
@@ -69,10 +69,10 @@ const TemplateViewer = ({
             <div className="grid grid-cols-[repeat(auto-fit,minmax(0,300px))] max-h-80 overflow-auto gap-4 mb-2">
               {templates?.map((template) => (
                 <div
-                  onClick={() => setInitialTemplate(template.title)}
+                  onClick={() => setTemplateTitle(template.title)}
                   key={template.title}
                   className={`border rounded-lg p-2 cursor-pointer ${
-                    templateState === template.title
+                    templateTitle === template.title
                       ? "border-activeBlue"
                       : "border-gray hover:border-hoveredBlue"
                   }`}
@@ -105,7 +105,7 @@ const TemplateViewer = ({
           html={generateHTML(
             previewedTemplate.editor.layout,
             previewedTemplate.editor.pageWise,
-            previewedTemplate.editor.variables
+            previewedTemplate.editor.variables,
           )}
           onClose={() => {
             setPreviewing(null);

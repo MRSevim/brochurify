@@ -1,4 +1,5 @@
-import { ChangeEvent, RefObject } from "react";
+import { StringOrUnd } from "@/utils/types/Types.d";
+import { RefObject } from "react";
 
 export interface Props {
   text?: string;
@@ -147,9 +148,9 @@ export type Style = {
   [CONFIG.possibleOuterTypes.mobileContainerQuery]?: Style;
   [key: string]: StringOrUnd | Style;
 };
-export type ElementRefObject = RefObject<HTMLElement | null>;
-export type StringOrUnd = string | undefined;
+
 export type LayoutOrUnd = Layout | undefined;
+
 export type OverType = { id: string; where?: Where };
 export type Where = "before" | "after";
 export type ItemAndLocation = {
@@ -157,24 +158,10 @@ export type ItemAndLocation = {
   targetId: StringOrUnd;
   addLocation: AddLocation;
 };
-export type SizingType = {
-  title: string;
-};
-export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
-export type OptionsObject = { id?: string; title: string; value: string };
-export type AppChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>;
-export type HandleChangeType = (e: AppChangeEvent, i?: number) => void;
-export type MoveTo = { id: string; location: "previous" | "next" };
 
-export type User =
-  | {
-      username: string;
-      image: string;
-      roles: string[];
-      userId: string;
-      paddleCustomerId: string;
-    }
-  | undefined;
+type ElementRefObject = RefObject<HTMLElement | null>;
+
+export type OptionsObject = { id?: string; title: string; value: string };
 
 export const CONFIG = {
   placeholderImgUrl: "/placeholder-image.jpg",
@@ -187,3 +174,7 @@ export const CONFIG = {
     mobileContainerQuery: "@container (max-width: 360px)",
   },
 } as const;
+
+const possibleOuterTypesArr = [...Object.values(CONFIG.possibleOuterTypes)];
+
+export type PossibleOuterTypes = (typeof possibleOuterTypesArr)[number];

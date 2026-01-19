@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import TemplateViewer from "../../features/projects/components/TemplateViewer";
-import { saveToLocalStorage } from "@/utils/Helpers";
+import { saveToLocalStorage } from "@/features/projects/utils/helpers";
 import { createPortal } from "react-dom";
 
 const Cta = () => {
@@ -90,7 +90,7 @@ const Popup = ({
     >
       {children}
     </div>,
-    document.body
+    document.body,
   );
 };
 export default Cta;

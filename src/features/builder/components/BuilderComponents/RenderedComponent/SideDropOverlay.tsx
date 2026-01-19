@@ -6,7 +6,7 @@ import {
   setDraggedOver,
   setHovered,
 } from "@/features/builder/lib/redux/slices/editorSlice";
-import { Style, Where } from "@/utils/types/Types";
+import { Style, Where } from "@/features/builder/utils/types.d";
 import { DragEvent, memo } from "react";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
 import EditorActions from "./EditorActions";

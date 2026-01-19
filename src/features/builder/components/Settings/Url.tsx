@@ -1,10 +1,10 @@
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { getProp } from "@/utils/Helpers";
 import React from "react";
 import LinkInput from "@/components/LinkInput";
 import { changeElementProp } from "@/features/builder/lib/redux/slices/editorSlice";
 import Checkbox from "@/components/Checkbox";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
+import { getProp } from "../../utils/helpers";
 
 const Url = () => {
   const type = "href";
@@ -21,7 +21,7 @@ const Url = () => {
             changeElementProp({
               type,
               newValue: e.target.value,
-            })
+            }),
           )
         }
       />
@@ -42,7 +42,7 @@ const NewTab = () => {
           changeElementProp({
             type,
             newValue: !variable,
-          })
+          }),
         )
       }
     />

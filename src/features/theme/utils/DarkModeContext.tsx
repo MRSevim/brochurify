@@ -29,6 +29,7 @@ export const Provider = ({
   lightModeFromCookie: boolean;
 }) => {
   const [lightMode, setLightMode] = useState(lightModeFromCookie || false);
+
   useEffect(() => {
     if (!lightMode) {
       document.body.classList.add("dark");

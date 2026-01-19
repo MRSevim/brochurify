@@ -1,6 +1,5 @@
 import {
   extractUrlValue,
-  getSetting,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
@@ -15,10 +14,12 @@ import Select from "@/components/Select";
 import ResetButton, { ResetButtonWithType } from "../../ResetButton";
 import Slider from "@/components/Slider";
 import { BackgroundPositionPicker } from "./BackgroundPositionPicker";
-import { CONFIG, StringOrUnd } from "@/utils/types/Types";
+import { StringOrUnd } from "@/utils/types/Types.d";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import UploadWrapper from "../UploadWrapper";
 import { selectPageWise } from "@/features/builder/lib/redux/selectors";
+import { CONFIG } from "@/features/builder/utils/types.d";
+import { getSetting } from "@/features/builder/utils/helpers";
 
 const Background = () => {
   return (

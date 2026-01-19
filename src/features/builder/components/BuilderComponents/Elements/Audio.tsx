@@ -1,5 +1,5 @@
 import useClasses from "@/features/builder/utils/hooks/useClasses";
-import { PropsWithId } from "@/utils/types/Types";
+import { PropsWithId } from "@/features/builder/utils/types.d";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
 import { RefObject } from "react";
 const Audio = ({ style, src, ref }: PropsWithId) => {

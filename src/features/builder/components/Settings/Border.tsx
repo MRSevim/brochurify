@@ -1,10 +1,10 @@
 import ToggleBtn from "@/components/ToggleBtn";
 import Slider from "@/components/Slider";
 import {
-  getSetting,
   getValueFromShorthandStr,
   setValueFromShorthandStr,
 } from "@/utils/Helpers";
+import { getSetting } from "@/features/builder/utils/helpers";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import Select from "@/components/Select";

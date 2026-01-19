@@ -3,7 +3,7 @@ import React from "react";
 import Icon from "../../../../components/Icon";
 import { FaTimes } from "react-icons/fa";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
-import { checkSub } from "@/utils/Helpers";
+import { checkSub } from "../../utils/helpers";
 
 const UserInfo = () => {
   const [user] = useUser();

@@ -1,7 +1,8 @@
 import { useAppSelector } from "@/lib/redux/hooks";
-import { defaultInheritFontOptions, getFontVariables } from "@/utils/Helpers";
 import Select from "@/components/Select";
 import { selectPageWise } from "../lib/redux/selectors";
+import { getFontVariables } from "../utils/helpers";
+import { defaultInheritFontOptions } from "@/utils/fontUtils";
 
 const FontFamilyPicker = ({
   variable,

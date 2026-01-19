@@ -11,12 +11,12 @@ type Props = {
 };
 
 // Converts a hex color (#rrggbb) and alpha (0–255) to 8-digit hex string (#rrggbbaa)
-export function hexToHexWithAlpha(hex: string, alpha: number): string {
+function hexToHexWithAlpha(hex: string, alpha: number): string {
   return hex.slice(0, 7) + Math.round(alpha).toString(16).padStart(2, "0");
 }
 
 // Separates a hex string like "#RRGGBBAA" into hex and alpha parts
-export function separateHexAlpha(hex: string) {
+function separateHexAlpha(hex: string) {
   const cleaned = hex.replace("#", "");
   const hexPart = "#" + cleaned.slice(0, 6);
   const alpha = cleaned.length === 8 ? parseInt(cleaned.slice(6, 8), 16) : 255;
@@ -39,6 +39,7 @@ function rgbStringToHex(input: string): string {
 
   return hex;
 }
+
 const ColorPicker = ({
   title,
   variableSelect = true,
@@ -47,7 +48,7 @@ const ColorPicker = ({
 }: Props) => {
   const type = "color";
   const colorVariables = useAppSelector(selectVariables).filter(
-    (item) => item.type === type
+    (item) => item.type === type,
   );
   const isVariable = selected.startsWith("var(--");
   const variableId = isVariable

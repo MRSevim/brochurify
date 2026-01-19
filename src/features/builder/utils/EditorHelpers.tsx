@@ -1,11 +1,6 @@
 import { toast } from "react-toastify";
-import {
-  AddLocation,
-  EditorState,
-  ItemAndLocation,
-  Layout,
-} from "../../../utils/types/Types";
 import { v4 as uuidv4 } from "uuid";
+import { AddLocation, EditorState, ItemAndLocation, Layout } from "./types.d";
 
 export const moveElementInner = (
   state: EditorState,
@@ -46,11 +41,13 @@ export const moveElementInner = (
     );
   }
 };
+
 export const removeHistoryCurrents = (state: EditorState) => {
   for (const item of state.history) {
     item.current = false;
   }
 };
+
 export const canElementHaveChild = (
   state: EditorState,
   addLocation: AddLocation,
@@ -59,7 +56,7 @@ export const canElementHaveChild = (
 ) => {
   const parentElements = ["column", "row", "button", "container", "fixed"];
 
-  // Helper function to check if targetId is inside a button and track parent types
+  // Helper function to check if targetId is inside a button by tracking parent types
   const isInsideButton = (layout: Layout[], targetId: string): boolean => {
     const findParentChain = (
       layout: Layout[],
@@ -111,7 +108,8 @@ export const canElementHaveChild = (
     }
   }
 };
-// Helper function to check if the target ID is within the children of a layout element
+
+// Helper function to check if the target ID is within the layout passed
 export const isInChildren = (
   children: Layout[] | undefined,
   targetId: string,
@@ -203,7 +201,7 @@ export const hasType = (layout: Layout[], type: string): boolean => {
 export const insertElement = (
   layout: Layout[],
   newElement: Layout,
-  addLocation: AddLocation | undefined,
+  addLocation: AddLocation,
   targetId: string | undefined,
   pushIfNoActive: boolean,
 ): void => {
@@ -255,6 +253,7 @@ export const insertElement = (
     }
   }
 };
+
 export function deepClone<T>(obj: T): T {
   if (typeof obj !== "object") {
     return obj;

@@ -15,6 +15,7 @@ const TopBar = ({
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(project.title);
   const [loading, setLoading] = useState(false);
+
   const saveChanges = async () => {
     if (title !== project.title) {
       setLoading(true);

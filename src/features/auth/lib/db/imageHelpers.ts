@@ -1,14 +1,16 @@
 import { v4 as uuidv4 } from "uuid";
-import { deleteFromS3, uploadToS3 } from "../s3/helpers";
+
 import { DeleteCommand, PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import docClient from "./db";
-import { checkRole, protect } from "../../features/auth/utils/helpers";
-import { appConfig } from "../../utils/config";
-import { serverEnv } from "../../utils/serverConfig";
+
 import {
   ALLOWED_ICON_TYPES,
   ALLOWED_IMAGE_TYPES,
-} from "@/utils/AllowedImageTypes";
+} from "@/features/auth/utils/AllowedImageTypes";
+import { serverEnv } from "@/utils/serverConfig";
+import { checkRole, protect } from "../../utils/helpers";
+import { appConfig } from "@/utils/config";
+import { deleteFromS3, uploadToS3 } from "@/lib/s3/helpers";
+import docClient from "@/lib/db/db";
 
 const TABLE_NAME = serverEnv.DB_TABLE_NAME;
 
@@ -27,7 +29,7 @@ export async function uploadUserImageAndUpdateLibrary({
 
   const buffer = Buffer.from(
     base64.replace(/^data:image\/\w+;base64,/, ""),
-    "base64"
+    "base64",
   );
   const sizeInBytes = buffer.length;
 
@@ -95,21 +97,26 @@ export async function deleteUserImageAndUpdateLibrary({
 
   // Construct S3 key with userId and image file
   const key = `images/${id}.${extension}`;
-  await deleteFromS3(key);
 
   // Construct DynamoDB id
   const dynamoId = `image#${id}`;
 
-  // Delete item from DynamoDB
+  // Delete item from DynamoDB, throws if not there as a protection against deleting unowned images
   const deleteCommand = new DeleteCommand({
     TableName: serverEnv.DB_TABLE_NAME,
     Key: {
       userId,
       id: dynamoId,
     },
+    ConditionExpression: "attribute_exists(#id)",
+    ExpressionAttributeNames: {
+      "#id": "id",
+    },
   });
 
   await docClient.send(deleteCommand);
+
+  await deleteFromS3(key);
 }
 
 export async function getUserImages(): Promise<{

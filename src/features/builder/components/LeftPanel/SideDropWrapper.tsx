@@ -6,7 +6,7 @@ import {
   setDraggedOver,
   setHovered,
 } from "@/features/builder/lib/redux/slices/editorSlice";
-import { Where } from "@/utils/types/Types";
+import { Where } from "../../utils/types.d";
 import { DragEvent, memo } from "react";
 import {
   selectAddLocation,

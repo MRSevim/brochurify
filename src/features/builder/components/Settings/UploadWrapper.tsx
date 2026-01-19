@@ -6,16 +6,16 @@ import {
   deleteAction,
   getAction,
   uploadAction,
-} from "@/utils/serverActions/imageActions";
+} from "@/features/auth/utils/serverActions/imageActions";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import DeleteButton from "@/components/DeleteButton";
 import { useUser } from "@/features/auth/utils/contexts/UserContext";
-import { useSubscribePopup } from "@/utils/contexts/SubscribePopupContext";
+import { useSubscribePopup } from "@/features/auth/utils/contexts/SubscribePopupContext";
 import {
   ALLOWED_ICON_TYPES,
   ALLOWED_IMAGE_TYPES,
-} from "@/utils/AllowedImageTypes";
+} from "@/features/auth/utils/AllowedImageTypes";
 
 const UploadWrapper = ({
   icon = false,

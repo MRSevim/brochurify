@@ -10,8 +10,8 @@ import {
   deleteVariable,
   editVariable,
 } from "@/features/builder/lib/redux/slices/editorSlice";
-import { fontOptions } from "@/utils/Helpers";
-import { Variable } from "@/utils/types/Types";
+import { fontOptions } from "@/utils/fontUtils";
+import { Variable } from "@/features/builder/utils/types.d";
 import { useState } from "react";
 import EditableListItem from "../EditableListItem";
 import { TransitionPropertyAddZone } from "../Transitions/Transitions";

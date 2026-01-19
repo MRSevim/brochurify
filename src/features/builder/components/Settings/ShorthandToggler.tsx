@@ -2,14 +2,16 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import {
   capitalizeFirstLetter,
+  getValueFromShorthandStr,
+  setValueFromShorthandStr,
+} from "@/utils/Helpers";
+import {
   convertVarIdToVarName,
   findInVariables,
   getDefaultStyle,
   getSetting,
-  getValueFromShorthandStr,
-  setValueFromShorthandStr,
-} from "@/utils/Helpers";
-import { SizingType, StringOrUnd } from "@/utils/types/Types";
+} from "@/features/builder/utils/helpers";
+import { StringOrUnd } from "@/utils/types/Types.d";
 import { useState } from "react";
 import SecondaryTitle from "@/components/SecondaryTitle";
 import Icon from "@/components/Icon";
@@ -20,7 +22,9 @@ import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import { selectActiveType, selectVariables } from "../../lib/redux/selectors";
 
 const units = ["px", "em", "%"];
-const sizingTypeArray: SizingType[] = [
+const sizingTypeArray: {
+  title: string;
+}[] = [
   {
     title: "Top",
   },

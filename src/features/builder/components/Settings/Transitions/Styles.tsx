@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { getSetting, outerTypeArr } from "@/utils/Helpers";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import ReplayButton from "../../ReplayButton";
 import { triggerReplay } from "@/features/builder/lib/redux/slices/replaySlice";
@@ -15,13 +14,20 @@ import AddButton from "@/components/AddButton";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import EditableListItem from "../EditableListItem";
 import Popup from "@/components/Popup";
-import { CONFIG, Style } from "@/utils/types/Types";
+import { CONFIG, Style } from "@/features/builder/utils/types.d";
 import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import {
   selectActive,
   selectActiveType,
 } from "@/features/builder/lib/redux/selectors";
+import { getSetting } from "@/features/builder/utils/helpers";
+
+const outerTypeArr = [
+  { text: "onVisible", type: CONFIG.possibleOuterTypes.scrolled },
+  { text: "onHover", type: CONFIG.possibleOuterTypes.hover },
+  { text: "onClick", type: CONFIG.possibleOuterTypes.active },
+];
 
 const Styles = () => {
   const [outerType, setOuterType] = useState("base");
