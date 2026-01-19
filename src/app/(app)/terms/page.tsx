@@ -17,15 +17,11 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-12 text-sm leading-6 text-background">
-      <h1 className="text-2xl font-bold text-foreground mb-6">
-        Terms of Service
-      </h1>
+    <main className="max-w-3xl mx-auto px-4 py-12 text-sm leading-6">
+      <h1 className="text-2xl font-bold mb-6">Terms of Service</h1>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          1. Use of Service
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">1. Use of Service</h2>
         <p>
           Brochurify lets you build and host single-page websites. You agree not
           to use the service for illegal activities, spam, copyright
@@ -35,9 +31,7 @@ export default function TermsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          2. Accounts & Access
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">2. Accounts & Access</h2>
         <p>
           You're responsible for your account activity. Currently, Only gmail
           login is applied to register into the app. Keep your access to
@@ -46,7 +40,7 @@ export default function TermsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
+        <h2 className="text-lg font-semibold mb-2">
           3. Subscription & Payments
         </h2>
         <p>
@@ -57,9 +51,7 @@ export default function TermsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          4. Refund Policy
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">4. Refund Policy</h2>
         <p>
           <strong>Monthly plans:</strong> No refunds for past months. You can
           cancel anytime to stop future billing. <br />
@@ -67,9 +59,7 @@ export default function TermsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          5. Privacy Policy
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">5. Privacy Policy</h2>
         <p>
           We collect only essential information: email, username and content you
           create or upload. We do not sell or share your personal data. Whenever
@@ -79,9 +69,7 @@ export default function TermsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          6. Content Ownership
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">6. Content Ownership</h2>
         <p>
           You retain full ownership of your content. By using Brochurify, you
           grant us permission to host and serve your site. We reserve the right
@@ -90,9 +78,7 @@ export default function TermsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          7. Service Availability
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">7. Service Availability</h2>
         <p>
           We aim for reliable uptime, but outages may occur. We’re not liable
           for any downtime, data loss, or indirect damages.
@@ -100,9 +86,7 @@ export default function TermsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          8. Termination
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">8. Termination</h2>
         <p>
           You can cancel at any time. We may suspend or terminate accounts for
           violations, suspected fraud, or legal reasons.
@@ -110,9 +94,7 @@ export default function TermsPage() {
       </section>
 
       <section className="mb-8">
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          9. Updates to Terms
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">9. Updates to Terms</h2>
         <p>
           We may update these terms from time to time. We’ll notify you of
           significant changes. Continued use means you accept the revised terms.
@@ -120,9 +102,7 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold text-foreground mb-2">
-          10. Contact
-        </h2>
+        <h2 className="text-lg font-semibold mb-2">10. Contact</h2>
         <p>
           Questions? Contact us{" "}
           <span>
