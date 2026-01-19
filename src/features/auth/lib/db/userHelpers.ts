@@ -6,7 +6,7 @@ import {
   ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "../../../../lib/db/db";
-import { getUser, protect } from "../../utils/helpers";
+import { getUser, protect } from "../../utils/serverHelpers";
 import { deleteFolderFromS3 } from "../../../../lib/s3/helpers";
 import { removeCustomDomainInner } from "../../../projects/lib/customDomainHelpers";
 import { serverEnv } from "@/utils/serverConfig";

@@ -7,7 +7,7 @@ import {
   ALLOWED_IMAGE_TYPES,
 } from "@/features/auth/utils/AllowedImageTypes";
 import { serverEnv } from "@/utils/serverConfig";
-import { checkRole, protect } from "../../utils/helpers";
+import { checkRole, protect } from "../../utils/serverHelpers";
 import { appConfig } from "@/utils/config";
 import { deleteFromS3, uploadToS3 } from "@/lib/s3/helpers";
 import docClient from "@/lib/db/db";

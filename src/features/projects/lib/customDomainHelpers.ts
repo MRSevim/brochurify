@@ -1,5 +1,5 @@
 import { parse } from "tldts";
-import { checkRole, protect } from "../../auth/utils/helpers";
+import { checkRole, protect } from "../../auth/utils/serverHelpers";
 import docClient from "../../../lib/db/db";
 import { GetCommand, QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { Vercel } from "@vercel/sdk";

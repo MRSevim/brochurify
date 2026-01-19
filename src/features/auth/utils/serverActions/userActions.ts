@@ -6,7 +6,7 @@ import {
 } from "../../lib/db/userHelpers";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import { cookies } from "next/headers";
-import { generateToken } from "../helpers";
+import { generateToken } from "../serverHelpers";
 import { serverEnv } from "@/utils/serverConfig";
 import { redirect } from "next/navigation";
 import { returnErrorFromUnknown } from "@/utils/Helpers";

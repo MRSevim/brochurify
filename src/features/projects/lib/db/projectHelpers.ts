@@ -8,7 +8,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import docClient from "../../../../lib/db/db";
 import { v4 as uuidv4 } from "uuid";
-import { checkRole, protect } from "../../../auth/utils/helpers";
+import { checkRole, protect } from "../../../auth/utils/serverHelpers";
 import { EditorState } from "@/features/builder/utils/types.d";
 import { generateHTML } from "../../../../utils/HTMLGenerator";
 import { snapshotQueue } from "../../../../lib/redis";
