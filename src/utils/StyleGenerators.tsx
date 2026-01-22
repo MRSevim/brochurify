@@ -148,7 +148,6 @@ export const fullStylesWithIdsGenerator = (
     .map((item) => {
       const child = item.props.child;
       const style = item.props.style;
-      const isFixed = item.type === "fixed";
       const styleStr = rest
         ? getRest(style)
         : getWrapperStyles(style, item.type);
