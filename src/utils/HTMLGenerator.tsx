@@ -14,8 +14,7 @@ export const generateHTML = (
   pageWise: PageWise,
   variables: Variable[],
 ): string => {
-  const { title, description, keywords, canonical, image, iconUrl, ...rest } =
-    pageWise;
+  const { title, description, keywords, image, iconUrl, ...rest } = pageWise;
 
   const renderedBody = renderLayout(layout);
   const fullstylesWithIds =
@@ -42,25 +41,19 @@ export const generateHTML = (
   }
   ${keywords ? `<meta name="keywords" content="${keywords}">` : ""}
   ${
-    canonical
-      ? `<link rel="canonical" href="${canonical}">
-          <meta property="og:url" content="${canonical}" />`
+    image
+      ? `
+        <meta property="og:image" content="${image}" />
+        <meta name="twitter:image" content="${image}">
+        `
       : ""
   }
-    ${
-      image
-        ? `
-          <meta property="og:image" content="${image}" />
-          <meta name="twitter:image" content="${image}">
-          `
-        : ""
-    }
-    ${iconUrl ? `<link rel="icon" href="${iconUrl}">` : ""}
-    ${
-      hasType(layout, "icon")
-        ? '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">'
-        : ""
-    }`;
+  ${iconUrl ? `<link rel="icon" href="${iconUrl}">` : ""}
+  ${
+    hasType(layout, "icon")
+      ? '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">'
+      : ""
+  }`;
   const observerScript = `<script>   
     document.addEventListener("DOMContentLoaded", () => {
     const observer = new IntersectionObserver((entries, observer) => {
@@ -98,7 +91,7 @@ export const generateHTML = (
   const finalHTML = `<!DOCTYPE html>
       <html lang="en">
       <head>
-        ${fontLinks}
+      ${fontLinks}
       ${baseHTMLHead}
       ${observerScript}
       ${additionalStyles}
@@ -114,8 +107,8 @@ export const generateHTML = (
     preserve_newlines: true,
     max_preserve_newlines: 0,
     wrap_line_length: 0,
-    inline: [], // prevents collapsing inline tags like <span>, <a>, etc.
-    content_unformatted: [], // don't mess with inline content
+    inline: ["span", "a"], // prevents collapsing inline tags like <span>, <a>, etc.
+    content_unformatted: ["p"], // don't mess with p content
   });
 };
 
@@ -129,7 +122,6 @@ const renderLayout = (items: Layout[]): string => {
         type === "image"
           ? "img"
           : type === "container" ||
-              type === "text" ||
               type === "row" ||
               type === "column" ||
               type === "fixed"
@@ -140,7 +132,9 @@ const renderLayout = (items: Layout[]): string => {
                 ? "i"
                 : type === "button"
                   ? "a"
-                  : type;
+                  : type === "text"
+                    ? "p"
+                    : type;
 
       const isAudioOrVideo = type === "audio" || type === "video";
       const isImage = type === "image";

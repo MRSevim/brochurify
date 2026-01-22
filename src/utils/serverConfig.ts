@@ -9,17 +9,17 @@ export function requiredEnv(name: string): string {
 }
 
 export const serverEnv = {
-  ENV: requiredEnv("ENV"),
+  ENV: requiredEnv("NEXT_PUBLIC_ENV"),
   MY_EMAIL: requiredEnv("MY_EMAIL"),
   APP_URL: requiredEnv("APP_URL"),
   JWT_SECRET: requiredEnv("JWT_SECRET"),
   PADDLE_API_KEY: requiredEnv("PADDLE_API_KEY"),
   NEXT_PUBLIC_PADDLE_SUB_PRICE_ID: requiredEnv(
-    "NEXT_PUBLIC_PADDLE_SUB_PRICE_ID"
+    "NEXT_PUBLIC_PADDLE_SUB_PRICE_ID",
   ),
   NEXT_PUBLIC_PADDLE_ENV: requiredEnv("NEXT_PUBLIC_PADDLE_ENV"),
   NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: requiredEnv(
-    "NEXT_PUBLIC_PADDLE_CLIENT_TOKEN"
+    "NEXT_PUBLIC_PADDLE_CLIENT_TOKEN",
   ),
   PADDLE_WEBHOOK_SECRET: requiredEnv("PADDLE_WEBHOOK_SECRET"),
   GOOGLE_CLIENT_ID: requiredEnv("GOOGLE_CLIENT_ID"),

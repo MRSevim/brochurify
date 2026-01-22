@@ -71,6 +71,7 @@ export default async function SiteLayout({
   if (!site || !site.editor) {
     return notFound();
   }
+
   const pageWise = site.editor.pageWise;
   const layout = site.editor.layout;
   const variables = site.editor.variables;

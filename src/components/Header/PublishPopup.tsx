@@ -92,7 +92,7 @@ const PublishPopup = () => {
                   if (!safeName) {
                     if (latestNameRef.current !== value) return; // stale
                     toast.error(
-                      "Please enter a valid prefix. It should not be empty and include at least 1 number or letter."
+                      "Please enter a valid prefix. It should not be empty and include at least 1 number or letter.",
                     );
                     setScanLoading(false);
                     return;

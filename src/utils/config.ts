@@ -1,4 +1,4 @@
-const isDev = process.env.ENV === "development";
+const isDev = process.env.NEXT_PUBLIC_ENV === "development";
 
 export const appConfig = {
   MONTHLY_SUB_PRICE: 5,

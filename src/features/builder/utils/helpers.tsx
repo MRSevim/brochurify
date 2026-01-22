@@ -24,7 +24,6 @@ export const getPageWise = (): PageWise => {
     title: "",
     description: "",
     keywords: "",
-    canonical: "",
     image: "",
     color: "#000000",
     "background-color": "#ffffff80",

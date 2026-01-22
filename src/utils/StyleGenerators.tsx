@@ -20,6 +20,7 @@ const layoutKeys: (keyof Style)[] = [
   "position",
 ];
 
+// separates wrapper and inner styles according to layoutKeys
 function splitStyleRecursive(style: Style): [Style, Style] {
   const first: Style = {};
   const second: Style = {};
@@ -93,6 +94,7 @@ export const getRest = (style: Style): string => {
 
   return styleGenerator(rest);
 };
+
 export const getWrapperStyles = (style: Style, type: string): string => {
   const [wrapperStyles, rest] = styleDivider(style);
   const extraStyles: Partial<Style> =
@@ -116,13 +118,13 @@ export const styleGenerator = (style: Style): string => {
   const generate = (entries: [string, any][]) =>
     entries
       .map(([key, value]) => {
-        const bgColor = style["background-color"];
         if (typeof value === "object") {
           // Handle nested styles
           const nested = styleGenerator(value);
           return `${key} { ${nested} }`;
         } else {
           if (!value || !key) return "";
+          const bgColor = style["background-color"];
           if (key === "background-image" && bgColor) {
             return `${key}: linear-gradient(${bgColor}), ${value};`;
           }
@@ -132,6 +134,7 @@ export const styleGenerator = (style: Style): string => {
       .join("\n");
 
   // Generate base styles first, then container queries last
+  // Makes sure container styles overrides normal ones by coming later it the sheet
   return [generate(baseEntries), generate(containerEntries)]
     .filter(Boolean)
     .join("\n");
@@ -150,11 +153,8 @@ export const fullStylesWithIdsGenerator = (
         ? getRest(style)
         : getWrapperStyles(style, item.type);
 
-      const fixedStyles =
-        isFixed && rest ? getWrapperStyles(style, item.type) : "";
-
       // Combine all styles for this selector
-      const combinedStyles = [styleStr, fixedStyles].filter(Boolean).join(" ");
+      const combinedStyles = [styleStr].filter(Boolean).join(" ");
 
       // Skip if combinedStyles is empty
       if (!combinedStyles.trim()) {
@@ -262,8 +262,8 @@ export const getCssReset = (pageWise: PageWise) => {
     position:relative
   }  
   .center {
-  justify-content:center;
-  align-items:center;
+    justify-content:center;
+    align-items:center;
   }  
 ${getStyleResets(pageWise)}
   `;
