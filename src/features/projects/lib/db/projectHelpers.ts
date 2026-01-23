@@ -9,7 +9,7 @@ import {
 import docClient from "../../../../lib/db/db";
 import { v4 as uuidv4 } from "uuid";
 import { checkRole, protect } from "../../../auth/utils/serverHelpers";
-import { EditorState } from "@/features/builder/utils/types.d";
+import { EditorState } from "@/features/builder/utils/types/types.d";
 import { generateHTML } from "../../../../utils/HTMLGenerator";
 import { snapshotQueue } from "../../../../lib/redis";
 import { deleteFromS3 } from "../../../../lib/s3/helpers";

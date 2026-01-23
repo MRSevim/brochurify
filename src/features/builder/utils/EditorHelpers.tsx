@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
-import { AddLocation, EditorState, ItemAndLocation, Layout } from "./types.d";
+import { AddLocation, EditorState, ItemAndLocation } from "./types/types.d";
+import { Layout } from "./types/propTypes.d";
 
 export const moveElementInner = (
   state: EditorState,
@@ -13,6 +14,8 @@ export const moveElementInner = (
     toast.error("Something went wrong");
     return;
   }
+  const child =
+    "child" in currentElement.props ? currentElement.props.child : undefined;
   if (!targetId && !payload.addLocation) return;
   const targetElement = findElementById(state.layout, targetId || "");
   const passed = canElementHaveChild(
@@ -23,9 +26,8 @@ export const moveElementInner = (
   );
   if (passed) {
     if (
-      (targetId && isInChildren(currentElement.props.child, targetId)) ||
-      (payload.addLocation?.id &&
-        isInChildren(currentElement.props.child, payload.addLocation.id))
+      (targetId && isInChildren(child, targetId)) ||
+      (payload.addLocation?.id && isInChildren(child, payload.addLocation.id))
     ) {
       toast.error("You cannot insert an element into its own children");
       return;
@@ -67,7 +69,7 @@ export const canElementHaveChild = (
           return [element.type]; // Return the current element type if it's the target
         }
         // If the element has children, recursively search and track the chain
-        if (element.props.child && element.props.child.length > 0) {
+        if ("child" in element.props && element.props.child.length > 0) {
           const chain = findParentChain(element.props.child, targetId);
           if (chain) {
             return [element.type, ...chain]; // Append the current type to the chain
@@ -116,7 +118,13 @@ export const isInChildren = (
 ): boolean => {
   if (!children) return false;
   for (const child of children) {
-    if (child.id === targetId || isInChildren(child.props.child, targetId)) {
+    if (
+      child.id === targetId ||
+      isInChildren(
+        "child" in child.props ? child.props.child : undefined,
+        targetId,
+      )
+    ) {
       return true; // Target ID found in children
     }
   }
@@ -138,7 +146,7 @@ export const deleteFromLayout = (
       continue;
     }
 
-    if (item.props?.child && Array.isArray(item.props.child)) {
+    if ("child" in item.props && Array.isArray(item.props.child)) {
       const childDeleted = deleteFromLayout(item.props.child, targetId);
       if (childDeleted) {
         deleted = true;
@@ -159,7 +167,7 @@ export const findElementById = (
     }
 
     // If the item has children, search recursively
-    if (item.props?.child) {
+    if ("child" in item.props) {
       const found = findElementById(item.props.child as Layout[], targetId);
       if (found) return found; // Return if the target is found in children
     }
@@ -170,7 +178,7 @@ export const findElementById = (
 export const generateNewIds = (copied: Layout) => {
   const newProps = { ...copied.props };
 
-  if (copied.props?.child) {
+  if ("child" in copied.props && "child" in newProps) {
     newProps.child = copied.props.child.map((child: Layout) =>
       generateNewIds(child),
     );

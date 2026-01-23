@@ -1,4 +1,8 @@
-import { Layout, PageWise, Style } from "@/features/builder/utils/types.d";
+import {
+  Layout,
+  PageWise,
+  Style,
+} from "@/features/builder/utils/types/types.d";
 
 export const googleFontOptions = [
   { title: "Roboto", value: "'Roboto', sans-serif" },

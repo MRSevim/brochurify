@@ -9,7 +9,7 @@ import {
   scanPrefix,
   updateProject,
 } from "../../lib/db/projectHelpers";
-import { EditorState } from "@/features/builder/utils/types.d";
+import { EditorState } from "@/features/builder/utils/types/types.d";
 import { addNumberWithDash, returnErrorFromUnknown } from "@/utils/Helpers";
 
 export const createAction = async (project: {

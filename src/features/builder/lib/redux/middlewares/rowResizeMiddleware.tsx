@@ -1,5 +1,5 @@
 import { Middleware } from "@reduxjs/toolkit";
-import { Layout } from "@/features/builder/utils/types.d";
+
 import { RootState } from "../../../../../lib/redux/store";
 import {
   hydrate,
@@ -9,6 +9,7 @@ import {
   hydrateLocal,
   setFromLocal,
 } from "../slices/editorSlice";
+import { Layout } from "@/features/builder/utils/types/propTypes.d";
 
 // Utility to count non-fixed children of row nodes
 const getRowNonFixedCounts = (
@@ -22,7 +23,7 @@ const getRowNonFixedCounts = (
       ).length;
       acc[node.id] = count;
     }
-    if (Array.isArray(node.props.child)) {
+    if ("child" in node.props && Array.isArray(node.props.child)) {
       getRowNonFixedCounts(node.props.child, acc);
     }
   }
@@ -68,7 +69,7 @@ const updateWidths = (
                 width: newWidth,
               },
             },
-          };
+          } as Layout;
         });
 
         if (childChanged) {
@@ -93,7 +94,7 @@ const updateWidths = (
           changed = true;
         }
       }
-    } else if (Array.isArray(node.props.child)) {
+    } else if ("child" in node.props && Array.isArray(node.props.child)) {
       // Recurse into non-row nodes
       const [recursedChild, childChanged] = updateWidths(
         node.props.child,
@@ -106,7 +107,7 @@ const updateWidths = (
             ...node.props,
             child: recursedChild,
           },
-        };
+        } as Layout;
         changed = true;
       }
     }

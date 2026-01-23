@@ -6,7 +6,7 @@ import {
   Props,
   Style,
   Variable,
-} from "./types.d";
+} from "./types/types.d";
 import { v4 as uuidv4 } from "uuid";
 import { UseSelector } from "react-redux";
 import { findElementById } from "./EditorHelpers";
@@ -133,9 +133,6 @@ export const generateLayoutItem = (type: string): Layout => {
 };
 
 export const getDefaultElementProps = (type: string): Props => {
-  if (!type) {
-    throw Error("Please pass a type to getDefaultElementProps func");
-  }
   if (type === "button") {
     return {
       style: getDefaultStyle("button"),
@@ -191,7 +188,8 @@ export const getDefaultElementProps = (type: string): Props => {
       child: [generateLayoutItem("icon")],
     };
   }
-  return { style: {} };
+
+  throw Error("Please pass a valid type to getDefaultElementProps func");
 };
 
 export function getSetting<T = string>(

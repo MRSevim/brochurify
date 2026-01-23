@@ -1,9 +1,8 @@
 import useClasses from "@/features/builder/utils/hooks/useClasses";
-import { PropsWithId } from "@/features/builder/utils/types.d";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
-import { RefObject } from "react";
+import { ImagePropsForRendering } from "@/features/builder/utils/types/propTypes.d";
 
-const Image = ({ style, src, alt, ref }: PropsWithId) => {
+const Image = ({ style, src, alt, ref }: ImagePropsForRendering) => {
   const active = useClasses();
 
   return (
@@ -12,7 +11,7 @@ const Image = ({ style, src, alt, ref }: PropsWithId) => {
       src={src || undefined}
       alt={alt}
       $styles={style}
-      ref={ref as RefObject<HTMLImageElement>}
+      ref={ref}
     />
   );
 };

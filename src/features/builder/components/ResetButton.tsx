@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import { memo, useCallback } from "react";
-import { Style } from "../utils/types.d";
+import { Style } from "../utils/types/types.d";
 import { getPageWise } from "../utils/helpers";
 
 const ResetButton = ({ onClick }: { onClick: () => void }) => {

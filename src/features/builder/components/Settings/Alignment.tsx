@@ -9,7 +9,7 @@ import Checkbox from "@/components/Checkbox";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import Slider from "@/components/Slider";
 import { selectActiveType } from "../../lib/redux/selectors";
-import { CONFIG, OptionsObject } from "../../utils/types.d";
+import { CONFIG, OptionsObject } from "../../utils/types/types.d";
 
 const justifyContentAlignmentOptionsForRow = [
   {

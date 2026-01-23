@@ -7,7 +7,11 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { Editor } from "@tiptap/react";
 import { Dispatch, useEffect } from "react";
 import { selectPageWise } from "@/features/builder/lib/redux/selectors";
-import { CONFIG, PageWise, Style } from "@/features/builder/utils/types.d";
+import {
+  CONFIG,
+  PageWise,
+  Style,
+} from "@/features/builder/utils/types/types.d";
 
 const getFontSize = (editor: Editor, pageWise: PageWise) => {
   const { state } = editor;

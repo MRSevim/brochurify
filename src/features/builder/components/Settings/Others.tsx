@@ -14,7 +14,7 @@ import { StringOrUnd } from "@/utils/types/Types.d";
 import VariableSelector from "../VariableSelector";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import { selectActiveType } from "../../lib/redux/selectors";
-import { CONFIG } from "../../utils/types.d";
+import { CONFIG } from "../../utils/types/types.d";
 
 const Others = () => {
   return (

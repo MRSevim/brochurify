@@ -6,7 +6,7 @@ import InfoIcon from "@/components/InfoIcon";
 import Slider from "@/components/Slider";
 import { ResetButtonWithOuterType } from "@/features/builder/components/ResetButton";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
-import { CONFIG } from "@/features/builder/utils/types.d";
+import { CONFIG } from "@/features/builder/utils/types/types.d";
 import { defaultInheritFontOptions } from "@/utils/fontUtils";
 
 const HeadingStyles = () => {

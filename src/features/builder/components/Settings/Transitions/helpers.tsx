@@ -1,4 +1,4 @@
-import { OptionsObject } from "@/features/builder/utils/types.d";
+import { OptionsObject } from "@/features/builder/utils/types/types.d";
 import { makeArraySplitFrom } from "@/utils/Helpers";
 
 export const availableTimingFunctions: OptionsObject[] = [

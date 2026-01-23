@@ -11,7 +11,7 @@ import InfoIcon from "@/components/InfoIcon";
 import ToggleBtn from "@/components/ToggleBtn";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import { BackgroundImage } from "../Background/Background";
-import { CONFIG } from "@/features/builder/utils/types.d";
+import { CONFIG } from "@/features/builder/utils/types/types.d";
 import { fontOptions } from "@/utils/fontUtils";
 
 const Styles = () => {

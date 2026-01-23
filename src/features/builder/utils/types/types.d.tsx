@@ -1,7 +1,7 @@
 import { StringOrUnd } from "@/utils/types/Types.d";
-import { RefObject } from "react";
+import { Layout } from "./propTypes.d";
 
-export interface Props {
+/* export interface Props {
   text?: string;
   style: Style;
   child?: Layout[];
@@ -41,19 +41,15 @@ export interface PropsWithId {
     | React.ReactNode
     | undefined
     | ElementRefObject;
-}
-export interface Layout {
-  id: string;
-  type: string;
-  props: Props;
-}
+} */
+
 export interface EditorState {
-  type: string;
+  type: "project" | "template";
   id?: string;
   active?: string;
   hovered?: OverType;
   draggedOver?: OverType;
-  history: History;
+  history: History[];
   layout: Layout[];
   pageWise: PageWise;
   addLocation: AddLocation;
@@ -78,7 +74,7 @@ export type History = {
     layout: Layout[];
     pageWise: PageWise;
   };
-}[];
+};
 export type AddLocation = {
   id: string;
   where: Where;
@@ -158,8 +154,6 @@ export type ItemAndLocation = {
   targetId: StringOrUnd;
   addLocation: AddLocation;
 };
-
-type ElementRefObject = RefObject<HTMLElement | null>;
 
 export type OptionsObject = { id?: string; title: string; value: string };
 

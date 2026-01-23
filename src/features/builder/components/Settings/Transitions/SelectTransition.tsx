@@ -4,7 +4,7 @@ import {
   selectPageWise,
 } from "@/features/builder/lib/redux/selectors";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { OptionsObject } from "@/features/builder/utils/types.d";
+import { OptionsObject } from "@/features/builder/utils/types/types.d";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { TransformItemPicker } from "../Transform";
 import ColorPicker from "../../ColorPicker";

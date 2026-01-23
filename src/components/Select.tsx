@@ -1,4 +1,4 @@
-import { OptionsObject } from "@/features/builder/utils/types.d";
+import { OptionsObject } from "@/features/builder/utils/types/types.d";
 import { ChangeEvent } from "react";
 import InfoIcon from "./InfoIcon";
 

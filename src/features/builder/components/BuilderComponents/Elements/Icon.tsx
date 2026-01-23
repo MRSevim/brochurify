@@ -1,16 +1,15 @@
 import useClasses from "@/features/builder/utils/hooks/useClasses";
-import { PropsWithId } from "@/features/builder/utils/types.d";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
-import { RefObject } from "react";
+import { IconPropsForRendering } from "@/features/builder/utils/types/propTypes.d";
 
-const Container = ({ style, iconType, ref }: PropsWithId) => {
+const Container = ({ style, iconType, ref }: IconPropsForRendering) => {
   const active = useClasses();
 
   return (
     <styledElements.styledI
       className={active + ` bi bi-${iconType}`}
       $styles={style}
-      ref={ref as RefObject<HTMLLIElement>}
+      ref={ref}
     />
   );
 };

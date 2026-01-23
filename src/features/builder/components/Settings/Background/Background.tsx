@@ -18,7 +18,7 @@ import { StringOrUnd } from "@/utils/types/Types.d";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import UploadWrapper from "../UploadWrapper";
 import { selectPageWise } from "@/features/builder/lib/redux/selectors";
-import { CONFIG } from "@/features/builder/utils/types.d";
+import { CONFIG } from "@/features/builder/utils/types/types.d";
 import { getSetting } from "@/features/builder/utils/helpers";
 
 const Background = () => {

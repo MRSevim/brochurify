@@ -1,14 +1,13 @@
 import useClasses from "@/features/builder/utils/hooks/useClasses";
-import { PropsWithId } from "@/features/builder/utils/types.d";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
-import { RefObject } from "react";
+import { TextPropsForRendering } from "@/features/builder/utils/types/propTypes.d";
 
-const Text = ({ text, style, ref }: PropsWithId) => {
+const Text = ({ text, style, ref }: TextPropsForRendering) => {
   const active = useClasses();
 
   return (
     <styledElements.styledP
-      ref={ref as RefObject<HTMLDivElement>}
+      ref={ref}
       className={active}
       $styles={style}
       dangerouslySetInnerHTML={{ __html: text || "" }}

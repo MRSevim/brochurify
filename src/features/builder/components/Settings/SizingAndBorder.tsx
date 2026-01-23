@@ -14,7 +14,7 @@ import ShorthandToggler from "./ShorthandToggler";
 import VariableSelector from "../VariableSelector";
 import WrapperWithBottomLine from "../WrapperWithBottomLine";
 import UnitSelector from "../UnitSelector";
-import { CONFIG } from "../../utils/types.d";
+import { CONFIG } from "../../utils/types/types.d";
 
 const SizingAndBorder = () => {
   return (

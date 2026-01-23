@@ -6,7 +6,7 @@ import {
   styleGenerator,
   variablesGenerator,
 } from "../../../utils/StyleGenerators";
-import { PageWise, Style, Variable } from "./types.d";
+import { PageWise, Style, Variable } from "./types/types.d";
 
 export const styledElements = {
   styledEditor: styled.div<{ $styles: PageWise; $variables: Variable[] }>`

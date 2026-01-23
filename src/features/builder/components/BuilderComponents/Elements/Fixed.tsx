@@ -1,16 +1,11 @@
 import useClasses from "@/features/builder/utils/hooks/useClasses";
-import { PropsWithId } from "@/features/builder/utils/types.d";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
-import { RefObject } from "react";
+import { FixedPropsForRendering } from "@/features/builder/utils/types/propTypes.d";
 
-const Fixed = ({ children, style, ref }: PropsWithId) => {
+const Fixed = ({ children, style, ref }: FixedPropsForRendering) => {
   const active = useClasses(true);
   return (
-    <styledElements.styledFixed
-      className={active}
-      $styles={style}
-      ref={ref as RefObject<HTMLDivElement>}
-    >
+    <styledElements.styledFixed className={active} $styles={style} ref={ref}>
       {children}
     </styledElements.styledFixed>
   );

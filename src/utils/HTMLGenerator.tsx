@@ -1,4 +1,8 @@
-import { Layout, PageWise, Variable } from "@/features/builder/utils/types.d";
+import {
+  Layout,
+  PageWise,
+  Variable,
+} from "@/features/builder/utils/types/types.d";
 import { hasType } from "../features/builder/utils/EditorHelpers";
 import { getUsedFonts, mapOverFonts } from "./fontUtils";
 import {

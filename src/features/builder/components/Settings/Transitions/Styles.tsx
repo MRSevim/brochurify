@@ -14,7 +14,7 @@ import AddButton from "@/components/AddButton";
 import { changeElementStyle } from "@/features/builder/lib/redux/slices/editorSlice";
 import EditableListItem from "../EditableListItem";
 import Popup from "@/components/Popup";
-import { CONFIG, Style } from "@/features/builder/utils/types.d";
+import { CONFIG, Style } from "@/features/builder/utils/types/types.d";
 import { TypeSelect as ResponsiveTypeSelect } from "../SizingAndBorder";
 import WrapperWithBottomLine from "@/features/builder/components/WrapperWithBottomLine";
 import {

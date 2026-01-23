@@ -11,7 +11,7 @@ import {
   editVariable,
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import { fontOptions } from "@/utils/fontUtils";
-import { Variable } from "@/features/builder/utils/types.d";
+import { Variable } from "@/features/builder/utils/types/types.d";
 import { useState } from "react";
 import EditableListItem from "../EditableListItem";
 import { TransitionPropertyAddZone } from "../Transitions/Transitions";

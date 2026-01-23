@@ -24,7 +24,7 @@ import {
   VisibilitySetProvider,
 } from "./VisibilitySetContext";
 import { selectAddLocation, selectLayout } from "../../lib/redux/selectors";
-import { Layout } from "../../utils/types.d";
+import { Layout } from "../../utils/types/propTypes.d";
 
 const LeftPanel = () => {
   const toggle = LayoutToggleContext.useToggle();
@@ -51,7 +51,7 @@ const LayoutInner = memo(() => {
               key={item.id}
               id={item.id}
               type={item.type}
-              child={item.props.child}
+              child={"child" in item.props ? item.props.child : undefined}
               depth={depth}
             />
           );
@@ -136,7 +136,9 @@ const ChildLayout = memo(
             key={childItem.id}
             id={childItem.id}
             type={childItem.type}
-            child={childItem.props.child}
+            child={
+              "child" in childItem.props ? childItem.props.child : undefined
+            }
             depth={depth + 1}
           />
         ))}

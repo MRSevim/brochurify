@@ -11,7 +11,21 @@ import Effects from "./Effects";
 import { mapOverFonts, getUsedFonts } from "@/utils/fontUtils";
 import { Metadata } from "next";
 import { serverEnv } from "@/utils/serverConfig";
-import { Layout, PropsWithId } from "@/features/builder/utils/types.d";
+import {
+  AudioPropsForRendering,
+  ButtonPropsForRendering,
+  ColumnPropsForRendering,
+  ContainerPropsForRendering,
+  DividerPropsForRendering,
+  FixedPropsForRendering,
+  IconPropsForRendering,
+  ImagePropsForRendering,
+  Layout,
+  RowPropsForRendering,
+  TextPropsForRendering,
+  VideoPropsForRendering,
+} from "@/features/builder/utils/types/propTypes.d";
+import { JSX } from "react";
 
 async function getSiteCached(domain: string) {
   const res = await fetch(`${serverEnv.APP_URL}/api/getSite?domain=${domain}`, {
@@ -125,8 +139,94 @@ export default async function SiteLayout({
 const RenderedComponent = ({ item }: { item: Layout }) => {
   const { type } = item;
   const isFixed = type === "fixed";
-  const Component = componentList[type as keyof typeof componentList];
   const id = item.id;
+  let Component: JSX.Element;
+
+  switch (type) {
+    case "button":
+      Component = componentList.button({
+        ...item.props,
+        id: "id" + id,
+        children: item.props.child.map((childItem) => (
+          <RenderedComponent key={childItem.id} item={childItem} />
+        )),
+      });
+      break;
+    case "column":
+      Component = componentList.column({
+        ...item.props,
+        id: "id" + id,
+        children: item.props.child.map((childItem) => (
+          <RenderedComponent key={childItem.id} item={childItem} />
+        )),
+      });
+      break;
+    case "text":
+      Component = componentList.text({
+        ...item.props,
+        id: "id" + id,
+      });
+      break;
+    case "row":
+      Component = componentList.row({
+        ...item.props,
+        id: "id" + id,
+        children: item.props.child.map((childItem) => (
+          <RenderedComponent key={childItem.id} item={childItem} />
+        )),
+      });
+      break;
+    case "image":
+      Component = componentList.image({
+        ...item.props,
+        id: "id" + id,
+      });
+      break;
+    case "audio":
+      Component = componentList.audio({
+        ...item.props,
+        id: "id" + id,
+      });
+      break;
+    case "video":
+      Component = componentList.video({
+        ...item.props,
+        id: "id" + id,
+      });
+      break;
+    case "container":
+      Component = componentList.container({
+        ...item.props,
+        id: "id" + id,
+        children: item.props.child.map((childItem) => (
+          <RenderedComponent key={childItem.id} item={childItem} />
+        )),
+      });
+      break;
+    case "divider":
+      Component = componentList.divider({
+        ...item.props,
+        id: "id" + id,
+      });
+      break;
+    case "icon":
+      Component = componentList.icon({
+        ...item.props,
+        id: "id" + id,
+      });
+      break;
+    case "fixed":
+      Component = componentList.fixed({
+        ...item.props,
+        id: "id" + id,
+        children: item.props.child.map((childItem) => (
+          <RenderedComponent key={childItem.id} item={childItem} />
+        )),
+      });
+      break;
+    default:
+      throw Error("Pass a valid type to RenderedComponent");
+  }
 
   return (
     <div
@@ -137,18 +237,14 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
         className="flex wAndHFull center"
         {...(item.props.anchorId ? { id: `user-${item.props.anchorId}` } : {})}
       >
-        <Component id={"id" + id} {...item.props}>
-          {item.props.child?.map((childItem) => (
-            <RenderedComponent key={childItem.id} item={childItem} />
-          ))}
-        </Component>
+        {Component}
       </div>
     </div>
   );
 };
 
 const componentList = {
-  button: (props: PropsWithId) => (
+  button: (props: ButtonPropsForRendering) => (
     <a
       id={props.id}
       href={props.href}
@@ -159,24 +255,24 @@ const componentList = {
       {props.children}
     </a>
   ),
-  column: (props: PropsWithId) => (
+  column: (props: ColumnPropsForRendering) => (
     <div id={props.id} className="element wAndHFull">
       {props.children}
     </div>
   ),
-  text: (props: PropsWithId) => (
-    <div
+  text: (props: TextPropsForRendering) => (
+    <p
       id={props.id}
       className="element wAndHFull"
       dangerouslySetInnerHTML={{ __html: props.text || "" }}
-    ></div>
+    ></p>
   ),
-  row: (props: PropsWithId) => (
+  row: (props: RowPropsForRendering) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>
   ),
-  image: (props: PropsWithId) => (
+  image: (props: ImagePropsForRendering) => (
     <img
       className="element wAndHFull"
       id={props.id}
@@ -184,33 +280,33 @@ const componentList = {
       alt={props.alt || ""}
     />
   ),
-  audio: (props: PropsWithId) => (
+  audio: (props: AudioPropsForRendering) => (
     <audio className="element wAndHFull" id={props.id} controls>
       <source src={props.src || undefined}></source>
       Your browser does not support the audio tag.
     </audio>
   ),
-  video: (props: PropsWithId) => (
+  video: (props: VideoPropsForRendering) => (
     <video className="element wAndHFull" id={props.id} controls>
       <source src={props.src || undefined}></source>
       Your browser does not support the video tag.
     </video>
   ),
-  container: (props: PropsWithId) => (
+  container: (props: ContainerPropsForRendering) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>
   ),
-  divider: (props: PropsWithId) => (
+  divider: (props: DividerPropsForRendering) => (
     <hr className="element wAndHFull" id={props.id} />
   ),
-  icon: (props: PropsWithId) => (
+  icon: (props: IconPropsForRendering) => (
     <i
       id={props.id}
       className={`element wAndHFull ${props.iconType ? `bi bi-${props.iconType}` : ""}`}
     />
   ),
-  fixed: (props: PropsWithId) => (
+  fixed: (props: FixedPropsForRendering) => (
     <div className="element wAndHFull" id={props.id}>
       {props.children}
     </div>

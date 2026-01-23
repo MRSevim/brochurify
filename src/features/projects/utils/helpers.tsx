@@ -1,4 +1,4 @@
-import { EditorState } from "@/features/builder/utils/types.d";
+import { EditorState } from "@/features/builder/utils/types/types.d";
 
 export const stripEditorFields = (
   param: EditorState | Partial<EditorState>,

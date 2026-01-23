@@ -9,18 +9,30 @@ import Container from "../components/BuilderComponents/Elements/Container";
 import Divider from "../components/BuilderComponents/Elements/Divider";
 import Icon from "../components/BuilderComponents/Elements/Icon";
 import Fixed from "../components/BuilderComponents/Elements/Fixed";
-import { PropsWithId } from "./types.d";
+import {
+  AudioPropsForRendering,
+  ButtonPropsForRendering,
+  ColumnPropsForRendering,
+  ContainerPropsForRendering,
+  DividerPropsForRendering,
+  FixedPropsForRendering,
+  IconPropsForRendering,
+  ImagePropsForRendering,
+  RowPropsForRendering,
+  TextPropsForRendering,
+  VideoPropsForRendering,
+} from "./types/propTypes.d";
 
 export const componentList = {
-  button: (props: PropsWithId) => <Button {...props} />,
-  column: (props: PropsWithId) => <Column {...props} />,
-  text: (props: PropsWithId) => <Text {...props} />,
-  row: (props: PropsWithId) => <Row {...props} />,
-  image: (props: PropsWithId) => <Image {...props} />,
-  audio: (props: PropsWithId) => <Audio {...props} />,
-  video: (props: PropsWithId) => <Video {...props} />,
-  container: (props: PropsWithId) => <Container {...props} />,
-  divider: (props: PropsWithId) => <Divider {...props} />,
-  icon: (props: PropsWithId) => <Icon {...props} />,
-  fixed: (props: PropsWithId) => <Fixed {...props} />,
+  button: (props: ButtonPropsForRendering) => <Button {...props} />,
+  column: (props: ColumnPropsForRendering) => <Column {...props} />,
+  text: (props: TextPropsForRendering) => <Text {...props} />,
+  row: (props: RowPropsForRendering) => <Row {...props} />,
+  image: (props: ImagePropsForRendering) => <Image {...props} />,
+  audio: (props: AudioPropsForRendering) => <Audio {...props} />,
+  video: (props: VideoPropsForRendering) => <Video {...props} />,
+  container: (props: ContainerPropsForRendering) => <Container {...props} />,
+  divider: (props: DividerPropsForRendering) => <Divider {...props} />,
+  icon: (props: IconPropsForRendering) => <Icon {...props} />,
+  fixed: (props: FixedPropsForRendering) => <Fixed {...props} />,
 };

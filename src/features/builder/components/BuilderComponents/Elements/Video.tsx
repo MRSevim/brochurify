@@ -1,9 +1,8 @@
 import useClasses from "@/features/builder/utils/hooks/useClasses";
-import { PropsWithId } from "@/features/builder/utils/types.d";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
-import { RefObject } from "react";
+import { VideoPropsForRendering } from "@/features/builder/utils/types/propTypes.d";
 
-const Video = ({ style, src, ref }: PropsWithId) => {
+const Video = ({ style, src, ref }: VideoPropsForRendering) => {
   const active = useClasses();
   return (
     <styledElements.styledVideo
@@ -11,7 +10,7 @@ const Video = ({ style, src, ref }: PropsWithId) => {
       key={src}
       controls
       $styles={style}
-      ref={ref as RefObject<HTMLVideoElement>}
+      ref={ref}
     >
       <source src={src || undefined}></source>
       Your browser does not support the video tag.

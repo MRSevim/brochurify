@@ -17,16 +17,16 @@ import {
   EditorState,
   OverType,
   AddLocation,
-  Layout,
   PageWise,
   Style,
   Variable,
-} from "@/features/builder/utils/types.d";
+} from "@/features/builder/utils/types/types.d";
 import { StringOrUnd } from "@/utils/types/Types.d";
 import {
   generateLayoutItem,
   getPageWise,
 } from "@/features/builder/utils/helpers";
+import { Layout } from "@/features/builder/utils/types/propTypes.d";
 
 const initialState: EditorState = {
   type: "project",
@@ -219,7 +219,7 @@ export const editorSlice = createSlice({
               return true; // found and updated
             }
 
-            if (Array.isArray(item.props.child)) {
+            if ("child" in item.props && Array.isArray(item.props.child)) {
               const found = updateLayout(item.props.child as Layout[]);
               if (found) return true;
             }
@@ -249,7 +249,7 @@ export const editorSlice = createSlice({
             changed = true;
           }
 
-          if (item.props.child && Array.isArray(item.props.child)) {
+          if ("child" in item.props && Array.isArray(item.props.child)) {
             const childChanged = changeProp(item.props.child);
             if (childChanged) changed = true;
           }

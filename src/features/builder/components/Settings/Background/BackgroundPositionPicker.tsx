@@ -8,7 +8,7 @@ import {
 import "./BackgroundPositionPicker.css";
 
 import Select from "@/components/Select";
-import { OptionsObject } from "@/features/builder/utils/types.d";
+import { OptionsObject } from "@/features/builder/utils/types/types.d";
 import { getSetting } from "@/features/builder/utils/helpers";
 
 type HandleChangeType = (

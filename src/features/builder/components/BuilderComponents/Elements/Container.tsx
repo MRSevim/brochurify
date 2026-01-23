@@ -1,17 +1,12 @@
 import useClasses from "@/features/builder/utils/hooks/useClasses";
-import { PropsWithId } from "@/features/builder/utils/types.d";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
-import { RefObject } from "react";
+import { ContainerPropsForRendering } from "@/features/builder/utils/types/propTypes.d";
 
-const Container = ({ children, style, ref }: PropsWithId) => {
+const Container = ({ children, style, ref }: ContainerPropsForRendering) => {
   const active = useClasses();
 
   return (
-    <styledElements.styledDiv
-      className={active}
-      $styles={style}
-      ref={ref as RefObject<HTMLDivElement>}
-    >
+    <styledElements.styledDiv className={active} $styles={style} ref={ref}>
       {children}
     </styledElements.styledDiv>
   );

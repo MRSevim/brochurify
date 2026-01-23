@@ -1,8 +1,8 @@
 import useClasses from "@/features/builder/utils/hooks/useClasses";
-import { PropsWithId } from "@/features/builder/utils/types.d";
 import { styledElements } from "@/features/builder/utils/StyledComponents";
-import { RefObject } from "react";
-const Audio = ({ style, src, ref }: PropsWithId) => {
+import { AudioPropsForRendering } from "@/features/builder/utils/types/propTypes.d";
+
+const Audio = ({ style, src, ref }: AudioPropsForRendering) => {
   const active = useClasses();
 
   return (
@@ -10,7 +10,7 @@ const Audio = ({ style, src, ref }: PropsWithId) => {
       className={active}
       $styles={style}
       key={src}
-      ref={ref as RefObject<HTMLAudioElement>}
+      ref={ref}
       controls
     >
       <source src={src || undefined}></source>

@@ -1,4 +1,3 @@
-import { Layout } from "../../utils/types.d";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useAddSectionToggleSetter } from "@/features/builder/utils/contexts/AddSectionToggleContext";
@@ -11,6 +10,7 @@ import {
   selectLayout,
 } from "../../lib/redux/selectors";
 import { useVisibilitySetSetter } from "./VisibilitySetContext";
+import { Layout } from "../../utils/types/propTypes.d";
 
 const CenterDropWrapper = ({
   id,
@@ -43,7 +43,7 @@ const CenterDropWrapper = ({
         for (const item of layout) {
           if (item.id === id) return parents;
 
-          if (item.props.child) {
+          if ("child" in item.props) {
             const found = getParentIds(id, item.props.child, [
               ...parents,
               item.id,
