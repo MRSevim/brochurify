@@ -6,7 +6,7 @@ type RenderingObj = IdObj & {
   ref?: React.RefObject<HTMLElement | null>;
 };
 
-export type ButtonProps = {
+type ButtonProps = {
   style: Style;
   child: Layout[];
   href: string;
@@ -16,12 +16,12 @@ export type ButtonProps = {
 
 export type ButtonPropsForRendering = RenderingObj & ChildrenObj & ButtonProps;
 
-export type ButtonLayout = IdObj & {
+type ButtonLayout = IdObj & {
   type: "button";
   props: ButtonProps;
 };
 
-export type ColumnProps = {
+type ColumnProps = {
   style: Style;
   child: Layout[];
   anchorId: string;
@@ -29,12 +29,12 @@ export type ColumnProps = {
 
 export type ColumnPropsForRendering = RenderingObj & ChildrenObj & ColumnProps;
 
-export type ColumnLayout = IdObj & {
+type ColumnLayout = IdObj & {
   type: "column";
   props: ColumnProps;
 };
 
-export type TextProps = {
+type TextProps = {
   style: Style;
   anchorId: string;
   text: string;
@@ -42,12 +42,12 @@ export type TextProps = {
 
 export type TextPropsForRendering = RenderingObj & TextProps;
 
-export type TextLayout = IdObj & {
+type TextLayout = IdObj & {
   type: "text";
   props: TextProps;
 };
 
-export type RowProps = {
+type RowProps = {
   style: Style;
   child: Layout[];
   anchorId: string;
@@ -55,12 +55,12 @@ export type RowProps = {
 
 export type RowPropsForRendering = RenderingObj & ChildrenObj & RowProps;
 
-export type RowLayout = IdObj & {
+type RowLayout = IdObj & {
   type: "row";
   props: RowProps;
 };
 
-export type ImageProps = {
+type ImageProps = {
   style: Style;
   anchorId: string;
   src: string;
@@ -69,12 +69,12 @@ export type ImageProps = {
 
 export type ImagePropsForRendering = RenderingObj & ImageProps;
 
-export type ImageLayout = IdObj & {
+type ImageLayout = IdObj & {
   type: "image";
   props: ImageProps;
 };
 
-export type AudioProps = {
+type AudioProps = {
   style: Style;
   anchorId: string;
   src: string;
@@ -82,12 +82,12 @@ export type AudioProps = {
 
 export type AudioPropsForRendering = RenderingObj & AudioProps;
 
-export type AudioLayout = IdObj & {
+type AudioLayout = IdObj & {
   type: "audio";
   props: AudioProps;
 };
 
-export type VideoProps = {
+type VideoProps = {
   style: Style;
   anchorId: string;
   src: string;
@@ -95,12 +95,12 @@ export type VideoProps = {
 
 export type VideoPropsForRendering = RenderingObj & VideoProps;
 
-export type VideoLayout = IdObj & {
+type VideoLayout = IdObj & {
   type: "video";
   props: VideoProps;
 };
 
-export type ContainerProps = {
+type ContainerProps = {
   style: Style;
   anchorId: string;
   src: string;
@@ -111,24 +111,24 @@ export type ContainerPropsForRendering = RenderingObj &
   ChildrenObj &
   ContainerProps;
 
-export type ContainerLayout = IdObj & {
+type ContainerLayout = IdObj & {
   type: "container";
   props: ContainerProps;
 };
 
-export type DividerProps = {
+type DividerProps = {
   style: Style;
   anchorId: string;
 };
 
 export type DividerPropsForRendering = RenderingObj & DividerProps;
 
-export type DividerLayout = IdObj & {
+type DividerLayout = IdObj & {
   type: "divider";
   props: DividerProps;
 };
 
-export type IconProps = {
+type IconProps = {
   style: Style;
   anchorId: string;
   iconType: string;
@@ -136,12 +136,12 @@ export type IconProps = {
 
 export type IconPropsForRendering = RenderingObj & IconProps;
 
-export type IconLayout = IdObj & {
+type IconLayout = IdObj & {
   type: "icon";
   props: IconProps;
 };
 
-export type FixedProps = {
+type FixedProps = {
   style: Style;
   anchorId: string;
   src: string;
@@ -150,7 +150,7 @@ export type FixedProps = {
 
 export type FixedPropsForRendering = RenderingObj & ChildrenObj & FixedProps;
 
-export type FixedLayout = IdObj & {
+type FixedLayout = IdObj & {
   type: "fixed";
   props: FixedProps;
 };
@@ -167,3 +167,25 @@ export type Layout =
   | IconLayout
   | FixedLayout
   | ContainerLayout;
+
+export type EditablePropKeys =
+  | "anchorId"
+  | "newTab"
+  | "iconType"
+  | "text"
+  | "href"
+  | "src"
+  | "alt";
+
+export type LayoutTypes =
+  | "icon"
+  | "fixed"
+  | "button"
+  | "column"
+  | "text"
+  | "row"
+  | "image"
+  | "audio"
+  | "video"
+  | "container"
+  | "divider";

@@ -16,6 +16,7 @@ export const moveElementInner = (
   }
   const child =
     "child" in currentElement.props ? currentElement.props.child : undefined;
+
   if (!targetId && !payload.addLocation) return;
   const targetElement = findElementById(state.layout, targetId || "");
   const passed = canElementHaveChild(
@@ -146,7 +147,7 @@ export const deleteFromLayout = (
       continue;
     }
 
-    if ("child" in item.props && Array.isArray(item.props.child)) {
+    if ("child" in item.props) {
       const childDeleted = deleteFromLayout(item.props.child, targetId);
       if (childDeleted) {
         deleted = true;
@@ -168,14 +169,14 @@ export const findElementById = (
 
     // If the item has children, search recursively
     if ("child" in item.props) {
-      const found = findElementById(item.props.child as Layout[], targetId);
+      const found = findElementById(item.props.child, targetId);
       if (found) return found; // Return if the target is found in children
     }
   }
   return undefined; // Return undefined if not found
 };
 
-export const generateNewIds = (copied: Layout) => {
+export const generateNewIds = (copied: Layout): Layout => {
   const newProps = { ...copied.props };
 
   if ("child" in copied.props && "child" in newProps) {
@@ -188,7 +189,7 @@ export const generateNewIds = (copied: Layout) => {
     ...copied,
     id: uuidv4(),
     props: newProps,
-  };
+  } as Layout;
 };
 
 export const hasType = (layout: Layout[], type: string): boolean => {
@@ -198,7 +199,7 @@ export const hasType = (layout: Layout[], type: string): boolean => {
     }
 
     // If the item has children, search recursively
-    if (item.props?.child) {
+    if ("child" in item.props) {
       const found = hasType(item.props.child, type);
       if (found) return true;
     }
@@ -217,16 +218,16 @@ export const insertElement = (
     if (targetId) {
       for (let i = 0; i < layout.length; i++) {
         if (layout[i].id === targetId) {
-          if (!layout[i].props.child) {
-            layout[i].props.child = [];
+          if (!("child" in layout[i].props)) {
+            (layout[i].props as { child: Layout[] }).child = [];
           }
-          layout[i].props.child!.push(newElement);
+          (layout[i].props as { child: Layout[] }).child.push(newElement);
           return;
         }
 
-        if (layout[i].props.child) {
+        if ("child" in layout[i].props) {
           insertElement(
-            layout[i].props.child as Layout[],
+            (layout[i].props as { child: Layout[] }).child,
             newElement,
             addLocation,
             targetId,
@@ -250,9 +251,9 @@ export const insertElement = (
       return;
     }
 
-    if (layout[i].props.child) {
+    if ("child" in layout[i].props) {
       insertElement(
-        layout[i].props.child as Layout[],
+        (layout[i].props as { child: Layout[] }).child,
         newElement,
         addLocation,
         targetId,

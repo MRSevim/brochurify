@@ -1,10 +1,10 @@
 import {
-  Layout,
   PageWise,
   Style,
   Variable,
 } from "@/features/builder/utils/types/types.d";
 import { StringOrUnd } from "./types/Types.d";
+import { Layout } from "@/features/builder/utils/types/propTypes.d";
 
 const layoutKeys: (keyof Style)[] = [
   "width",
@@ -146,7 +146,7 @@ export const fullStylesWithIdsGenerator = (
 ): string => {
   return layout
     .map((item) => {
-      const child = item.props.child;
+      const child = "child" in item.props ? item.props.child : undefined;
       const style = item.props.style;
       const styleStr = rest
         ? getRest(style)

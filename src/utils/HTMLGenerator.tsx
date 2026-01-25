@@ -1,8 +1,4 @@
-import {
-  Layout,
-  PageWise,
-  Variable,
-} from "@/features/builder/utils/types/types.d";
+import { PageWise, Variable } from "@/features/builder/utils/types/types.d";
 import { hasType } from "../features/builder/utils/EditorHelpers";
 import { getUsedFonts, mapOverFonts } from "./fontUtils";
 import {
@@ -12,6 +8,7 @@ import {
   variablesGenerator,
 } from "./StyleGenerators";
 import { html as beautifyHtml } from "js-beautify";
+import { Layout } from "@/features/builder/utils/types/propTypes.d";
 
 export const generateHTML = (
   layout: Layout[],
@@ -121,14 +118,15 @@ const renderLayout = (items: Layout[]): string => {
   const layout = items
     .map((item) => {
       const { type, props } = item;
-      const child = props.child;
+      const child = "child" in props ? props.child : undefined;
       const renderedType =
         type === "image"
           ? "img"
           : type === "container" ||
               type === "row" ||
               type === "column" ||
-              type === "fixed"
+              type === "fixed" ||
+              type === "text"
             ? "div"
             : type === "divider"
               ? "hr"
@@ -136,9 +134,7 @@ const renderLayout = (items: Layout[]): string => {
                 ? "i"
                 : type === "button"
                   ? "a"
-                  : type === "text"
-                    ? "p"
-                    : type;
+                  : type;
 
       const isAudioOrVideo = type === "audio" || type === "video";
       const isImage = type === "image";
@@ -155,7 +151,7 @@ const renderLayout = (items: Layout[]): string => {
       };
 
       const rendered = `<${renderedType} ${
-        renderedType === "a"
+        type === "button"
           ? `href="${props.href}" target=${
               props.newTab ? "_blank" : "_self"
             } rel="noopener noreferrer"`
@@ -163,7 +159,7 @@ const renderLayout = (items: Layout[]): string => {
       } id="id${item.id}" ${
         isAudioOrVideo ? "controls" : ""
       }class="element wAndHFull ${
-        props.iconType ? `bi bi-${props.iconType}` : ""
+        "iconType" in props ? `bi bi-${props.iconType}` : ""
       }
       "${
         isImage
@@ -181,7 +177,6 @@ const renderLayout = (items: Layout[]): string => {
         }${isText ? props.text || "" : ""}${child ? renderLayout(child) : ""}${
           !isVoidElement ? `</${renderedType}>` : ""
         }`;
-
       const FlexWrapperApplied = addFlexWrapper(rendered);
       return FlexWrapperApplied;
     })

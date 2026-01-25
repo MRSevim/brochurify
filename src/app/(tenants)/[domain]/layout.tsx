@@ -261,11 +261,11 @@ const componentList = {
     </div>
   ),
   text: (props: TextPropsForRendering) => (
-    <p
+    <div
       id={props.id}
       className="element wAndHFull"
       dangerouslySetInnerHTML={{ __html: props.text || "" }}
-    ></p>
+    ></div>
   ),
   row: (props: RowPropsForRendering) => (
     <div className="element wAndHFull" id={props.id}>

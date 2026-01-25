@@ -1,8 +1,5 @@
-import {
-  Layout,
-  PageWise,
-  Style,
-} from "@/features/builder/utils/types/types.d";
+import { Layout } from "@/features/builder/utils/types/propTypes.d";
+import { PageWise, Style } from "@/features/builder/utils/types/types.d";
 
 export const googleFontOptions = [
   { title: "Roboto", value: "'Roboto', sans-serif" },
@@ -138,7 +135,7 @@ export function getUsedFonts(layout: Layout[], pageWise: PageWise): string[] {
       if (item.type === "text" && typeof item.props?.text === "string") {
         extractFontsFromTextHTML(item.props.text, fontSet);
       }
-      if (item.props?.child?.length) {
+      if ("child" in item.props && item.props.child.length) {
         traverseLayout(item.props.child);
       }
     }

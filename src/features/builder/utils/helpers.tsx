@@ -1,9 +1,7 @@
 import {
   CONFIG,
   EditorState,
-  Layout,
   PageWise,
-  Props,
   Style,
   Variable,
 } from "./types/types.d";
@@ -11,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { UseSelector } from "react-redux";
 import { findElementById } from "./EditorHelpers";
 import { selectVariables } from "../lib/redux/selectors";
+import { EditablePropKeys, Layout, LayoutTypes } from "./types/propTypes.d";
 
 export const getMaxWidthForEditor = (viewMode: string) =>
   viewMode === "desktop"
@@ -124,68 +123,81 @@ export const getDefaultStyle = (type: string): Style => {
   };
 };
 
-export const generateLayoutItem = (type: string): Layout => {
+export const generateLayoutItem = (type: LayoutTypes): Layout => {
   return {
     id: uuidv4(),
     type,
     props: getDefaultElementProps(type),
-  };
+  } as Layout;
 };
 
-export const getDefaultElementProps = (type: string): Props => {
+export const getDefaultElementProps = (type: LayoutTypes): Layout["props"] => {
   if (type === "button") {
     return {
       style: getDefaultStyle("button"),
       child: [generateLayoutItem("text")],
+      href: "",
+      newTab: false,
+      anchorId: "",
     };
   } else if (type === "text") {
     return {
       style: getDefaultStyle("text"),
       text: "I am a text",
+      anchorId: "",
     };
   } else if (type === "column") {
     return {
       style: getDefaultStyle("column"),
       child: [generateLayoutItem("text")],
+      anchorId: "",
     };
   } else if (type === "row") {
     return {
       style: getDefaultStyle("row"),
       child: [generateLayoutItem("column"), generateLayoutItem("column")],
+      anchorId: "",
     };
   } else if (type === "image") {
     return {
       style: getDefaultStyle("image"),
       src: CONFIG.placeholderImgUrl,
+      anchorId: "",
     };
   } else if (type === "audio") {
     return {
       style: getDefaultStyle("audio"),
       src: "",
+      anchorId: "",
     };
   } else if (type === "video") {
     return {
       style: getDefaultStyle("video"),
       src: "",
+      anchorId: "",
     };
   } else if (type === "container") {
     return {
       style: getDefaultStyle("container"),
       child: [generateLayoutItem("text")],
+      anchorId: "",
     };
   } else if (type === "divider") {
     return {
       style: getDefaultStyle(""),
+      anchorId: "",
     };
   } else if (type === "icon") {
     return {
       iconType: "1-circle-fill",
       style: getDefaultStyle("icon"),
+      anchorId: "",
     };
   } else if (type === "fixed") {
     return {
       style: getDefaultStyle("fixed"),
       child: [generateLayoutItem("icon")],
+      anchorId: "",
     };
   }
 
@@ -233,7 +245,7 @@ export const getProp = <T extends unknown>(
   useAppSelector: UseSelector<{
     editor: EditorState;
   }>,
-  type: string,
+  type: EditablePropKeys,
 ) => {
   return useAppSelector((state) => {
     const layout = state.editor.layout;
@@ -242,7 +254,19 @@ export const getProp = <T extends unknown>(
 
     const element = findElementById(layout, activeId);
 
-    return element?.props?.[type] as T; // Accessing the dynamic property safely
+    if (!element) throw Error("No active element found!");
+
+    if (type in element.props) {
+      const activeProp = element.props[type as keyof typeof element.props];
+      if (typeof activeProp === "object")
+        throw Error(
+          `Invalid activeProp (type:${typeof activeProp}), please use other available functions, such as getSetting, to get styles etc.`,
+        );
+
+      return (element.props as Record<string, unknown>)[type] as T; // Accessing the dynamic property safely
+    } else {
+      throw Error(`Invalid prop "${String(type)}" for active element`);
+    }
   });
 };
 

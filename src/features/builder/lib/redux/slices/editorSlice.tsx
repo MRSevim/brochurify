@@ -26,7 +26,11 @@ import {
   generateLayoutItem,
   getPageWise,
 } from "@/features/builder/utils/helpers";
-import { Layout } from "@/features/builder/utils/types/propTypes.d";
+import {
+  EditablePropKeys,
+  Layout,
+  LayoutTypes,
+} from "@/features/builder/utils/types/propTypes.d";
 
 const initialState: EditorState = {
   type: "project",
@@ -122,7 +126,7 @@ export const editorSlice = createSlice({
     },
     addElement: (
       state,
-      action: PayloadAction<{ type: string; addLocation: AddLocation }>,
+      action: PayloadAction<{ type: LayoutTypes; addLocation: AddLocation }>,
     ) => {
       const newElement = generateLayoutItem(action.payload.type);
       const active = findElementById(state.layout, state.active);
@@ -144,13 +148,20 @@ export const editorSlice = createSlice({
     },
     deleteElement: (state, action: PayloadAction<string>) => {
       if (state.active) {
-        const found = findElementById(state.layout, state.active);
+        const targetElement = findElementById(state.layout, action.payload);
+
         if (
-          found &&
+          state.active &&
+          targetElement &&
           (action.payload === state.active ||
-            isInChildren(found.props.child, action.payload))
+            isInChildren(
+              "child" in targetElement.props
+                ? targetElement.props.child
+                : undefined,
+              state.active,
+            ))
         ) {
-          //if deleted element is active or deleted element is descendant is active
+          //if deleted element is active or deleted element is parent of active
           state.active = undefined;
         }
       }
@@ -219,8 +230,8 @@ export const editorSlice = createSlice({
               return true; // found and updated
             }
 
-            if ("child" in item.props && Array.isArray(item.props.child)) {
-              const found = updateLayout(item.props.child as Layout[]);
+            if ("child" in item.props) {
+              const found = updateLayout(item.props.child);
               if (found) return true;
             }
           }
@@ -233,8 +244,8 @@ export const editorSlice = createSlice({
     changeElementProp: (
       state,
       action: PayloadAction<{
-        type: string;
-        newValue: number | string | boolean;
+        type: EditablePropKeys;
+        newValue: string | boolean;
       }>,
     ) => {
       const { type, newValue } = action.payload;
@@ -244,12 +255,26 @@ export const editorSlice = createSlice({
 
         for (const item of layout) {
           if (item.id === state.active) {
-            // Directly mutate the prop on the draft
-            item.props[type] = newValue;
-            changed = true;
+            if (type in item.props) {
+              const activeProp = item.props[type as keyof typeof item.props];
+              if (
+                typeof activeProp === "object" ||
+                typeof activeProp !== typeof newValue
+              )
+                throw Error(
+                  `Invalid activeProp (type:${typeof activeProp}) or activeProp type (type:${typeof activeProp}) does not match newValue type (type:${typeof newValue})`,
+                );
+
+              // Directly mutate the prop on the draft
+              (item.props as Record<string, unknown>)[type] = newValue;
+
+              changed = true;
+            } else {
+              throw Error(`Invalid prop "${String(type)}" for active element`);
+            }
           }
 
-          if ("child" in item.props && Array.isArray(item.props.child)) {
+          if ("child" in item.props) {
             const childChanged = changeProp(item.props.child);
             if (childChanged) changed = true;
           }
@@ -419,8 +444,11 @@ export const editorSlice = createSlice({
             return true; // Move complete
           }
 
-          if (Array.isArray(arr[i].props.child)) {
-            const moved = moveInArray(arr[i].props.child!);
+          if ("child" in arr[i].props) {
+            //ts still complained if I did not do type cast
+            const moved = moveInArray(
+              (arr[i].props as { child: Layout[] }).child,
+            );
             if (moved) return true;
           }
         }
@@ -442,7 +470,7 @@ export const editorSlice = createSlice({
             return true;
           }
 
-          if (Array.isArray(item.props.child)) {
+          if ("child" in item.props) {
             const inserted = insertDuplicate(item.props.child);
             if (inserted) return true;
           }

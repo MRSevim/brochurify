@@ -17,13 +17,13 @@ const getRowNonFixedCounts = (
   acc: Record<string, number> = {},
 ) => {
   for (const node of nodes) {
-    if (node.type === "row" && Array.isArray(node.props.child)) {
+    if (node.type === "row") {
       const count = node.props.child.filter(
         (child) => child.type !== "fixed",
       ).length;
       acc[node.id] = count;
     }
-    if ("child" in node.props && Array.isArray(node.props.child)) {
+    if ("child" in node.props) {
       getRowNonFixedCounts(node.props.child, acc);
     }
   }
@@ -40,7 +40,7 @@ const updateWidths = (
   const updatedNodes = nodes.map((node) => {
     let updatedNode = node;
 
-    if (node.type === "row" && Array.isArray(node.props.child)) {
+    if (node.type === "row") {
       const prevCount = prevCounts[node.id] ?? 0;
       const nonFixedChildren = node.props.child.filter(
         (c) => c.type !== "fixed",
@@ -94,7 +94,7 @@ const updateWidths = (
           changed = true;
         }
       }
-    } else if ("child" in node.props && Array.isArray(node.props.child)) {
+    } else if ("child" in node.props) {
       // Recurse into non-row nodes
       const [recursedChild, childChanged] = updateWidths(
         node.props.child,

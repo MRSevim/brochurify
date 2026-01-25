@@ -1,48 +1,6 @@
 import { StringOrUnd } from "@/utils/types/Types.d";
 import { Layout } from "./propTypes.d";
 
-/* export interface Props {
-  text?: string;
-  style: Style;
-  child?: Layout[];
-  src?: string;
-  href?: string;
-  newTab?: boolean;
-  alt?: string;
-  anchorId?: string;
-  iconType?: string;
-  children?: React.ReactNode;
-  [key: string]:
-    | string
-    | boolean
-    | Style
-    | Layout[]
-    | React.ReactNode
-    | undefined;
-}
-export interface PropsWithId {
-  id: string;
-  text?: string;
-  style: Style;
-  child?: Layout[];
-  src?: string;
-  href?: string;
-  newTab?: boolean;
-  alt?: string;
-  anchorId?: string;
-  iconType?: string;
-  children?: React.ReactNode;
-  ref?: ElementRefObject;
-  [key: string]:
-    | string
-    | boolean
-    | Style
-    | Layout[]
-    | React.ReactNode
-    | undefined
-    | ElementRefObject;
-} */
-
 export interface EditorState {
   type: "project" | "template";
   id?: string;
