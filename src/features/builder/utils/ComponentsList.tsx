@@ -18,12 +18,13 @@ import {
   FixedPropsForRendering,
   IconPropsForRendering,
   ImagePropsForRendering,
+  LayoutTypes,
   RowPropsForRendering,
   TextPropsForRendering,
   VideoPropsForRendering,
 } from "./types/propTypes.d";
 
-export const componentList = {
+export const componentList: Record<LayoutTypes, any> = {
   button: (props: ButtonPropsForRendering) => <Button {...props} />,
   column: (props: ColumnPropsForRendering) => <Column {...props} />,
   text: (props: TextPropsForRendering) => <Text {...props} />,

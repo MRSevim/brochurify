@@ -21,6 +21,7 @@ import {
   IconPropsForRendering,
   ImagePropsForRendering,
   Layout,
+  LayoutTypes,
   RowPropsForRendering,
   TextPropsForRendering,
   VideoPropsForRendering,
@@ -243,7 +244,7 @@ const RenderedComponent = ({ item }: { item: Layout }) => {
   );
 };
 
-const componentList = {
+const componentList: Record<LayoutTypes, any> = {
   button: (props: ButtonPropsForRendering) => (
     <a
       id={props.id}

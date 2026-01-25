@@ -24,7 +24,7 @@ import {
   VisibilitySetProvider,
 } from "./VisibilitySetContext";
 import { selectAddLocation, selectLayout } from "../../lib/redux/selectors";
-import { Layout } from "../../utils/types/propTypes.d";
+import { Layout, LayoutTypes } from "../../utils/types/propTypes.d";
 
 const LeftPanel = () => {
   const toggle = LayoutToggleContext.useToggle();
@@ -148,7 +148,7 @@ const ChildLayout = memo(
 );
 
 const AddSection = memo(() => {
-  const availableElements = Object.keys(componentList);
+  const availableElements = Object.keys(componentList) as LayoutTypes[];
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement | null>(null);
   const addLocation = useAppSelector(selectAddLocation);
