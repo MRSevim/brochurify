@@ -4,8 +4,8 @@ import {
   selectVariables,
 } from "@/features/builder/lib/redux/selectors";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { generateHTML } from "@/utils/HTMLGenerator";
 import { FaDownload } from "react-icons/fa";
+import { generateHTML } from "@/utils/HTMLGenerator";
 
 const DownloadWrapper = () => {
   const layout = useAppSelector(selectLayout);

@@ -97,8 +97,8 @@ export async function createProject(project: {
     );
   }
   const id = uuidv4();
-  const html = generateHTML(layout, pageWise, variables);
   if (type === "template") {
+    const html = generateHTML(layout, pageWise, variables);
     await addJobToQueue(isTemplate, html, user.userId, id);
   }
 

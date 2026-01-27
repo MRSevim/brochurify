@@ -9,6 +9,9 @@ import {
 } from "./StyleGenerators";
 import { html as beautifyHtml } from "js-beautify";
 import { Layout } from "@/features/builder/utils/types/propTypes.d";
+import pkg from "bootstrap-icons/package.json";
+
+const BI_VERSION = pkg.version;
 
 export const generateHTML = (
   layout: Layout[],
@@ -52,7 +55,7 @@ export const generateHTML = (
   ${iconUrl ? `<link rel="icon" href="${iconUrl}">` : ""}
   ${
     hasType(layout, "icon")
-      ? '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">'
+      ? `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@${BI_VERSION}/font/bootstrap-icons.css">`
       : ""
   }`;
   const observerScript = `<script>   

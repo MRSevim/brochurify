@@ -17,7 +17,7 @@ export const makeStore = () => {
       getDefaultMiddleware({ serializableCheck: false }).concat(
         saveToHistoryMiddleware,
         saveToLocalOrDb,
-        rowResizeMiddleware
+        rowResizeMiddleware,
       ),
   });
 };
