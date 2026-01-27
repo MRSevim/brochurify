@@ -32,4 +32,5 @@ export const serverEnv = {
   S3_BUCKET_NAME: requiredEnv("S3_BUCKET_NAME"),
   VERCEL_API_TOKEN: requiredEnv("VERCEL_API_TOKEN"),
   REDIS_HOST: requiredEnv("REDIS_HOST"),
+  REDIS_PASSWORD: requiredEnv("REDIS_PASSWORD"),
 };
