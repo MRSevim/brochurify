@@ -1,6 +1,6 @@
 import { appConfig } from "@/utils/config";
 import { notFound } from "next/navigation";
-import { hasType } from "@/features/builder/utils/EditorHelpers";
+import "bootstrap-icons/font/bootstrap-icons.css";
 import {
   fullStylesWithIdsGenerator,
   styleGenerator,
@@ -34,6 +34,7 @@ async function getSiteCached(domain: string) {
   });
 
   if (!res.ok) return undefined;
+
   return await res.json();
 }
 
@@ -86,9 +87,9 @@ export default async function SiteLayout({
   if (!site || !site.editor) {
     return notFound();
   }
-
   const pageWise = site.editor.pageWise;
   const layout = site.editor.layout;
+
   const variables = site.editor.variables;
   const { title, description, keywords, canonical, image, iconUrl, ...rest } =
     pageWise;
