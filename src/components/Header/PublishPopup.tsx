@@ -17,8 +17,8 @@ import {
   setPublished,
 } from "@/features/builder/lib/redux/slices/editorSlice";
 import { slugify } from "@/utils/Helpers";
-import ButtonWithLoading from "../ButtonWithLoading";
 import Link from "next/link";
+
 let firstRequest = true;
 
 const PublishPopup = () => {
@@ -132,31 +132,7 @@ const PublishPopup = () => {
           )}
         </>
       )}
-      {published && (
-        <div className="flex justify-center items-center m-2 mb-5">
-          <ButtonWithLoading
-            onClick={async () => {
-              if (!id) return toast.error("Something went wrong");
-              setPublishLoading(true);
-              const { error } = await updateAction(type, id, {
-                publish: {
-                  editor,
-                  published: true,
-                },
-              });
-              if (error) {
-                toast.error(error);
-              } else {
-                toast.success("Your project is successfully republished");
-                setPublishPopup(false);
-              }
-              setPublishLoading(false);
-            }}
-            text="Republish Latest Changes"
-            loading={publishLoading}
-          />
-        </div>
-      )}
+
       <div className="mt-4 px-4 text-xs text-muted-foreground italic max-w-4xl mx-auto">
         It can take up to 10 minutes for new changes to apply.
       </div>

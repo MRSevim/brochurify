@@ -8,6 +8,7 @@ import {
   isInChildren,
   moveElementInner,
   removeHistoryCurrents,
+  resetInteractives,
 } from "@/features/builder/utils/EditorHelpers";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -88,6 +89,7 @@ export const editorSlice = createSlice({
       state.published = action.payload.published;
       state.customDomain = action.payload.customDomain;
       state.prefix = action.payload.prefix;
+      resetInteractives(state);
     },
     hydrateLocal: (state, action: PayloadAction<EditorState>) => {
       const layout = action.payload.layout;
@@ -96,6 +98,7 @@ export const editorSlice = createSlice({
       state.pageWise = pageWise;
       state.variables = action.payload.variables;
       state.history = [{ current: true, structure: { layout, pageWise } }];
+      resetInteractives(state);
     },
     setFromLocal: (state, action: PayloadAction<EditorState>) => {
       state.layout = action.payload.layout;

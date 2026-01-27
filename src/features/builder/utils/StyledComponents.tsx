@@ -14,6 +14,10 @@ export const styledElements = {
       const {
         overflow,
         "background-color": backgroundColor,
+        "background-image": backgroundImage,
+        "background-size": backgroundSize,
+        "background-position": backgroundPosition,
+        "background-repeat": backgroundRepeat,
         ...rest
       } = $styles;
       const variablesString = variablesGenerator($variables);

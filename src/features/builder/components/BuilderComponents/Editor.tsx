@@ -66,6 +66,12 @@ const EditorWrapper = ({ children }: { children: React.ReactNode }) => {
           transition: "all 0.3s ease",
           height: `${100 / scale}%`,
           backgroundColor: pageWise["background-color"],
+          backgroundImage: pageWise["background-image"]
+            ? `linear-gradient(${pageWise["background-color"]}), ${pageWise["background-image"]}`
+            : "",
+          backgroundSize: pageWise["background-size"],
+          backgroundPosition: pageWise["background-position"],
+          backgroundRepeat: pageWise["background-repeat"],
           maxHeight,
         }}
         ref={ref}

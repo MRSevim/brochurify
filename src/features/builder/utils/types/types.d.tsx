@@ -45,6 +45,10 @@ export type PageWise = {
   image: string;
   color: string;
   "background-color": string;
+  "background-image"?: string;
+  "background-size"?: string;
+  "background-position"?: string;
+  "background-repeat"?: string;
   "font-size": string;
   height: string;
   overflow: "auto";

@@ -3,6 +3,15 @@ import { v4 as uuidv4 } from "uuid";
 import { AddLocation, EditorState, ItemAndLocation } from "./types/types.d";
 import { Layout } from "./types/propTypes.d";
 
+export const resetInteractives = (state: EditorState) => {
+  state.addLocation = null;
+  state.active = undefined;
+  state.hovered = undefined;
+  state.draggedOver = undefined;
+  state.draggedItem = undefined;
+  state.copied = undefined;
+};
+
 export const moveElementInner = (
   state: EditorState,
   payload: ItemAndLocation,
