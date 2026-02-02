@@ -3,6 +3,7 @@
   "scripts": {
     "docker": "docker compose up -d"
   },
+  "private": true,
   "type": "module",
   "dependencies": {
     "bullmq": "^5.54.3",
