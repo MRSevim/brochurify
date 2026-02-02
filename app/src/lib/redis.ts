@@ -10,7 +10,7 @@ export const connection =
     host: serverEnv.REDIS_HOST,
     port: 6379,
     maxRetriesPerRequest: null,
-    password: !isDev ? serverEnv.REDIS_PASSWORD : undefined,
+    password: serverEnv.REDIS_PASSWORD,
   });
 
 export const snapshotQueue =

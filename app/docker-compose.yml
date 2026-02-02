@@ -31,15 +31,6 @@ services:
       DYNAMO_ENDPOINT: http://dynamodb:8000
     depends_on:
       - dynamodb
-  redis:
-    image: redis:7-alpine # ✅ Use official redis image
-    container_name: redis
-    restart: unless-stopped
-    ports:
-      - "6379:6379" # ✅ Expose Redis port
-    volumes:
-      - redis_data:/data
-    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"] # optional config
 
 volumes:
   minio_data: {}
