@@ -39,6 +39,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./worker/*"
           target: "/home/${{ secrets.EC2_USERNAME }}/worker"
+          strip_components: 1
           exclude: |
             .env
             **/.env
