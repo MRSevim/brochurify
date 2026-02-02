@@ -1,4 +1,5 @@
 {
+  "name":"brochurify-worker",
   "scripts": {
     "docker": "docker compose up -d"
   },
