@@ -221,7 +221,7 @@ const ImagesList = ({
           }
         >
           <Image
-            src={img.url}
+            src={`${img.url}?v=${Date.now()}`}
             alt="User image"
             width={187}
             height={144}

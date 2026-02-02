@@ -38,7 +38,7 @@ const UserMenu = () => {
             <div className="flex">
               <Image
                 className="rounded-full"
-                src={user.image}
+                src={`${user.image}?v=${Date.now()}`}
                 width={40}
                 height={40}
                 alt="Profile picture"
