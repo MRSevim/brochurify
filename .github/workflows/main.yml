@@ -37,7 +37,7 @@ jobs:
           host: ${{ secrets.EC2_IP }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "/worker/"
+          source: "worker/"
           target: "/home/${{ secrets.EC2_USERNAME }}/worker"
           strip_components: 1
           exclude: |
