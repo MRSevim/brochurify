@@ -10,7 +10,7 @@ const connection = new Redis({
   password: process.env.REDIS_PASSWORD,
   maxRetriesPerRequest: null,
 });
-
+console.log("trigger ci-cd")
 
 const TABLE_NAME = process.env.DB_TABLE_NAME;
 
