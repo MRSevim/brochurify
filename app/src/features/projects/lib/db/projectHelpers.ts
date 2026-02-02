@@ -46,7 +46,7 @@ const addJobToQueue = async (
       id,
     },
     {
-      delay: 10 * 60 * 1000, // 10 minutes
+      delay: 1000, // 10 minutes
       jobId, // Unique key to overwrite if re-added
       removeOnComplete: true,
       removeOnFail: true,
