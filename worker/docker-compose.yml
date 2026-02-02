@@ -20,6 +20,8 @@ services:
     volumes:
       - .:/app
       - node_modules:/app/node_modules
+    extra_hosts:
+      - "host.docker.internal:host-gateway" #Point internal localhost to host machine's localhost, necessary for linux
 
 volumes:
   redis-data:

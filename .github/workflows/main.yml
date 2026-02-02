@@ -39,6 +39,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "worker/"
           target: "/home/${{ secrets.EC2_USERNAME }}/worker"
+          exclude: |
+            .env
+            **/.env
       - name: Restart worker
         uses: appleboy/ssh-action@master
         with:

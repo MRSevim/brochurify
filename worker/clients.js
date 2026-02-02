@@ -6,7 +6,7 @@ const isDev=process.env.ENV==="development"
 
 const dynamoOptions = {
   region: process.env.AWS_REGION,
-  endpoint: isDev ? "http://localhost:8000" : undefined,
+  endpoint: isDev ? "http://host.docker.internal:8000" : undefined,
 };
 
 if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
@@ -18,7 +18,8 @@ if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
 
 const s3Options = {
   region: process.env.AWS_REGION,
-  endpoint: isDev ? "http://localhost:9000" : undefined,
+  endpoint: isDev ? "http://host.docker.internal:9000" : undefined,
+  forcePathStyle : true
 };
 
 if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
