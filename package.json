@@ -7,10 +7,6 @@
     "url": "https://github.com/MRSevim/brochurify/issues"
   },
   "private": true,
-  "workspaces": [
-    "app",
-    "worker"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MRSevim/brochurify.git"
