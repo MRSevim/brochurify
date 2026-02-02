@@ -11,7 +11,7 @@ export const SnapshotImage = memo(
         width={282}
         height={159}
         className="rounded max-w-full"
-        src={`${src}?v=${Date.now()}`}
+        src={`${src}`}
         alt={alt}
       />
     );

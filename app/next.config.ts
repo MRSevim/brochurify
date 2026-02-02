@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    minimumCacheTTL: 600,
+
     remotePatterns: [
       new URL("https://lh3.googleusercontent.com/**"),
       new URL("https://d23cxyudk0cypl.cloudfront.net/**"),
