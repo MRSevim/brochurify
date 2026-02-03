@@ -19,8 +19,6 @@ import {
 import { slugify } from "@/utils/Helpers";
 import Link from "next/link";
 
-let firstRequest = true;
-
 const PublishPopup = () => {
   const [, setPublishPopup] = usePublishPopup();
   const dispatch = useAppDispatch();
