@@ -1,4 +1,4 @@
-These are the codes for my single page website builder Brochurify.https://www.brochurify.app/
+These are the codes for my single page website builder Brochurify.
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
